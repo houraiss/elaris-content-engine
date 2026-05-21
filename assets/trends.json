@@ -1,0 +1,78 @@
+{
+    "lastUpdated": "2026-05-14",
+    "trends": [
+        {
+            "id": "raw-texture",
+            "title": "Raw Texture & Organic Forms",
+            "category": "design",
+            "description": "Unpolished, organic textures are dominating high-end jewelry content. Think hammered silver, rough-cut stones, and imperfect beauty. Brands like Alighieri and Completedworks are leading this aesthetic.",
+            "suggestion": "Photograph pieces on natural stone, linen, or unfinished wood. Let the silver texture be the hero.",
+            "relevance": "high",
+            "tags": ["organic", "texture", "raw", "artisanal"]
+        },
+        {
+            "id": "dark-moody",
+            "title": "Dark & Moody Product Shots",
+            "category": "photography",
+            "description": "The 'Cartier Noir' approach is trending hard — deep blacks, dramatic side-lighting, jewelry floating in darkness. Creates immediate luxury perception.",
+            "suggestion": "Use the Cartier Noir creative direction for hero pieces. Works especially well for statement rings and bold pendants.",
+            "relevance": "high",
+            "tags": ["dark", "moody", "dramatic", "luxury"]
+        },
+        {
+            "id": "heritage-storytelling",
+            "title": "Heritage Storytelling Carousels",
+            "category": "content",
+            "description": "Multi-slide posts that tell the origin story — from raw material to finished piece. Consumers want to know the craft behind luxury goods. Moroccan heritage is a unique differentiator.",
+            "suggestion": "Create a carousel: Slide 1: finished piece, Slide 2: workshop detail, Slide 3: artisan hands, Slide 4: heritage pattern inspiration.",
+            "relevance": "high",
+            "tags": ["carousel", "storytelling", "heritage", "morocco"]
+        },
+        {
+            "id": "clean-catalog",
+            "title": "Clean White Catalog Aesthetics",
+            "category": "photography",
+            "description": "Alternating dark moody shots with clean white product shots creates visual rhythm in the feed. Tiffany, Mejuri, and Ana Luisa all use this contrast strategy.",
+            "suggestion": "For every 2 dark posts, do 1 clean white. Use Tiffany Ice or Studio Clean direction.",
+            "relevance": "medium",
+            "tags": ["white", "clean", "catalog", "minimal"]
+        },
+        {
+            "id": "close-up-macro",
+            "title": "Extreme Close-Up Macro Details",
+            "category": "photography",
+            "description": "Zoomed-in shots of engravings, clasps, and surface textures perform 40% better engagement than full-product shots. The detail IS the content.",
+            "suggestion": "Take extreme close-ups of your best detailing work. Sterling silver grain and Moroccan patterns are perfect for this.",
+            "relevance": "high",
+            "tags": ["macro", "detail", "closeup", "texture"]
+        },
+        {
+            "id": "styling-context",
+            "title": "Styled Life Context",
+            "category": "content",
+            "description": "Jewelry shown in lifestyle context (on hands pouring coffee, against fabric, with flowers) outperforms isolated product shots for engagement. But isolated shots win for conversion.",
+            "suggestion": "Mix 60% styled context + 40% isolated product in your content calendar.",
+            "relevance": "medium",
+            "tags": ["lifestyle", "styling", "context", "engagement"]
+        },
+        {
+            "id": "reels-process",
+            "title": "Process Reveal Reels",
+            "category": "video",
+            "description": "Short-form video showing the making process is the #1 performing content type for jewelry brands on Instagram in 2026.",
+            "suggestion": "Even 10-second clips of polishing, setting, or packaging drive massive engagement. Consider filming in your workshop.",
+            "relevance": "high",
+            "tags": ["reels", "video", "process", "behind-the-scenes"]
+        },
+        {
+            "id": "color-blocking",
+            "title": "Color-Blocked Feed Planning",
+            "category": "strategy",
+            "description": "Top brands plan their feed visually — alternating color themes in rows of 3. Dark-Light-Dark or Warm-Cool-Warm creates a cohesive, curated gallery effect.",
+            "suggestion": "Plan content in sets of 3. Use the creative directions to alternate: Cartier Noir → Tiffany Ice → Heritage Gold.",
+            "relevance": "medium",
+            "tags": ["feed", "planning", "grid", "strategy"]
+        }
+    ],
+    "contentCalendarTip": "Post 4-5 times per week. Best times for jewelry: Tuesday 10am, Thursday 2pm, Saturday 11am (Morocco time / CET)."
+}

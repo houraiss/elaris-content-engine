@@ -1,0 +1,212 @@
+{
+  "piece": "piece_001",
+  "category": "rings",
+  "description": "Silver multi-band crossover ring with pav\u00e9 diamond accents",
+  "source_angles": 8,
+  "generated_at": "2026-05-15",
+  "files": [
+    {
+      "file": "piece_001_organic_sand.png",
+      "name": "Organic Sand",
+      "direction": "object-pairing",
+      "archetype": "Ring embedded in swirled sand \u2014 Monaco collection style",
+      "reference": "Ring_organic_sand.jpeg"
+    },
+    {
+      "file": "piece_001_bw_editorial.png",
+      "name": "B&W Editorial",
+      "direction": "bw-dramatic",
+      "archetype": "Monochrome editorial with selective silver \u2014 Noor Jewellers style",
+      "reference": "Ring_Close_up.jpg"
+    },
+    {
+      "file": "piece_001_animal_surreal.png",
+      "name": "Animal Surreal (Cheetah)",
+      "direction": "surreal-animal",
+      "archetype": "Cheetah paw with diamond ring \u2014 high concept campaign",
+      "reference": "Best_Animal_Design_2.jpg"
+    },
+    {
+      "file": "piece_001_nature_embedded.png",
+      "name": "Nature Embedded",
+      "direction": "object-pairing",
+      "archetype": "Ring on calla lily flower \u2014 organic editorial",
+      "reference": "Embeded_Design_with_nature.jpg"
+    },
+    {
+      "file": "piece_001_shadow_play.png",
+      "name": "Shadow Play",
+      "direction": "shadow-play",
+      "archetype": "Dramatic hand shadow with ring \u2014 light as art",
+      "reference": "set_of_rings_design.jpg"
+    },
+    {
+      "file": "piece_001_floating_dark.png",
+      "name": "Floating Dark (Ice)",
+      "direction": "gradient-product",
+      "archetype": "Ring among ice cubes on black surface \u2014 frozen luxury",
+      "reference": "Floating_rings_design.jpg"
+    },
+    {
+      "file": "piece_001_parrot_surreal.png",
+      "name": "Animal Surreal (Parrot)",
+      "direction": "surreal-animal",
+      "archetype": "Blue macaw holding ring in beak \u2014 viral campaign concept",
+      "reference": "Best_Animal_Design_3.jpg"
+    },
+    {
+      "file": "piece_002_organic_sand.png",
+      "name": "P2 Organic Sand",
+      "direction": "object-pairing",
+      "archetype": "Elegant ring in swirled sand dunes",
+      "reference": "Ring_organic_sand.jpeg"
+    },
+    {
+      "file": "piece_002_bw_editorial.png",
+      "name": "P2 B&W Editorial",
+      "direction": "bw-dramatic",
+      "archetype": "Black and white hand close-up",
+      "reference": "Ring_Close_up.jpg"
+    },
+    {
+      "file": "piece_002_floating_dark.png",
+      "name": "P2 Floating Dark (Ice)",
+      "direction": "gradient-product",
+      "archetype": "Ring among ice cubes on black surface",
+      "reference": "Floating_rings_design.jpg"
+    },
+    {
+      "file": "piece_002_nature_embedded.png",
+      "name": "P2 Nature Embedded",
+      "direction": "object-pairing",
+      "archetype": "Ring on calla lily flower",
+      "reference": "Embeded_Design_with_nature.jpg"
+    },
+    {
+      "file": "piece_002_shadow_play.png",
+      "name": "P2 Shadow Play",
+      "direction": "shadow-play",
+      "archetype": "Dramatic hand shadow with ring",
+      "reference": "set_of_rings_design.jpg"
+    },
+    {
+      "file": "piece_002_body-intimate_1778874730.png",
+      "name": "API Gen: body-intimate",
+      "direction": "body-intimate",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_shadow-play_1778874734.png",
+      "name": "API Gen: shadow-play",
+      "direction": "shadow-play",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_body-intimate_1778874855.png",
+      "name": "API Gen: body-intimate",
+      "direction": "body-intimate",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_shadow-play_1778874859.png",
+      "name": "API Gen: shadow-play",
+      "direction": "shadow-play",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_object-pairing_1778875090.png",
+      "name": "API Gen: object-pairing",
+      "direction": "object-pairing",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_object-pairing_1778875553.png",
+      "name": "API Gen: object-pairing",
+      "direction": "object-pairing",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_bold-typography_1778875847.png",
+      "name": "API Gen: bold-typography",
+      "direction": "bold-typography",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_bold-typography_1778875888.png",
+      "name": "API Gen: bold-typography",
+      "direction": "bold-typography",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_shadow-play_1778875888.png",
+      "name": "API Gen: shadow-play",
+      "direction": "shadow-play",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_bold-typography_1778875930.png",
+      "name": "API Gen: bold-typography",
+      "direction": "bold-typography",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_bold-typography_1778876087.png",
+      "name": "API Gen: bold-typography",
+      "direction": "bold-typography",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "test_test_1778876464.png",
+      "name": "API Gen: test",
+      "direction": "test",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_body-intimate_1778876527.png",
+      "name": "API Gen: body-intimate",
+      "direction": "body-intimate",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_body-intimate_1778876565.png",
+      "name": "API Gen: body-intimate",
+      "direction": "body-intimate",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_editorial-model_1778876565.png",
+      "name": "API Gen: editorial-model",
+      "direction": "editorial-model",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_editorial-model_1778876608.png",
+      "name": "API Gen: editorial-model",
+      "direction": "editorial-model",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    },
+    {
+      "file": "piece_002_object-pairing_1778876650.png",
+      "name": "API Gen: object-pairing",
+      "direction": "object-pairing",
+      "archetype": "Auto-generated via Gemini API Pipeline",
+      "reference": "API"
+    }
+  ]
+}
