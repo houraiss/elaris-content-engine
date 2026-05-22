@@ -1,0 +1,22 @@
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# Generated icons script (not needed on server)
+generate-icons.py
+
+# Output folders (generated content)
+output/
+
+# API keys / secrets
+*.env
+
+# Editor files
+.vscode/
+*.swp
+*.swo
