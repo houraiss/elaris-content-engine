@@ -6,26 +6,26 @@
  * This ensures the app works fully offline after the first visit.
  */
 
-const CACHE_NAME = 'elaris-v3';
+const CACHE_NAME = 'elaris-v4';
 
 // App shell — everything needed for the app to work offline
 const APP_SHELL = [
-    '/',
-    '/index.html',
-    '/css/styles.css',
-    '/js/app.js',
-    '/js/canvas-engine.js',
-    '/js/templates.js',
-    '/js/captions.js',
-    '/js/export.js',
-    '/js/enhance.js',
-    '/js/prompt-studio.js',
-    '/js/composer.js',
-    '/js/gallery.js',
-    '/js/watermark.js',
-    '/icons/icon-192.png',
-    '/icons/icon-512.png',
-    '/manifest.json',
+    './',
+    './index.html',
+    './css/styles.css',
+    './js/app.js',
+    './js/canvas-engine.js',
+    './js/templates.js',
+    './js/captions.js',
+    './js/export.js',
+    './js/enhance.js',
+    './js/prompt-studio.js',
+    './js/composer.js',
+    './js/gallery.js',
+    './js/watermark.js',
+    './icons/icon-192.png',
+    './icons/icon-512.png',
+    './manifest.json',
 ];
 
 // ── Install: Pre-cache the app shell ─────────────────────────
@@ -71,7 +71,14 @@ self.addEventListener('fetch', event => {
     }
 
     // App shell files: cache-first
-    if (APP_SHELL.some(path => url.pathname === path || url.pathname === path.replace(/^\//, ''))) {
+    const isAppShell = APP_SHELL.some(path => {
+        const cleanPath = path.replace('./', '');
+        return cleanPath === '' 
+            ? url.pathname.endsWith('/') 
+            : url.pathname.endsWith('/' + cleanPath);
+    });
+
+    if (isAppShell) {
         event.respondWith(
             caches.match(event.request).then(cached => cached || fetch(event.request))
         );
