@@ -199,10 +199,14 @@ body { display: flex; }
 }
 
 .brand-name {
-    font-family: var(--font-display);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 4px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: center;
+}
+
+.brand-logo-svg {
+    width: 120px;
+    height: auto;
     color: var(--text-primary);
 }
 
