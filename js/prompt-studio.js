@@ -629,50 +629,50 @@ const PromptStudio = {
                 <!-- LEFT: Piece Description -->
                 <div class="ps-left">
                     <div class="card">
-                        <div class="card-header"><span class="card-title">Describe Your Piece</span></div>
+                        <div class="card-header"><span class="card-title" data-i18n="ps_describe_piece">Describe Your Piece</span></div>
                         <div class="form-group">
-                            <label class="form-label">Category</label>
+                            <label class="form-label" data-i18n="ps_category">Category</label>
                             <select class="form-select" id="ps-category">
-                                ${this.categories.map(c => `<option value="${c}" ${c === this.state.category ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1).replace('-', ' ')}</option>`).join('')}
+                                ${this.categories.map(c => `<option value="${c}" data-i18n="ps_cat_${c.replace(/-/g, '_')}" ${c === this.state.category ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1).replace('-', ' ')}</option>`).join('')}
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Material</label>
+                            <label class="form-label" data-i18n="ps_material">Material</label>
                             <select class="form-select" id="ps-material">
-                                ${this.materials.map(m => `<option value="${m.id}" ${m.id === this.state.material ? 'selected' : ''}>${m.label}</option>`).join('')}
+                                ${this.materials.map(m => `<option value="${m.id}" data-i18n="ps_mat_${m.id.replace(/-/g, '_')}" ${m.id === this.state.material ? 'selected' : ''}>${m.label}</option>`).join('')}
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Stones</label>
+                            <label class="form-label" data-i18n="ps_stones">Stones</label>
                             <select class="form-select" id="ps-stone">
-                                ${this.stones.map(s => `<option value="${s.id}" ${s.id === this.state.stone ? 'selected' : ''}>${s.label}</option>`).join('')}
+                                ${this.stones.map(s => `<option value="${s.id}" data-i18n="ps_stone_${s.id.replace(/-/g, '_')}" ${s.id === this.state.stone ? 'selected' : ''}>${s.label}</option>`).join('')}
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Piece Description</label>
-                            <textarea class="form-textarea" id="ps-desc" rows="3" placeholder="e.g. multi-band crossover ring with pavé diamond accents and intertwining silver bands"></textarea>
+                            <label class="form-label" data-i18n="ps_piece_desc">Piece Description</label>
+                            <textarea class="form-textarea" id="ps-desc" rows="3" data-i18n="ps_piece_desc_ph" placeholder="e.g. multi-band crossover ring with pavé diamond accents and intertwining silver bands"></textarea>
                         </div>
-                        <button class="btn btn-sm btn-secondary" id="ps-auto-desc" style="width:100%">✦ Auto-describe from category</button>
+                        <button class="btn btn-sm btn-secondary" id="ps-auto-desc" style="width:100%" data-i18n="ps_auto_desc">✦ Auto-describe from category</button>
                     </div>
 
                     <div class="card">
-                        <div class="card-header"><span class="card-title">Modifiers</span></div>
+                        <div class="card-header"><span class="card-title" data-i18n="ps_modifiers">Modifiers</span></div>
                         <div class="form-group">
-                            <label class="form-label">Mood</label>
+                            <label class="form-label" data-i18n="ps_mood">Mood</label>
                             <div class="ps-chip-group" id="ps-mood">
-                                ${this.moods.map(m => `<button class="ps-chip ${m.id === this.state.mood ? 'active' : ''}" data-val="${m.id}">${m.label}</button>`).join('')}
+                                ${this.moods.map(m => `<button class="ps-chip ${m.id === this.state.mood ? 'active' : ''}" data-val="${m.id}" data-i18n="ps_mood_${m.id.replace(/-/g, '_')}">${m.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Lighting</label>
+                            <label class="form-label" data-i18n="ps_lighting">Lighting</label>
                             <div class="ps-chip-group" id="ps-lighting">
-                                ${this.lightings.map(l => `<button class="ps-chip ${l.id === this.state.lighting ? 'active' : ''}" data-val="${l.id}">${l.label}</button>`).join('')}
+                                ${this.lightings.map(l => `<button class="ps-chip ${l.id === this.state.lighting ? 'active' : ''}" data-val="${l.id}" data-i18n="ps_light_${l.id.replace(/-/g, '_')}">${l.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Format</label>
+                            <label class="form-label" data-i18n="ps_format">Format</label>
                             <div class="ps-chip-group" id="ps-format">
-                                ${this.formats.map(f => `<button class="ps-chip ${f.id === this.state.format ? 'active' : ''}" data-val="${f.id}">${f.label}</button>`).join('')}
+                                ${this.formats.map(f => `<button class="ps-chip ${f.id === this.state.format ? 'active' : ''}" data-val="${f.id}" data-i18n="ps_fmt_${f.id.replace(/-/g, '_')}">${f.label}</button>`).join('')}
                             </div>
                         </div>
                     </div>
@@ -722,20 +722,20 @@ const PromptStudio = {
                 <div class="ps-center">
                     <div class="card">
                         <div class="card-header" style="flex-wrap:wrap;gap:8px">
-                            <span class="card-title">Select Archetypes</span>
+                            <span class="card-title" data-i18n="ps_archetypes">Select Archetypes</span>
                             <div style="display:flex;align-items:center;gap:8px">
                                 <div class="ps-chip-group ps-sort-group" id="ps-sort-mode" style="gap:4px">
-                                    <button class="ps-chip active" data-val="recommended" style="font-size:11px;padding:4px 10px">⭐ Recommended</button>
-                                    <button class="ps-chip" data-val="alpha" style="font-size:11px;padding:4px 10px">A—Z</button>
+                                    <button class="ps-chip active" data-val="recommended" style="font-size:11px;padding:4px 10px" data-i18n="ps_sort_rec">⭐ Recommended</button>
+                                    <button class="ps-chip" data-val="alpha" style="font-size:11px;padding:4px 10px" data-i18n="ps_sort_az">A—Z</button>
                                 </div>
-                                <span class="text-sm text-muted" id="ps-arch-count">0 selected</span>
+                                <span class="text-sm text-muted" id="ps-arch-count">0 <span data-i18n="ps_selected">selected</span></span>
                             </div>
                         </div>
                         <div class="ps-archetype-grid" id="ps-archetypes"></div>
                     </div>
 
                     <div style="display:flex;gap:10px;margin-top:12px">
-                        <button class="btn btn-primary btn-lg" id="ps-generate" style="flex:1">
+                        <button class="btn btn-primary btn-lg" id="ps-generate" style="flex:1" data-i18n="ps_generate">
                             ✦ Generate Prompts
                         </button>
                     </div>
@@ -833,7 +833,8 @@ const PromptStudio = {
                 this.state.selectedArchetypes.push(id);
                 card.classList.add('active');
             }
-            q('#ps-arch-count').textContent = `${this.state.selectedArchetypes.length} selected`;
+            const selStr = window.I18n ? window.I18n.t('ps_selected') : 'selected';
+            q('#ps-arch-count').innerHTML = `${this.state.selectedArchetypes.length} <span data-i18n="ps_selected">${selStr}</span>`;
         });
 
         // Generate

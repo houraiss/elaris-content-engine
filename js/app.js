@@ -75,13 +75,14 @@ window.render_templates = function(container) {
             <p class="page-subtitle" data-i18n="tpl_subtitle">Browse all available content templates</p>
         </div>
         <div class="flex gap-2 mb-4" id="template-filters">
-            <button class="btn btn-sm btn-secondary active" data-filter="all">All</button>
-            <button class="btn btn-sm btn-secondary" data-filter="post">Posts</button>
-            <button class="btn btn-sm btn-secondary" data-filter="story">Stories</button>
-            ${categories.map(c => `<button class="btn btn-sm btn-secondary" data-filter="${c}">${c.charAt(0).toUpperCase() + c.slice(1)}</button>`).join('')}
+            <button class="btn btn-sm btn-secondary active" data-filter="all" data-i18n="tpl_all">All</button>
+            <button class="btn btn-sm btn-secondary" data-filter="post" data-i18n="tpl_posts">Posts</button>
+            <button class="btn btn-sm btn-secondary" data-filter="story" data-i18n="tpl_stories">Stories</button>
+            ${categories.map(c => `<button class="btn btn-sm btn-secondary" data-filter="${c}" data-i18n="tpl_cat_${c}">${c.charAt(0).toUpperCase() + c.slice(1)}</button>`).join('')}
         </div>
         <div class="templates-browser" id="templates-list"></div>
     `;
+    if (window.I18n) setTimeout(() => window.I18n.applyLanguage(), 10);
 
     function renderList(filter = 'all') {
         let templates = allTemplates;

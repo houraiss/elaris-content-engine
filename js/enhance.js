@@ -115,25 +115,25 @@ const Enhance = {
                 <!-- RIGHT: Manual Touch-up Controls -->
                 <div class="enhance-right">
                     <div class="card">
-                        <div class="card-header"><span class="card-title">Touch-Up</span></div>
-                        <p class="text-sm text-muted mb-4">Fine-tune after AI enhancement</p>
-                        ${this._slider('brightness', 'Brightness', -50, 50, 0)}
-                        ${this._slider('contrast', 'Contrast', -50, 50, 0)}
-                        ${this._slider('saturation', 'Saturation', -50, 50, 0)}
-                        ${this._slider('temperature', 'Temperature', -50, 50, 0)}
+                        <div class="card-header"><span class="card-title" data-i18n="enh_touchup">Touch-Up</span></div>
+                        <p class="text-sm text-muted mb-4" data-i18n="enh_finetune">Fine-tune after AI enhancement</p>
+                        ${this._slider('brightness', 'enh_brightness', 'Brightness', -50, 50, 0)}
+                        ${this._slider('contrast', 'enh_contrast', 'Contrast', -50, 50, 0)}
+                        ${this._slider('saturation', 'enh_saturation', 'Saturation', -50, 50, 0)}
+                        ${this._slider('temperature', 'enh_temperature', 'Temperature', -50, 50, 0)}
                     </div>
 
                     <div class="card">
-                        <div class="card-header"><span class="card-title">Lighting</span></div>
-                        ${this._slider('shadows', 'Shadows', -50, 50, 0)}
-                        ${this._slider('highlights', 'Highlights', -50, 50, 0)}
+                        <div class="card-header"><span class="card-title" data-i18n="enh_lighting">Lighting</span></div>
+                        ${this._slider('shadows', 'enh_shadows', 'Shadows', -50, 50, 0)}
+                        ${this._slider('highlights', 'enh_highlights', 'Highlights', -50, 50, 0)}
                     </div>
 
                     <div class="card">
-                        <div class="card-header"><span class="card-title">Effects</span></div>
-                        ${this._slider('clarity', 'Clarity', 0, 50, 0)}
-                        ${this._slider('vignette', 'Vignette', 0, 60, 0)}
-                        ${this._slider('grain', 'Film Grain', 0, 40, 0)}
+                        <div class="card-header"><span class="card-title" data-i18n="enh_effects">Effects</span></div>
+                        ${this._slider('clarity', 'enh_clarity', 'Clarity', 0, 50, 0)}
+                        ${this._slider('vignette', 'enh_vignette', 'Vignette', 0, 60, 0)}
+                        ${this._slider('grain', 'enh_grain', 'Film Grain', 0, 40, 0)}
                     </div>
                 </div>
             </div>
@@ -141,11 +141,11 @@ const Enhance = {
         if (window.I18n) window.I18n.applyLanguage();
     },
 
-    _slider(id, label, min, max, val) {
+    _slider(id, i18nKey, label, min, max, val) {
         return `
             <div class="form-group">
                 <div class="flex justify-between items-center">
-                    <label class="form-label" style="margin:0">${label}</label>
+                    <label class="form-label" style="margin:0" data-i18n="${i18nKey}">${label}</label>
                     <span class="text-sm text-muted" id="enh-val-${id}">${val}</span>
                 </div>
                 <input type="range" class="range-slider" id="enh-${id}" min="${min}" max="${max}" value="${val}" data-prop="${id}">

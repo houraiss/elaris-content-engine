@@ -39,7 +39,7 @@ const Composer = {
                 <div class="composer-sidebar">
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">Photos</span>
+                            <span class="card-title" data-i18n="comp_library">Photo Library</span>
                             <button class="btn btn-sm btn-secondary" id="btn-upload">+ Upload</button>
                         </div>
                         <div class="upload-zone" id="upload-zone">
@@ -54,7 +54,7 @@ const Composer = {
 
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">Templates</span>
+                            <span class="card-title" data-i18n="comp_templates">Templates</span>
                         </div>
                         <div class="template-grid" id="template-grid">
                             ${templates.map(t => `
@@ -71,9 +71,9 @@ const Composer = {
                 <!-- CENTER: Live Preview -->
                 <div class="composer-preview">
                     <div class="format-tabs" id="format-tabs">
-                        <button class="format-tab ${this.currentFormat === 'post' ? 'active' : ''}" data-format="post">Post 1:1</button>
-                        <button class="format-tab ${this.currentFormat === 'portrait' ? 'active' : ''}" data-format="portrait">Portrait 4:5</button>
-                        <button class="format-tab ${this.currentFormat === 'story' ? 'active' : ''}" data-format="story">Story 9:16</button>
+                        <button class="format-tab ${this.currentFormat === 'post' ? 'active' : ''}" data-format="post" data-i18n="comp_post_1_1">Post 1:1</button>
+                        <button class="format-tab ${this.currentFormat === 'portrait' ? 'active' : ''}" data-format="portrait" data-i18n="comp_portrait_4_5">Portrait 4:5</button>
+                        <button class="format-tab ${this.currentFormat === 'story' ? 'active' : ''}" data-format="story" data-i18n="comp_story_9_16">Story 9:16</button>
                     </div>
                     <div class="preview-wrapper">
                         <div class="preview-canvas-container" id="preview-container">
@@ -81,13 +81,13 @@ const Composer = {
                         </div>
                     </div>
                     <div class="action-bar">
-                        <button class="btn btn-primary btn-lg" id="btn-export" disabled>
+                        <button class="btn btn-primary btn-lg" id="btn-export" disabled data-i18n="comp_export">
                             ⬇ Export PNG
                         </button>
-                        <button class="btn btn-secondary" id="btn-copy-caption" disabled>
+                        <button class="btn btn-secondary" id="btn-copy-caption" disabled data-i18n="comp_copy_cap">
                             📋 Copy Caption
                         </button>
-                        <button class="btn btn-secondary" id="btn-download-pair" disabled>
+                        <button class="btn btn-secondary" id="btn-download-pair" disabled data-i18n="comp_export_all">
                             📦 Export All
                         </button>
                     </div>
