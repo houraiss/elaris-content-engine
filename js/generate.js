@@ -128,7 +128,7 @@ window.render_generate = function(container) {
 async function generateWithGemini(prompt, apiKey) {
     // Note: Google's official Generative Language API for images is relatively new.
     // For standard Gemini API (not Vertex), we hit models/imagen-3.0-generate-001
-    const endpoint = \`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=\${apiKey}\`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${apiKey}`;
     
     const payload = {
         instances: [
@@ -154,7 +154,7 @@ async function generateWithGemini(prompt, apiKey) {
     }
 
     if (data.predictions && data.predictions.length > 0 && data.predictions[0].bytesBase64Encoded) {
-        return \`data:image/jpeg;base64,\${data.predictions[0].bytesBase64Encoded}\`;
+        return `data:image/jpeg;base64,${data.predictions[0].bytesBase64Encoded}`;
     } else {
         throw new Error('No image returned from API');
     }

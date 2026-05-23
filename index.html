@@ -135,10 +135,10 @@
         </div>
 
         <div class="nav-bottom">
-            <div class="lang-selector" style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:12px;">
-                <button onclick="I18n.setLanguage('en')" style="background:none; border:none; color:var(--text-secondary); cursor:pointer;">EN</button>
-                <button onclick="I18n.setLanguage('fr')" style="background:none; border:none; color:var(--text-secondary); cursor:pointer;">FR</button>
-                <button onclick="I18n.setLanguage('ar')" style="background:none; border:none; color:var(--text-secondary); cursor:pointer;">AR</button>
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="setLang('en', this)">EN</button>
+                <button class="lang-btn" onclick="setLang('fr', this)">FR</button>
+                <button class="lang-btn" onclick="setLang('ar', this)">AR</button>
             </div>
             <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
                 <span id="theme-icon">🌙</span>
@@ -248,6 +248,24 @@
             console.log('[PWA] App installed successfully');
             const banner = document.getElementById('pwa-install-banner');
             if (banner) banner.remove();
+        });
+
+        function setLang(lang, btn) {
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (window.I18n) window.I18n.setLanguage(lang);
+        }
+
+        // Initialize active state on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('elaris-lang') || 'en';
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                if (b.innerText.toLowerCase() === saved) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
         });
     </script>
 
