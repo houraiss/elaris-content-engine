@@ -71,8 +71,8 @@ window.render_templates = function(container) {
 
     container.innerHTML = `
         <div class="page-header">
-            <h1 class="page-title">Templates</h1>
-            <p class="page-subtitle">Browse all available content templates</p>
+            <h1 class="page-title" data-i18n="tpl_title">Templates</h1>
+            <p class="page-subtitle" data-i18n="tpl_subtitle">Browse all available content templates</p>
         </div>
         <div class="flex gap-2 mb-4" id="template-filters">
             <button class="btn btn-sm btn-secondary active" data-filter="all">All</button>
@@ -132,6 +132,8 @@ window.render_templates = function(container) {
         btn.classList.add('active');
         renderList(btn.dataset.filter);
     });
+    
+    if (window.I18n) window.I18n.applyLanguage();
 };
 
 // ── Captions Page ────────────────────────────────────────────────

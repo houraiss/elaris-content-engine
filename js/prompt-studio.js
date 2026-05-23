@@ -621,8 +621,8 @@ const PromptStudio = {
     _render() {
         this.container.innerHTML = `
             <div class="page-header">
-                <h1 class="page-title">Prompt Studio</h1>
-                <p class="page-subtitle">Generate editorial prompts — paste into Gemini, Midjourney, or any AI tool</p>
+                <h1 class="page-title" data-i18n="ps_title">Prompt Studio</h1>
+                <p class="page-subtitle" data-i18n="ps_subtitle">Generate editorial prompts - paste into Gemini, Midjourney, or any AI tool</p>
             </div>
 
             <div class="ps-layout">
@@ -775,6 +775,7 @@ const PromptStudio = {
                 </div>
             </div>
         `;
+        if (window.I18n) window.I18n.applyLanguage();
     },
 
     // ── Event Binding ────────────────────────────────────────────

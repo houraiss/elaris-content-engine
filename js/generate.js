@@ -15,6 +15,7 @@ window.render_generate = function(container) {
                 <div class="form-group">
                     <label class="form-label" data-i18n="gen_model">AI Model Provider</label>
                     <select id="ai-model" class="form-select">
+                        <option value="pollinations" ${savedModel === 'pollinations' ? 'selected' : ''}>Free (Pollinations AI)</option>
                         <option value="gemini" ${savedModel === 'gemini' ? 'selected' : ''}>Google Gemini (Imagen 3)</option>
                         <option value="fal" ${savedModel === 'fal' ? 'selected' : ''}>Fal AI (Flux Schnell)</option>
                         <option value="together" ${savedModel === 'together' ? 'selected' : ''}>Together AI (SDXL)</option>
@@ -23,7 +24,7 @@ window.render_generate = function(container) {
                     </select>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="api-key-block" style="${savedModel === 'pollinations' ? 'display:none;' : ''}">
                     <label class="form-label" data-i18n="gen_api_key">API Key (Saved locally)</label>
                     <input type="password" id="api-key" class="form-input" value="${savedKey}" placeholder="Paste your API key here">
                 </div>
@@ -64,8 +65,13 @@ window.render_generate = function(container) {
     const modelSelect = document.getElementById('ai-model');
     const apiKeyInput = document.getElementById('api-key');
 
+    const apiKeyBlock = document.getElementById('api-key-block');
+
     // Save model and key changes
-    modelSelect.addEventListener('change', (e) => localStorage.setItem('elaris-ai-model', e.target.value));
+    modelSelect.addEventListener('change', (e) => {
+        localStorage.setItem('elaris-ai-model', e.target.value);
+        apiKeyBlock.style.display = e.target.value === 'pollinations' ? 'none' : 'block';
+    });
     apiKeyInput.addEventListener('change', (e) => localStorage.setItem('elaris-api-key', e.target.value.trim()));
 
     btnGenerate.addEventListener('click', async () => {
@@ -74,7 +80,7 @@ window.render_generate = function(container) {
         const model = modelSelect.value;
         const refImage = document.getElementById('ai-ref-image').files[0];
 
-        if (!apiKey) {
+        if (!apiKey && model !== 'pollinations') {
             window.Elaris.toast('Please enter your API Key first.', 'error');
             return;
         }
@@ -95,7 +101,9 @@ window.render_generate = function(container) {
         try {
             let imageUrl = '';
 
-            if (model === 'gemini') {
+            if (model === 'pollinations') {
+                imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${Math.floor(Math.random() * 1000000)}`;
+            } else if (model === 'gemini') {
                 imageUrl = await generateWithGemini(prompt, apiKey);
             } else {
                 // Mock integration for the others to show the UI works

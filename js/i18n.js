@@ -22,7 +22,15 @@ const translations = {
         gen_api_key: "API Key (Saved locally)",
         gen_prompt: "Image Prompt",
         gen_ref: "Reference Image (Optional)",
-        gen_btn: "Generate Image"
+        gen_btn: "Generate Image",
+        ps_title: "Prompt Studio",
+        ps_subtitle: "Generate editorial prompts - paste into Gemini, Midjourney, or any AI tool",
+        enh_title: "Enhance",
+        enh_subtitle: "AI-powered photo transformation - drop raw shots, get professional imagery",
+        comp_title: "Composer",
+        comp_subtitle: "Upload photos, pick a template, create content",
+        tpl_title: "Templates",
+        tpl_subtitle: "Browse all available content templates"
     },
     fr: {
         nav_create: "Créer",
@@ -47,7 +55,15 @@ const translations = {
         gen_api_key: "Clé API (Sauvegardée localement)",
         gen_prompt: "Prompt",
         gen_ref: "Image de Référence (Optionnelle)",
-        gen_btn: "Générer l'Image"
+        gen_btn: "Générer l'Image",
+        ps_title: "Studio Prompt",
+        ps_subtitle: "Générez des prompts éditoriaux - copiez vers Gemini, Midjourney, etc.",
+        enh_title: "Améliorer",
+        enh_subtitle: "Transformation IA - déposez vos photos brutes, obtenez des images pro",
+        comp_title: "Compositeur",
+        comp_subtitle: "Uploadez des photos, choisissez un modèle, créez",
+        tpl_title: "Modèles",
+        tpl_subtitle: "Parcourir tous les modèles de contenu"
     },
     ar: {
         nav_create: "إنشاء",
@@ -72,7 +88,15 @@ const translations = {
         gen_api_key: "مفتاح API (محفوظ محلياً)",
         gen_prompt: "موجه الصورة",
         gen_ref: "صورة مرجعية (اختياري)",
-        gen_btn: "توليد الصورة"
+        gen_btn: "توليد الصورة",
+        ps_title: "ستوديو الموجهات",
+        ps_subtitle: "توليد موجهات احترافية - انسخها إلى Gemini أو Midjourney أو غيره",
+        enh_title: "تحسين",
+        enh_subtitle: "تحويل الصور بالذكاء الاصطناعي - ارفع صور خام، احصل على احترافية",
+        comp_title: "المؤلف",
+        comp_subtitle: "ارفع صورك، اختر قالباً، وابدأ بإنشاء المحتوى",
+        tpl_title: "قوالب",
+        tpl_subtitle: "تصفح جميع قوالب المحتوى المتاحة"
     }
 };
 

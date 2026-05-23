@@ -30,8 +30,8 @@ const Composer = {
 
         this.container.innerHTML = `
             <div class="page-header">
-                <h1 class="page-title">Composer</h1>
-                <p class="page-subtitle">Upload photos, pick a template, create content</p>
+                <h1 class="page-title" data-i18n="comp_title">Composer</h1>
+                <p class="page-subtitle" data-i18n="comp_subtitle">Upload photos, pick a template, create content</p>
             </div>
 
             <div class="composer-layout">
@@ -211,6 +211,7 @@ const Composer = {
                 </div>
             </div>
         `;
+        if (window.I18n) window.I18n.applyLanguage();
     },
 
     // ── Setup Canvas ─────────────────────────────────────────────

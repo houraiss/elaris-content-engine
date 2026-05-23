@@ -59,8 +59,8 @@ const Enhance = {
 
         this.container.innerHTML = `
             <div class="page-header">
-                <h1 class="page-title">Enhance</h1>
-                <p class="page-subtitle">AI-powered photo transformation — drop raw shots, get professional imagery</p>
+                <h1 class="page-title" data-i18n="enh_title">Enhance</h1>
+                <p class="page-subtitle" data-i18n="enh_subtitle">AI-powered photo transformation — drop raw shots, get professional imagery</p>
             </div>
 
             <div class="enhance-layout">
@@ -138,6 +138,7 @@ const Enhance = {
                 </div>
             </div>
         `;
+        if (window.I18n) window.I18n.applyLanguage();
     },
 
     _slider(id, label, min, max, val) {
