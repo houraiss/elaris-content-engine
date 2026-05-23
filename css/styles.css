@@ -1380,15 +1380,11 @@ code {
     .form-group { margin-bottom: 12px; }
     .form-label { font-size: 11px; margin-bottom: 4px; }
     
-    /* Chip groups: horizontal scroll on mobile */
+    /* Chip groups: wrap on mobile */
     .ps-chip-group {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        flex-wrap: wrap;
         padding-bottom: 4px;
-        scrollbar-width: none;
     }
-    .ps-chip-group::-webkit-scrollbar { display: none; }
     .ps-chip {
         flex-shrink: 0;
         padding: 8px 14px;
