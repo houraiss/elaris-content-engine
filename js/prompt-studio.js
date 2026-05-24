@@ -502,53 +502,61 @@ const PromptStudio = {
     ],
 
     // ── Camera Angles ────────────────────────────────────────────
-    angles: [
-        { id: 'eye-level', label: 'Eye Level' },
-        { id: 'overhead', label: 'Overhead / Bird\'s Eye' },
-        { id: 'low-angle', label: 'Low Angle (Hero)' },
-        { id: 'dutch', label: 'Dutch Angle' },
-        { id: 'macro', label: 'Macro Close-up' },
-        { id: 'over-shoulder', label: 'Over the Shoulder' },
-        { id: '45-degree', label: '45° Three-Quarter' },
-    ],
+    get angles() {
+        return [
+            { id: 'eye-level', label: window.I18n ? window.I18n.t('ps_ang_eye') : 'Eye Level' },
+            { id: 'overhead', label: window.I18n ? window.I18n.t('ps_ang_overhead') : 'Overhead / Bird\'s Eye' },
+            { id: 'low-angle', label: window.I18n ? window.I18n.t('ps_ang_low') : 'Low Angle (Hero)' },
+            { id: 'dutch', label: window.I18n ? window.I18n.t('ps_ang_dutch') : 'Dutch Angle' },
+            { id: 'macro', label: window.I18n ? window.I18n.t('ps_ang_macro') : 'Macro Close-up' },
+            { id: 'over-shoulder', label: window.I18n ? window.I18n.t('ps_ang_shoulder') : 'Over the Shoulder' },
+            { id: '45-degree', label: window.I18n ? window.I18n.t('ps_ang_45') : '45° Three-Quarter' },
+        ];
+    },
 
     // ── Surface / Backdrop ───────────────────────────────────────
-    surfaces: [
-        { id: 'none', label: 'Default (Archetype)' },
-        { id: 'marble', label: 'Marble' },
-        { id: 'velvet', label: 'Velvet' },
-        { id: 'sand', label: 'Sand' },
-        { id: 'concrete', label: 'Concrete' },
-        { id: 'water', label: 'Water' },
-        { id: 'silk', label: 'Silk Fabric' },
-        { id: 'skin', label: 'Skin / Body' },
-        { id: 'stone-wall', label: 'Stone Wall' },
-        { id: 'wood', label: 'Raw Wood' },
-    ],
+    get surfaces() {
+        return [
+            { id: 'none', label: window.I18n ? window.I18n.t('ps_surf_default') : 'Default (Archetype)' },
+            { id: 'marble', label: window.I18n ? window.I18n.t('ps_surf_marble') : 'Marble' },
+            { id: 'velvet', label: window.I18n ? window.I18n.t('ps_surf_velvet') : 'Velvet' },
+            { id: 'sand', label: window.I18n ? window.I18n.t('ps_surf_sand') : 'Sand' },
+            { id: 'concrete', label: window.I18n ? window.I18n.t('ps_surf_concrete') : 'Concrete' },
+            { id: 'water', label: window.I18n ? window.I18n.t('ps_surf_water') : 'Water' },
+            { id: 'silk', label: window.I18n ? window.I18n.t('ps_surf_silk') : 'Silk Fabric' },
+            { id: 'skin', label: window.I18n ? window.I18n.t('ps_surf_skin') : 'Skin / Body' },
+            { id: 'stone-wall', label: window.I18n ? window.I18n.t('ps_surf_stone') : 'Stone Wall' },
+            { id: 'wood', label: window.I18n ? window.I18n.t('ps_surf_wood') : 'Raw Wood' },
+        ];
+    },
 
     // ── Color Palettes ───────────────────────────────────────────
-    palettes: [
-        { id: 'neutral', label: 'Neutral Beige' },
-        { id: 'warm-earth', label: 'Warm Earth' },
-        { id: 'cool-steel', label: 'Cool Steel' },
-        { id: 'monochrome', label: 'Monochrome' },
-        { id: 'jewel-tones', label: 'Jewel Tones' },
-        { id: 'deep-ocean', label: 'Deep Ocean' },
-        { id: 'blush-rose', label: 'Blush & Rose' },
-        { id: 'noir', label: 'Film Noir' },
-    ],
+    get palettes() {
+        return [
+            { id: 'neutral', label: window.I18n ? window.I18n.t('ps_pal_neutral') : 'Neutral Beige' },
+            { id: 'warm-earth', label: window.I18n ? window.I18n.t('ps_pal_warm') : 'Warm Earth' },
+            { id: 'cool-steel', label: window.I18n ? window.I18n.t('ps_pal_cool') : 'Cool Steel' },
+            { id: 'monochrome', label: window.I18n ? window.I18n.t('ps_pal_mono') : 'Monochrome' },
+            { id: 'jewel-tones', label: window.I18n ? window.I18n.t('ps_pal_jewel') : 'Jewel Tones' },
+            { id: 'deep-ocean', label: window.I18n ? window.I18n.t('ps_pal_deep') : 'Deep Ocean' },
+            { id: 'blush-rose', label: window.I18n ? window.I18n.t('ps_pal_blush') : 'Blush & Rose' },
+            { id: 'noir', label: window.I18n ? window.I18n.t('ps_pal_noir') : 'Film Noir' },
+        ];
+    },
 
     // ── Model Styling (for human archetypes) ─────────────────────
-    stylings: [
-        { id: 'minimal', label: 'Minimal / Nude' },
-        { id: 'black-dress', label: 'Black Dress' },
-        { id: 'silk-cami', label: 'Silk Camisole' },
-        { id: 'blazer', label: 'Suit / Blazer' },
-        { id: 'caftan', label: 'Traditional Caftan' },
-        { id: 'white-shirt', label: 'White Shirt' },
-        { id: 'evening-gown', label: 'Evening Gown' },
-        { id: 'streetwear', label: 'Elevated Streetwear' },
-    ],
+    get stylings() {
+        return [
+            { id: 'minimal', label: window.I18n ? window.I18n.t('ps_sty_minimal') : 'Minimal / Nude' },
+            { id: 'black-dress', label: window.I18n ? window.I18n.t('ps_sty_black') : 'Black Dress' },
+            { id: 'silk-cami', label: window.I18n ? window.I18n.t('ps_sty_silk') : 'Silk Camisole' },
+            { id: 'blazer', label: window.I18n ? window.I18n.t('ps_sty_blazer') : 'Suit / Blazer' },
+            { id: 'caftan', label: window.I18n ? window.I18n.t('ps_sty_caftan') : 'Traditional Caftan' },
+            { id: 'white-shirt', label: window.I18n ? window.I18n.t('ps_sty_white') : 'White Shirt' },
+            { id: 'evening-gown', label: window.I18n ? window.I18n.t('ps_sty_evening') : 'Evening Gown' },
+            { id: 'streetwear', label: window.I18n ? window.I18n.t('ps_sty_street') : 'Elevated Streetwear' },
+        ];
+    },
 
     // ── State ────────────────────────────────────────────────────
     state: {
@@ -566,12 +574,48 @@ const PromptStudio = {
         styling: 'minimal',
         hallmarkEnabled: false,
         history: [],
+        jewelryCount: 0,
+        consistencyOn: false,
+        activeProfileId: 'lina',
+        profiles: [],
+    },
+
+    // ── Profiles Management ──────────────────────────────────────
+    _loadProfiles() {
+        try {
+            const saved = localStorage.getItem('elaris_model_profiles');
+            if (saved) {
+                this.state.profiles = JSON.parse(saved);
+                return;
+            }
+        } catch (e) { console.error('Failed to load profiles', e); }
+        
+        this.state.profiles = [
+            {
+                id: 'lina', name: 'Lina',
+                descriptor: 'Woman, 25 years old, olive Mediterranean skin tone, almond-shaped dark brown eyes, high cheekbones, sharp jawline, full lips, straight dark brown hair shoulder-length, slim graceful neck, elegant posture',
+                referenceImage: null, color: '#c9a96e'
+            },
+            {
+                id: 'sara', name: 'Sara',
+                descriptor: 'Woman, 28 years old, warm golden-beige skin tone, deep hazel eyes, soft round face, defined brows, wavy chestnut hair past shoulders, delicate features, natural beauty, relaxed confident expression',
+                referenceImage: null, color: '#a67c52'
+            }
+        ];
+        this._saveProfiles();
+    },
+
+    _saveProfiles() {
+        try {
+            localStorage.setItem('elaris_model_profiles', JSON.stringify(this.state.profiles));
+        } catch (e) { console.error('Failed to save profiles', e); }
     },
 
     // ── Init ─────────────────────────────────────────────────────
     init(container) {
         this.container = container;
         this._sortMode = 'recommended';
+        this._loadProfiles();
         this._render();
         this._renderArchetypeGrid();
         this._bind();
@@ -586,9 +630,16 @@ const PromptStudio = {
         let sorted = [...this.archetypes];
 
         if (this._sortMode === 'recommended') {
+            const humanArchetypes = ['body-intimate', 'editorial-model', 'collection-showcase', 'bw-dramatic', 'motion-blur', 'cinematic-portrait', 'lifestyle-moment', 'heritage-moroccan', 'celestial-mythic', 'architectural-context'];
             sorted.sort((a, b) => {
-                const scoreA = (a.compat && a.compat[cat]) || 50;
-                const scoreB = (b.compat && b.compat[cat]) || 50;
+                let scoreA = (a.compat && a.compat[cat]) || 50;
+                let scoreB = (b.compat && b.compat[cat]) || 50;
+                
+                if (this.state.consistencyOn) {
+                    if (humanArchetypes.includes(a.id)) scoreA += 50;
+                    if (humanArchetypes.includes(b.id)) scoreB += 50;
+                }
+
                 return scoreB - scoreA;
             });
         } else {
@@ -599,13 +650,30 @@ const PromptStudio = {
             const score = (a.compat && a.compat[cat]) || 50;
             const isSelected = this.state.selectedArchetypes.includes(a.id);
             const scoreColor = score >= 85 ? '#4ade80' : score >= 70 ? '#fbbf24' : score >= 50 ? '#f97316' : '#f87171';
+            
+            // Dynamic translation for archetypes based on ID prefix
+            const tPrefix = a.id === 'body-intimate' ? 'body' :
+                            a.id === 'object-pairing' ? 'obj' :
+                            a.id === 'macro-detail' ? 'macro' :
+                            a.id === 'editorial-abstract' ? 'edit' :
+                            a.id === 'lifestyle-ritual' ? 'life' :
+                            a.id === 'nature-botanical' ? 'nat' :
+                            a.id === 'heritage-moroccan' ? 'her' :
+                            a.id === 'minimalist-space' ? 'min' :
+                            null;
+
+            const name = tPrefix && window.I18n ? window.I18n.t(`ps_arch_${tPrefix}_title`) : a.name;
+            const tagline = tPrefix && window.I18n ? window.I18n.t(`ps_arch_${tPrefix}_tag`) : a.tagline;
+            const bestForText = window.I18n ? window.I18n.t('ps_best_for') : 'Best for:';
+            const bestForVal = a.bestFor.replace('Best for:', '').trim();
+
             return `
                 <div class="ps-arch-card ${isSelected ? 'active' : ''}" data-arch="${a.id}">
                     <div class="ps-arch-icon" style="background:${a.color}">${a.icon}</div>
                     <div class="ps-arch-info">
-                        <div class="ps-arch-name">${a.name}</div>
-                        <div class="ps-arch-tag">${a.tagline}</div>
-                        <div class="ps-arch-bestfor">${a.bestFor}</div>
+                        <div class="ps-arch-name">${name}</div>
+                        <div class="ps-arch-tag">${tagline}</div>
+                        <div class="ps-arch-bestfor">${bestForText} ${bestForVal}</div>
                     </div>
                     <div class="ps-arch-score" style="color:${scoreColor}" title="Compatibility with ${cat}">${score}</div>
                 </div>
@@ -656,6 +724,62 @@ const PromptStudio = {
                     </div>
 
                     <div class="card">
+                        <div class="card-header">
+                            <span class="card-title" data-i18n="ps_model_consistency">Model Consistency & Attachments</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="ps_jewelry_shots">Jewelry Shots</label>
+                            <div class="ps-chip-group" id="ps-jewelry-count">
+                                ${[0, 1, 2, 3, 4].map(n => `<button class="ps-chip ${this.state.jewelryCount === n ? 'active' : ''}" data-val="${n}">${n === 0 ? (window.I18n ? window.I18n.t('ps_none') : 'None') : n === 4 ? '4+' : n}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group" style="padding-top:12px;border-top:1px solid var(--border)">
+                            <div style="display:flex;align-items:center;justify-content:space-between">
+                                <div>
+                                    <label class="form-label" style="margin-bottom:2px" data-i18n="ps_consistency_toggle">Model Consistency</label>
+                                    <p class="text-sm text-muted" style="line-height:1.4;max-width:240px" data-i18n="ps_consistency_desc">Lock a virtual model across all your shots.</p>
+                                </div>
+                                <label class="wm-toggle-label">
+                                    <input type="checkbox" id="ps-consistency-toggle" ${this.state.consistencyOn ? 'checked' : ''}>
+                                    <span class="wm-toggle-switch"></span>
+                                </label>
+                            </div>
+                        </div>
+                        ${this.state.consistencyOn ? `
+                        <div class="form-group" style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                                <label class="form-label" style="margin:0" data-i18n="ps_model_profile">Model Profile</label>
+                                <button class="btn btn-sm btn-secondary" id="ps-new-profile" data-i18n="ps_new_profile">+ New</button>
+                            </div>
+                            <div id="ps-new-profile-form" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
+                                <input type="text" id="ps-new-profile-name" placeholder="Model name" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--primary);margin-bottom:8px;padding:4px 0;outline:none">
+                                <textarea id="ps-new-profile-desc" rows="2" placeholder="Physical descriptor..." style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px;font-size:12px;outline:none"></textarea>
+                                <button class="btn btn-sm btn-primary" id="ps-save-profile" style="width:100%;margin-top:8px" data-i18n="ps_save_profile">Save Profile</button>
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:8px" id="ps-profile-list">
+                                ${this.state.profiles.map(p => `
+                                    <div class="profile-card ${this.state.activeProfileId === p.id ? 'active' : ''}" data-id="${p.id}" style="border:1px solid ${this.state.activeProfileId === p.id ? p.color : 'var(--border)'};border-radius:8px;padding:10px;cursor:pointer;background:${this.state.activeProfileId === p.id ? p.color+'15' : 'transparent'};transition:all 0.2s">
+                                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+                                            <div style="width:32px;height:32px;border-radius:50%;background:${p.referenceImage ? 'transparent' : p.color+'30'};border:1px solid ${p.color};display:flex;align-items:center;justify-content:center;color:${p.color};position:relative;overflow:hidden">
+                                                ${p.referenceImage ? `<img src="${p.referenceImage}" style="width:100%;height:100%;object-fit:cover">` : p.name.charAt(0)}
+                                                <label title="Upload reference image" style="position:absolute;bottom:-4px;right:-4px;background:var(--surface);border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;border:1px solid var(--border)" onclick="event.stopPropagation()">
+                                                    📷<input type="file" accept="image/*" class="ps-upload-ref" data-id="${p.id}" style="display:none">
+                                                </label>
+                                            </div>
+                                            <div style="flex:1">
+                                                <div style="font-size:13px;font-weight:500;color:var(--text)">${p.name}</div>
+                                                ${p.referenceImage ? `<div style="font-size:10px;color:var(--success)">✓ Ref. image</div>` : ''}
+                                            </div>
+                                        </div>
+                                        <div style="font-size:11px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.descriptor}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="card">
                         <div class="card-header"><span class="card-title" data-i18n="ps_modifiers">Modifiers</span></div>
                         <div class="form-group">
                             <label class="form-label" data-i18n="ps_mood">Mood</label>
@@ -678,27 +802,27 @@ const PromptStudio = {
                     </div>
 
                     <div class="card">
-                        <div class="card-header"><span class="card-title">Advanced Controls</span></div>
+                        <div class="card-header"><span class="card-title" data-i18n="ps_adv_controls">Advanced Controls</span></div>
                         <div class="form-group">
-                            <label class="form-label">Camera Angle</label>
+                            <label class="form-label" data-i18n="ps_angle">Camera Angle</label>
                             <div class="ps-chip-group" id="ps-angle">
                                 ${this.angles.map(a => `<button class="ps-chip ${a.id === this.state.angle ? 'active' : ''}" data-val="${a.id}">${a.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Surface / Backdrop</label>
+                            <label class="form-label" data-i18n="ps_surface">Surface / Backdrop</label>
                             <div class="ps-chip-group" id="ps-surface">
                                 ${this.surfaces.map(s => `<button class="ps-chip ${s.id === this.state.surface ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Color Palette</label>
+                            <label class="form-label" data-i18n="ps_palette">Color Palette</label>
                             <div class="ps-chip-group" id="ps-palette">
                                 ${this.palettes.map(p => `<button class="ps-chip ${p.id === this.state.palette ? 'active' : ''}" data-val="${p.id}">${p.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Model Styling <span class="text-sm text-muted">(human archetypes)</span></label>
+                            <label class="form-label"><span data-i18n="ps_styling">Model Styling</span> <span class="text-sm text-muted">(human archetypes)</span></label>
                             <div class="ps-chip-group" id="ps-styling">
                                 ${this.stylings.map(s => `<button class="ps-chip ${s.id === this.state.styling ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
                             </div>
@@ -706,8 +830,8 @@ const PromptStudio = {
                         <div class="form-group" style="margin-top:6px;padding-top:12px;border-top:1px solid var(--border)">
                             <div style="display:flex;align-items:center;justify-content:space-between">
                                 <div>
-                                    <label class="form-label" style="margin-bottom:2px">Hallmark Injection 🏷️</label>
-                                    <p class="text-sm text-muted" style="line-height:1.4;max-width:240px">Adds "ELARIS" engraving instructions to prompts. May produce inaccurate logos — use Watermark Studio for exact branding.</p>
+                                    <label class="form-label" style="margin-bottom:2px" data-i18n="ps_hallmark_title">Hallmark Injection 🏷️</label>
+                                    <p class="text-sm text-muted" style="line-height:1.4;max-width:240px" data-i18n="ps_hallmark_desc">Adds "ELARIS" engraving instructions to prompts. May produce inaccurate logos — use Watermark Studio for exact branding.</p>
                                 </div>
                                 <label class="wm-toggle-label">
                                     <input type="checkbox" id="ps-hallmark-toggle" ${this.state.hallmarkEnabled ? 'checked' : ''}>
@@ -722,7 +846,7 @@ const PromptStudio = {
                 <div class="ps-center">
                     <div class="card">
                         <div class="card-header" style="flex-wrap:wrap;gap:8px">
-                            <span class="card-title" data-i18n="ps_archetypes">Select Archetypes</span>
+                            <span class="card-title" data-i18n="ps_arch_title">Select Archetypes</span>
                             <div style="display:flex;align-items:center;gap:8px">
                                 <div class="ps-chip-group ps-sort-group" id="ps-sort-mode" style="gap:4px">
                                     <button class="ps-chip active" data-val="recommended" style="font-size:11px;padding:4px 10px" data-i18n="ps_sort_rec">⭐ Recommended</button>
@@ -755,8 +879,8 @@ const PromptStudio = {
                 <div class="ps-right">
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">Prompt History</span>
-                            <button class="btn btn-sm btn-secondary" id="ps-clear-history">Clear</button>
+                            <span class="card-title" data-i18n="ps_history">Prompt History</span>
+                            <button class="btn btn-sm btn-secondary" id="ps-clear-history" data-i18n="ps_clear">Clear</button>
                         </div>
                         <div id="ps-history" class="ps-history-list">
                             <p class="text-sm text-muted" style="text-align:center;padding:20px">No prompts generated yet</p>
@@ -764,7 +888,7 @@ const PromptStudio = {
                     </div>
 
                     <div class="card">
-                        <div class="card-header"><span class="card-title">Quick Tips</span></div>
+                        <div class="card-header"><span class="card-title" data-i18n="ps_quick_tips">Quick Tips</span></div>
                         <div class="ps-tips">
                             <div class="ps-tip">💡 Select multiple archetypes for batch prompt generation</div>
                             <div class="ps-tip">🎯 Be specific in your piece description for best results</div>
@@ -819,6 +943,93 @@ const PromptStudio = {
         q('#ps-hallmark-toggle')?.addEventListener('change', e => {
             this.state.hallmarkEnabled = e.target.checked;
         });
+
+        // Model Consistency Events
+        const jcGroup = q('#ps-jewelry-count');
+        if (jcGroup) {
+            jcGroup.addEventListener('click', e => {
+                const chip = e.target.closest('.ps-chip');
+                if (!chip) return;
+                jcGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                this.state.jewelryCount = parseInt(chip.dataset.val);
+            });
+        }
+
+        const consToggle = q('#ps-consistency-toggle');
+        if (consToggle) {
+            consToggle.addEventListener('change', e => {
+                this.state.consistencyOn = e.target.checked;
+                this._render(); // Re-render to show/hide profile panel
+                this._renderArchetypeGrid();
+                this._bind();   // Re-bind events since DOM rebuilt
+            });
+        }
+
+        const newProfBtn = q('#ps-new-profile');
+        if (newProfBtn) {
+            newProfBtn.addEventListener('click', () => {
+                const form = q('#ps-new-profile-form');
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+
+        const saveProfBtn = q('#ps-save-profile');
+        if (saveProfBtn) {
+            saveProfBtn.addEventListener('click', () => {
+                const nameInput = q('#ps-new-profile-name');
+                const descInput = q('#ps-new-profile-desc');
+                const name = nameInput.value.trim();
+                const desc = descInput.value.trim();
+                if (!name) return;
+                const id = name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+                this.state.profiles.push({
+                    id, name, descriptor: desc, referenceImage: null, color: '#c9a96e'
+                });
+                this.state.activeProfileId = id;
+                this._saveProfiles();
+                this._render();
+                this._renderArchetypeGrid();
+                this._bind();
+                Elaris.toast('Profile saved', 'success');
+            });
+        }
+
+        const profileList = q('#ps-profile-list');
+        if (profileList) {
+            profileList.addEventListener('click', e => {
+                // Handle image upload label click
+                if (e.target.closest('label') || e.target.type === 'file') return;
+                
+                const card = e.target.closest('.profile-card');
+                if (!card) return;
+                this.state.activeProfileId = card.dataset.id;
+                this._render();
+                this._renderArchetypeGrid();
+                this._bind();
+            });
+
+            profileList.querySelectorAll('.ps-upload-ref').forEach(input => {
+                input.addEventListener('change', e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const id = e.target.dataset.id;
+                    const reader = new FileReader();
+                    reader.onload = ev => {
+                        const prof = this.state.profiles.find(p => p.id === id);
+                        if (prof) {
+                            prof.referenceImage = ev.target.result;
+                            this._saveProfiles();
+                            this._render();
+                            this._renderArchetypeGrid();
+                            this._bind();
+                            Elaris.toast('Reference image saved', 'success');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        }
 
         // Archetype selection (multi-select)
         q('#ps-archetypes').addEventListener('click', e => {
@@ -958,7 +1169,7 @@ const PromptStudio = {
 
         // ── FIX #2: Build subject without repeating material in the description ──
         // The material descriptor is injected separately to avoid redundancy.
-        const subject = this._random(archetype.subjects).replace(/\{piece\}/g, `${material} ${piece}`);
+        const subject = this._getUniqueSubject(archetype).replace(/\{piece\}/g, `${material} ${piece}`);
 
         // ── FIX #1: Unified camera system — one lens per shot, no conflicts ──
         // Each angle gets a complete, self-contained camera description:
@@ -1032,7 +1243,7 @@ const PromptStudio = {
         // ── Anatomy constraints (only when humans are present) ──
         let anatomyConstraint = '';
         if (isHuman || archetype.id === 'shadow-play') {
-            anatomyConstraint = 'CRITICAL: Flawless human anatomy — exactly five fingers per hand, correct joint proportions, natural knuckle spacing, no extra or fused digits, photorealistic skin texture.';
+            anatomyConstraint = 'CRITICAL: Flawless human anatomy — exactly two arms, exactly two hands, exactly five fingers per hand, correct joint proportions, natural knuckle spacing, no extra or fused digits, photorealistic skin texture.';
         }
 
         // ── Hallmark brand injection — only when enabled ──
@@ -1057,15 +1268,15 @@ const PromptStudio = {
         let negativePrompt;
         if (isHuman) {
             // Human archetypes: anatomy + technical negatives
-            negativePrompt = 'Negative prompt: malformed anatomy, extra fingers, six fingers, mutated limbs, fused fingers, asymmetrical geometry, AI artifacts, text overlay, watermarks, logos, cartoon, illustration, painting, low quality, blurry, chromatic aberration, plastic texture, 3d render.';
+            negativePrompt = 'Negative prompt: three arms, extra arms, extra limbs, malformed anatomy, extra fingers, six fingers, mutated limbs, fused fingers, asymmetrical geometry, AI artifacts, text overlay, watermarks, logos, cartoon, illustration, painting, low quality, blurry, chromatic aberration, plastic texture, 3d render.';
         } else {
             // Product-only archetypes: technical + product-focused negatives (NO anatomy terms)
-            negativePrompt = 'Negative prompt: (hand, fingers, skin), chromatic aberration, overexposed highlights, plastic texture, distorted shape, asymmetrical geometry, AI artifacts, text overlay, watermarks, logos, cartoon, illustration, painting, low quality, blurry, noise grain, 3d render.';
+            negativePrompt = 'Negative prompt: (hand, fingers, skin, arm, human), chromatic aberration, overexposed highlights, plastic texture, distorted shape, asymmetrical geometry, AI artifacts, text overlay, watermarks, logos, cartoon, illustration, painting, low quality, blurry, noise grain, 3d render.';
         }
 
         // ── FIX #5: Subject-first prompt structure for better AI weighting ──
         // Most important visual element (the jewelry) comes first.
-        const parts = [
+        const standardParts = [
             subject + '.',
             `${material}, ${silverDesc}.`,
             archetype.scene + '.',
@@ -1080,8 +1291,38 @@ const PromptStudio = {
             `Aspect ratio ${ratio}.`,
             negativePrompt,
         ];
+        const standardPrompt = standardParts.filter(Boolean).join(' ');
 
-        return parts.filter(Boolean).join(' ');
+        // ── MULTI-IMAGE CONSISTENCY LOGIC ──
+        if (this.state.jewelryCount > 0) {
+            const jc = this.state.jewelryCount;
+            const hasModel = this.state.consistencyOn;
+            let p = `[IMAGE REFERENCES]\n`;
+            p += jc === 1 ? `Image 1 shows the exact jewelry piece to be featured.\n` : `Images 1 to ${jc} show the exact jewelry piece to be featured.\n`;
+            if (hasModel) {
+                p += `Image ${jc + 1} is the model reference - keep her face, features, and skin tone perfectly identical.\n`;
+            }
+            p += `\n[JEWELRY RECONSTRUCTION]\n`;
+            p += `Use ALL jewelry image(s) to reconstruct the ${this.state.category || 'piece'}. Maintain exact metal color, stone placement, and proportions.\n`;
+            
+            p += `\n[SCENE DIRECTION]\n`;
+            if (hasModel) {
+                p += `Generate a photo of the exact same woman from Image ${jc + 1} wearing the jewelry. `;
+            } else if (isHuman) {
+                p += `Generate a photo of a model wearing the jewelry. `;
+            }
+            p += standardPrompt;
+
+            if (hasModel) {
+                const activeProf = this.state.profiles.find(prof => prof.id === this.state.activeProfileId);
+                if (activeProf) {
+                    p += `\n\nModel Details: ${activeProf.descriptor}`;
+                }
+            }
+            return p;
+        }
+
+        return standardPrompt;
     },
 
     // ── Copy All ─────────────────────────────────────────────────
@@ -1129,6 +1370,25 @@ const PromptStudio = {
     // ── Utility ──────────────────────────────────────────────────
     _random(arr) {
         return arr[Math.floor(Math.random() * arr.length)];
+    },
+
+    // ── Unique Subject Tracker ───────────────────────────────────
+    _subjectPools: {},
+    _getUniqueSubject(archetype) {
+        // If pool doesn't exist or is empty, create a new shuffled pool
+        if (!this._subjectPools[archetype.id] || this._subjectPools[archetype.id].length === 0) {
+            let indices = archetype.subjects.map((_, i) => i);
+            // Fisher-Yates shuffle
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            this._subjectPools[archetype.id] = indices;
+        }
+        
+        // Pop the next unique index
+        const idx = this._subjectPools[archetype.id].pop();
+        return archetype.subjects[idx];
     },
 };
 

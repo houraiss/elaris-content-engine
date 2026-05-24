@@ -40,13 +40,13 @@ const Composer = {
                     <div class="card">
                         <div class="card-header">
                             <span class="card-title" data-i18n="comp_library">Photo Library</span>
-                            <button class="btn btn-sm btn-secondary" id="btn-upload">+ Upload</button>
+                            <button class="btn btn-sm btn-secondary" id="btn-upload" data-i18n="comp_upload">+ Upload</button>
                         </div>
                         <div class="upload-zone" id="upload-zone">
                             <div class="upload-zone-icon">📸</div>
                             <div class="upload-zone-text">
-                                <strong>Drop photos here</strong><br>
-                                or click to browse
+                                <strong data-i18n="comp_drop_photos">Drop photos here</strong><br>
+                                <span data-i18n="comp_browse">or click to browse</span>
                             </div>
                         </div>
                         <div class="photo-library mt-3" id="photo-library"></div>
@@ -98,22 +98,22 @@ const Composer = {
                     <!-- Photo Adjustments -->
                     <div class="card" id="photo-settings" style="display:none">
                         <div class="card-header">
-                            <span class="card-title">Photo</span>
+                            <span class="card-title" data-i18n="comp_photo">Photo</span>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Scale</label>
+                            <label class="form-label" data-i18n="comp_scale">Scale</label>
                             <input type="range" class="range-slider" id="slider-scale" min="50" max="200" value="100">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Brightness</label>
+                            <label class="form-label" data-i18n="comp_brightness">Brightness</label>
                             <input type="range" class="range-slider" id="slider-brightness" min="50" max="150" value="100">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Contrast</label>
+                            <label class="form-label" data-i18n="comp_contrast">Contrast</label>
                             <input type="range" class="range-slider" id="slider-contrast" min="50" max="150" value="100">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Saturation</label>
+                            <label class="form-label" data-i18n="comp_saturation">Saturation</label>
                             <input type="range" class="range-slider" id="slider-saturation" min="0" max="200" value="100">
                         </div>
                     </div>
@@ -121,39 +121,39 @@ const Composer = {
                     <!-- Text Overlays -->
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">Text</span>
+                            <span class="card-title" data-i18n="comp_text_title">Text</span>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Headline</label>
-                            <input type="text" class="form-input" id="input-headline" placeholder="Product name...">
+                            <label class="form-label" data-i18n="comp_headline">Headline</label>
+                            <input type="text" class="form-input" id="input-headline" data-i18n="comp_headline_ph" placeholder="Product name...">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Subtitle</label>
-                            <input type="text" class="form-input" id="input-subtitle" placeholder="925 Sterling Silver">
+                            <label class="form-label" data-i18n="comp_subtitle_lbl">Subtitle</label>
+                            <input type="text" class="form-input" id="input-subtitle" data-i18n="comp_subtitle_ph" placeholder="925 Sterling Silver">
                         </div>
                     </div>
 
                     <!-- Logo -->
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">Logo</span>
+                            <span class="card-title" data-i18n="comp_logo">Logo</span>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Position</label>
+                            <label class="form-label" data-i18n="comp_pos">Position</label>
                             <select class="form-select" id="select-logo-pos">
-                                <option value="bottom-right">Bottom Right</option>
-                                <option value="bottom-left">Bottom Left</option>
-                                <option value="top-right">Top Right</option>
-                                <option value="top-left">Top Left</option>
-                                <option value="center">Center</option>
+                                <option value="bottom-right" data-i18n="comp_br">Bottom Right</option>
+                                <option value="bottom-left" data-i18n="comp_bl">Bottom Left</option>
+                                <option value="top-right" data-i18n="comp_tr">Top Right</option>
+                                <option value="top-left" data-i18n="comp_tl">Top Left</option>
+                                <option value="center" data-i18n="comp_center">Center</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Size</label>
+                            <label class="form-label" data-i18n="comp_size">Size</label>
                             <input type="range" class="range-slider" id="slider-logo-size" min="3" max="25" value="8">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Opacity</label>
+                            <label class="form-label" data-i18n="comp_opacity">Opacity</label>
                             <input type="range" class="range-slider" id="slider-logo-opacity" min="0" max="100" value="60">
                         </div>
                     </div>
@@ -161,10 +161,10 @@ const Composer = {
                     <!-- Background Override -->
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">Background</span>
+                            <span class="card-title" data-i18n="comp_bg">Background</span>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Color</label>
+                            <label class="form-label" data-i18n="comp_color">Color</label>
                             <div class="flex gap-2" id="bg-color-swatches">
                                 <button class="btn-icon" data-bg="#171717" style="background:#171717" title="Elaris Black"></button>
                                 <button class="btn-icon" data-bg="#EEEEEE" style="background:#EEEEEE" title="Elaris Light"></button>
@@ -179,24 +179,24 @@ const Composer = {
                     <!-- Caption -->
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">Caption</span>
-                            <button class="btn btn-sm btn-secondary" id="btn-generate-caption">✦ Generate</button>
+                            <span class="card-title" data-i18n="comp_caption_title">Caption</span>
+                            <button class="btn btn-sm btn-secondary" id="btn-generate-caption" data-i18n="comp_gen_cap">✦ Generate</button>
                         </div>
                         <div class="form-group">
                             <div class="voice-selector" id="voice-selector">
-                                <button class="voice-btn active" data-voice="luxury">Luxury</button>
-                                <button class="voice-btn" data-voice="conversational">Casual</button>
-                                <button class="voice-btn" data-voice="storytelling">Story</button>
+                                <button class="voice-btn active" data-voice="luxury" data-i18n="comp_voice_lux">Luxury</button>
+                                <button class="voice-btn" data-voice="conversational" data-i18n="comp_voice_cas">Casual</button>
+                                <button class="voice-btn" data-voice="storytelling" data-i18n="comp_voice_story">Story</button>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Product Type</label>
+                            <label class="form-label" data-i18n="comp_prod_type">Product Type</label>
                             <select class="form-select" id="select-product-type">
-                                <option value="general">General</option>
-                                <option value="ring">Ring</option>
-                                <option value="necklace">Necklace</option>
-                                <option value="bracelet">Bracelet</option>
-                                <option value="earrings">Earrings</option>
+                                <option value="general" data-i18n="comp_pt_gen">General</option>
+                                <option value="ring" data-i18n="comp_pt_ring">Ring</option>
+                                <option value="necklace" data-i18n="comp_pt_neck">Necklace</option>
+                                <option value="bracelet" data-i18n="comp_pt_brace">Bracelet</option>
+                                <option value="earrings" data-i18n="comp_pt_ear">Earrings</option>
                             </select>
                         </div>
                         <div class="caption-editor">

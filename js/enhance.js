@@ -68,22 +68,22 @@ const Enhance = {
                 <div class="enhance-left">
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">Creative Directions</span>
+                            <span class="card-title" data-i18n="enh_creative_dir">Creative Directions</span>
                         </div>
-                        <p class="text-sm text-muted mb-4">Drop photos in <code>input/</code> folder, then tell Antigravity which direction to use.</p>
+                        <p class="text-sm text-muted mb-4" data-i18n="enh_creative_desc">Drop photos in <code>input/</code> folder, then tell Antigravity which direction to use.</p>
                         <div class="direction-grid">${dirCards}</div>
                     </div>
 
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">Enhanced Photos</span>
-                            <button class="btn btn-sm btn-secondary" id="enh-refresh">↻ Refresh</button>
+                            <span class="card-title" data-i18n="enh_photos">Enhanced Photos</span>
+                            <button class="btn btn-sm btn-secondary" id="enh-refresh" data-i18n="enh_refresh">↻ Refresh</button>
                         </div>
                         <div class="upload-zone" id="enh-upload-zone">
                             <div class="upload-zone-icon">📸</div>
                             <div class="upload-zone-text">
-                                <strong>Load enhanced photo</strong><br>
-                                or drop to touch-up manually
+                                <strong data-i18n="enh_load_photo">Load enhanced photo</strong><br>
+                                <span data-i18n="enh_drop_touchup">or drop to touch-up manually</span>
                             </div>
                         </div>
                         <div class="photo-library mt-3" id="enh-gallery"></div>
@@ -95,8 +95,8 @@ const Enhance = {
                     <div class="enhance-compare" id="enh-compare">
                         <div class="enhance-empty" id="enh-empty">
                             <div style="font-size:48px;opacity:0.3;margin-bottom:12px">✦</div>
-                            <h3>AI Enhancement Workflow</h3>
-                            <p class="text-sm text-muted" style="max-width:320px;margin:8px auto 16px">
+                            <h3 data-i18n="enh_workflow_title">AI Enhancement Workflow</h3>
+                            <p class="text-sm text-muted" style="max-width:320px;margin:8px auto 16px" data-i18n="enh_workflow_desc">
                                 1. Drop raw photos in <code>input/</code><br>
                                 2. Tell Antigravity the direction<br>
                                 3. Enhanced photos appear here<br>
@@ -106,9 +106,9 @@ const Enhance = {
                         <canvas id="enh-canvas" style="display:none"></canvas>
                     </div>
                     <div class="enhance-actions" id="enh-actions" style="display:none">
-                        <button class="btn btn-secondary" id="enh-reset">↺ Reset Tweaks</button>
-                        <button class="btn btn-primary btn-lg" id="enh-use-in-composer">Use in Composer →</button>
-                        <button class="btn btn-secondary" id="enh-download">⬇ Download</button>
+                        <button class="btn btn-secondary" id="enh-reset" data-i18n="enh_reset">↺ Reset Tweaks</button>
+                        <button class="btn btn-primary btn-lg" id="enh-use-in-composer" data-i18n="enh_use_composer">Use in Composer →</button>
+                        <button class="btn btn-secondary" id="enh-download" data-i18n="enh_download">⬇ Download</button>
                     </div>
                 </div>
 
@@ -225,7 +225,7 @@ const Enhance = {
                     </div>
                 </div>
             `).join('')}</div>`
-            : '<p class="text-sm text-muted" style="grid-column:1/-1;text-align:center;padding:8px">No enhanced photos yet — run the pipeline first</p>';
+            : '<p class="text-sm text-muted" style="grid-column:1/-1;text-align:center;padding:8px" data-i18n="enh_no_photos">No enhanced photos yet — run the pipeline first</p>';
 
         // Click to load
         gallery.querySelectorAll('.enh-thumb-card').forEach(el => {

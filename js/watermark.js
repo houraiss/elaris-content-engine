@@ -80,8 +80,8 @@ const WatermarkStudio = {
     _render() {
         this.container.innerHTML = `
             <div class="page-header">
-                <h1 class="page-title">Watermark Studio</h1>
-                <p class="page-subtitle">Protect your images with multi-layer brand watermarking</p>
+                <h1 class="page-title" data-i18n="wm_title">Watermark Studio</h1>
+                <p class="page-subtitle" data-i18n="wm_subtitle">Protect your images with multi-layer brand watermarking</p>
             </div>
 
             <div class="wm-layout">
@@ -89,11 +89,11 @@ const WatermarkStudio = {
                 <div class="wm-left">
                     <!-- Upload -->
                     <div class="card">
-                        <div class="card-header"><span class="card-title">Image Source</span></div>
+                        <div class="card-header"><span class="card-title" data-i18n="wm_source">Image Source</span></div>
                         <div class="upload-zone" id="wm-upload-zone">
                             <div class="upload-zone-icon">🖼️</div>
                             <div class="upload-zone-text">
-                                <strong>Drop image here</strong> or click to browse
+                                <strong data-i18n="wm_drop">Drop image here</strong> <span data-i18n="wm_browse">or click to browse</span>
                             </div>
                         </div>
                         <input type="file" id="wm-file-input" accept="image/*" style="display:none">
@@ -102,7 +102,7 @@ const WatermarkStudio = {
                     <!-- Layer 1: Corner Logo -->
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">1 · Corner Logo</span>
+                            <span class="card-title" data-i18n="wm_l1">1 · Corner Logo</span>
                             <label class="wm-toggle-label">
                                 <input type="checkbox" id="wm-corner-toggle" ${this.state.cornerLogo ? 'checked' : ''}>
                                 <span class="wm-toggle-switch"></span>
@@ -110,27 +110,27 @@ const WatermarkStudio = {
                         </div>
                         <div class="wm-layer-body" id="wm-corner-body">
                             <div class="form-group">
-                                <label class="form-label">Position</label>
+                                <label class="form-label" data-i18n="wm_pos">Position</label>
                                 <div class="ps-chip-group" id="wm-corner-pos">
-                                    <button class="ps-chip ${this.state.cornerPosition === 'tl' ? 'active' : ''}" data-val="tl">↖ Top Left</button>
-                                    <button class="ps-chip ${this.state.cornerPosition === 'tr' ? 'active' : ''}" data-val="tr">↗ Top Right</button>
-                                    <button class="ps-chip ${this.state.cornerPosition === 'bl' ? 'active' : ''}" data-val="bl">↙ Bottom Left</button>
-                                    <button class="ps-chip ${this.state.cornerPosition === 'br' ? 'active' : ''}" data-val="br">↘ Bottom Right</button>
+                                    <button class="ps-chip ${this.state.cornerPosition === 'tl' ? 'active' : ''}" data-val="tl" data-i18n="wm_tl">↖ Top Left</button>
+                                    <button class="ps-chip ${this.state.cornerPosition === 'tr' ? 'active' : ''}" data-val="tr" data-i18n="wm_tr">↗ Top Right</button>
+                                    <button class="ps-chip ${this.state.cornerPosition === 'bl' ? 'active' : ''}" data-val="bl" data-i18n="wm_bl">↙ Bottom Left</button>
+                                    <button class="ps-chip ${this.state.cornerPosition === 'br' ? 'active' : ''}" data-val="br" data-i18n="wm_br">↘ Bottom Right</button>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Variant</label>
+                                <label class="form-label" data-i18n="wm_var">Variant</label>
                                 <div class="ps-chip-group" id="wm-corner-variant">
-                                    <button class="ps-chip ${this.state.cornerVariant === 'white' ? 'active' : ''}" data-val="white">White (dark images)</button>
-                                    <button class="ps-chip ${this.state.cornerVariant === 'black' ? 'active' : ''}" data-val="black">Black (light images)</button>
+                                    <button class="ps-chip ${this.state.cornerVariant === 'white' ? 'active' : ''}" data-val="white" data-i18n="wm_white_dark">White (dark images)</button>
+                                    <button class="ps-chip ${this.state.cornerVariant === 'black' ? 'active' : ''}" data-val="black" data-i18n="wm_black_light">Black (light images)</button>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Size: <span id="wm-corner-size-val">${this.state.cornerSize}px</span></label>
+                                <label class="form-label"><span data-i18n="wm_size">Size:</span> <span id="wm-corner-size-val">${this.state.cornerSize}px</span></label>
                                 <input type="range" class="range-slider" id="wm-corner-size" min="30" max="150" value="${this.state.cornerSize}">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Opacity: <span id="wm-corner-opacity-val">${this.state.cornerOpacity}%</span></label>
+                                <label class="form-label"><span data-i18n="wm_opacity">Opacity:</span> <span id="wm-corner-opacity-val">${this.state.cornerOpacity}%</span></label>
                                 <input type="range" class="range-slider" id="wm-corner-opacity" min="5" max="100" value="${this.state.cornerOpacity}">
                             </div>
                         </div>
@@ -139,7 +139,7 @@ const WatermarkStudio = {
                     <!-- Layer 2: Diagonal Text -->
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">2 · Diagonal Text</span>
+                            <span class="card-title" data-i18n="wm_l2">2 · Diagonal Text</span>
                             <label class="wm-toggle-label">
                                 <input type="checkbox" id="wm-diag-toggle" ${this.state.diagonalText ? 'checked' : ''}>
                                 <span class="wm-toggle-switch"></span>
@@ -147,19 +147,19 @@ const WatermarkStudio = {
                         </div>
                         <div class="wm-layer-body" id="wm-diag-body">
                             <div class="form-group">
-                                <label class="form-label">Text</label>
+                                <label class="form-label" data-i18n="wm_text">Text</label>
                                 <input type="text" class="form-input" id="wm-diag-text" value="${this.state.diagText}">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Font Size: <span id="wm-diag-size-val">${this.state.diagFontSize}px</span></label>
+                                <label class="form-label"><span data-i18n="wm_font_size">Font Size:</span> <span id="wm-diag-size-val">${this.state.diagFontSize}px</span></label>
                                 <input type="range" class="range-slider" id="wm-diag-size" min="12" max="72" value="${this.state.diagFontSize}">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Opacity: <span id="wm-diag-opacity-val">${this.state.diagOpacity}%</span></label>
+                                <label class="form-label"><span data-i18n="wm_opacity">Opacity:</span> <span id="wm-diag-opacity-val">${this.state.diagOpacity}%</span></label>
                                 <input type="range" class="range-slider" id="wm-diag-opacity" min="2" max="40" value="${this.state.diagOpacity}">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Spacing: <span id="wm-diag-spacing-val">${this.state.diagSpacing}px</span></label>
+                                <label class="form-label"><span data-i18n="wm_spacing">Spacing:</span> <span id="wm-diag-spacing-val">${this.state.diagSpacing}px</span></label>
                                 <input type="range" class="range-slider" id="wm-diag-spacing" min="80" max="400" value="${this.state.diagSpacing}">
                             </div>
                         </div>
@@ -168,7 +168,7 @@ const WatermarkStudio = {
                     <!-- Layer 3: Tiled Emblem -->
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">3 · Tiled Emblem</span>
+                            <span class="card-title" data-i18n="wm_l3">3 · Tiled Emblem</span>
                             <label class="wm-toggle-label">
                                 <input type="checkbox" id="wm-tile-toggle" ${this.state.tiledEmblem ? 'checked' : ''}>
                                 <span class="wm-toggle-switch"></span>
@@ -176,18 +176,18 @@ const WatermarkStudio = {
                         </div>
                         <div class="wm-layer-body" id="wm-tile-body">
                             <div class="form-group">
-                                <label class="form-label">Variant</label>
+                                <label class="form-label" data-i18n="wm_var">Variant</label>
                                 <div class="ps-chip-group" id="wm-tile-variant">
-                                    <button class="ps-chip ${this.state.tileVariant === 'white' ? 'active' : ''}" data-val="white">White</button>
-                                    <button class="ps-chip ${this.state.tileVariant === 'black' ? 'active' : ''}" data-val="black">Black</button>
+                                    <button class="ps-chip ${this.state.tileVariant === 'white' ? 'active' : ''}" data-val="white" data-i18n="wm_white">White</button>
+                                    <button class="ps-chip ${this.state.tileVariant === 'black' ? 'active' : ''}" data-val="black" data-i18n="wm_black">Black</button>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Tile Size: <span id="wm-tile-size-val">${this.state.tileSize}px</span></label>
+                                <label class="form-label"><span data-i18n="wm_size">Tile Size:</span> <span id="wm-tile-size-val">${this.state.tileSize}px</span></label>
                                 <input type="range" class="range-slider" id="wm-tile-size" min="30" max="200" value="${this.state.tileSize}">
                             </div>
                             <div class="form-group">
-                                <label class="form-label">Opacity: <span id="wm-tile-opacity-val">${this.state.tileOpacity}%</span></label>
+                                <label class="form-label"><span data-i18n="wm_opacity">Opacity:</span> <span id="wm-tile-opacity-val">${this.state.tileOpacity}%</span></label>
                                 <input type="range" class="range-slider" id="wm-tile-opacity" min="2" max="30" value="${this.state.tileOpacity}">
                             </div>
                         </div>
@@ -196,7 +196,7 @@ const WatermarkStudio = {
                     <!-- Layer 4: Steganographic -->
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">4 · Invisible Data</span>
+                            <span class="card-title" data-i18n="wm_l4">4 · Invisible Data</span>
                             <label class="wm-toggle-label">
                                 <input type="checkbox" id="wm-stego-toggle" ${this.state.steganographic ? 'checked' : ''}>
                                 <span class="wm-toggle-switch"></span>
@@ -204,10 +204,10 @@ const WatermarkStudio = {
                         </div>
                         <div class="wm-layer-body" id="wm-stego-body">
                             <div class="form-group">
-                                <label class="form-label">Hidden Message</label>
+                                <label class="form-label" data-i18n="wm_hidden_msg">Hidden Message</label>
                                 <textarea class="form-textarea" id="wm-stego-text" rows="2">${this.state.stegoText}</textarea>
                             </div>
-                            <p class="text-sm text-muted" style="line-height:1.5">
+                            <p class="text-sm text-muted" style="line-height:1.5" data-i18n="wm_stego_desc">
                                 Embeds invisible data into pixel structure. Won't survive screenshots, but proves ownership on original files.
                             </p>
                         </div>
@@ -218,21 +218,21 @@ const WatermarkStudio = {
                 <div class="wm-center">
                     <div class="card" style="padding:0;overflow:hidden">
                         <div class="card-header" style="padding:14px 20px;margin-bottom:0">
-                            <span class="card-title">Live Preview</span>
+                            <span class="card-title" data-i18n="wm_preview">Live Preview</span>
                             <span class="text-sm text-muted" id="wm-dimensions"></span>
                         </div>
                         <div class="wm-preview-area" id="wm-preview-area">
                             <canvas id="wm-canvas" style="display:none"></canvas>
                             <div class="wm-empty-state" id="wm-empty">
                                 <div style="font-size:48px;opacity:0.3;margin-bottom:12px">🛡️</div>
-                                <h3>Upload an Image to Begin</h3>
-                                <p class="text-sm text-muted">Drop an image on the left panel or click to browse</p>
+                                <h3 data-i18n="wm_empty_title">Upload an Image to Begin</h3>
+                                <p class="text-sm text-muted" data-i18n="wm_empty_desc">Drop an image on the left panel or click to browse</p>
                             </div>
                         </div>
                     </div>
 
                     <div style="display:flex;gap:10px;margin-top:12px">
-                        <button class="btn btn-primary btn-lg" id="wm-export" style="flex:1" disabled>
+                        <button class="btn btn-primary btn-lg" id="wm-export" style="flex:1" disabled data-i18n="wm_export_btn">
                             🛡️ Export Protected Image
                         </button>
                     </div>
@@ -240,13 +240,13 @@ const WatermarkStudio = {
                     <!-- Verify Tool -->
                     <div class="card" style="margin-top:16px">
                         <div class="card-header">
-                            <span class="card-title">🔍 Verify Ownership</span>
+                            <span class="card-title" data-i18n="wm_verify_title">🔍 Verify Ownership</span>
                         </div>
-                        <p class="text-sm text-muted" style="margin-bottom:12px;line-height:1.5">
+                        <p class="text-sm text-muted" style="margin-bottom:12px;line-height:1.5" data-i18n="wm_verify_desc">
                             Upload a suspected stolen image to check for hidden steganographic data.
                         </p>
                         <div style="display:flex;gap:10px">
-                            <button class="btn btn-secondary" id="wm-verify-btn" style="flex:1">Upload & Verify</button>
+                            <button class="btn btn-secondary" id="wm-verify-btn" style="flex:1" data-i18n="wm_verify_btn">Upload & Verify</button>
                             <input type="file" id="wm-verify-input" accept="image/*" style="display:none">
                         </div>
                         <div id="wm-verify-result" style="margin-top:12px;display:none"></div>
@@ -256,8 +256,8 @@ const WatermarkStudio = {
                 <!-- RIGHT: Hallmark Tips -->
                 <div class="wm-right">
                     <div class="card">
-                        <div class="card-header"><span class="card-title">5 · Hallmark Injection</span></div>
-                        <p class="text-sm" style="color:var(--text-secondary);line-height:1.6;margin-bottom:12px">
+                        <div class="card-header"><span class="card-title" data-i18n="wm_l5">5 · Hallmark Injection</span></div>
+                        <p class="text-sm" style="color:var(--text-secondary);line-height:1.6;margin-bottom:12px" data-i18n="wm_hallmark_desc">
                             When enabled in Prompt Studio's <strong>Advanced Controls</strong>, prompts will include hallmark instructions — the AI will attempt
                             to render "ELARIS" engravings directly into the jewelry.
                         </p>
@@ -303,7 +303,7 @@ const WatermarkStudio = {
                     </div>
 
                     <div class="card">
-                        <div class="card-header"><span class="card-title">Protection Guide</span></div>
+                        <div class="card-header"><span class="card-title" data-i18n="wm_guide_title">Protection Guide</span></div>
                         <div class="wm-guide">
                             <div class="wm-guide-row">
                                 <span class="wm-guide-level" style="color:#4ade80">● Light</span>

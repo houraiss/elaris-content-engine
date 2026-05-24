@@ -18,27 +18,27 @@ const GalleryModule = {
     _render() {
         this.container.innerHTML = `
             <div class="page-header">
-                <h1 class="page-title">Gallery</h1>
-                <p class="page-subtitle">Browse and filter all generated editorial assets across collections</p>
+                <h1 class="page-title" data-i18n="gal_title">Gallery</h1>
+                <p class="page-subtitle" data-i18n="gal_subtitle">Browse and filter all generated editorial assets across collections</p>
             </div>
 
             <div class="gallery-filters" style="display:flex;gap:16px;margin-bottom:24px;background:var(--panel-bg);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.05)">
                 <div class="form-group" style="margin:0;flex:1">
-                    <label class="form-label" style="font-size:10px;margin-bottom:4px">FILTER BY PIECE</label>
+                    <label class="form-label" style="font-size:10px;margin-bottom:4px" data-i18n="gal_filter_piece">FILTER BY PIECE</label>
                     <select class="form-select" id="gal-filter-piece">
-                        <option value="all">All Pieces</option>
+                        <option value="all" data-i18n="gal_all_pieces">All Pieces</option>
                     </select>
                 </div>
                 <div class="form-group" style="margin:0;flex:1">
-                    <label class="form-label" style="font-size:10px;margin-bottom:4px">FILTER BY ARCHETYPE</label>
+                    <label class="form-label" style="font-size:10px;margin-bottom:4px" data-i18n="gal_filter_arch">FILTER BY ARCHETYPE</label>
                     <select class="form-select" id="gal-filter-arch">
-                        <option value="all">All Archetypes</option>
+                        <option value="all" data-i18n="gal_all_archs">All Archetypes</option>
                     </select>
                 </div>
             </div>
 
             <div id="gal-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));gap:24px;">
-                <div class="page-loading"><div class="spinner"></div><p>Loading gallery...</p></div>
+                <div class="page-loading"><div class="spinner"></div><p data-i18n="gal_loading">Loading gallery...</p></div>
             </div>
         `;
 
@@ -74,7 +74,7 @@ const GalleryModule = {
             this._renderGrid();
         } catch (e) {
             console.error('Gallery failed to load manifest:', e);
-            this.container.querySelector('#gal-grid').innerHTML = '<p class="text-error">Failed to load gallery data.</p>';
+            this.container.querySelector('#gal-grid').innerHTML = '<p class="text-error" data-i18n="gal_failed">Failed to load gallery data.</p>';
         }
     },
 
@@ -90,7 +90,7 @@ const GalleryModule = {
         }
 
         if (filtered.length === 0) {
-            grid.innerHTML = '<p class="text-muted" style="grid-column:1/-1;text-align:center;padding:40px">No images match your filters.</p>';
+            grid.innerHTML = '<p class="text-muted" style="grid-column:1/-1;text-align:center;padding:40px" data-i18n="gal_no_images">No images match your filters.</p>';
             return;
         }
 

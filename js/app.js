@@ -141,25 +141,25 @@ window.render_templates = function(container) {
 window.render_captions = function(container) {
     container.innerHTML = `
         <div class="page-header">
-            <h1 class="page-title">Caption Studio</h1>
-            <p class="page-subtitle">Generate branded captions and hashtag sets</p>
+            <h1 class="page-title" data-i18n="cap_title">Caption Studio</h1>
+            <p class="page-subtitle" data-i18n="cap_subtitle">Generate branded captions and hashtag sets</p>
         </div>
         <div class="caption-studio-layout">
             <div>
                 <div class="card mb-4">
                     <div class="card-header">
-                        <span class="card-title">Settings</span>
+                        <span class="card-title" data-i18n="cap_settings">Settings</span>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Brand Voice</label>
+                        <label class="form-label" data-i18n="cap_voice">Brand Voice</label>
                         <div class="voice-selector" id="cs-voice">
-                            <button class="voice-btn active" data-voice="luxury">Luxury Editorial</button>
-                            <button class="voice-btn" data-voice="conversational">Conversational</button>
-                            <button class="voice-btn" data-voice="storytelling">Storytelling</button>
+                            <button class="voice-btn active" data-voice="luxury" data-i18n="cap_voice_lux">Luxury Editorial</button>
+                            <button class="voice-btn" data-voice="conversational" data-i18n="cap_voice_conv">Conversational</button>
+                            <button class="voice-btn" data-voice="storytelling" data-i18n="cap_voice_story">Storytelling</button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Product Type</label>
+                        <label class="form-label" data-i18n="cap_prod_type">Product Type</label>
                         <select class="form-select" id="cs-product">
                             <option value="general">General Jewelry</option>
                             <option value="ring">Ring</option>
@@ -169,17 +169,17 @@ window.render_captions = function(container) {
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Product Name (optional)</label>
-                        <input type="text" class="form-input" id="cs-name" placeholder="e.g. Luna Crescent Ring">
+                        <label class="form-label" data-i18n="cap_prod_name">Product Name (optional)</label>
+                        <input type="text" class="form-input" id="cs-name" data-i18n="cap_prod_ph" placeholder="e.g. Luna Crescent Ring">
                     </div>
-                    <button class="btn btn-primary btn-lg" id="cs-generate" style="width:100%">✦ Generate Caption</button>
+                    <button class="btn btn-primary btn-lg" id="cs-generate" style="width:100%" data-i18n="cap_gen_btn">✦ Generate Caption</button>
                 </div>
             </div>
             <div>
                 <div class="card mb-4">
                     <div class="card-header">
-                        <span class="card-title">Caption</span>
-                        <button class="btn btn-sm btn-secondary" id="cs-copy-caption">📋 Copy</button>
+                        <span class="card-title" data-i18n="cap_caption">Caption</span>
+                        <button class="btn btn-sm btn-secondary" id="cs-copy-caption" data-i18n="cap_copy">📋 Copy</button>
                     </div>
                     <div class="caption-editor">
                         <textarea class="caption-textarea" id="cs-caption" rows="8" placeholder="Your generated caption will appear here..."></textarea>
@@ -188,15 +188,15 @@ window.render_captions = function(container) {
                 </div>
                 <div class="card mb-4">
                     <div class="card-header">
-                        <span class="card-title">Hashtags</span>
-                        <button class="btn btn-sm btn-secondary" id="cs-copy-hashtags">📋 Copy</button>
+                        <span class="card-title" data-i18n="cap_hashtags">Hashtags</span>
+                        <button class="btn btn-sm btn-secondary" id="cs-copy-hashtags" data-i18n="cap_copy">📋 Copy</button>
                     </div>
                     <div class="hashtag-block" id="cs-hashtags" style="min-height:60px"></div>
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <span class="card-title">Full Post (Caption + Hashtags)</span>
-                        <button class="btn btn-sm btn-primary" id="cs-copy-full">📋 Copy Full Post</button>
+                        <span class="card-title" data-i18n="cap_full">Full Post (Caption + Hashtags)</span>
+                        <button class="btn btn-sm btn-primary" id="cs-copy-full" data-i18n="cap_copy_full">📋 Copy Full Post</button>
                     </div>
                     <textarea class="caption-textarea" id="cs-full" rows="10" readonly style="opacity:0.7"></textarea>
                 </div>
@@ -258,10 +258,10 @@ window.render_captions = function(container) {
 window.render_trends = function(container) {
     container.innerHTML = `
         <div class="page-header">
-            <h1 class="page-title">Trends</h1>
-            <p class="page-subtitle">Current jewelry & design trends — stay ahead, never repeat</p>
+            <h1 class="page-title" data-i18n="trd_title">Trends</h1>
+            <p class="page-subtitle" data-i18n="trd_subtitle">Current jewelry & design trends — stay ahead, never repeat</p>
         </div>
-        <div class="page-loading" id="trends-loading"><div class="spinner"></div><p>Loading trends...</p></div>
+        <div class="page-loading" id="trends-loading"><div class="spinner"></div><p data-i18n="trd_loading">Loading trends...</p></div>
         <div id="trends-content" style="display:none"></div>
     `;
 
@@ -280,7 +280,7 @@ window.render_trends = function(container) {
                     <div class="flex items-center gap-3">
                         <span style="font-size:24px">💡</span>
                         <div>
-                            <div style="font-weight:600;margin-bottom:2px">Content Calendar Tip</div>
+                            <div style="font-weight:600;margin-bottom:2px" data-i18n="trd_tip_title">Content Calendar Tip</div>
                             <div class="text-sm text-muted">${data.contentCalendarTip}</div>
                         </div>
                     </div>
@@ -326,20 +326,7 @@ window.render_trends = function(container) {
         });
 };
 
-// ── Batch Page ───────────────────────────────────────────────────
-window.render_batch = function(container) {
-    container.innerHTML = `
-        <div class="page-header">
-            <h1 class="page-title">Batch Mode</h1>
-            <p class="page-subtitle">Generate multiple posts at once — coming soon</p>
-        </div>
-        <div class="empty-state">
-            <h3>Batch Mode</h3>
-            <p>Upload multiple photos, select a template, and generate a full week of content in one click. This feature is being built.</p>
-            <button class="btn btn-secondary mt-4" onclick="Elaris.navigate('composer')">Use Composer Instead</button>
-        </div>
-    `;
-};
+// Batch rendering is now handled in batch.js
 
 // ── Initialize ───────────────────────────────────────────────────
 window.Elaris = Elaris;

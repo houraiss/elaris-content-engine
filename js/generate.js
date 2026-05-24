@@ -48,7 +48,7 @@ window.render_generate = function(container) {
             <!-- Right Preview -->
             <div class="card" style="flex:1; min-width:300px; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:400px; background:var(--bg-tertiary);">
                 <div id="ai-result-container" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:var(--radius-md);">
-                    <p style="color:var(--text-muted); font-size:13px; text-align:center;">
+                    <p style="color:var(--text-muted); font-size:13px; text-align:center;" data-i18n="gen_result">
                         Generated image will appear here.
                     </p>
                 </div>
