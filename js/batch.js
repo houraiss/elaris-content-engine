@@ -222,7 +222,7 @@ const Batch = {
         
         const btnGen = document.getElementById('btn-generate-batch');
         if (this.photos.length > 0) {
-            btnGen.textContent = \`✦ Start Batch Export (\${this.photos.length} photos)\`;
+            btnGen.textContent = `✦ Start Batch Export (${this.photos.length} photos)`;
             btnGen.disabled = false;
         } else {
             btnGen.textContent = '✦ Start Batch Export';
@@ -295,8 +295,8 @@ const Batch = {
             const photo = this.photos[i];
             
             // Update progress
-            progText.textContent = \`\${i + 1} / \${this.photos.length}\`;
-            progBar.style.width = \`\${((i + 1) / this.photos.length) * 100}%\`;
+            progText.textContent = `${i + 1} / ${this.photos.length}`;
+            progBar.style.width = `${((i + 1) / this.photos.length) * 100}%`;
             
             // Load photo into engine
             this.engine.setPhoto(photo.img, { scale: 1, fit: 'cover' });
@@ -311,7 +311,7 @@ const Batch = {
             // Determine filename base
             const safeName = photo.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
             const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '');
-            const baseName = \`batch_\${dateStr}_\${safeName}\`;
+            const baseName = `batch_${dateStr}_${safeName}`;
             
             // Generate Caption if requested
             let captionText = null;
@@ -326,7 +326,7 @@ const Batch = {
                 if (captionText) {
                     await window.ElarisExport.downloadPair(this.engine, captionText, baseName);
                 } else {
-                    await window.ElarisExport.downloadPNG(this.engine, \`\${baseName}.png\`);
+                    await window.ElarisExport.downloadPNG(this.engine, `${baseName}.png`);
                 }
             }
             
@@ -337,7 +337,7 @@ const Batch = {
         // Cleanup UI
         this.isProcessing = false;
         btn.disabled = false;
-        btn.textContent = \`✦ Start Batch Export (\${this.photos.length} photos)\`;
+        btn.textContent = `✦ Start Batch Export (${this.photos.length} photos)`;
         
         if (window.Elaris && window.Elaris.toast) {
             window.Elaris.toast('Batch export complete! ✓', 'success');
