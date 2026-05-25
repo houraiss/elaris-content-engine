@@ -681,7 +681,7 @@ const PromptStudio = {
 
             return `
                 <div class="ps-arch-card ${isSelected ? 'active' : ''}" data-arch="${a.id}">
-                    <div class="ps-arch-icon" style="background:${a.color}">${a.icon}</div>
+                    <div class="ps-arch-icon" style="--arch-color:${a.color}">${a.icon}</div>
                     <div class="ps-arch-info">
                         <div class="ps-arch-name">${name}</div>
                         <div class="ps-arch-tag">${tagline}</div>
