@@ -472,6 +472,97 @@ const PromptStudio = {
             scene: 'vast negative space, single focal point, clean uncluttered composition, soft even studio lighting, art gallery or luxury e-commerce aesthetic, the piece speaks entirely for itself, 100mm lens',
             compat: { ring: 95, necklace: 75, earrings: 90, bracelet: 80, bangles: 70, anklet: 65, brooch: 85, pendant: 90, 'body-jewelry': 30 },
         },
+        // ── NEW: Expansions ──────────────────────────────────────
+        {
+            id: 'desert-mirage',
+            name: 'Desert Mirage',
+            icon: '🐫',
+            tagline: 'Sahara Fashion Campaign',
+            bestFor: 'Best for: Statement necklaces, bangles, large pieces',
+            desc: 'Rolling sand dunes, intense sun, flowing fabrics',
+            color: '#3d2b1f',
+            subjects: [
+                'model in flowing white fabric standing on massive sand dune wearing {piece}, intense sunlight',
+                '{piece} half-buried in pristine wind-swept desert sand, golden hour lighting',
+                'close-up of model face partially covered by desert scarf, {piece} visible and catching harsh sunlight',
+                '{piece} resting on a sun-bleached piece of desert driftwood',
+                'model walking away through desert heat haze, {piece} sparkling brightly on back/neck'
+            ],
+            scene: 'expansive desert landscape, intense direct sunlight, deep shadows, warm cinematic color grading, heat haze, luxury editorial travel photography',
+            compat: { ring: 60, necklace: 95, earrings: 85, bracelet: 70, bangles: 95, anklet: 50, brooch: 65, pendant: 80, 'body-jewelry': 85 },
+        },
+        {
+            id: 'neon-cyberpunk',
+            name: 'Neon Cyberpunk',
+            icon: '🌃',
+            tagline: 'Futuristic Streetwear',
+            bestFor: 'Best for: Chunky rings, chains, streetwear collections',
+            desc: 'Modern edgy aesthetic, deep blacks with vibrant neon reflections',
+            color: '#1a1025',
+            subjects: [
+                'model in dark techwear standing in neon-lit city street wearing {piece}, cyberpunk vibes',
+                '{piece} resting on wet asphalt reflecting bright pink and cyan neon signs',
+                'close up of {piece} illuminated entirely by blue neon light in a dark room',
+                'model with glowing LED glasses wearing {piece}, futuristic editorial',
+                '{piece} placed on metallic grate with purple underglow lighting'
+            ],
+            scene: 'cyberpunk aesthetic, vibrant neon pink and cyan lighting, deep dark shadows, gritty urban textures, highly reflective silver, modern streetwear fashion',
+            compat: { ring: 95, necklace: 85, earrings: 70, bracelet: 90, bangles: 60, anklet: 40, brooch: 50, pendant: 85, 'body-jewelry': 55 },
+        },
+        {
+            id: 'vintage-nostalgia',
+            name: 'Vintage Nostalgia',
+            icon: '🎞️',
+            tagline: '90s Polaroid Aesthetic',
+            bestFor: 'Best for: Rings, earrings, candid lifestyle',
+            desc: 'Grainy textures, direct flash, retro fashion vibes',
+            color: '#2a221f',
+            subjects: [
+                'candid snapshot of model laughing at a party wearing {piece}, red-eye flash effect',
+                '{piece} photographed on a retro velvet sofa, disposable camera aesthetic',
+                'model holding a vintage camera with {piece} visible on finger, grainy film texture',
+                'close-up of {piece} with harsh direct flash creating blown-out highlights',
+                'polaroid-style frame around an image of {piece} resting on a vinyl record'
+            ],
+            scene: 'vintage 90s film photography, disposable camera look, harsh direct paparazzi flash, heavy film grain, slightly desaturated or sepia tones, candid unposed feeling',
+            compat: { ring: 90, necklace: 70, earrings: 85, bracelet: 75, bangles: 60, anklet: 50, brooch: 40, pendant: 60, 'body-jewelry': 45 },
+        },
+        {
+            id: 'zero-gravity',
+            name: 'Zero Gravity',
+            icon: '🌌',
+            tagline: 'Frozen in Mid-Air',
+            bestFor: 'Best for: Pendants, earrings, abstract ads',
+            desc: 'Jewelry suspended in mid-air surrounded by floating particles',
+            color: '#151a25',
+            subjects: [
+                '{piece} floating in zero gravity surrounded by slowly drifting water droplets',
+                '{piece} exploding out of a cloud of silver dust, frozen mid-air',
+                '{piece} suspended in dark space with floating silk ribbons wrapping around it',
+                'multiple {piece} floating chaotically against a pure black background',
+                '{piece} falling through the air alongside floating rose petals'
+            ],
+            scene: 'zero gravity suspension, ultra-fast shutter speed freezing motion, floating particles or liquids, dynamic composition, pure black or dark background, high-end 3D render feel',
+            compat: { ring: 80, necklace: 60, earrings: 95, bracelet: 50, bangles: 65, anklet: 40, brooch: 75, pendant: 95, 'body-jewelry': 30 },
+        },
+        {
+            id: 'royal-opulence',
+            name: 'Royal Opulence',
+            icon: '👑',
+            tagline: 'The Highest Tier of Luxury',
+            bestFor: 'Best for: Statement pieces, bridal, high-ticket items',
+            desc: 'Heavy velvet cushions, gold leaf accents, ornate palaces',
+            color: '#2a1a1f',
+            subjects: [
+                '{piece} resting on a deep crimson velvet royal pillow with gold tassels',
+                'model in extravagant Renaissance-style gown wearing {piece} in an opulent palace room',
+                '{piece} displayed next to an antique golden chalice and crown jewels',
+                'close-up of {piece} nestled among layers of rich embroidered silk and gold thread',
+                '{piece} sitting on a polished mahogany table next to a sealed wax letter'
+            ],
+            scene: 'extreme opulence and wealth, rich deep colors (crimson, gold, royal blue), antique textures, palatial setting, dramatic chiaroscuro lighting, maximalist luxury',
+            compat: { ring: 85, necklace: 95, earrings: 90, bracelet: 80, bangles: 75, anklet: 30, brooch: 90, pendant: 85, 'body-jewelry': 40 },
+        },
     ],
 
     // ── Modifiers ────────────────────────────────────────────────
