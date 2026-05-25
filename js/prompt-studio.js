@@ -37,7 +37,7 @@ const PromptStudio = {
         {
             id: 'body-intimate',
             name: 'Body Intimate',
-            icon: '🖤',
+            icon: '👤',
             tagline: 'The Jewelry IS the Person',
             bestFor: 'Best for: Rings, Necklaces, Earrings, Bangles',
             desc: 'Close-up body shots — skin, lips, eyes, hands interacting with jewelry',
@@ -134,7 +134,7 @@ const PromptStudio = {
         {
             id: 'bw-dramatic',
             name: 'B&W Dramatic',
-            icon: '🌑',
+            icon: '🎹',
             tagline: 'Monochrome Editorial',
             bestFor: 'Best for: Rings, Bracelets, Earrings',
             desc: 'Black and white photography with optional selective color on jewelry',
@@ -170,7 +170,7 @@ const PromptStudio = {
         {
             id: 'bold-typography',
             name: 'Bold Typography',
-            icon: '✦',
+            icon: '🔠',
             tagline: 'Jewelry × Type Design',
             bestFor: 'Best for: All jewelry types',
             desc: 'Product shots with integrated brand typography as composition',
@@ -456,7 +456,7 @@ const PromptStudio = {
         {
             id: 'minimalist-space',
             name: 'Minimalist & Space',
-            icon: '◻️',
+            icon: '🧊',
             tagline: 'Less is Everything',
             bestFor: 'Best for: Rings, Pendants, Earrings — perfect for ads & product pages',
             desc: 'Ultra-clean compositions with vast negative space, art gallery feel',
