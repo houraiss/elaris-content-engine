@@ -1938,10 +1938,11 @@ code {
     max-width: 100%;
 }
 
-body:not(.light-mode) .dark-mode-logo {
+[data-theme="dark"] .dark-mode-logo,
+:root:not([data-theme="light"]) .dark-mode-logo {
     display: block;
 }
 
-body.light-mode .light-mode-logo {
+[data-theme="light"] .light-mode-logo {
     display: block;
 }
