@@ -483,6 +483,8 @@ const PromptStudio = {
         { id: 'surreal', label: 'Surreal & Dreamy' },
         { id: 'editorial', label: 'Editorial & Sharp' },
         { id: 'mystical', label: 'Mystical & Dark' },
+        { id: 'candid', label: 'Candid & Lifestyle' },
+        { id: 'avant-garde', label: 'Avant-Garde & High Fashion' },
     ],
 
     lightings: [
@@ -492,6 +494,8 @@ const PromptStudio = {
         { id: 'dramatic-shadows', label: 'Dramatic Shadows' },
         { id: 'backlit', label: 'Backlit / Rim Light' },
         { id: 'soft-diffused', label: 'Soft Diffused' },
+        { id: 'hard-flash', label: 'Hard Flash / Paparazzi' },
+        { id: 'dappled-sunlight', label: 'Dappled Sunlight' },
     ],
 
     formats: [
@@ -499,6 +503,8 @@ const PromptStudio = {
         { id: 'portrait', label: '4:5 Portrait', ratio: '4:5' },
         { id: 'story', label: '9:16 Story', ratio: '9:16' },
         { id: 'landscape', label: '16:9 Wide', ratio: '16:9' },
+        { id: 'pinterest', label: '2:3 Pinterest', ratio: '2:3' },
+        { id: 'portrait-3-4', label: '3:4 Portrait', ratio: '3:4' },
     ],
 
     // ── Camera Angles ────────────────────────────────────────────
@@ -511,6 +517,9 @@ const PromptStudio = {
             { id: 'macro', label: window.I18n ? window.I18n.t('ps_ang_macro') : 'Macro Close-up' },
             { id: 'over-shoulder', label: window.I18n ? window.I18n.t('ps_ang_shoulder') : 'Over the Shoulder' },
             { id: '45-degree', label: window.I18n ? window.I18n.t('ps_ang_45') : '45° Three-Quarter' },
+            { id: 'side-profile', label: 'Side Profile' },
+            { id: 'glance-down', label: 'Glance Down' },
+            { id: 'from-behind', label: 'From Behind (Nape)' },
         ];
     },
 
@@ -527,6 +536,9 @@ const PromptStudio = {
             { id: 'skin', label: window.I18n ? window.I18n.t('ps_surf_skin') : 'Skin / Body' },
             { id: 'stone-wall', label: window.I18n ? window.I18n.t('ps_surf_stone') : 'Stone Wall' },
             { id: 'wood', label: window.I18n ? window.I18n.t('ps_surf_wood') : 'Raw Wood' },
+            { id: 'terracotta', label: 'Terracotta / Zellige' },
+            { id: 'mirrored-glass', label: 'Mirrored Glass' },
+            { id: 'satin', label: 'Satin Fabric' },
         ];
     },
 
@@ -1182,6 +1194,9 @@ const PromptStudio = {
             'macro':         'shot on 100mm f/2.8 macro lens, razor-thin depth of field, extreme close-up revealing individual metal grain and surface texture',
             'over-shoulder': 'over-the-shoulder composition on 85mm f/1.8 lens, creamy bokeh background',
             '45-degree':     'three-quarter angle on 70mm f/2.2 lens, natural dimensional perspective',
+            'side-profile':  'side profile angle, architectural lines emphasized, sharp feature isolation',
+            'glance-down':   'intimate slightly elevated angle looking down at subject, emotive and delicate',
+            'from-behind':   'shot from behind focusing on the nape of the neck and back details, mysterious framing',
         };
         const cameraDesc = cameraMap[this.state.angle] || 'shot on 85mm f/1.4 lens, shallow depth of field';
 
@@ -1203,6 +1218,9 @@ const PromptStudio = {
                 'skin': 'against warm bare skin, intimate body context',
                 'stone-wall': 'against weathered natural stone wall backdrop',
                 'wood': 'on raw untreated wood grain surface, organic warmth',
+                'terracotta': 'on traditional Moroccan terracotta zellige tile, artisanal texture',
+                'mirrored-glass': 'on sharp mirrored glass surface, infinite reflections and modern polish',
+                'satin': 'on smooth lustrous satin fabric, soft rolling liquid folds',
             };
             surfaceDesc = surfMap[this.state.surface] || '';
         }
