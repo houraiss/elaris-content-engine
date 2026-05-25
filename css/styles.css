@@ -1929,3 +1929,19 @@ code {
 .ios-dismiss-btn { flex: 1; padding: 12px; background: transparent; border: 1px solid #2a2018; border-radius: 10px; color: #4a3d30; font-size: 12px; font-family: var(--font-ui); cursor: pointer; letter-spacing: 0.06em; transition: all 0.18s; }
 .ios-later-btn { flex: 1; padding: 12px; background: linear-gradient(135deg, #a67c52, #c9a96e); border: none; border-radius: 10px; color: #0c0a08; font-size: 12px; font-family: var(--font-ui); font-weight: 500; cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase; }
 /* ═══════════════════════════════════════════════════════════ */
+
+/* Brand Logo Toggling */
+.brand-logo-img {
+    width: 120px;
+    height: auto;
+    display: none;
+    max-width: 100%;
+}
+
+body:not(.light-mode) .dark-mode-logo {
+    display: block;
+}
+
+body.light-mode .light-mode-logo {
+    display: block;
+}
