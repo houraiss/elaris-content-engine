@@ -12,7 +12,7 @@
 
 const PromptStudio = {
 
-    // ── Jewelry Categories ───────────────────────────────────────
+    // ── Jewelry Categories ──────────────────────
     categories: ['ring','necklace','earrings','bracelet','bangles','anklet','brooch','pendant','body-jewelry'],
 
     materials: [
@@ -32,12 +32,12 @@ const PromptStudio = {
         { id: 'mixed', label: 'Mixed Gemstones' },
     ],
 
-    // ── 8 Creative Archetypes ────────────────────────────────────
+    // ── 8 Creative Archetypes ──────────────────────
     archetypes: [
         {
             id: 'body-intimate',
             name: 'Body Intimate',
-            icon: '👤',
+            icon: '🤲',
             tagline: 'The Jewelry IS the Person',
             bestFor: 'Best for: Rings, Necklaces, Earrings, Bangles',
             desc: 'Close-up body shots — skin, lips, eyes, hands interacting with jewelry',
@@ -56,7 +56,7 @@ const PromptStudio = {
         {
             id: 'object-pairing',
             name: 'Object Pairing',
-            icon: '🍋',
+            icon: '🌿',
             tagline: 'Jewelry Meets Unexpected Props',
             bestFor: 'Best for: Rings, Brooches, Pendants',
             desc: 'Paired with organic objects — flowers, fruit, sand, rope, branches',
@@ -96,7 +96,7 @@ const PromptStudio = {
         {
             id: 'surreal-animal',
             name: 'Surreal Animal',
-            icon: '🐍',
+            icon: '🦋',
             tagline: 'High Concept Campaigns',
             bestFor: 'Best for: Rings, Brooches, Pendants',
             desc: 'Exotic animals interacting with jewelry — viral, surrealist content',
@@ -115,7 +115,7 @@ const PromptStudio = {
         {
             id: 'gradient-product',
             name: 'Gradient Product',
-            icon: '🎨',
+            icon: '💎',
             tagline: 'Floating Luxury Close-up',
             bestFor: 'Best for: All jewelry types',
             desc: 'Hero product shots with gradient backgrounds — pure product glory',
@@ -134,7 +134,7 @@ const PromptStudio = {
         {
             id: 'bw-dramatic',
             name: 'B&W Dramatic',
-            icon: '🎹',
+            icon: '🎭',
             tagline: 'Monochrome Editorial',
             bestFor: 'Best for: Rings, Bracelets, Earrings',
             desc: 'Black and white photography with optional selective color on jewelry',
@@ -152,7 +152,7 @@ const PromptStudio = {
         {
             id: 'shadow-play',
             name: 'Shadow Play',
-            icon: '🏜️',
+            icon: '🌑',
             tagline: 'Light as Art',
             bestFor: 'Best for: Rings, Bracelets, Anklets',
             desc: 'Dramatic shadow casting creating visual narratives',
@@ -170,7 +170,7 @@ const PromptStudio = {
         {
             id: 'bold-typography',
             name: 'Bold Typography',
-            icon: '🔠',
+            icon: '🔡',
             tagline: 'Jewelry × Type Design',
             bestFor: 'Best for: All jewelry types',
             desc: 'Product shots with integrated brand typography as composition',
@@ -187,7 +187,7 @@ const PromptStudio = {
         {
             id: 'collection-showcase',
             name: 'Collection Showcase',
-            icon: '💎',
+            icon: '✨',
             tagline: 'The Complete Set',
             bestFor: 'Best for: Matching Sets, Launch Campaigns',
             desc: 'Model wearing a full coordinated set — earrings, necklace, ring, bracelet',
@@ -205,7 +205,7 @@ const PromptStudio = {
         {
             id: 'macro-detail',
             name: 'Macro Detail',
-            icon: '🔍',
+            icon: '🔬',
             tagline: 'Craftsmanship in Focus',
             bestFor: 'Best for: All pieces, especially intricate designs',
             desc: 'Extreme close-up revealing textures, stone settings, micro-engravings',
@@ -261,7 +261,7 @@ const PromptStudio = {
         {
             id: 'flat-lay',
             name: 'Flat Lay Composition',
-            icon: '🎍',
+            icon: '📐',
             tagline: 'Curated Overhead',
             bestFor: 'Best for: All pieces, Sets, Collections',
             desc: 'Top-down styled arrangement with carefully curated props',
@@ -369,7 +369,7 @@ const PromptStudio = {
             scene: 'ethereal glowing light, cosmic or mythological atmosphere, deep blues and silvers, starfield or moonlit ambiance, otherworldly editorial, fine art photography',
             compat: { ring: 60, necklace: 95, earrings: 80, bracelet: 50, bangles: 55, anklet: 40, brooch: 70, pendant: 90, 'body-jewelry': 95 },
         },
-        // ── NEW: Seasonal ────────────────────────────────────────
+        // ── NEW: Seasonal ──────────────────────
         {
             id: 'seasonal-holiday',
             name: 'Seasonal & Holiday',
@@ -389,7 +389,7 @@ const PromptStudio = {
             scene: 'seasonal color palette and props, warm inviting atmosphere, gift-giving context, lifestyle storytelling, aspirational yet accessible, editorial product photography',
             compat: { ring: 90, necklace: 90, earrings: 85, bracelet: 85, bangles: 75, anklet: 60, brooch: 70, pendant: 90, 'body-jewelry': 50 },
         },
-        // ── NEW: Lifestyle ───────────────────────────────────────
+        // ── NEW: Lifestyle ──────────────────────
         {
             id: 'lifestyle-moment',
             name: 'Lifestyle Moment',
@@ -410,7 +410,7 @@ const PromptStudio = {
             scene: 'real-world environment, natural unposed feeling, warm ambient light, lifestyle editorial, jewelry as part of a daily ritual, aspirational yet relatable, 50mm lens natural perspective',
             compat: { ring: 95, necklace: 85, earrings: 80, bracelet: 95, bangles: 85, anklet: 50, brooch: 40, pendant: 75, 'body-jewelry': 35 },
         },
-        // ── NEW: Nature/Botanical ────────────────────────────────
+        // ── NEW: Nature/Botanical ──────────────────────
         {
             id: 'nature-botanical',
             name: 'Nature & Botanical',
@@ -431,11 +431,11 @@ const PromptStudio = {
             scene: 'natural botanical elements as primary props, soft diffused natural sunlight, organic color palette (greens, creams, earth), editorial garden photography, shallow depth of field on jewelry',
             compat: { ring: 90, necklace: 80, earrings: 85, bracelet: 80, bangles: 70, anklet: 65, brooch: 75, pendant: 90, 'body-jewelry': 40 },
         },
-        // ── NEW: Heritage/Moroccan ───────────────────────────────
+        // ── NEW: Heritage/Moroccan ──────────────────────
         {
             id: 'heritage-moroccan',
             name: 'Heritage & Moroccan',
-            icon: '🕌',
+            icon: '🏺',
             tagline: 'Atlas to Mediterranean',
             bestFor: 'Best for: All pieces — YOUR brand signature',
             desc: 'Zellige tiles, riad courtyards, Moroccan doors, traditional craft textures',
@@ -452,11 +452,11 @@ const PromptStudio = {
             scene: 'North African architectural elements, warm golden light, artisanal textures (zellige, carved plaster, brass, cedar), cultural heritage storytelling, editorial travel photography, unique brand identity',
             compat: { ring: 85, necklace: 90, earrings: 80, bracelet: 85, bangles: 95, anklet: 80, brooch: 75, pendant: 85, 'body-jewelry': 70 },
         },
-        // ── NEW: Minimalist ──────────────────────────────────────
+        // ── NEW: Minimalist ──────────────────────
         {
             id: 'minimalist-space',
             name: 'Minimalist & Space',
-            icon: '🧊',
+            icon: '🤍',
             tagline: 'Less is Everything',
             bestFor: 'Best for: Rings, Pendants, Earrings — perfect for ads & product pages',
             desc: 'Ultra-clean compositions with vast negative space, art gallery feel',
@@ -472,11 +472,11 @@ const PromptStudio = {
             scene: 'vast negative space, single focal point, clean uncluttered composition, soft even studio lighting, art gallery or luxury e-commerce aesthetic, the piece speaks entirely for itself, 100mm lens',
             compat: { ring: 95, necklace: 75, earrings: 90, bracelet: 80, bangles: 70, anklet: 65, brooch: 85, pendant: 90, 'body-jewelry': 30 },
         },
-        // ── NEW: Expansions ──────────────────────────────────────
+        // ── NEW: Expansions ──────────────────────
         {
             id: 'desert-mirage',
             name: 'Desert Mirage',
-            icon: '🐫',
+            icon: '🏜️',
             tagline: 'Sahara Fashion Campaign',
             bestFor: 'Best for: Statement necklaces, bangles, large pieces',
             desc: 'Rolling sand dunes, intense sun, flowing fabrics',
@@ -494,7 +494,7 @@ const PromptStudio = {
         {
             id: 'neon-cyberpunk',
             name: 'Neon Cyberpunk',
-            icon: '🌃',
+            icon: '⚡',
             tagline: 'Futuristic Streetwear',
             bestFor: 'Best for: Chunky rings, chains, streetwear collections',
             desc: 'Modern edgy aesthetic, deep blacks with vibrant neon reflections',
@@ -512,7 +512,7 @@ const PromptStudio = {
         {
             id: 'vintage-nostalgia',
             name: 'Vintage Nostalgia',
-            icon: '🎞️',
+            icon: '📷',
             tagline: '90s Polaroid Aesthetic',
             bestFor: 'Best for: Rings, earrings, candid lifestyle',
             desc: 'Grainy textures, direct flash, retro fashion vibes',
@@ -530,7 +530,7 @@ const PromptStudio = {
         {
             id: 'zero-gravity',
             name: 'Zero Gravity',
-            icon: '🌌',
+            icon: '🌀',
             tagline: 'Frozen in Mid-Air',
             bestFor: 'Best for: Pendants, earrings, abstract ads',
             desc: 'Jewelry suspended in mid-air surrounded by floating particles',
@@ -544,6 +544,61 @@ const PromptStudio = {
             ],
             scene: 'zero gravity suspension, ultra-fast shutter speed freezing motion, floating particles or liquids, dynamic composition, pure black or dark background, high-end 3D render feel',
             compat: { ring: 80, necklace: 60, earrings: 95, bracelet: 50, bangles: 65, anklet: 40, brooch: 75, pendant: 95, 'body-jewelry': 30 },
+        },
+        {
+            id: 'surface-lean',
+            name: 'Surface Lean',
+            icon: '🪑',
+            tagline: 'Maximum Jewelry Visibility',
+            bestFor: 'Best for: Rings, Bracelets, Mens collections, multi-piece shots',
+            desc: 'Model leaning on a surface to frame the jewelry naturally with chin-on-hand poses',
+            color: '#1e2a2a',
+            subjects: [
+                'model with elbow on marble table, chin resting on closed fist, {piece} prominently displayed, editorial close-crop',
+                'model leaning forward, both forearms resting on surface, {piece} visible from wrist to knuckle',
+                'model propping chin with interlaced fingers, {piece} rings stacked on display at center frame',
+                'model with one hand placed flat on surface, other hand lightly resting over it, {piece} on both hands',
+                'model leaning into camera with wrist bent back showing bracelet {piece}, casual cool editorial',
+            ],
+            scene: 'low editorial angle, surface as anchor, warm studio or ambient window light, model looking relaxed and confident, jewelry in sharp focus at the foreground plane',
+            compat: { ring: 98, necklace: 60, earrings: 65, bracelet: 95, bangles: 90, anklet: 30, brooch: 50, pendant: 55, 'body-jewelry': 40 },
+        },
+        {
+            id: 'hair-drama',
+            name: 'Hair Drama',
+            icon: '💇',
+            tagline: 'Ring Road, All Eyes on the Jewelry',
+            bestFor: 'Best for: Rings, Stacking rings, Earrings, Editorial female model',
+            desc: 'Hands running through or arranging hair — a natural gesture that frames earrings and rings simultaneously',
+            color: '#2a1a2a',
+            subjects: [
+                'model running fingers through long hair, both hands raised, rings on every finger catching the light',
+                'model lifting hair off neck with one hand to reveal {piece} earring, sensual editorial gesture',
+                'hands pulling hair back into loose updo, {piece} rings and bracelets all visible against the hair',
+                'model tousling sun-kissed hair, face partially obscured, {piece} earrings swinging mid-motion',
+                'close-up of hands gathering hair at nape, {piece} stacked rings at every knuckle, golden hour backlight',
+            ],
+            scene: 'editorial fashion photography, hair in natural motion, backlighting to create rim-light halo on hair and jewelry, skin warm and glowing, creative finger placement',
+            compat: { ring: 98, necklace: 50, earrings: 98, bracelet: 85, bangles: 80, anklet: 20, brooch: 30, pendant: 45, 'body-jewelry': 40 },
+        },
+        {
+            id: 'masculine-editorial',
+            name: 'Masculine Editorial',
+            icon: '🧔',
+            tagline: "Men's Jewelry — Bold and Intentional",
+            bestFor: "Best for: Mens rings, necklaces, chains, bracelets, cuffs, signet rings",
+            desc: 'Strong masculine editorial — suited or casual male model wearing jewelry with intention',
+            color: '#1a1a1a',
+            subjects: [
+                'man in dark blazer, hand in pocket showing {piece} signet ring at cuff edge, sophisticated editorial',
+                'man with rolled sleeves showing strong forearms, {piece} chunky chain bracelet draped casually',
+                'close-up of man hand gripping steering wheel, {piece} ring clearly visible, golden hour light',
+                'man adjusting jacket lapel, {piece} chain necklace visible at open collar, confident gaze',
+                "man's hand resting on a wooden bar top, {piece} ring prominent, warm candlelight illumination",
+                'man standing in archway, arm raised against the doorframe, {piece} bracelet sliding down wrist',
+            ],
+            scene: 'masculine editorial, strong confident mood, tailored or relaxed clothing, directional dramatic lighting, deep shadows and highlights, silver against dark clothing for maximum contrast',
+            compat: { ring: 95, necklace: 90, earrings: 50, bracelet: 95, bangles: 60, anklet: 30, brooch: 55, pendant: 85, 'body-jewelry': 50 },
         },
         {
             id: 'royal-opulence',
@@ -565,7 +620,7 @@ const PromptStudio = {
         },
     ],
 
-    // ── Modifiers ────────────────────────────────────────────────
+    // ── Modifiers ──────────────────────
     moods: [
         { id: 'dramatic', label: 'Dramatic' },
         { id: 'soft', label: 'Soft & Romantic' },
@@ -598,7 +653,7 @@ const PromptStudio = {
         { id: 'portrait-3-4', label: '3:4 Portrait', ratio: '3:4' },
     ],
 
-    // ── Camera Angles ────────────────────────────────────────────
+    // ── Camera Angles ──────────────────────
     get angles() {
         return [
             { id: 'eye-level', label: window.I18n ? window.I18n.t('ps_ang_eye') : 'Eye Level' },
@@ -614,7 +669,7 @@ const PromptStudio = {
         ];
     },
 
-    // ── Surface / Backdrop ───────────────────────────────────────
+    // ── Surface / Backdrop ──────────────────────
     get surfaces() {
         return [
             { id: 'none', label: window.I18n ? window.I18n.t('ps_surf_default') : 'Default (Archetype)' },
@@ -633,7 +688,7 @@ const PromptStudio = {
         ];
     },
 
-    // ── Color Palettes ───────────────────────────────────────────
+    // ── Color Palettes ──────────────────────
     get palettes() {
         return [
             { id: 'neutral', label: window.I18n ? window.I18n.t('ps_pal_neutral') : 'Neutral Beige' },
@@ -647,7 +702,7 @@ const PromptStudio = {
         ];
     },
 
-    // ── Model Styling (for human archetypes) ─────────────────────
+    // ── Model Styling (for human archetypes) ──────────────────────
     get stylings() {
         return [
             { id: 'minimal', label: window.I18n ? window.I18n.t('ps_sty_minimal') : 'Minimal / Nude' },
@@ -661,7 +716,69 @@ const PromptStudio = {
         ];
     },
 
-    // ── State ────────────────────────────────────────────────────
+    // ── Scene Realism getters ──────────────────────
+    get skinTextures() {
+        return [
+            { id: 'natural',    label: '🌿 Natural' },
+            { id: 'pores',      label: '🔬 Pores & Texture' },
+            { id: 'smooth',     label: '✨ Polished Smooth' },
+            { id: 'luminous',   label: '💫 Luminous Glow' },
+        ];
+    },
+
+    get wrinkleLevels() {
+        return [
+            { id: 'none',       label: '✦ None' },
+            { id: 'subtle',     label: '🌾 Subtle Lines' },
+            { id: 'natural',    label: '🧬 Natural' },
+            { id: 'character',  label: '🎭 Character Lines' },
+        ];
+    },
+
+    get bodyHairLevels() {
+        return [
+            { id: 'none',       label: '✦ None' },
+            { id: 'fine',       label: '🪶 Fine & Subtle' },
+            { id: 'natural',    label: '🌱 Natural Visible' },
+        ];
+    },
+
+    get skinDetails() {
+        return [
+            { id: 'none',         label: '✦ Standard' },
+            { id: 'veins',        label: '🩸 Veins Visible' },
+            { id: 'freckles',     label: '🌟 Freckles / Spots' },
+            { id: 'translucent',  label: '💎 Skin Translucency' },
+        ];
+    },
+
+    get facialExpressions() {
+        return [
+            { id: 'none',       label: '✦ Neutral' },
+            { id: 'serene',     label: '😌 Serene / Calm' },
+            { id: 'smile',      label: '😊 Soft Smile' },
+            { id: 'joy',        label: '😄 Joy / Laugh' },
+            { id: 'intense',    label: '🔥 Intense / Focus' },
+            { id: 'sultry',     label: '💋 Sultry / Confident' },
+            { id: 'thoughtful', label: '🤔 Thoughtful / Dream' },
+        ];
+    },
+
+
+    // ── State ──────────────────────
+    jewelryStyles: [
+        { id: 'none', label: 'None' },
+        { id: 'nano', label: 'Nano' },
+        { id: 'minimalist', label: 'Minimalist' },
+        { id: 'bohemian', label: 'Bohemian' },
+        { id: 'art-deco', label: 'Art Deco' },
+        { id: 'berber-traditional', label: 'Berber Traditional' },
+        { id: 'gothic', label: 'Gothic' },
+        { id: 'contemporary', label: 'Contemporary' },
+        { id: 'vintage', label: 'Vintage' },
+        { id: 'streetwear', label: 'Streetwear' },
+    ],
+
     state: {
         pieceDesc: '',
         category: 'ring',
@@ -679,11 +796,19 @@ const PromptStudio = {
         history: [],
         jewelryCount: 0,
         consistencyOn: false,
+        modelGender: 'female',
+        jewelryStyle: [],
         activeProfileId: 'lina',
         profiles: [],
+        // Realism controls
+        skinTexture: 'natural',
+        wrinkles: 'none',
+        bodyHair: 'none',
+        skinDetail: 'none',
+        facialExpression: 'none',
     },
 
-    // ── Profiles Management ──────────────────────────────────────
+    // ── Profiles Management ──────────────────────
     _loadProfiles() {
         try {
             const saved = localStorage.getItem('elaris_model_profiles');
@@ -695,17 +820,32 @@ const PromptStudio = {
         
         this.state.profiles = [
             {
-                id: 'lina', name: 'Lina',
+                id: 'lina', name: 'Lina', gender: 'female',
                 descriptor: 'Woman, 25 years old, olive Mediterranean skin tone, almond-shaped dark brown eyes, high cheekbones, sharp jawline, full lips, straight dark brown hair shoulder-length, slim graceful neck, elegant posture',
                 referenceImage: null, color: '#c9a96e'
             },
             {
-                id: 'sara', name: 'Sara',
+                id: 'sara', name: 'Sara', gender: 'female',
                 descriptor: 'Woman, 28 years old, warm golden-beige skin tone, deep hazel eyes, soft round face, defined brows, wavy chestnut hair past shoulders, delicate features, natural beauty, relaxed confident expression',
                 referenceImage: null, color: '#a67c52'
-            }
+            },
+            {
+                id: 'amir', name: 'Amir', gender: 'male',
+                descriptor: 'Man, 30 years old, olive Moroccan skin tone, strong defined jawline, deep-set dark brown eyes, sharp angular features, well-groomed dark beard stubble, athletic build, broad shoulders, confident editorial posture',
+                referenceImage: null, color: '#6e9fc9'
+            },
+            {
+                id: 'tariq', name: 'Tariq', gender: 'male',
+                descriptor: 'Man, 27 years old, warm caramel skin tone, elegant refined features, almond-shaped dark eyes, clean-shaven, defined cheekbones, slim composed posture, sophisticated and understated expression',
+                referenceImage: null, color: '#52a67c'
+            },
         ];
         this._saveProfiles();
+    },
+
+    _getFilteredProfiles() {
+        const gender = this.state.modelGender || 'female';
+        return this.state.profiles.filter(p => (p.gender || 'female') === gender);
     },
 
     _saveProfiles() {
@@ -714,7 +854,7 @@ const PromptStudio = {
         } catch (e) { console.error('Failed to save profiles', e); }
     },
 
-    // ── Init ─────────────────────────────────────────────────────
+    // ── Init ──────────────────────
     init(container) {
         this.container = container;
         this._sortMode = 'recommended';
@@ -724,7 +864,7 @@ const PromptStudio = {
         this._bind();
     },
 
-    // ── Render Archetype Grid (dynamic, re-sortable) ──────────
+    // ── Render Archetype Grid (dynamic, re-sortable) ──────────────────────
     _renderArchetypeGrid() {
         const grid = this.container.querySelector('#ps-archetypes');
         if (!grid) return;
@@ -733,7 +873,7 @@ const PromptStudio = {
         let sorted = [...this.archetypes];
 
         if (this._sortMode === 'recommended') {
-            const humanArchetypes = ['body-intimate', 'editorial-model', 'collection-showcase', 'bw-dramatic', 'motion-blur', 'cinematic-portrait', 'lifestyle-moment', 'heritage-moroccan', 'celestial-mythic', 'architectural-context'];
+            const humanArchetypes = ['body-intimate', 'editorial-model', 'collection-showcase', 'bw-dramatic', 'motion-blur', 'cinematic-portrait', 'lifestyle-moment', 'heritage-moroccan', 'celestial-mythic', 'architectural-context', 'masculine-editorial', 'surface-lean', 'hair-drama'];
             sorted.sort((a, b) => {
                 let scoreA = (a.compat && a.compat[cat]) || 50;
                 let scoreB = (b.compat && b.compat[cat]) || 50;
@@ -788,7 +928,7 @@ const PromptStudio = {
         if (countEl) countEl.textContent = `${this.state.selectedArchetypes.length} selected`;
     },
 
-    // ── Render ───────────────────────────────────────────────────
+    // ── Render ──────────────────────
     _render() {
         this.container.innerHTML = `
             <div class="page-header">
@@ -820,15 +960,28 @@ const PromptStudio = {
                             </select>
                         </div>
                         <div class="form-group">
+                            <label class="form-label">Jewelry Style</label>
+                            <div class="ps-chip-group" id="ps-jewelry-style" style="flex-wrap:wrap">
+                                ${this.jewelryStyles.map(s => `<button class="ps-chip ${(this.state.jewelryStyle||[]).includes(s.id) ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label" data-i18n="ps_piece_desc">Piece Description</label>
                             <textarea class="form-textarea" id="ps-desc" rows="3" data-i18n="ps_piece_desc_ph" placeholder="e.g. multi-band crossover ring with pavé diamond accents and intertwining silver bands"></textarea>
                         </div>
-                        <button class="btn btn-sm btn-secondary" id="ps-auto-desc" style="width:100%" data-i18n="ps_auto_desc">✦ Auto-describe from category</button>
+                        <button class="btn btn-sm btn-secondary" id="ps-auto-desc" style="width:100%" data-i18n="ps_auto_desc">✨ Auto-describe from category</button>
                     </div>
 
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title" data-i18n="ps_model_consistency">Model Consistency & Attachments</span>
+                            <span class="card-title">Model &amp; Human Elements</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Model Gender</label>
+                            <div id="ps-gender-select" class="ps-chip-group" style="margin-bottom:0">
+                                <button class="ps-chip ${this.state.modelGender === 'female' ? 'active' : ''}" data-val="female">♀ Female</button>
+                                <button class="ps-chip ${this.state.modelGender === 'male' ? 'active' : ''}" data-val="male">♂ Male</button>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label" data-i18n="ps_jewelry_shots">Jewelry Shots</label>
@@ -860,13 +1013,13 @@ const PromptStudio = {
                                 <button class="btn btn-sm btn-primary" id="ps-save-profile" style="width:100%;margin-top:8px" data-i18n="ps_save_profile">Save Profile</button>
                             </div>
                             <div style="display:flex;flex-direction:column;gap:8px" id="ps-profile-list">
-                                ${this.state.profiles.map(p => `
+                                ${this._getFilteredProfiles().map(p => `
                                     <div class="profile-card ${this.state.activeProfileId === p.id ? 'active' : ''}" data-id="${p.id}" style="border:1px solid ${this.state.activeProfileId === p.id ? p.color : 'var(--border)'};border-radius:8px;padding:10px;cursor:pointer;background:${this.state.activeProfileId === p.id ? p.color+'15' : 'transparent'};transition:all 0.2s">
                                         <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
                                             <div style="width:32px;height:32px;border-radius:50%;background:${p.referenceImage ? 'transparent' : p.color+'30'};border:1px solid ${p.color};display:flex;align-items:center;justify-content:center;color:${p.color};position:relative;overflow:hidden">
                                                 ${p.referenceImage ? `<img src="${p.referenceImage}" style="width:100%;height:100%;object-fit:cover">` : p.name.charAt(0)}
                                                 <label title="Upload reference image" style="position:absolute;bottom:-4px;right:-4px;background:var(--surface);border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;border:1px solid var(--border)" onclick="event.stopPropagation()">
-                                                    📷<input type="file" accept="image/*" class="ps-upload-ref" data-id="${p.id}" style="display:none">
+                                                    📂<input type="file" accept="image/*" class="ps-upload-ref" data-id="${p.id}" style="display:none">
                                                 </label>
                                             </div>
                                             <div style="flex:1">
@@ -930,6 +1083,41 @@ const PromptStudio = {
                                 ${this.stylings.map(s => `<button class="ps-chip ${s.id === this.state.styling ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
                             </div>
                         </div>
+
+                        <!-- ── Scene Realism Controls ─────────────────── -->
+                        <div class="form-group" style="margin-top:8px;padding-top:10px;border-top:1px solid var(--border)">
+                            <label class="form-label" style="font-size:11px;letter-spacing:0.06em;opacity:0.7;text-transform:uppercase;font-weight:700">🎭 Scene Realism</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Skin Texture</label>
+                            <div class="ps-chip-group" id="ps-skin-texture">
+                                ${this.skinTextures.map(s => `<button class="ps-chip ${s.id === this.state.skinTexture ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Expression Lines / Wrinkles</label>
+                            <div class="ps-chip-group" id="ps-wrinkles">
+                                ${this.wrinkleLevels.map(w => `<button class="ps-chip ${w.id === this.state.wrinkles ? 'active' : ''}" data-val="${w.id}">${w.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Body Hair <span class="text-sm text-muted">(human archetypes)</span></label>
+                            <div class="ps-chip-group" id="ps-body-hair">
+                                ${this.bodyHairLevels.map(b => `<button class="ps-chip ${b.id === this.state.bodyHair ? 'active' : ''}" data-val="${b.id}">${b.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Skin Detail</label>
+                            <div class="ps-chip-group" id="ps-skin-detail">
+                                ${this.skinDetails.map(d => `<button class="ps-chip ${d.id === this.state.skinDetail ? 'active' : ''}" data-val="${d.id}">${d.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Facial Expression <span class="text-sm text-muted">(human archetypes)</span></label>
+                            <div class="ps-chip-group" id="ps-facial-expression">
+                                ${this.facialExpressions.map(f => `<button class="ps-chip ${f.id === this.state.facialExpression ? 'active' : ''}" data-val="${f.id}">${f.label}</button>`).join('')}
+                            </div>
+                        </div>
                         <div class="form-group" style="margin-top:6px;padding-top:12px;border-top:1px solid var(--border)">
                             <div style="display:flex;align-items:center;justify-content:space-between">
                                 <div>
@@ -952,8 +1140,8 @@ const PromptStudio = {
                             <span class="card-title" data-i18n="ps_arch_title">Select Archetypes</span>
                             <div style="display:flex;align-items:center;gap:8px">
                                 <div class="ps-chip-group ps-sort-group" id="ps-sort-mode" style="gap:4px">
-                                    <button class="ps-chip active" data-val="recommended" style="font-size:11px;padding:4px 10px" data-i18n="ps_sort_rec">⭐ Recommended</button>
-                                    <button class="ps-chip" data-val="alpha" style="font-size:11px;padding:4px 10px" data-i18n="ps_sort_az">A—Z</button>
+                                    <button class="ps-chip active" data-val="recommended" style="font-size:11px;padding:4px 10px" data-i18n="ps_sort_rec">+ Recommended</button>
+                                    <button class="ps-chip" data-val="alpha" style="font-size:11px;padding:4px 10px" data-i18n="ps_sort_az">A–Z</button>
                                 </div>
                                 <span class="text-sm text-muted" id="ps-arch-count">0 <span data-i18n="ps_selected">selected</span></span>
                             </div>
@@ -963,7 +1151,7 @@ const PromptStudio = {
 
                     <div style="display:flex;gap:10px;margin-top:12px">
                         <button class="btn btn-primary btn-lg" id="ps-generate" style="flex:1" data-i18n="ps_generate">
-                            ✦ Generate Prompts
+                            ✨ Generate Prompts
                         </button>
                     </div>
 
@@ -994,7 +1182,7 @@ const PromptStudio = {
                         <div class="card-header"><span class="card-title" data-i18n="ps_quick_tips">Quick Tips</span></div>
                         <div class="ps-tips">
                             <div class="ps-tip">💡 Select multiple archetypes for batch prompt generation</div>
-                            <div class="ps-tip">🎯 Be specific in your piece description for best results</div>
+                            <div class="ps-tip">✏️ Be specific in your piece description for best results</div>
                             <div class="ps-tip">📋 Copy prompts directly into Gemini, Midjourney, or Leonardo</div>
                             <div class="ps-tip">🔄 Re-generate for fresh variations of the same concept</div>
                         </div>
@@ -1005,7 +1193,7 @@ const PromptStudio = {
         if (window.I18n) window.I18n.applyLanguage();
     },
 
-    // ── Event Binding ────────────────────────────────────────────
+    // ── Event Binding ──────────────────────
     _bind() {
         // Selects
         const q = id => this.container.querySelector(id);
@@ -1041,6 +1229,55 @@ const PromptStudio = {
         this._bindChipGroup('ps-surface', 'surface');
         this._bindChipGroup('ps-palette', 'palette');
         this._bindChipGroup('ps-styling', 'styling');
+        this._bindChipGroup('ps-skin-texture', 'skinTexture');
+        this._bindChipGroup('ps-wrinkles', 'wrinkles');
+        this._bindChipGroup('ps-body-hair', 'bodyHair');
+        this._bindChipGroup('ps-skin-detail', 'skinDetail');
+        this._bindChipGroup('ps-facial-expression', 'facialExpression');
+
+        // Gender selector
+        const genderGroup = q('#ps-gender-select');
+        if (genderGroup) {
+            genderGroup.addEventListener('click', e => {
+                const chip = e.target.closest('.ps-chip');
+                if (!chip) return;
+                genderGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                this.state.modelGender = chip.dataset.val;
+                const filtered = this._getFilteredProfiles();
+                if (filtered.length > 0) this.state.activeProfileId = filtered[0].id;
+                this._render();
+                this._renderArchetypeGrid();
+                this._bind();
+            });
+        }
+
+        // Jewelry Style multi-select chips
+        const jsGroup = q('#ps-jewelry-style');
+        if (jsGroup) {
+            jsGroup.addEventListener('click', e => {
+                const chip = e.target.closest('.ps-chip');
+                if (!chip) return;
+                const val = chip.dataset.val;
+                if (val === 'none') {
+                    this.state.jewelryStyle = [];
+                    jsGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                } else {
+                    if (!this.state.jewelryStyle) this.state.jewelryStyle = [];
+                    const idx = this.state.jewelryStyle.indexOf(val);
+                    if (idx >= 0) {
+                        this.state.jewelryStyle.splice(idx, 1);
+                        chip.classList.remove('active');
+                    } else {
+                        this.state.jewelryStyle.push(val);
+                        chip.classList.add('active');
+                        const noneChip = jsGroup.querySelector('[data-val="none"]');
+                        if (noneChip) noneChip.classList.remove('active');
+                    }
+                }
+            });
+        }
 
         // Hallmark toggle
         q('#ps-hallmark-toggle')?.addEventListener('change', e => {
@@ -1176,7 +1413,7 @@ const PromptStudio = {
         });
     },
 
-    // ── Auto-describe ────────────────────────────────────────────
+    // ── Auto-describe ──────────────────────
     _autoDescribe() {
         const cat = this.state.category;
         const mat = this.materials.find(m => m.id === this.state.material)?.label || 'silver';
@@ -1198,10 +1435,10 @@ const PromptStudio = {
         const desc = templates[cat] || `${mat.toLowerCase()} ${cat}${stoneText}`;
         this.container.querySelector('#ps-desc').value = desc;
         this.state.pieceDesc = desc;
-        Elaris.toast('Description auto-generated ✦', 'info');
+        Elaris.toast('Description auto-generated ✨', 'info');
     },
 
-    // ── Generate Prompts ─────────────────────────────────────────
+    // ── Generate Prompts ──────────────────────
     _generate() {
         const selected = this.state.selectedArchetypes;
         if (selected.length === 0) {
@@ -1253,13 +1490,13 @@ const PromptStudio = {
         }
         this._renderHistory();
 
-        Elaris.toast(`${prompts.length} prompt(s) generated ✦`, 'success');
+        Elaris.toast(`${prompts.length} prompt(s) generated ✨`, 'success');
 
         // Scroll to output
         outputArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
     },
 
-    // ── Build Single Prompt ──────────────────────────────────────
+    // ── Build Single Prompt ──────────────────────
     _buildPrompt(archetype) {
         const piece = this.state.pieceDesc || 'jewelry piece';
         const material = this.materials.find(m => m.id === this.state.material)?.label || '925 sterling silver';
@@ -1270,11 +1507,11 @@ const PromptStudio = {
         const angleName = this.angles.find(a => a.id === this.state.angle)?.label.toLowerCase() || '';
         const palette = this.palettes.find(p => p.id === this.state.palette)?.label.toLowerCase() || '';
 
-        // ── FIX #2: Build subject without repeating material in the description ──
+        // ── FIX #2: Build subject without repeating material in the description ──────────────────────
         // The material descriptor is injected separately to avoid redundancy.
         const subject = this._getUniqueSubject(archetype).replace(/\{piece\}/g, `${material} ${piece}`);
 
-        // ── FIX #1: Unified camera system — one lens per shot, no conflicts ──
+        // ── FIX #1: Unified camera system — one lens per shot, no conflicts ──────────────────────
         // Each angle gets a complete, self-contained camera description:
         //   focal length + aperture + focus behavior + technique
         const cameraMap = {
@@ -1291,12 +1528,12 @@ const PromptStudio = {
         };
         const cameraDesc = cameraMap[this.state.angle] || 'shot on 85mm f/1.4 lens, shallow depth of field';
 
-        // ── Silver-specific material descriptors ──
+        // ── Silver-specific material descriptors ──────────────────────
         const silverDesc = this.state.material === '800-silver'
             ? 'warm oxidized patina, traditional Moroccan silverwork texture, hand-hammered artisanal finish'
             : 'rhodium-plated sheen, mirror-polished surface, brilliant metallic luster';
 
-        // ── Surface/backdrop override ──
+        // ── Surface/backdrop override ──────────────────────
         let surfaceDesc = '';
         if (this.state.surface !== 'none') {
             const surfMap = {
@@ -1316,7 +1553,7 @@ const PromptStudio = {
             surfaceDesc = surfMap[this.state.surface] || '';
         }
 
-        // ── Color palette direction ──
+        // ── Color palette direction ──────────────────────
         const paletteMap = {
             'neutral': 'neutral beige and cream color palette, warm luxury tone',
             'warm-earth': 'warm earthy tones — amber, terracotta, sand, sienna',
@@ -1329,8 +1566,28 @@ const PromptStudio = {
         };
         const paletteDesc = paletteMap[this.state.palette] || '';
 
-        // ── FIX #4: Detect if this is a product-only vs human archetype ──
-        const humanArchetypes = ['body-intimate', 'editorial-model', 'bw-dramatic', 'collection-showcase', 'motion-blur', 'cinematic-portrait', 'celestial-mythic'];
+        // Jewelry Style direction
+        let jewelryStyleDesc = '';
+        if (this.state.jewelryStyle && this.state.jewelryStyle.length > 0) {
+            const styleTexts = {
+                'nano': 'ultra-fine nano jewelry aesthetic, delicate miniaturist craftsmanship',
+                'minimalist': 'clean minimalist design language, understated elegant forms',
+                'bohemian': 'free-spirited bohemian styling, organic shapes and natural textures',
+                'art-deco': 'geometric Art Deco motifs, symmetrical precision and luxury patterns',
+                'berber-traditional': 'authentic Berber traditional silverwork, tribal heritage motifs',
+                'gothic': 'bold gothic aesthetic, dark romantic design language',
+                'contemporary': 'modern contemporary luxury, clean architectural lines',
+                'vintage': 'vintage-inspired styling, antique romantic craftsmanship',
+                'streetwear': 'elevated streetwear aesthetic, urban bold and confident',
+            };
+            const texts = this.state.jewelryStyle
+                .filter(s => s !== 'none' && styleTexts[s])
+                .map(s => styleTexts[s]);
+            if (texts.length > 0) jewelryStyleDesc = texts.join(', ');
+        }
+
+        // ── FIX #4: Detect if this is a product-only vs human archetype ──────────────────────
+        const humanArchetypes = ['body-intimate', 'editorial-model', 'bw-dramatic', 'collection-showcase', 'motion-blur', 'cinematic-portrait', 'celestial-mythic', 'masculine-editorial', 'surface-lean', 'hair-drama', 'lifestyle-moment', 'heritage-moroccan', 'architectural-context'];
         const isHuman = humanArchetypes.includes(archetype.id);
 
         // Model styling (only for human archetypes)
@@ -1349,13 +1606,138 @@ const PromptStudio = {
             stylingDesc = styleMap[this.state.styling] || '';
         }
 
-        // ── Anatomy constraints (only when humans are present) ──
+        // Pose variety for human archetypes — adds realism and avoids repeated chin-touching
+        let poseDesc = '';
+        if (isHuman) {
+            const poseMap = {
+                'body-intimate': [
+                    'hand touching chin with wrinkled skin texture visible, {piece} on finger',
+                    'hand placed gently on cheek, slight skin crease at fingertip, {piece} visible',
+                    'fingers lightly pressed to lips, natural hand tension, {piece} prominent',
+                    'hand resting against collarbone, relaxed natural wrist angle',
+                    'both hands framing face loosely, natural finger drape',
+                ],
+                'editorial-model': [
+                    'standing with one hand on hip, other loosely at side, confident gaze',
+                    'arms crossed elegantly, jewelry on full display, strong editorial stance',
+                    'one hand raised touching ear/earring, other dropped naturally',
+                    'seated, hands resting in lap, upright elegant posture',
+                    'leaning slightly forward, hands on thighs, direct camera engagement',
+                ],
+                'surface-lean': [
+                    'both elbows on surface, chin resting on interlaced fingers, direct gaze',
+                    'one elbow on surface, head tilted, hand loosely at cheek — natural skin wrinkle',
+                    'forearms flat on surface, leaning forward, jewelry at forefront',
+                ],
+                'hair-drama': [
+                    'both hands raised through hair, fingers spread, natural ring display',
+                    'one hand lifting hair off shoulder, elbow raised, earring exposed',
+                    'fingertips at crown pulling hair back, wrists bent naturally',
+                ],
+                'masculine-editorial': [
+                    'standing with hands in jacket pockets, ring at cuff',
+                    'forearm resting on ledge, sleeves rolled, bracelet prominent',
+                    'both arms crossed, ring on clasped hands visible',
+                ],
+            };
+            const poses = poseMap[archetype.id];
+            if (poses && poses.length > 0) {
+                // Pick random pose for variety
+                poseDesc = poses[Math.floor(Math.random() * poses.length)];
+            }
+        }
+
+        // Realism enhancers — wrinkles, natural skin texture for body shots
+        let realismDesc = '';
+        if (isHuman) {
+            const realismPool = [
+                'natural skin texture with subtle knuckle wrinkles adding authenticity',
+                'fine skin creases at finger joints visible, photorealistic tactile quality',
+                'natural hand tension and micro-wrinkles at contact points, editorial realism',
+                'skin pores visible in close crop, photographic skin texture',
+            ];
+            // Use user-controlled realism settings if any are set
+            const userSkinTexture = this.state?.skinTexture || 'natural';
+            const userWrinkles = this.state?.wrinkles || 'none';
+            const userBodyHair = this.state?.bodyHair || 'none';
+            const userSkinDetail = this.state?.skinDetail || 'none';
+
+            const realismParts = [];
+
+            // Skin texture
+            const skinTextureMap = {
+                'natural':  'natural photorealistic skin texture with authentic micro-detail',
+                'pores':    'visible skin pores and fine texture, hyperrealistic skin surface',
+                'smooth':   'professionally smooth skin, polished editorial finish',
+                'luminous': 'luminous skin glow, soft subsurface scattering effect',
+            };
+            if (userSkinTexture !== 'natural') realismParts.push(skinTextureMap[userSkinTexture] || '');
+
+            // Wrinkles / expression lines
+            const wrinkleMap = {
+                'none':      '',
+                'subtle':    'subtle natural expression lines, authentic skin character',
+                'natural':   'natural wrinkles and skin creases visible, photorealistic authenticity',
+                'character': 'prominent character expression lines, aged editorial realism',
+            };
+            if (userWrinkles !== 'none') realismParts.push(wrinkleMap[userWrinkles] || '');
+
+            // Body hair
+            const bodyHairMap = {
+                'none':    '',
+                'fine':    'fine subtle arm hair visible, natural human skin detail',
+                'natural': 'natural body hair visible on arms and hands, authentic human realism',
+            };
+            if (userBodyHair !== 'none') realismParts.push(bodyHairMap[userBodyHair] || '');
+
+            // Skin detail
+            const skinDetailMap = {
+                'none':        '',
+                'veins':       'subtle veins visible beneath skin, dermal translucency',
+                'freckles':    'natural freckles and sun spots visible on skin',
+                'translucent': 'skin translucency with subsurface scattering, light passing through thin skin areas',
+            };
+            if (userSkinDetail !== 'none') realismParts.push(skinDetailMap[userSkinDetail] || '');
+
+            // Skin detail
+            const skinDetailMap2 = {
+                'none':        '',
+                'veins':       'subtle veins visible beneath skin, dermal translucency',
+                'freckles':    'natural freckles and sun spots visible on skin',
+                'translucent': 'skin translucency with subsurface scattering, light passing through thin skin areas',
+            };
+
+            if (realismParts.length > 0) {
+                realismDesc = realismParts.filter(Boolean).join(', ');
+            } else {
+                // Fall back to the random realism pool for variety
+                realismDesc = realismPool[Math.floor(Math.random() * realismPool.length)];
+            }
+        }
+
+        // ── Facial Expression (human archetypes only) ──────────────────────
+        let expressionDesc = '';
+        if (isHuman) {
+            const expressionMap = {
+                'none':       '',
+                'serene':     'serene calm expression, soft relaxed face, eyes slightly downcast, peaceful',
+                'smile':      'gentle authentic smile, soft lips slightly parted, warmth in eyes',
+                'joy':        'genuine laugh, joy visible in crinkled eyes and open smile, natural euphoria',
+                'intense':    'intense focused gaze directly at camera, strong confident expression, sharp eyes',
+                'sultry':     'sultry confident look, soft half-smile, eyes full of quiet confidence and sensuality',
+                'thoughtful': 'thoughtful dreamy expression, eyes slightly unfocused, contemplative and poetic mood',
+            };
+            expressionDesc = expressionMap[this.state?.facialExpression || 'none'] || '';
+        }
+
+
+        // ── Anatomy constraints (only when humans are present) ──────────────────────
         let anatomyConstraint = '';
         if (isHuman || archetype.id === 'shadow-play') {
             anatomyConstraint = 'CRITICAL: Flawless human anatomy — exactly two arms, exactly two hands, exactly five fingers per hand, correct joint proportions, natural knuckle spacing, no extra or fused digits, photorealistic skin texture.';
         }
 
-        // ── Hallmark brand injection — only when enabled ──
+        // ── Hallmark brand injection — only when enabled ──────────────────────
         let hallmarkDesc = '';
         if (this.state.hallmarkEnabled) {
             const category = this.state.category || 'general';
@@ -1373,7 +1755,7 @@ const PromptStudio = {
             hallmarkDesc = hallmarkMap[category] || hallmarkMap['general'];
         }
 
-        // ── FIX #3: Context-aware negative prompts ──
+        // ── FIX #3: Context-aware negative prompts ──────────────────────
         let negativePrompt;
         if (isHuman) {
             // Human archetypes: anatomy + technical negatives
@@ -1383,7 +1765,7 @@ const PromptStudio = {
             negativePrompt = 'Negative prompt: (hand, fingers, skin, arm, human), chromatic aberration, overexposed highlights, plastic texture, distorted shape, asymmetrical geometry, AI artifacts, text overlay, watermarks, logos, cartoon, illustration, painting, low quality, blurry, noise grain, 3d render.';
         }
 
-        // ── FIX #5: Subject-first prompt structure for better AI weighting ──
+        // ── FIX #5: Subject-first prompt structure for better AI weighting ──────────────────────
         // Most important visual element (the jewelry) comes first.
         const standardParts = [
             subject + '.',
@@ -1391,9 +1773,13 @@ const PromptStudio = {
             archetype.scene + '.',
             `${cameraDesc}.`,
             `${mood} mood, ${lighting}.`,
+            poseDesc ? `Pose: ${poseDesc}.` : '',
+            expressionDesc ? `Expression: ${expressionDesc}.` : '',
+            realismDesc ? realismDesc + '.' : '',
             surfaceDesc ? surfaceDesc + '.' : '',
             paletteDesc ? paletteDesc + '.' : '',
             stylingDesc ? stylingDesc + '.' : '',
+            jewelryStyleDesc ? `Style direction: ${jewelryStyleDesc}.` : '',
             hallmarkDesc ? `Brand hallmark details: ${hallmarkDesc}.` : '',
             'Sharp critical focus on jewelry, perfect geometric proportions, 8K resolution, style photographic, professional commercial photography, RAW quality.',
             anatomyConstraint,
@@ -1402,7 +1788,7 @@ const PromptStudio = {
         ];
         const standardPrompt = standardParts.filter(Boolean).join(' ');
 
-        // ── MULTI-IMAGE CONSISTENCY LOGIC ──
+        // ── MULTI-IMAGE CONSISTENCY LOGIC ──────────────────────
         if (this.state.jewelryCount > 0) {
             const jc = this.state.jewelryCount;
             const hasModel = this.state.consistencyOn;
@@ -1434,7 +1820,7 @@ const PromptStudio = {
         return standardPrompt;
     },
 
-    // ── Copy All ─────────────────────────────────────────────────
+    // ── Copy All ──────────────────────
     _copyAll() {
         if (!this._currentPrompts || this._currentPrompts.length === 0) return;
         const text = this._currentPrompts.map((p, i) =>
@@ -1445,7 +1831,7 @@ const PromptStudio = {
         });
     },
 
-    // ── Render History ───────────────────────────────────────────
+    // ── Render History ──────────────────────
     _renderHistory() {
         const el = this.container.querySelector('#ps-history');
         const items = this.state.history.slice(0, 20);
@@ -1476,12 +1862,12 @@ const PromptStudio = {
         });
     },
 
-    // ── Utility ──────────────────────────────────────────────────
+    // ── Utility ──────────────────────
     _random(arr) {
         return arr[Math.floor(Math.random() * arr.length)];
     },
 
-    // ── Unique Subject Tracker ───────────────────────────────────
+    // ── Unique Subject Tracker ──────────────────────
     _subjectPools: {},
     _getUniqueSubject(archetype) {
         // If pool doesn't exist or is empty, create a new shuffled pool
