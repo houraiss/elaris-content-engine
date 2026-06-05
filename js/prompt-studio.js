@@ -555,10 +555,10 @@ const PromptStudio = {
             color: '#1e2a2a',
             subjects: [
                 'model with elbow on marble table, chin resting on closed fist, {piece} prominently displayed, editorial close-crop',
-                'model leaning forward, both forearms resting on surface, {piece} visible from wrist to knuckle',
-                'model propping chin with interlaced fingers, {piece} rings stacked on display at center frame',
-                'model with one hand placed flat on surface, other hand lightly resting over it, {piece} on both hands',
-                'model leaning into camera with wrist bent back showing bracelet {piece}, casual cool editorial',
+                'model leaning forward, both forearms resting on surface, {piece} in sharp foreground focus, hands and wrists leading the eye',
+                'model propping chin with interlaced fingers, {piece} displayed prominently at center frame',
+                'model with both hands gently resting on surface, {piece} centered and in sharp focus',
+                'model leaning into camera, wrist elegantly bent, {piece} visible at the foreground, casual editorial confidence',
             ],
             scene: 'low editorial angle, surface as anchor, warm studio or ambient window light, model looking relaxed and confident, jewelry in sharp focus at the foreground plane',
             compat: { ring: 98, necklace: 60, earrings: 65, bracelet: 95, bangles: 90, anklet: 30, brooch: 50, pendant: 55, 'body-jewelry': 40 },
@@ -572,11 +572,11 @@ const PromptStudio = {
             desc: 'Hands running through or arranging hair — a natural gesture that frames earrings and rings simultaneously',
             color: '#2a1a2a',
             subjects: [
-                'model running fingers through long hair, both hands raised, rings on every finger catching the light',
+                'model running fingers through long hair, both hands raised, {piece} catching the light in motion',
                 'model lifting hair off neck with one hand to reveal {piece} earring, sensual editorial gesture',
-                'hands pulling hair back into loose updo, {piece} rings and bracelets all visible against the hair',
+                'hands pulling hair back into loose updo, {piece} prominently displayed against the hair',
                 'model tousling sun-kissed hair, face partially obscured, {piece} earrings swinging mid-motion',
-                'close-up of hands gathering hair at nape, {piece} stacked rings at every knuckle, golden hour backlight',
+                'close-up of hands gathering hair at nape, {piece} displayed at every finger, golden hour backlight',
             ],
             scene: 'editorial fashion photography, hair in natural motion, backlighting to create rim-light halo on hair and jewelry, skin warm and glowing, creative finger placement',
             compat: { ring: 98, necklace: 50, earrings: 98, bracelet: 85, bangles: 80, anklet: 20, brooch: 30, pendant: 45, 'body-jewelry': 40 },
@@ -590,11 +590,11 @@ const PromptStudio = {
             desc: 'Strong masculine editorial — suited or casual male model wearing jewelry with intention',
             color: '#1a1a1a',
             subjects: [
-                'man in dark blazer, hand in pocket showing {piece} signet ring at cuff edge, sophisticated editorial',
-                'man with rolled sleeves showing strong forearms, {piece} chunky chain bracelet draped casually',
-                'close-up of man hand gripping steering wheel, {piece} ring clearly visible, golden hour light',
-                'man adjusting jacket lapel, {piece} chain necklace visible at open collar, confident gaze',
-                "man's hand resting on a wooden bar top, {piece} ring prominent, warm candlelight illumination",
+                'man in dark blazer, hand resting at cuff edge with {piece} prominently visible, sophisticated editorial',
+                'man with rolled sleeves showing strong forearms, {piece} draped casually, masculine editorial detail',
+                'close-up of man hand gripping steering wheel, {piece} clearly visible, golden hour light',
+                'man adjusting jacket lapel, {piece} visible at open collar, confident gaze',
+                "man's hand resting on a wooden bar top, {piece} prominent, warm candlelight and rich shadow",
                 'man standing in archway, arm raised against the doorframe, {piece} bracelet sliding down wrist',
             ],
             scene: 'masculine editorial, strong confident mood, tailored or relaxed clothing, directional dramatic lighting, deep shadows and highlights, silver against dark clothing for maximum contrast',
@@ -1611,11 +1611,14 @@ const PromptStudio = {
         const humanArchetypes = ['body-intimate', 'editorial-model', 'bw-dramatic', 'collection-showcase', 'motion-blur', 'cinematic-portrait', 'celestial-mythic', 'masculine-editorial', 'surface-lean', 'hair-drama', 'lifestyle-moment', 'heritage-moroccan', 'architectural-context'];
         const isHuman = humanArchetypes.includes(archetype.id);
 
-        // Model styling (only for human archetypes)
+        // Model styling (only for human archetypes) — gender-aware phrasing
+        const modelGenderForStyling = this.state.modelGender || 'female';
         let stylingDesc = '';
         if (isHuman) {
             const styleMap = {
-                'minimal': 'model in minimal/nude styling, skin as the canvas',
+                'minimal': modelGenderForStyling === 'male'
+                    ? 'model in minimal clean styling, strong build as the canvas'
+                    : 'model in minimal styling, skin as the canvas',
                 'black-dress': 'model wearing elegant black dress, jewelry as the contrast',
                 'silk-cami': 'model in silk camisole, effortless luxury',
                 'blazer': 'model in tailored suit/blazer, power dressing',
@@ -1627,9 +1630,14 @@ const PromptStudio = {
             stylingDesc = styleMap[this.state.styling] || '';
         }
 
-        // Pose variety for human archetypes — adds realism and avoids repeated chin-touching
+        // Pose detail — ONLY injected for archetypes whose subject templates
+        // describe a general scene (not a specific body position). For archetypes
+        // like surface-lean, hair-drama, body-intimate, masculine-editorial, their
+        // subject templates already fully describe the model's position — injecting
+        // poseDesc on top would create two conflicting body descriptions.
+        const POSE_ARCHETYPES = new Set(['editorial-model', 'bw-dramatic', 'cinematic-portrait', 'lifestyle-moment']);
         let poseDesc = '';
-        if (isHuman) {
+        if (isHuman && POSE_ARCHETYPES.has(archetype.id)) {
             const poseMap = {
                 'body-intimate': [
                     'hand touching chin, {piece} centered on finger',
