@@ -810,15 +810,11 @@ const PromptStudio = {
 
     // ── Profiles Management ──────────────────────
     _loadProfiles() {
-        try {
-            const saved = localStorage.getItem('elaris_model_profiles');
-            if (saved) {
-                this.state.profiles = JSON.parse(saved);
-                return;
-            }
-        } catch (e) { console.error('Failed to load profiles', e); }
-        
-        this.state.profiles = [
+        // ── Built-in profiles are always guaranteed to exist ──────────────────
+        // These are the hardcoded defaults. They are available on every device
+        // without requiring localStorage. User edits (e.g. reference images)
+        // are preserved by merging saved data over the defaults.
+        const BUILT_IN = [
             {
                 id: 'lina', name: 'Lina', gender: 'female',
                 descriptor: 'Woman, 25 years old, olive Mediterranean skin tone, almond-shaped dark brown eyes, high cheekbones, sharp jawline, full lips, straight dark brown hair shoulder-length, slim graceful neck, elegant posture',
@@ -840,6 +836,31 @@ const PromptStudio = {
                 referenceImage: null, color: '#52a67c'
             },
         ];
+        const BUILT_IN_IDS = BUILT_IN.map(p => p.id);
+
+        let customProfiles = [];
+        let savedBuiltIns  = {};
+
+        try {
+            const saved = localStorage.getItem('elaris_model_profiles');
+            if (saved) {
+                const savedProfiles = JSON.parse(saved);
+                savedProfiles.forEach(p => {
+                    if (BUILT_IN_IDS.includes(p.id)) {
+                        // Preserve any user edits (reference image, etc.)
+                        savedBuiltIns[p.id] = p;
+                    } else {
+                        // User-created custom profile — keep it
+                        customProfiles.push(p);
+                    }
+                });
+            }
+        } catch (e) { console.error('Failed to load profiles', e); }
+
+        // Merge: built-ins first (with any user edits), then custom profiles
+        // This guarantees Lina, Sara, Amir & Tariq always appear on any device
+        const mergedBuiltIns = BUILT_IN.map(p => savedBuiltIns[p.id] || p);
+        this.state.profiles = [...mergedBuiltIns, ...customProfiles];
         this._saveProfiles();
     },
 
