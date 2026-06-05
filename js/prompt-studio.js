@@ -979,7 +979,7 @@ const PromptStudio = {
                         <div class="ps-arch-tag">${tagline}</div>
                         <div class="ps-arch-bestfor">${bestForText} ${bestForVal}</div>
                     </div>
-                    <div class="ps-arch-score" style="color:${scoreColor}" title="Compatibility with ${cat}">${score}</div>
+                    <div class="ps-arch-score" style="color:${scoreColor}" title="Compatibility with ${this.state.category || 'ring'}">${score}</div>
                 </div>
             `;
         }).join('');
