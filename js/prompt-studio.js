@@ -1007,7 +1007,7 @@ const PromptStudio = {
                         <div class="form-group">
                             <label class="form-label" data-i18n="ps_jewelry_shots">Jewelry Shots</label>
                             <div class="ps-chip-group" id="ps-jewelry-count">
-                                ${[0, 1, 2, 3, 4].map(n => `<button class="ps-chip ${this.state.jewelryCount === n ? 'active' : ''}" data-val="${n}">${n === 0 ? (window.I18n ? window.I18n.t('ps_none') : 'None') : n === 4 ? '4+' : n}</button>`).join('')}
+                                ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => `<button class="ps-chip ${this.state.jewelryCount === n ? 'active' : ''}" data-val="${n}">${n === 0 ? (window.I18n ? window.I18n.t('ps_none') : 'None') : n}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group" style="padding-top:12px;border-top:1px solid var(--border)">
@@ -1430,7 +1430,12 @@ const PromptStudio = {
             if (!chip) return;
             group.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
             chip.classList.add('active');
-            this.state[stateKey] = chip.dataset.val;
+            // Preserve numeric type: if the raw value is a pure integer string
+            // (e.g. "0", "5", "10"), store it as a Number so === comparisons work.
+            // Non-numeric values ('none', 'natural', 'female', etc.) stay as strings.
+            const raw = chip.dataset.val;
+            const asNum = parseFloat(raw);
+            this.state[stateKey] = (!isNaN(asNum) && String(asNum) === raw) ? asNum : raw;
         });
     },
 
