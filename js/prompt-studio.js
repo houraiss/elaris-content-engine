@@ -1393,6 +1393,7 @@ const PromptStudio = {
                 chip.classList.add('active');
                 this.state.modelImageAttached = chip.dataset.val === 'true';
                 this._render();
+                this._renderArchetypeGrid(); // must follow _render() to repopulate grid
                 this._bind();
             });
         }
