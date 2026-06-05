@@ -796,6 +796,7 @@ const PromptStudio = {
         history: [],
         jewelryCount: 0,
         consistencyOn: false,
+        modelImageAttached: true,   // when false: use model descriptor only (no image ref slot)
         modelGender: 'female',
         jewelryStyle: [],
         activeProfileId: 'lina',
@@ -1023,6 +1024,22 @@ const PromptStudio = {
                             </div>
                         </div>
                         ${this.state.consistencyOn ? `
+                        <div class="form-group" style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)">
+                            <label class="form-label" style="margin-bottom:6px">Model Image Reference</label>
+                            <div class="ps-chip-group" id="ps-model-image-ref" style="margin-bottom:4px">
+                                <button class="ps-chip ${this.state.modelImageAttached ? 'active' : ''}" data-val="true" style="font-size:11px">
+                                    📎 Image attached
+                                </button>
+                                <button class="ps-chip ${!this.state.modelImageAttached ? 'active' : ''}" data-val="false" style="font-size:11px">
+                                    📝 Text only
+                                </button>
+                            </div>
+                            <p class="text-sm text-muted" style="line-height:1.4;margin-bottom:0">
+                                ${this.state.modelImageAttached
+                                    ? 'Prompt will reference the model photo by image slot number.'
+                                    : 'Prompt will use the model descriptor text only — no image slot needed.'}
+                            </p>
+                        </div>
                         <div class="form-group" style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)">
                             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
                                 <label class="form-label" style="margin:0" data-i18n="ps_model_profile">Model Profile</label>
@@ -1324,6 +1341,20 @@ const PromptStudio = {
                 this._render(); // Re-render to show/hide profile panel
                 this._renderArchetypeGrid();
                 this._bind();   // Re-bind events since DOM rebuilt
+            });
+        }
+
+        // Model image reference: "📎 Image attached" / "📝 Text only"
+        const mirGroup = q('#ps-model-image-ref');
+        if (mirGroup) {
+            mirGroup.addEventListener('click', e => {
+                const chip = e.target.closest('.ps-chip');
+                if (!chip) return;
+                mirGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                this.state.modelImageAttached = chip.dataset.val === 'true';
+                this._render();
+                this._bind();
             });
         }
 
@@ -1834,7 +1865,8 @@ const PromptStudio = {
         // ── MULTI-IMAGE CONSISTENCY LOGIC ──────────────────────
         if (this.state.jewelryCount > 0) {
             const jc = this.state.jewelryCount;
-            const hasModel = this.state.consistencyOn;
+            const hasModelDesc  = this.state.consistencyOn;               // model descriptor enabled
+            const hasModelImage = hasModelDesc && this.state.modelImageAttached; // ALSO has photo attached
 
             // Gender-correct pronouns
             const modelGender  = this.state.modelGender || 'female';
@@ -1845,15 +1877,22 @@ const PromptStudio = {
             p += jc === 1
                 ? `Image 1 shows the exact jewelry piece to be featured.\n`
                 : `Images 1 to ${jc} show the exact jewelry piece to be featured.\n`;
-            if (hasModel) {
+
+            // Only reference an image slot if the user is actually attaching one
+            if (hasModelImage) {
                 p += `Image ${jc + 1} is the model reference — keep ${genderHisHer} face, features, and skin tone perfectly identical.\n`;
             }
+
             p += `\n[JEWELRY RECONSTRUCTION]\n`;
             p += `Use ALL jewelry image(s) to reconstruct the ${this.state.category || 'piece'}. Maintain exact metal color, stone placement, and proportions.\n`;
 
             p += `\n[SCENE DIRECTION]\n`;
-            if (hasModel) {
+            if (hasModelImage) {
+                // Photo attached: instruct AI to match the specific image
                 p += `Generate a photo of the exact same ${genderNoun} from Image ${jc + 1} wearing the jewelry.\n`;
+            } else if (hasModelDesc) {
+                // No photo: instruct AI to use the text descriptor as sole model reference
+                p += `Generate a photo of a ${genderNoun} matching the Model Details description below, wearing the jewelry.\n`;
             } else if (isHuman) {
                 p += `Generate a photo of a model wearing the jewelry.\n`;
             }
@@ -1862,10 +1901,16 @@ const PromptStudio = {
             p += bodyParts.filter(Boolean).join(' ');
 
             // Model Details BEFORE the technical tail — higher token priority
-            if (hasModel) {
+            // Injected for BOTH image-attached and text-only modes
+            if (hasModelDesc) {
                 const activeProf = this.state.profiles.find(prof => prof.id === this.state.activeProfileId);
                 if (activeProf) {
-                    p += `\n\nModel Details: ${activeProf.descriptor}.`;
+                    if (hasModelImage) {
+                        p += `\n\nModel Details: ${activeProf.descriptor}.`;
+                    } else {
+                        // Text-only: make the descriptor more prominent as the sole reference
+                        p += `\n\nModel Details (sole appearance reference — no image attached): ${activeProf.descriptor}.`;
+                    }
                 }
             }
 
