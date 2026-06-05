@@ -1530,13 +1530,13 @@ const PromptStudio = {
 
         // ── FIX #2: Build subject without repeating material in the description ──────────────────────
         // The material descriptor is injected separately to avoid redundancy.
-        const subject = this._getUniqueSubject(archetype).replace(/\{piece\}/g, `${material} ${piece}`);
+        const subject = this._getUniqueSubject(archetype).replace(/\{piece\}/g, piece);
 
         // ── FIX #1: Unified camera system — one lens per shot, no conflicts ──────────────────────
         // Each angle gets a complete, self-contained camera description:
         //   focal length + aperture + focus behavior + technique
         const cameraMap = {
-            'eye-level':     'shot on 85mm f/1.4 lens, shallow depth of field, natural eye-level perspective',
+            'eye-level':     'shot on 85mm f/1.4 portrait lens, shallow depth of field',
             'overhead':      'shot from directly above on 50mm f/4 lens, even focus plane across the frame',
             'low-angle':     'low angle hero shot on 35mm f/2.8 wide lens, dramatic perspective distortion',
             'dutch':         'dutch angle tilt on 50mm f/2 lens, dynamic visual tension',
@@ -1632,7 +1632,7 @@ const PromptStudio = {
         if (isHuman) {
             const poseMap = {
                 'body-intimate': [
-                    'hand touching chin with wrinkled skin texture visible, {piece} on finger',
+                    'hand touching chin, {piece} centered on finger',
                     'hand placed gently on cheek, slight skin crease at fingertip, {piece} visible',
                     'fingers lightly pressed to lips, natural hand tension, {piece} prominent',
                     'hand resting against collarbone, relaxed natural wrist angle',
@@ -1647,7 +1647,7 @@ const PromptStudio = {
                 ],
                 'surface-lean': [
                     'both elbows on surface, chin resting on interlaced fingers, direct gaze',
-                    'one elbow on surface, head tilted, hand loosely at cheek — natural skin wrinkle',
+                    'one elbow on surface, head tilted, hand loosely at cheek',
                     'forearms flat on surface, leaning forward, jewelry at forefront',
                 ],
                 'hair-drama': [
@@ -1720,14 +1720,6 @@ const PromptStudio = {
             };
             if (userSkinDetail !== 'none') realismParts.push(skinDetailMap[userSkinDetail] || '');
 
-            // Skin detail
-            const skinDetailMap2 = {
-                'none':        '',
-                'veins':       'subtle veins visible beneath skin, dermal translucency',
-                'freckles':    'natural freckles and sun spots visible on skin',
-                'translucent': 'skin translucency with subsurface scattering, light passing through thin skin areas',
-            };
-
             if (realismParts.length > 0) {
                 realismDesc = realismParts.filter(Boolean).join(', ');
             } else {
@@ -1786,55 +1778,87 @@ const PromptStudio = {
             negativePrompt = 'Negative prompt: (hand, fingers, skin, arm, human), chromatic aberration, overexposed highlights, plastic texture, distorted shape, asymmetrical geometry, AI artifacts, text overlay, watermarks, logos, cartoon, illustration, painting, low quality, blurry, noise grain, 3d render.';
         }
 
-        // ── FIX #5: Subject-first prompt structure for better AI weighting ──────────────────────
-        // Most important visual element (the jewelry) comes first.
-        const standardParts = [
+        // ── Prompt structure: body (scene) + tail (quality + constraints) ──────────────────────
+        // Splitting into body/tail allows Model Details to be injected BEFORE the
+        // technical tail in consistency mode, ensuring the model descriptor has
+        // higher token weight than the negative prompt.
+        const bodyParts = [
+            // SUBJECT — jewelry piece at the center, material injected cleanly on next line
             subject + '.',
+            // MATERIAL — stated once, cleanly, with metal descriptor
             `${material}, ${silverDesc}.`,
+            // SCENE — archetype visual story (lighting, composition, mood)
             archetype.scene + '.',
+            // CAMERA — lens, aperture, depth of field (no angle conflict)
             `${cameraDesc}.`,
+            // MOOD & LIGHTING
             `${mood} mood, ${lighting}.`,
+            // POSE (human only, no embedded skin notes)
             poseDesc ? `Pose: ${poseDesc}.` : '',
+            // EXPRESSION (human only)
             expressionDesc ? `Expression: ${expressionDesc}.` : '',
+            // REALISM (skin texture, wrinkles, body hair, skin detail — user controlled)
             realismDesc ? realismDesc + '.' : '',
+            // SURFACE / PALETTE / STYLING
             surfaceDesc ? surfaceDesc + '.' : '',
             paletteDesc ? paletteDesc + '.' : '',
             stylingDesc ? stylingDesc + '.' : '',
+            // JEWELRY STYLE DIRECTION
             jewelryStyleDesc ? `Style direction: ${jewelryStyleDesc}.` : '',
+            // BRAND HALLMARK (optional)
             hallmarkDesc ? `Brand hallmark details: ${hallmarkDesc}.` : '',
+        ];
+
+        const tailParts = [
             'Sharp critical focus on jewelry, perfect geometric proportions, 8K resolution, style photographic, professional commercial photography, RAW quality.',
             anatomyConstraint,
             `Aspect ratio ${ratio}.`,
             negativePrompt,
         ];
-        const standardPrompt = standardParts.filter(Boolean).join(' ');
+
+        const standardPrompt = [...bodyParts, ...tailParts].filter(Boolean).join(' ');
 
         // ── MULTI-IMAGE CONSISTENCY LOGIC ──────────────────────
         if (this.state.jewelryCount > 0) {
             const jc = this.state.jewelryCount;
             const hasModel = this.state.consistencyOn;
+
+            // Gender-correct pronouns
+            const modelGender  = this.state.modelGender || 'female';
+            const genderNoun   = modelGender === 'male' ? 'man'  : 'woman';
+            const genderHisHer = modelGender === 'male' ? 'his'  : 'her';
+
             let p = `[IMAGE REFERENCES]\n`;
-            p += jc === 1 ? `Image 1 shows the exact jewelry piece to be featured.\n` : `Images 1 to ${jc} show the exact jewelry piece to be featured.\n`;
+            p += jc === 1
+                ? `Image 1 shows the exact jewelry piece to be featured.\n`
+                : `Images 1 to ${jc} show the exact jewelry piece to be featured.\n`;
             if (hasModel) {
-                p += `Image ${jc + 1} is the model reference - keep her face, features, and skin tone perfectly identical.\n`;
+                p += `Image ${jc + 1} is the model reference — keep ${genderHisHer} face, features, and skin tone perfectly identical.\n`;
             }
             p += `\n[JEWELRY RECONSTRUCTION]\n`;
             p += `Use ALL jewelry image(s) to reconstruct the ${this.state.category || 'piece'}. Maintain exact metal color, stone placement, and proportions.\n`;
-            
+
             p += `\n[SCENE DIRECTION]\n`;
             if (hasModel) {
-                p += `Generate a photo of the exact same woman from Image ${jc + 1} wearing the jewelry. `;
+                p += `Generate a photo of the exact same ${genderNoun} from Image ${jc + 1} wearing the jewelry.\n`;
             } else if (isHuman) {
-                p += `Generate a photo of a model wearing the jewelry. `;
+                p += `Generate a photo of a model wearing the jewelry.\n`;
             }
-            p += standardPrompt;
 
+            // Body prompt (scene description)
+            p += bodyParts.filter(Boolean).join(' ');
+
+            // Model Details BEFORE the technical tail — higher token priority
             if (hasModel) {
                 const activeProf = this.state.profiles.find(prof => prof.id === this.state.activeProfileId);
                 if (activeProf) {
-                    p += `\n\nModel Details: ${activeProf.descriptor}`;
+                    p += `\n\nModel Details: ${activeProf.descriptor}.`;
                 }
             }
+
+            // Technical tail last
+            p += '\n\n' + tailParts.filter(Boolean).join(' ');
+
             return p;
         }
 
