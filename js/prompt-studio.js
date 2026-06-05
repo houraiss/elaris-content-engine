@@ -886,33 +886,72 @@ const PromptStudio = {
         this._bind();
     },
 
+    // ── Compute a single consistent score for sort + display ──────────────────────
+    // This guarantees that badge rank = visual rank. Score is always 0-100.
+    _computeScore(archetype, state) {
+        const HUMAN = new Set([
+            'body-intimate', 'editorial-model', 'collection-showcase', 'bw-dramatic',
+            'motion-blur', 'cinematic-portrait', 'lifestyle-moment', 'heritage-moroccan',
+            'celestial-mythic', 'architectural-context', 'masculine-editorial',
+            'surface-lean', 'hair-drama',
+        ]);
+        const cat     = state.category || 'ring';
+        const isHuman = HUMAN.has(archetype.id);
+
+        // Base score from category compatibility table
+        let score = (archetype.compat && archetype.compat[cat]) || 50;
+
+        // ── Consistency mode adjustments ───────────────────────────────
+        // When a model reference is active, human archetypes are preferred.
+        if (state.consistencyOn) {
+            if (isHuman)  score += 18;   // human archetype + consistency → strong boost
+            else          score -= 8;    // product-only archetypes are less relevant
+        }
+
+        // ── No reference images: product archetypes are equally valid ──
+        // When jewelryCount === 0 there is no multi-image context, so
+        // product archetypes that work well alone should rank higher.
+        if (!state.consistencyOn && state.jewelryCount === 0 && !isHuman) {
+            score += 5;
+        }
+
+        // ── Gender-specific archetype adjustments ──────────────────────
+        if (state.modelGender === 'male') {
+            if (archetype.id === 'masculine-editorial') score += 15; // ideal male archetype
+            if (archetype.id === 'hair-drama')          score -= 10; // less natural for men
+            if (archetype.id === 'body-intimate')       score -=  5; // slightly less fitting
+        } else {
+            // female default
+            if (archetype.id === 'masculine-editorial') score -= 10; // intended for men
+            if (archetype.id === 'hair-drama')          score +=  5; // great for long hair
+        }
+
+        // Clamp to 0-100
+        return Math.max(0, Math.min(100, Math.round(score)));
+    },
+
     // ── Render Archetype Grid (dynamic, re-sortable) ──────────────────────
     _renderArchetypeGrid() {
         const grid = this.container.querySelector('#ps-archetypes');
         if (!grid) return;
 
-        const cat = this.state.category || 'ring';
         let sorted = [...this.archetypes];
 
         if (this._sortMode === 'recommended') {
-            const humanArchetypes = ['body-intimate', 'editorial-model', 'collection-showcase', 'bw-dramatic', 'motion-blur', 'cinematic-portrait', 'lifestyle-moment', 'heritage-moroccan', 'celestial-mythic', 'architectural-context', 'masculine-editorial', 'surface-lean', 'hair-drama'];
             sorted.sort((a, b) => {
-                let scoreA = (a.compat && a.compat[cat]) || 50;
-                let scoreB = (b.compat && b.compat[cat]) || 50;
-                
-                if (this.state.consistencyOn) {
-                    if (humanArchetypes.includes(a.id)) scoreA += 50;
-                    if (humanArchetypes.includes(b.id)) scoreB += 50;
-                }
-
-                return scoreB - scoreA;
+                const scoreA = this._computeScore(a, this.state);
+                const scoreB = this._computeScore(b, this.state);
+                // Stable tiebreaker: alphabetical by name
+                if (scoreB !== scoreA) return scoreB - scoreA;
+                return a.name.localeCompare(b.name);
             });
         } else {
             sorted.sort((a, b) => a.name.localeCompare(b.name));
         }
 
         grid.innerHTML = sorted.map(a => {
-            const score = (a.compat && a.compat[cat]) || 50;
+            // Use the SAME score for display as used for sorting
+            const score = this._computeScore(a, this.state);
             const isSelected = this.state.selectedArchetypes.includes(a.id);
             const scoreColor = score >= 85 ? '#4ade80' : score >= 70 ? '#fbbf24' : score >= 50 ? '#f97316' : '#f87171';
             
