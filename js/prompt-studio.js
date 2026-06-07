@@ -719,6 +719,7 @@ const PromptStudio = {
     // ── Color Palettes ──────────────────────
     get palettes() {
         return [
+            { id: 'auto', label: 'Auto / Scene' },
             { id: 'neutral', label: window.I18n ? window.I18n.t('ps_pal_neutral') : 'Neutral Beige' },
             { id: 'warm-earth', label: window.I18n ? window.I18n.t('ps_pal_warm') : 'Warm Earth' },
             { id: 'cool-steel', label: window.I18n ? window.I18n.t('ps_pal_cool') : 'Cool Steel' },
@@ -733,6 +734,7 @@ const PromptStudio = {
     // ── Model Styling (for human archetypes) ──────────────────────
     get stylings() {
         return [
+            { id: 'auto', label: 'Auto / Scene' },
             { id: 'minimal', label: window.I18n ? window.I18n.t('ps_sty_minimal') : 'Minimal / Nude' },
             { id: 'black-dress', label: window.I18n ? window.I18n.t('ps_sty_black') : 'Black Dress' },
             { id: 'silk-cami', label: window.I18n ? window.I18n.t('ps_sty_silk') : 'Silk Camisole' },
@@ -818,8 +820,8 @@ const PromptStudio = {
         format: 'square',
         angle: 'eye-level',
         surface: 'none',
-        palette: 'neutral',
-        styling: 'minimal',
+        palette: 'auto',
+        styling: 'auto',
         hallmarkEnabled: false,
         history: [],
         jewelryCount: 0,
@@ -1791,6 +1793,7 @@ const PromptStudio = {
 
         // ── Color palette direction ──────────────────────
         const paletteMap = {
+            'auto': '',   // auto: no palette constraint — AI picks what fits the scene
             'neutral': 'neutral beige and cream color palette, warm luxury tone',
             'warm-earth': 'warm earthy tones — amber, terracotta, sand, sienna',
             'cool-steel': 'cool steel and slate blue tones, icy elegance',
@@ -1831,6 +1834,7 @@ const PromptStudio = {
         let stylingDesc = '';
         if (isHuman) {
             const styleMap = {
+                'auto': '',   // auto: no styling constraint — AI matches the archetype scene
                 'minimal': modelGenderForStyling === 'male'
                     ? 'model in minimal clean styling, strong build as the canvas'
                     : 'model in minimal styling, skin as the canvas',
