@@ -669,6 +669,34 @@ const PromptStudio = {
         ];
     },
 
+    // Returns angles sorted best-to-least for the selected jewelry category
+    _getAnglesForCategory(category) {
+        const rankings = {
+            // Ring: close detail at an angle or macro to show band + stone
+            'ring':     ['macro', '45-degree', 'glance-down', 'eye-level', 'low-angle', 'over-shoulder', 'overhead', 'dutch', 'side-profile', 'from-behind'],
+            // Necklace: front/chest visible, side profile also shows it well
+            'necklace': ['eye-level', 'glance-down', '45-degree', 'over-shoulder', 'side-profile', 'low-angle', 'macro', 'from-behind', 'overhead', 'dutch'],
+            // Bracelet: overhead or macro shows it clearly on the wrist
+            'bracelet': ['macro', 'overhead', '45-degree', 'glance-down', 'eye-level', 'low-angle', 'over-shoulder', 'side-profile', 'dutch', 'from-behind'],
+            // Earring: side profile is ideal, then 3/4 angle
+            'earring':  ['side-profile', '45-degree', 'glance-down', 'eye-level', 'over-shoulder', 'macro', 'low-angle', 'from-behind', 'overhead', 'dutch'],
+            // Pendant: front chest area, glance down flatters the pendant drop
+            'pendant':  ['eye-level', 'glance-down', '45-degree', 'macro', 'over-shoulder', 'low-angle', 'side-profile', 'overhead', 'dutch', 'from-behind'],
+            // Brooch: 3/4 angle shows lapel brooch clearly
+            'brooch':   ['45-degree', 'macro', 'eye-level', 'glance-down', 'over-shoulder', 'side-profile', 'overhead', 'low-angle', 'dutch', 'from-behind'],
+            // Anklet: overhead or low-angle looking down at ankle
+            'anklet':   ['overhead', 'glance-down', 'macro', 'low-angle', '45-degree', 'eye-level', 'side-profile', 'over-shoulder', 'dutch', 'from-behind'],
+            // Bangle: macro or overhead shows the band around the wrist well
+            'bangle':   ['macro', 'overhead', '45-degree', 'eye-level', 'low-angle', 'glance-down', 'over-shoulder', 'side-profile', 'dutch', 'from-behind'],
+        };
+        const order = rankings[category] || rankings['ring'];
+        return [...this.angles].sort((a, b) => {
+            const ai = order.indexOf(a.id);
+            const bi = order.indexOf(b.id);
+            return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+        });
+    },
+
     // ── Surface / Backdrop ──────────────────────
     get surfaces() {
         return [
@@ -807,6 +835,7 @@ const PromptStudio = {
         bodyHair: 'none',
         skinDetail: 'none',
         facialExpression: 'none',
+        brandTouch: 'none',       // 'none' | 'logomark' | 'wordmark'
     },
 
     // ── Profiles Management ──────────────────────
@@ -835,6 +864,38 @@ const PromptStudio = {
                 id: 'tariq', name: 'Tariq', gender: 'male',
                 descriptor: 'Man, 27 years old, warm caramel skin tone, elegant refined features, almond-shaped dark eyes, clean-shaven, defined cheekbones, slim composed posture, sophisticated and understated expression',
                 referenceImage: null, color: '#52a67c'
+            },
+            // ── Additional female profiles (Moroccan audience) ──────────────
+            {
+                id: 'nour', name: 'Nour', gender: 'female',
+                descriptor: 'Woman, 24 years old, light olive Amazigh skin tone, warm green-brown almond eyes, delicate refined features, straight dark hair with subtle natural highlights, slim graceful build, fresh natural Moroccan radiance, gentle confident expression',
+                referenceImage: null, color: '#d4a574'
+            },
+            {
+                id: 'malak', name: 'Malak', gender: 'female',
+                descriptor: 'Woman, 32 years old, warm golden-tan Moroccan skin tone, full expressive lips, deep dark soulful eyes, voluminous wavy dark brown hair past shoulders, defined cheekbones, mature confident Mediterranean beauty, powerful yet feminine presence',
+                referenceImage: null, color: '#c17f4a'
+            },
+            {
+                id: 'rania', name: 'Rania', gender: 'female',
+                descriptor: 'Woman, 27 years old, deep olive Moroccan skin tone, strong bone structure, high prominent cheekbones, kohled dark expressive eyes, long straight black hair, tall elegant build, powerful editorial presence, striking North African features',
+                referenceImage: null, color: '#8b6e4e'
+            },
+            // ── Additional male profiles (Moroccan audience) ──────────────
+            {
+                id: 'younes', name: 'Younes', gender: 'male',
+                descriptor: 'Man, 28 years old, warm tawny Moroccan skin tone, sharp defined jawline, warm hazel eyes, dark medium-length styled hair, slim athletic build, modern confident Moroccan professional, relaxed editorial energy, lightly stubbled jaw',
+                referenceImage: null, color: '#7ba7c9'
+            },
+            {
+                id: 'mehdi', name: 'Mehdi', gender: 'male',
+                descriptor: 'Man, 36 years old, deep bronze Moroccan skin tone, full dense dark beard, strong angular chiseled features, dark intense eyes, broad powerful build, commanding executive presence, sophisticated masculine gravitas',
+                referenceImage: null, color: '#4a7c59'
+            },
+            {
+                id: 'karim', name: 'Karim', gender: 'male',
+                descriptor: 'Man, 23 years old, light olive Maghrebi skin tone, clean-shaven sharp angular face, youthful defined features, dark styled hair, lean energetic build, bright confident eyes, fresh contemporary Moroccan editorial energy',
+                referenceImage: null, color: '#9b8ea6'
             },
         ];
         const BUILT_IN_IDS = BUILT_IN.map(p => p.id);
@@ -1035,6 +1096,23 @@ const PromptStudio = {
 
                     <div class="card">
                         <div class="card-header">
+                            <span class="card-title">Brand Identity</span>
+                        </div>
+                        <div class="form-group">
+                            <p class="text-sm text-muted" style="line-height:1.4;margin-bottom:8px">Add Elaris signature to the model's clothing — a subtle brand identifier so your images are unmistakably yours.</p>
+                            <div class="ps-chip-group" id="ps-brand-touch">
+                                <button class="ps-chip ${this.state.brandTouch === 'none' ? 'active' : ''}" data-val="none">None</button>
+                                <button class="ps-chip ${this.state.brandTouch === 'logomark' ? 'active' : ''}" data-val="logomark" title="Small four-pointed star brooch on lapel">⭐ Logomark</button>
+                                <button class="ps-chip ${this.state.brandTouch === 'wordmark' ? 'active' : ''}" data-val="wordmark" title="ELARIS wordmark embroidered on clothing">ELARIS Wordmark</button>
+                            </div>
+                            <p class="text-sm text-muted" style="line-height:1.4;margin-top:6px;margin-bottom:0">
+                                ${this.state.brandTouch === 'logomark' ? '⭐ Four-pointed star pin brooch on lapel — Elaris signature.' : this.state.brandTouch === 'wordmark' ? '"ELARIS" embroidered on lapel or collar — brand always present.' : 'No brand marking added to scene.'}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
                             <span class="card-title">Model &amp; Human Elements</span>
                         </div>
                         <div class="form-group">
@@ -1139,7 +1217,7 @@ const PromptStudio = {
                         <div class="form-group">
                             <label class="form-label" data-i18n="ps_angle">Camera Angle</label>
                             <div class="ps-chip-group" id="ps-angle">
-                                ${this.angles.map(a => `<button class="ps-chip ${a.id === this.state.angle ? 'active' : ''}" data-val="${a.id}">${a.label}</button>`).join('')}
+                                ${this._getAnglesForCategory(this.state.category).map((a, i) => `<button class="ps-chip ${a.id === this.state.angle ? 'active' : ''}" data-val="${a.id}" title="${i < 3 ? 'Recommended for ' + (this.state.category || 'ring') : a.label}" style="${i === 0 ? 'border-color:var(--accent);' : i < 3 ? 'border-color:var(--accent);opacity:0.85;' : ''}">${i === 0 ? '⭐ ' : ''}${a.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
@@ -1398,6 +1476,21 @@ const PromptStudio = {
             });
         }
 
+        // Brand Touch chips — needs _render() to update the hint text
+        const btGroup = q('#ps-brand-touch');
+        if (btGroup) {
+            btGroup.addEventListener('click', e => {
+                const chip = e.target.closest('.ps-chip');
+                if (!chip) return;
+                btGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                this.state.brandTouch = chip.dataset.val;
+                this._render();
+                this._renderArchetypeGrid();
+                this._bind();
+            });
+        }
+
         const newProfBtn = q('#ps-new-profile');
         if (newProfBtn) {
             newProfBtn.addEventListener('click', () => {
@@ -1591,6 +1684,52 @@ const PromptStudio = {
 
         // Scroll to output
         outputArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    },
+
+    // ── Jewelry placement instructions (injected early to prevent misplacement) ──
+    _buildPlacementInstruction(category) {
+        const rules = {
+            'necklace': 'PLACEMENT: necklace worn at the FRONT of the neck, chain visible at the front of the chest, pendant resting at chest/décolletage — NEVER on the back or shoulders',
+            'earring':  'PLACEMENT: earrings in earlobes one on each ear, visible from front or side, correctly proportioned to face size',
+            'ring':     'PLACEMENT: ring fitted on a finger at correct anatomical size, ring width proportional to finger, never floating or oversized',
+            'bracelet': 'PLACEMENT: bracelet on the wrist at proportional scale, sized for wrist diameter',
+            'bangle':   'PLACEMENT: bangle on the wrist, correctly sized, not oversized',
+            'anklet':   'PLACEMENT: anklet around the ankle, slender and proportional to ankle width',
+            'pendant':  'PLACEMENT: pendant necklace at front of chest, pendant at correct scale, never on back',
+            'brooch':   'PLACEMENT: brooch on lapel or upper chest of clothing, visible from front',
+        };
+        return rules[category] || '';
+    },
+
+    // ── Category + anatomy aware negative prompts ──────────────────────────
+    // Combines anatomy negatives (for human archetypes) with category-specific
+    // misplacement and scale negatives derived from real AI failure patterns.
+    _buildCategoryNegatives(category, isHuman) {
+        const anatomy = isHuman
+            ? 'three arms, extra arms, extra limbs, malformed anatomy, extra fingers, six fingers, mutated limbs, fused fingers, asymmetrical geometry'
+            : '(hand, fingers, skin, arm, human), distorted shape, asymmetrical geometry';
+
+        // Scale: the most common AI failure — making jewelry gigantic
+        const scale = 'oversized jewelry, jewelry disproportionate to body, necklace wider than shoulders, pendant larger than hand, ring wider than palm, earring larger than face, jewelry not to correct real-world scale, miniaturized accessories';
+
+        // Placement: category-specific misplacement negatives
+        const placement = {
+            'necklace': 'necklace on the back, necklace hanging behind model, pendant on back, chain only visible from behind, necklace on shoulder, necklace placed at back of neck',
+            'earring':  'earring too large, earring disproportionate to face size, earring larger than head, misplaced earring',
+            'ring':     'ring too large for finger, ring not on finger, floating ring, ring covering entire hand',
+            'bracelet': 'bracelet not on wrist, bracelet floating off body, bracelet on wrong limb',
+            'bangle':   'bangle not on wrist, floating bangle, bangle on wrong body part',
+            'anklet':   'anklet on wrist, anklet not on ankle, anklet floating',
+            'pendant':  'pendant on back, pendant not visible from front, pendant hanging behind neck',
+            'brooch':   'brooch floating off clothing, brooch not on lapel',
+        };
+
+        const placementNeg = placement[category] || '';
+        const parts = [anatomy, scale];
+        if (placementNeg) parts.push(placementNeg);
+        parts.push('AI artifacts, text overlay, watermarks, logos, cartoon, illustration, painting, low quality, blurry, chromatic aberration, plastic texture, 3d render');
+
+        return `Negative prompt: ${parts.join(', ')}.`;
     },
 
     // ── Build Single Prompt ──────────────────────
@@ -1852,23 +1991,28 @@ const PromptStudio = {
             hallmarkDesc = hallmarkMap[category] || hallmarkMap['general'];
         }
 
-        // ── FIX #3: Context-aware negative prompts ──────────────────────
-        let negativePrompt;
-        if (isHuman) {
-            // Human archetypes: anatomy + technical negatives
-            negativePrompt = 'Negative prompt: three arms, extra arms, extra limbs, malformed anatomy, extra fingers, six fingers, mutated limbs, fused fingers, asymmetrical geometry, AI artifacts, text overlay, watermarks, logos, cartoon, illustration, painting, low quality, blurry, chromatic aberration, plastic texture, 3d render.';
-        } else {
-            // Product-only archetypes: technical + product-focused negatives (NO anatomy terms)
-            negativePrompt = 'Negative prompt: (hand, fingers, skin, arm, human), chromatic aberration, overexposed highlights, plastic texture, distorted shape, asymmetrical geometry, AI artifacts, text overlay, watermarks, logos, cartoon, illustration, painting, low quality, blurry, noise grain, 3d render.';
-        }
+        // ── Category-aware negative prompts (placement + scale + anatomy) ──────────────
+        const category = this.state.category || 'ring';
+        const negativePrompt = this._buildCategoryNegatives(category, isHuman);
+        const placementRule  = this._buildPlacementInstruction(category);
 
         // ── Prompt structure: body (scene) + tail (quality + constraints) ──────────────────────
         // Splitting into body/tail allows Model Details to be injected BEFORE the
         // technical tail in consistency mode, ensuring the model descriptor has
         // higher token weight than the negative prompt.
+        // ── Brand Touch (Elaris identity on model clothing) ──────────────────────
+        let brandTouchDesc = '';
+        if (isHuman && this.state.brandTouch === 'logomark') {
+            brandTouchDesc = 'model wearing a small elegant silver four-pointed star pin brooch on the lapel or collar — the ELARIS brand logomark, subtly present as a luxury styling detail';
+        } else if (isHuman && this.state.brandTouch === 'wordmark') {
+            brandTouchDesc = 'subtle "ELARIS" wordmark delicately embroidered in fine silver thread on the model\'s lapel or collar, brand identity quietly present in the scene';
+        }
+
         const bodyParts = [
             // SUBJECT — jewelry piece at the center, material injected cleanly on next line
             subject + '.',
+            // PLACEMENT RULE — early placement prevents AI misplacing the jewelry
+            placementRule ? `${placementRule}.` : '',
             // MATERIAL — stated once, cleanly, with metal descriptor
             `${material}, ${silverDesc}.`,
             // SCENE — archetype visual story (lighting, composition, mood)
@@ -1889,8 +2033,10 @@ const PromptStudio = {
             stylingDesc ? stylingDesc + '.' : '',
             // JEWELRY STYLE DIRECTION
             jewelryStyleDesc ? `Style direction: ${jewelryStyleDesc}.` : '',
-            // BRAND HALLMARK (optional)
+            // BRAND HALLMARK (optional — jewelry engraving)
             hallmarkDesc ? `Brand hallmark details: ${hallmarkDesc}.` : '',
+            // BRAND TOUCH — Elaris identity on model clothing (logomark / wordmark)
+            brandTouchDesc ? brandTouchDesc + '.' : '',
         ];
 
         const tailParts = [
