@@ -323,7 +323,7 @@ const PromptStudio = {
             color: '#222530',
             subjects: [
                 '{piece} on polished black mirror surface, perfect reflection creating symmetry',
-                'model applying {piece} earring in ornate vintage mirror, reflection showing the piece from another angle',
+                'model wearing {piece} in ornate vintage mirror, reflection showing the piece from a complementary angle',
                 '{piece} resting on still water surface, mirror-perfect reflection beneath',
                 '{piece} surrounded by angled mirror fragments creating infinite reflections',
                 'model\u2019s hands wearing {piece} reflected in a round compact mirror on dark surface',
@@ -956,7 +956,7 @@ const PromptStudio = {
             'body-intimate', 'editorial-model', 'collection-showcase', 'bw-dramatic',
             'motion-blur', 'cinematic-portrait', 'lifestyle-moment', 'heritage-moroccan',
             'celestial-mythic', 'architectural-context', 'masculine-editorial',
-            'surface-lean', 'hair-drama',
+            'surface-lean', 'hair-drama', 'wet-element',
         ]);
         const cat     = state.category || 'ring';
         const isHuman = HUMAN.has(archetype.id);
@@ -1726,7 +1726,7 @@ const PromptStudio = {
             'brooch':   'brooch floating off clothing, brooch not on lapel',
         };
 
-        const placementNeg = placement[category] || '';
+        const placementNeg = isHuman ? (placement[category] || '') : '';  // product shots intentionally have no finger
         const parts = [anatomy, scale];
         if (placementNeg) parts.push(placementNeg);
         parts.push('AI artifacts, text overlay, watermarks, logos, cartoon, illustration, painting, low quality, blurry, chromatic aberration, plastic texture, 3d render');
@@ -1826,7 +1826,7 @@ const PromptStudio = {
         }
 
         // ── FIX #4: Detect if this is a product-only vs human archetype ──────────────────────
-        const humanArchetypes = ['body-intimate', 'editorial-model', 'bw-dramatic', 'collection-showcase', 'motion-blur', 'cinematic-portrait', 'celestial-mythic', 'masculine-editorial', 'surface-lean', 'hair-drama', 'lifestyle-moment', 'heritage-moroccan', 'architectural-context'];
+        const humanArchetypes = ['body-intimate', 'editorial-model', 'bw-dramatic', 'collection-showcase', 'motion-blur', 'cinematic-portrait', 'celestial-mythic', 'masculine-editorial', 'surface-lean', 'hair-drama', 'lifestyle-moment', 'heritage-moroccan', 'architectural-context', 'wet-element'];
         const isHuman = humanArchetypes.includes(archetype.id);
 
         // Model styling (only for human archetypes) — gender-aware phrasing
@@ -2015,8 +2015,8 @@ const PromptStudio = {
         const bodyParts = [
             // SUBJECT — jewelry piece at the center, material injected cleanly on next line
             subject + '.',
-            // PLACEMENT RULE — early placement prevents AI misplacing the jewelry
-            placementRule ? `${placementRule}.` : '',
+            // PLACEMENT RULE — only for human archetypes (product shots have no finger)
+            (isHuman && placementRule) ? `${placementRule}.` : '',
             // MATERIAL — stated once, cleanly, with metal descriptor
             `${material}, ${silverDesc}.`,
             // SCENE — archetype visual story (lighting, composition, mood)
@@ -2080,19 +2080,20 @@ const PromptStudio = {
             if (hasModelImage) {
                 // Photo attached: instruct AI to match the specific image
                 p += `Generate a photo of the exact same ${genderNoun} from Image ${jc + 1} wearing the jewelry.\n`;
-            } else if (hasModelDesc) {
+            } else if (hasModelDesc && isHuman) {
                 // No photo: instruct AI to use the text descriptor as sole model reference
                 p += `Generate a photo of a ${genderNoun} matching the Model Details description below, wearing the jewelry.\n`;
             } else if (isHuman) {
                 p += `Generate a photo of a model wearing the jewelry.\n`;
             }
+            // Product archetypes: no model direction — scene description speaks for itself
 
             // Body prompt (scene description)
             p += bodyParts.filter(Boolean).join(' ');
 
             // Model Details BEFORE the technical tail — higher token priority
-            // Injected for BOTH image-attached and text-only modes
-            if (hasModelDesc) {
+            // Only injected for human archetypes (product shots don't have a model)
+            if (hasModelDesc && isHuman) {
                 const activeProf = this.state.profiles.find(prof => prof.id === this.state.activeProfileId);
                 if (activeProf) {
                     if (hasModelImage) {
