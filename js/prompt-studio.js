@@ -1809,7 +1809,7 @@ const PromptStudio = {
             'bracelet': 'bracelet', 'bangle': 'bangle', 'anklet': 'anklet',
             'pendant': 'pendant', 'brooch': 'brooch',
         };
-        const catWord = catLabels[category] || category;
+        const catWord = catLabels[this.state.category] || this.state.category;
         // Strip jewelry type words so wrong category can't bleed in
         const _typeWords = 'ring|rings|necklace|necklaces|earring|earrings|bracelet|bracelets|bangle|bangles|anklet|anklets|pendant|pendants|brooch|brooches|brooche';
         // Strip material text the user may have typed manually
