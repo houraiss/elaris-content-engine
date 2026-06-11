@@ -1912,7 +1912,7 @@ const PromptStudio = {
         let stylingDesc = '';
         if (isHuman) {
             const styleMap = {
-                'auto': '',   // auto: no styling constraint — AI matches the archetype scene
+                'auto': 'diverse contemporary styling — garment color and silhouette freely chosen to complement the scene, avoid repeating the same outfit across shots',   // auto: variety-first
                 'minimal': modelGenderForStyling === 'male'
                     ? 'model in minimal clean styling, strong build as the canvas'
                     : 'model in minimal styling, skin as the canvas',
@@ -2092,7 +2092,7 @@ const PromptStudio = {
             // (1) raised dimensional satin stitch creates micro-shadows for depth even on color-matched fabric
             // (2) hairline contrast outline stitch around each letter guarantees edge separation
             // (3) adaptive color rule: cool-toned thread on warm/yellow/gold fabrics, warm on cool, bright on dark, dark on bright
-            brandTouchDesc = '"ELARIS" brand name as genuine haute couture embroidery integrated into the garment fabric — raised dimensional satin stitch with a fine hairline outline border on each letter ensuring the wordmark is always legible: bright cream or white thread on dark/black/navy garments, deep charcoal or midnight blue on white/ivory/light garments, cool silver-white thread on yellow/gold/warm garments, deep wine or charcoal on pastel or beige fabrics — the raised stitching casts subtle micro-shadows creating readable depth even when thread tone is close to fabric, the embroidery looks genuinely woven into the clothing, not overlaid';
+            brandTouchDesc = '"ELARIS" haute couture embroidery integrated into the garment fabric at whatever natural position is visible in the composition — raised dimensional satin stitch, each letter bordered by a hairline contrasting outline stitch that automatically maximizes legibility against whatever garment color the scene uses; the thread color is chosen to be the strongest possible contrast to the actual fabric, determined by the image context — the raised textile has natural micro-shadow depth making it read as genuine fabric craft, not a graphic overlay; the outfit and its color are freely determined by the scene, the embroidery seamlessly adapts to any garment color';
         }
 
         const bodyParts = [
