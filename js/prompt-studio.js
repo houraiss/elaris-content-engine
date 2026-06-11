@@ -2085,11 +2085,14 @@ const PromptStudio = {
         // ── Brand Touch (Elaris identity on model clothing) ──────────────────────
         let brandTouchDesc = '';
         if (isHuman && this.state.brandTouch === 'logomark') {
-            // Gold metallic pin provides contrast against ANY garment color
-            brandTouchDesc = 'model wearing a small polished gold four-pointed star pin brooch on the lapel or collar — the ELARIS brand logomark, gold metallic finish clearly visible against any garment color, a refined luxury styling accent';
+            // Enamel-filled pin: dark enamel body + polished gold outline = always visible on any garment
+            brandTouchDesc = 'model wearing a small luxury four-pointed star pin brooch on the lapel — ELARIS brand logomark, deep black enamel fill with polished gold outline border, the contrasting enamel-and-metal design ensures it reads clearly against any garment color (dark, light, gold, silver, colourful), an authentic couture pin perfectly integrated into the look';
         } else if (isHuman && this.state.brandTouch === 'wordmark') {
-            // High-contrast thread: gold on dark garments, charcoal on light — always legible
-            brandTouchDesc = '"ELARIS" wordmark embroidered on the model\'s lapel or collar in high-contrast thread — gold embroidery on dark garments, deep charcoal on light garments — always clearly legible against the clothing, never blending into the fabric';
+            // Luxury tri-layer embroidery technique used by haute couture houses:
+            // (1) raised dimensional satin stitch creates micro-shadows for depth even on color-matched fabric
+            // (2) hairline contrast outline stitch around each letter guarantees edge separation
+            // (3) adaptive color rule: cool-toned thread on warm/yellow/gold fabrics, warm on cool, bright on dark, dark on bright
+            brandTouchDesc = '"ELARIS" brand name as genuine haute couture embroidery integrated into the garment fabric — raised dimensional satin stitch with a fine hairline outline border on each letter ensuring the wordmark is always legible: bright cream or white thread on dark/black/navy garments, deep charcoal or midnight blue on white/ivory/light garments, cool silver-white thread on yellow/gold/warm garments, deep wine or charcoal on pastel or beige fabrics — the raised stitching casts subtle micro-shadows creating readable depth even when thread tone is close to fabric, the embroidery looks genuinely woven into the clothing, not overlaid';
         }
 
         const bodyParts = [
