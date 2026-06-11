@@ -1153,7 +1153,7 @@ const PromptStudio = {
                         </div>
                         <div class="form-group">
                             <label class="form-label" data-i18n="ps_piece_desc">Piece Description</label>
-                            <textarea class="form-textarea" id="ps-desc" rows="3" data-i18n="ps_piece_desc_ph" placeholder="e.g. multi-band crossover ring with pavé diamond accents and intertwining silver bands"></textarea>
+                            <textarea class="form-textarea" id="ps-desc" rows="3" data-i18n="ps_piece_desc_ph" placeholder="Describe style only — e.g. multi-band crossover with pavé diamond accents (jewelry type & material are auto-injected from your selections above)"></textarea>
                         </div>
                         <button class="btn btn-sm btn-secondary" id="ps-auto-desc" style="width:100%" data-i18n="ps_auto_desc">✨ Auto-describe from category</button>
                     </div>
@@ -1798,8 +1798,28 @@ const PromptStudio = {
 
     // ── Build Single Prompt ──────────────────────
     _buildPrompt(archetype) {
-        const piece = this.state.pieceDesc || 'jewelry piece';
+        // ── PIECE LABEL: Always enforce correct category type word ──────────────
+        // Users sometimes type the wrong category word (e.g. 'bracelet' when ring is
+        // selected, or carry over an old description from a previous category session).
+        // We sanitize the raw description by stripping ALL jewelry-type words and any
+        // material descriptors, then always prepend: material + correct category type.
         const material = this.materials.find(m => m.id === this.state.material)?.label || '925 sterling silver';
+        const catLabels = {
+            'ring': 'ring', 'necklace': 'necklace', 'earring': 'earrings',
+            'bracelet': 'bracelet', 'bangle': 'bangle', 'anklet': 'anklet',
+            'pendant': 'pendant', 'brooch': 'brooch',
+        };
+        const catWord = catLabels[category] || category;
+        // Strip jewelry type words so wrong category can't bleed in
+        const _typeWords = 'ring|rings|necklace|necklaces|earring|earrings|bracelet|bracelets|bangle|bangles|anklet|anklets|pendant|pendants|brooch|brooches|brooche';
+        // Strip material text the user may have typed manually
+        const _matWords = '925\\s*sterling\\s*silver|sterling\\s*silver|18k\\s*gold|14k\\s*gold|rose\\s*gold|yellow\\s*gold|white\\s*gold|platinum|\\b925\\b';
+        let _rawDesc = this.state.pieceDesc || '';
+        _rawDesc = _rawDesc.replace(new RegExp('\\b(' + _typeWords + ')\\b', 'gi'), '');
+        _rawDesc = _rawDesc.replace(new RegExp('(' + _matWords + ')', 'gi'), '');
+        _rawDesc = _rawDesc.replace(/\s+/g, ' ').trim();
+        // piece = "925 Sterling Silver ring with diamonds accents" (always correct type)
+        const piece = _rawDesc ? `${material} ${catWord} ${_rawDesc}` : `${material} ${catWord}`;
         const mood = this.moods.find(m => m.id === this.state.mood)?.label.toLowerCase() || '';
         const lighting = this.lightings.find(l => l.id === this.state.lighting)?.label.toLowerCase() || '';
         const fmt = this.formats.find(f => f.id === this.state.format);
