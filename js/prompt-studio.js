@@ -1827,9 +1827,11 @@ const PromptStudio = {
         const angleName = this.angles.find(a => a.id === this.state.angle)?.label.toLowerCase() || '';
         const palette = this.palettes.find(p => p.id === this.state.palette)?.label.toLowerCase() || '';
 
-        // ── FIX #2: Build subject without repeating material in the description ──────────────────────
+        // ── FIX #2: Build subject + inject random scene environment variant ──────────────────────
         // The material descriptor is injected separately to avoid redundancy.
+        // Scene variant adds randomized setting/environment to prevent same-scene repetition.
         const subject = this._getUniqueSubject(archetype).replace(/\{piece\}/g, piece);
+        const sceneVariant = this._getSceneVariant(archetype.id);
 
         // ── FIX #1: Unified camera system — one lens per shot, no conflicts ──────────────────────
         // Each angle gets a complete, self-contained camera description:
@@ -1932,7 +1934,7 @@ const PromptStudio = {
         let stylingDesc = '';
         if (isHuman) {
             const styleMap = {
-                'auto': 'diverse contemporary styling — garment color and silhouette freely chosen to complement the scene, avoid repeating the same outfit across shots',   // auto: variety-first
+                'auto': this._getRandomOutfit(modelGenderForStyling),   // auto: random outfit from diverse pool — prevents same-clothing repetition
                 'minimal': modelGenderForStyling === 'male'
                     ? 'model in minimal clean styling, strong build as the canvas'
                     : 'model in minimal styling, skin as the canvas',
@@ -2106,18 +2108,18 @@ const PromptStudio = {
         let brandTouchDesc = '';
         if (isHuman && this.state.brandTouch === 'logomark') {
             // Enamel-filled pin: dark enamel body + polished gold outline = always visible on any garment
-            brandTouchDesc = 'model wearing a small luxury four-pointed star pin brooch on the lapel — ELARIS brand logomark, deep black enamel fill with polished gold outline border, the contrasting enamel-and-metal design ensures it reads clearly against any garment color (dark, light, gold, silver, colourful), an authentic couture pin perfectly integrated into the look';
+            brandTouchDesc = 'model wearing a small "Elaris" four-pointed star pin at the lapel — a discreet luxury pin worn as a brand signature, enamel-and-metal two-tone finish naturally contrasting the garment, pin size proportional to real luxury brand pins (small and refined), positioned naturally on the clothing as an authentic styling detail';
         } else if (isHuman && this.state.brandTouch === 'wordmark') {
             // Luxury tri-layer embroidery technique used by haute couture houses:
             // (1) raised dimensional satin stitch creates micro-shadows for depth even on color-matched fabric
             // (2) hairline contrast outline stitch around each letter guarantees edge separation
             // (3) adaptive color rule: cool-toned thread on warm/yellow/gold fabrics, warm on cool, bright on dark, dark on bright
-            brandTouchDesc = '"ELARIS" haute couture embroidery integrated into the garment fabric at whatever natural position is visible in the composition — raised dimensional satin stitch, each letter bordered by a hairline contrasting outline stitch that automatically maximizes legibility against whatever garment color the scene uses; the thread color is chosen to be the strongest possible contrast to the actual fabric, determined by the image context — the raised textile has natural micro-shadow depth making it read as genuine fabric craft, not a graphic overlay; the outfit and its color are freely determined by the scene, the embroidery seamlessly adapts to any garment color';
+            brandTouchDesc = 'a small "Elaris" embroidery detail on the garment — fine single-thread stitching at the cuff edge, collar fold, or chest area, no larger than 2–3 cm in real scale, thread color naturally chosen to contrast the fabric for quiet legibility, styled as an authentic luxury clothing label seamlessly integrated into the garment design, reads as a genuine brand signature not a graphic overlay';
         }
 
         const bodyParts = [
             // SUBJECT — jewelry piece at the center, material injected cleanly on next line
-            subject + '.',
+            subject + '.', sceneVariant + '.',
             // PLACEMENT RULE — only for human archetypes (product shots have no finger)
             (isHuman && placementRule) ? `${placementRule}.` : '',
             // MATERIAL — stated once, cleanly, with metal descriptor
@@ -2266,6 +2268,103 @@ const PromptStudio = {
 
     // ── Unique Subject Tracker ──────────────────────
     _subjectPools: {},
+    _getSceneVariant(archetypeId) {
+        // Returns a random environment/setting phrase to inject variety into any archetype
+        // Organized by archetype group — human archetypes get lifestyle settings,
+        // product archetypes get surface/environment settings
+        const humanEnvs = [
+            // Time of day / light
+            'early morning golden light streaming through tall windows',
+            'dusk with warm amber light casting long shadows',
+            'blue hour, soft twilight diffused light',
+            'bright midday Mediterranean light, sun-bleached surfaces',
+            'overcast soft-box sky, even diffused daylight',
+            // Interiors
+            'inside a warmly lit café, wooden tables and steam from cups',
+            'a sleek modern hotel lobby, marble floors and moody lighting',
+            'a quiet home library surrounded by stacked books and soft lamplight',
+            'a rooftop terrace overlooking a city skyline at golden hour',
+            'a bright Scandinavian-style loft with white walls and oak floors',
+            'a Moroccan riad courtyard with zellige tiles and afternoon shadow patterns',
+            'a sun-drenched terrace in the south of France, potted lavender nearby',
+            'an elegant dressing room with warm vanity lights and a large mirror',
+            // Exteriors
+            'a cobblestone Parisian side street in the rain',
+            'a Mediterranean harbour with boats and turquoise water in the background',
+            'an open desert landscape at golden hour, warm dusty tones',
+            'a lush garden with dappled sunlight through leaves',
+            'a modern glass skyscraper reflection, urban geometry',
+            // Lifestyle moments
+            'inside a car, leather seat and dashboard visible',
+            'at a marble kitchen counter preparing an espresso',
+            'at an outdoor café table in a sunlit square',
+            'in a bookshop between tall shelves, soft ambient reading light',
+            'at a rooftop pool bar, blue water reflecting light',
+        ];
+        const productEnvs = [
+            'polished white Carrara marble surface',
+            'aged raw concrete with subtle texture',
+            'dark oxidized steel surface catching studio light',
+            'warm honey-toned oak wood grain',
+            'deep black velvet surface, zero reflection',
+            'hand-woven natural linen fabric base',
+            'pale pink sand surface with fine grain texture',
+            'brushed brass tray with clean studio light',
+            'glass shelf, frosted light diffused from below',
+            'aged terracotta surface, matte warm tones',
+            'scattered dried botanicals on cream paper',
+            'ice crystals forming on a mirror surface',
+        ];
+        const humanIds = ['body-intimate','editorial-model','bw-dramatic','collection-showcase',
+            'motion-blur','cinematic-portrait','lifestyle-moment','heritage-moroccan',
+            'celestial-mythic','architectural-context','masculine-editorial',
+            'surface-lean','hair-drama','wet-element'];
+        const pool = humanIds.includes(archetypeId) ? humanEnvs : productEnvs;
+        return pool[Math.floor(Math.random() * pool.length)];
+    },
+
+    _getRandomOutfit(gender) {
+        // Returns a random outfit description — prevents the same clothing appearing repeatedly
+        const femaleOutfits = [
+            'wearing a soft camel ribbed turtleneck and tailored wide-leg trousers',
+            'in a crisp white linen button-down shirt, collar open, sleeves casually rolled',
+            'wearing a dusty-rose cashmere cardigan loosely draped over the shoulders',
+            'in a structured terracotta blazer over a simple white fitted tee',
+            'wearing a deep forest-green silk blouse, elegantly draped',
+            'in a light grey oversized knit sweater with clean minimalist styling',
+            'wearing a charcoal wrap coat, belt tied loosely at the waist',
+            'in a cobalt blue fitted turtleneck, clean and editorial',
+            'wearing a cream textured linen midi dress',
+            'in a burgundy velvet blazer with a white camisole underneath',
+            'wearing a mustard yellow silk blouse, relaxed and editorial',
+            'in a black tailored suit with subtle gold button detail',
+            'wearing a pale ivory wrap dress with a delicate abstract print',
+            'in a sage green knit co-ord set, relaxed contemporary',
+            'wearing a striped navy and white Breton top with wide trousers',
+            'in a chocolate brown suede jacket over a cream knit',
+            'wearing an off-white flowing linen shirt-dress, effortless and airy',
+            'in a muted olive trench coat over dark essentials',
+        ];
+        const maleOutfits = [
+            'in a clean white Oxford shirt, collar open, sleeves rolled',
+            'wearing a slim-cut navy wool blazer over a white tee',
+            'in a camel overcoat over a black turtleneck',
+            'wearing a charcoal grey crewneck sweater with dark trousers',
+            'in a light beige linen suit, Mediterranean editorial',
+            'wearing a deep burgundy crew-neck over clean-cut dark denim',
+            'in a structured slate blue blazer with no tie, relaxed formal',
+            'wearing a soft olive field jacket over a simple white shirt',
+            'in a classic black turtleneck, timeless editorial',
+            'wearing a warm rust-colored knit pullover with clean trousers',
+            'in an unstructured ecru linen suit, relaxed and modern',
+            'wearing a dark indigo denim shirt with rolled sleeves',
+            'in a stone-coloured chore coat over a slim grey turtleneck',
+            'wearing a soft brown suede jacket over a white crewneck',
+        ];
+        const pool = (gender === 'male') ? maleOutfits : femaleOutfits;
+        return pool[Math.floor(Math.random() * pool.length)];
+    },
+
     _getUniqueSubject(archetype) {
         // If pool doesn't exist or is empty, create a new shuffled pool
         if (!this._subjectPools[archetype.id] || this._subjectPools[archetype.id].length === 0) {
