@@ -2219,13 +2219,17 @@ const PromptStudio = {
             brandTouchDesc ? brandTouchDesc + '.' : '',
         ];
 
-        const tailParts = [
+        // Compute ratio string — flat-lay/overhead angles get a framing note in 9:16
+        const _flatAngles = ['flat-lay', 'overhead', 'top-down-hand'];
+        const ratioStr = (_flatAngles.includes(this.state.angle) && ratio === '9:16')
+            ? `Aspect ratio ${ratio}. Note: this overhead/flat angle composition is optimised for 1:1 or 4:5 framing.`
+            : `Aspect ratio ${ratio}.`;
+
+                const tailParts = [
             'Sharp critical focus on jewelry, perfect geometric proportions, 8K resolution, style photographic, professional commercial photography, RAW quality.',
             anatomyConstraint,
-            // Aspect ratio: flat-lay/overhead angles read better in 1:1 or 4:5
-            (['flat-lay', 'overhead', 'top-down-hand'].includes(this.state.angle) && ratio === '9:16')
-                ? \`Aspect ratio \${ratio}. Note: this overhead/flat angle composition is optimised for 1:1 or 4:5 framing.\`
-                : \`Aspect ratio \${ratio}.\`,
+            // Aspect ratio: aerial/flat-lay angles read better in square/4:5
+            ratioStr,
             negativePrompt,
         ];
 
