@@ -1708,7 +1708,16 @@ const PromptStudio = {
             const arch = this.archetypes.find(a => a.id === archId);
             if (!arch) continue;
             const prompt = this._buildPrompt(arch);
-            prompts.push({ archetype: arch.name, icon: arch.icon, text: prompt, id: Date.now() + Math.random() });
+            prompts.push({ archetype: arch.name, icon: arch.icon, text: prompt, archId: arch.id, similar: false, id: Date.now() + Math.random() });
+        }
+
+        // ── Similarity scan: flag prompt pairs with >55% keyword overlap ─────
+        for (let i = 0; i < prompts.length; i++) {
+            for (let j = i + 1; j < prompts.length; j++) {
+                if (this._computePromptSimilarity(prompts[i].text, prompts[j].text) > 0.55) {
+                    prompts[j].similar = true;  // flag the later / lower-ranked duplicate
+                }
+            }
         }
 
         // Render output
@@ -1717,12 +1726,16 @@ const PromptStudio = {
         const list = this.container.querySelector('#ps-prompts-list');
 
         list.innerHTML = prompts.map((p, i) => `
-            <div class="ps-prompt-block" data-idx="${i}">
+            <div class="ps-prompt-block ${p.similar ? 'ps-prompt-similar' : ''}" data-idx="${i}" data-arch-id="${p.archId}">
                 <div class="ps-prompt-header">
-                    <span>${p.icon} ${p.archetype}</span>
-                    <button class="btn btn-sm btn-secondary ps-copy-one" data-idx="${i}">📋 Copy</button>
+                    <span>${p.icon} ${p.archetype}${p.similar ? ' <span class="ps-similar-badge" title="This prompt has significant overlap with another prompt in this batch — consider regenerating">⚠️ Similar</span>' : ''}</span>
+                    <div class="ps-prompt-actions">
+                        <button class="btn btn-sm btn-outline ps-regen-one" data-idx="${i}" data-arch-id="${p.archId}" title="Regenerate this prompt with a different scene">↺ New</button>
+                        <button class="btn btn-sm btn-secondary ps-copy-one" data-idx="${i}">📋 Copy</button>
+                    </div>
                 </div>
                 <div class="ps-prompt-text" id="ps-prompt-${i}">${p.text}</div>
+                <div class="ps-caption-block" id="ps-caption-${i}" style="display:none"></div>
             </div>
         `).join('');
 
@@ -1733,6 +1746,56 @@ const PromptStudio = {
                 navigator.clipboard.writeText(prompts[idx].text).then(() => {
                     Elaris.toast('Prompt copied ✓', 'success');
                 });
+            });
+        });
+
+        // ↺ Regenerate a single prompt with a fresh scene + outfit
+        list.querySelectorAll('.ps-regen-one').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const archId = btn.dataset.archId;
+                const idx    = parseInt(btn.dataset.idx, 10);
+                const arch   = this.archetypes.find(a => a.id === archId);
+                if (!arch) return;
+                const newText = this._buildPrompt(arch);
+                const block   = list.querySelector(`[data-idx="${idx}"]`);
+                if (block) {
+                    block.querySelector('.ps-prompt-text').textContent = newText;
+                    block.classList.remove('ps-prompt-similar');
+                    const badge = block.querySelector('.ps-similar-badge');
+                    if (badge) badge.remove();
+                    // Reset caption if previously generated
+                    const capDiv = block.querySelector('.ps-caption-block');
+                    if (capDiv) { capDiv.innerHTML = ''; capDiv.style.display = 'none'; delete capDiv.dataset.generated; }
+                }
+                prompts[idx].text = newText;
+                Elaris.toast('New prompt generated ✨', 'info');
+            });
+        });
+
+        // Caption: click header area to toggle caption block (lazy generation)
+        list.querySelectorAll('.ps-prompt-header').forEach(header => {
+            header.addEventListener('click', e => {
+                if (e.target.closest('button')) return;  // ignore button clicks inside header
+                const block  = header.closest('.ps-prompt-block');
+                const idx    = parseInt(block.dataset.idx, 10);
+                const archId = block.dataset.archId;
+                const capDiv = block.querySelector('.ps-caption-block');
+                if (!capDiv) return;
+                if (capDiv.style.display !== 'block') {
+                    if (!capDiv.dataset.generated) {
+                        const cap = this._generateCaption(archId, this._lastPiece || '', this._lastMaterial || '');
+                        capDiv.innerHTML = `<div class="ps-caption-inner"><div class="ps-caption-label">📝 Caption — click header again to hide</div><pre class="ps-caption-text">${cap}</pre><button class="btn btn-sm btn-secondary ps-copy-caption" data-idx="${idx}">📋 Copy Caption</button></div>`;
+                        capDiv.dataset.generated = '1';
+                        // Wire copy-caption btn
+                        capDiv.querySelector('.ps-copy-caption').addEventListener('click', () => {
+                            const text = capDiv.querySelector('.ps-caption-text')?.textContent || '';
+                            navigator.clipboard.writeText(text).then(() => Elaris.toast('Caption copied! ✨', 'success'));
+                        });
+                    }
+                    capDiv.style.display = 'block';
+                } else {
+                    capDiv.style.display = 'none';
+                }
             });
         });
 
@@ -1773,8 +1836,10 @@ const PromptStudio = {
             ? 'three arms, extra arms, extra limbs, malformed anatomy, extra fingers, six fingers, mutated limbs, fused fingers, asymmetrical geometry'
             : '(hand, fingers, skin, arm, human), distorted shape, asymmetrical geometry';
 
-        // Scale: the most common AI failure — making jewelry gigantic
-        const scale = 'oversized jewelry, jewelry disproportionate to body, necklace wider than shoulders, pendant larger than hand, ring wider than palm, earring larger than face, jewelry not to correct real-world scale, miniaturized accessories';
+        // Scale: filter human-body-referencing terms for product-only shots (no model)
+        const scale = isHuman
+            ? 'oversized jewelry, jewelry disproportionate to body, necklace wider than shoulders, pendant larger than hand, ring wider than palm, earring larger than face, jewelry not to correct real-world scale, miniaturized accessories'
+            : 'oversized jewelry, jewelry not to correct real-world scale, miniaturized accessories, jewelry disproportionate to scene';
 
         // Placement: category-specific misplacement negatives
         const placement = {
@@ -1820,6 +1885,8 @@ const PromptStudio = {
         _rawDesc = _rawDesc.replace(/\s+/g, ' ').trim();
         // piece = "925 Sterling Silver ring with diamonds accents" (always correct type)
         const piece = _rawDesc ? `${material} ${catWord} ${_rawDesc}` : `${material} ${catWord}`;
+        this._lastPiece = piece;
+        this._lastMaterial = material;
         const mood = this.moods.find(m => m.id === this.state.mood)?.label.toLowerCase() || '';
         const lighting = this.lightings.find(l => l.id === this.state.lighting)?.label.toLowerCase() || '';
         const fmt = this.formats.find(f => f.id === this.state.format);
@@ -1832,6 +1899,8 @@ const PromptStudio = {
         // Scene variant adds randomized setting/environment to prevent same-scene repetition.
         const subject = this._getUniqueSubject(archetype).replace(/\{piece\}/g, piece);
         const sceneVariant = this._getSceneVariant(archetype.id);
+        // Coherent lighting: if scene has time-of-day language, align lighting desc
+        const lightingCoherent = this._getLightingForScene(sceneVariant, lighting);
 
         // ── FIX #1: Unified camera system — one lens per shot, no conflicts ──────────────────────
         // Each angle gets a complete, self-contained camera description:
@@ -1934,7 +2003,7 @@ const PromptStudio = {
         let stylingDesc = '';
         if (isHuman) {
             const styleMap = {
-                'auto': this._getRandomOutfit(modelGenderForStyling),   // auto: random outfit from diverse pool — prevents same-clothing repetition
+                'auto': this._getRandomOutfit(modelGenderForStyling, this.state.material),   // auto: palette-matched random outfit
                 'minimal': modelGenderForStyling === 'male'
                     ? 'model in minimal clean styling, strong build as the canvas'
                     : 'model in minimal styling, skin as the canvas',
@@ -2129,11 +2198,13 @@ const PromptStudio = {
             // CAMERA — lens, aperture, depth of field (no angle conflict)
             `${cameraDesc}.`,
             // MOOD & LIGHTING
-            `${mood} mood, ${lighting}.`,
+            `${mood} mood, ${lightingCoherent}.`,
             // POSE (human only, no embedded skin notes)
             poseDesc ? `Pose: ${poseDesc}.` : '',
             // EXPRESSION (human only)
             expressionDesc ? `Expression: ${expressionDesc}.` : '',
+            // SKIN TONE — randomized per generation for model diversity (human archetypes only)
+            isHuman ? this._getRandomSkinTone() + '.' : '',
             // REALISM (skin texture, wrinkles, body hair, skin detail — user controlled)
             realismDesc ? realismDesc + '.' : '',
             // SURFACE / PALETTE / STYLING
@@ -2151,7 +2222,10 @@ const PromptStudio = {
         const tailParts = [
             'Sharp critical focus on jewelry, perfect geometric proportions, 8K resolution, style photographic, professional commercial photography, RAW quality.',
             anatomyConstraint,
-            `Aspect ratio ${ratio}.`,
+            // Aspect ratio: flat-lay/overhead angles read better in 1:1 or 4:5
+            (['flat-lay', 'overhead', 'top-down-hand'].includes(this.state.angle) && ratio === '9:16')
+                ? \`Aspect ratio \${ratio}. Note: this overhead/flat angle composition is optimised for 1:1 or 4:5 framing.\`
+                : \`Aspect ratio \${ratio}.\`,
             negativePrompt,
         ];
 
@@ -2268,6 +2342,83 @@ const PromptStudio = {
 
     // ── Unique Subject Tracker ──────────────────────
     _subjectPools: {},
+        _getRandomSkinTone() {
+        // Diverse skin tone descriptions — Moroccan-audience-aware representation
+        const tones = [
+            'model has warm deep brown skin, rich luminous tone with natural warmth',
+            'model has medium olive complexion, Mediterranean warm undertones, healthy glow',
+            'model has light warm golden skin, sun-kissed undertones, smooth texture',
+            'model has deep espresso skin, high contrast, beautifully luminous',
+            'model has warm tawny complexion, North African skin tones, rich depth',
+            'model has fair ivory skin with cool rose undertones, delicate and luminous',
+            'model has caramel medium complexion, even tone, warm and approachable',
+            'model has rich amber skin, deep warm undertones, photogenic contrast',
+            'model has bronze sun-warmed complexion, Mediterranean golden tones',
+            'model has warm chestnut complexion, luminous North African colouring',
+        ];
+        return tones[Math.floor(Math.random() * tones.length)];
+    },
+
+    _getLightingForScene(sceneVariant, selectedLighting) {
+        // Override lighting when sceneVariant has strong time-of-day language
+        // that would contradict the studio lighting picker choice.
+        // If user explicitly picked a non-generic lighting, we still respect it
+        // (only override the default 'studio lighting' fallback).
+        if (!sceneVariant) return selectedLighting;
+        const sv = sceneVariant.toLowerCase();
+        if (sv.includes('morning') || (sv.includes('golden') && sv.includes('light'))) {
+            return 'warm morning golden light, soft natural fill from a low sun angle';
+        }
+        if (sv.includes('dusk') || sv.includes('twilight')) {
+            return 'dusk ambient light, warm-to-cool gradient atmosphere';
+        }
+        if (sv.includes('blue hour')) {
+            return 'blue hour soft twilight, cool diffused ambient exposure';
+        }
+        if (sv.includes('candlelit') || sv.includes('lantern')) {
+            return 'warm candlelit ambient, golden flickering tones, intimate low-key atmosphere';
+        }
+        if (sv.includes('overcast')) {
+            return 'overcast sky, evenly diffused natural light, no harsh shadows, studio-quality daylight';
+        }
+        if (sv.includes('midday') || sv.includes('mediterranean')) {
+            return 'bright high-key midday Mediterranean light, strong directional sun';
+        }
+        return selectedLighting;  // no time-of-day conflict — keep user selection
+    },
+
+    
+    _generateCaption(archetypeId, piece, material) {
+        // Build a social media caption from archetype vibe + piece + brand voice
+        const hooks = {
+            'lifestyle-moment':    'This is the detail that changes everything.',
+            'editorial-model':     'Jewelry that speaks before words do.',
+            'cinematic-portrait':  'Wear your story.',
+            'body-intimate':       'Crafted to be felt, not just seen.',
+            'surface-lean':        'Quiet luxury. Loud impression.',
+            'hair-drama':          'The detail you notice last — remembered first.',
+            'bw-dramatic':         'Timeless is not a style. It is a standard.',
+            'collection-showcase': 'One collection. Infinite expression.',
+            'masculine-editorial': 'Built for those who know what they want.',
+            'motion-blur':         'Even in motion, it commands attention.',
+            'wet-element':         'Luxurious in any element.',
+            'through-glass':       'Seen through light. Defined by craft.',
+            'heritage-moroccan':   'Heritage handcrafted. Future worn.',
+            'celestial-mythic':    'Born from light. Made for you.',
+        };
+        const hashtags = {
+            'ring':     '#ElarisRing #SterlingRing #MoroccanJewelry #LuxuryRing #JewelryDesign',
+            'necklace': '#ElarisNecklace #SterlingNecklace #MoroccanJewelry #LuxuryJewelry #NecklaceDesign',
+            'earring':  '#ElarisEarrings #SterlingEarrings #MoroccanJewelry #LuxuryEarrings #EarringDesign',
+            'bracelet': '#ElarisBracelet #SterlingBracelet #MoroccanJewelry #LuxuryBracelet #BraceletDesign',
+            'pendant':  '#ElarisPendant #SterlingPendant #MoroccanJewelry #LuxuryJewelry #PendantDesign',
+        };
+        const cat = this.state.category || 'ring';
+        const hook = hooks[archetypeId] || 'Jewelry crafted for those who know.';
+        const tags = hashtags[cat] || '#ElarisJewelry #MoroccanJewelry #LuxuryJewelry';
+        return `${hook}\n\n${material} — ${piece}.\n\n✦ Elaris Jewelry\n\n${tags} #ElarisJewelry #Elaris`;
+    },
+
     _getSceneVariant(archetypeId) {
         // Returns a random environment/setting phrase to inject variety into any archetype
         // Organized by archetype group — human archetypes get lifestyle settings,
@@ -2300,6 +2451,13 @@ const PromptStudio = {
             'at an outdoor café table in a sunlit square',
             'in a bookshop between tall shelves, soft ambient reading light',
             'at a rooftop pool bar, blue water reflecting light',
+            // ── Moroccan / North African cultural occasions ──────────────────
+            'warm Ramadan evening atmosphere, lantern light and ornate zellige tile setting',
+            'festive Eid morning, soft pastel light and celebration energy',
+            'summer rooftop in Marrakech, warm night air and medina skyline lights',
+            'cool Moroccan medina morning, intricate archways and carved plaster light play',
+            'a traditional riad garden at dusk, fountain reflection and jasmine scent implied',
+            'a Moroccan wedding celebration context, gold candlelight and embroidered textiles',
         ];
         const productEnvs = [
             'polished white Carrara marble surface',
@@ -2323,62 +2481,121 @@ const PromptStudio = {
         return pool[Math.floor(Math.random() * pool.length)];
     },
 
-    _getRandomOutfit(gender) {
-        // Returns a random outfit description — prevents the same clothing appearing repeatedly
+    _getRandomOutfit(gender, materialId) {
+        // Returns a random outfit — palette-tagged and filtered by metal affinity
+        // Rose/yellow gold → warm palette, Silver/platinum → cool, mixed → neutral
+        const warmMats = ['rose-gold', 'gold', 'yellow-gold'];
+        const coolMats = ['sterling-silver', 'platinum', 'white-gold'];
+        const matFamily = warmMats.includes(materialId) ? 'warm'
+                        : coolMats.includes(materialId) ? 'cool' : 'neutral';
+
         const femaleOutfits = [
-            'wearing a soft camel ribbed turtleneck and tailored wide-leg trousers',
-            'in a crisp white linen button-down shirt, collar open, sleeves casually rolled',
-            'wearing a dusty-rose cashmere cardigan loosely draped over the shoulders',
-            'in a structured terracotta blazer over a simple white fitted tee',
-            'wearing a deep forest-green silk blouse, elegantly draped',
-            'in a light grey oversized knit sweater with clean minimalist styling',
-            'wearing a charcoal wrap coat, belt tied loosely at the waist',
-            'in a cobalt blue fitted turtleneck, clean and editorial',
-            'wearing a cream textured linen midi dress',
-            'in a burgundy velvet blazer with a white camisole underneath',
-            'wearing a mustard yellow silk blouse, relaxed and editorial',
-            'in a black tailored suit with subtle gold button detail',
-            'wearing a pale ivory wrap dress with a delicate abstract print',
-            'in a sage green knit co-ord set, relaxed contemporary',
-            'wearing a striped navy and white Breton top with wide trousers',
-            'in a chocolate brown suede jacket over a cream knit',
-            'wearing an off-white flowing linen shirt-dress, effortless and airy',
-            'in a muted olive trench coat over dark essentials',
+            { t: 'wearing a soft camel ribbed turtleneck and tailored wide-leg trousers', p: 'warm' },
+            { t: 'in a crisp white linen button-down shirt, collar open, sleeves casually rolled', p: 'cool' },
+            { t: 'wearing a dusty-rose cashmere cardigan loosely draped over the shoulders', p: 'warm' },
+            { t: 'in a structured terracotta blazer over a simple white fitted tee', p: 'warm' },
+            { t: 'wearing a deep forest-green silk blouse, elegantly draped', p: 'cool' },
+            { t: 'in a light grey oversized knit sweater with clean minimalist styling', p: 'cool' },
+            { t: 'wearing a charcoal wrap coat, belt tied loosely at the waist', p: 'cool' },
+            { t: 'in a cobalt blue fitted turtleneck, clean and editorial', p: 'cool' },
+            { t: 'wearing a cream textured linen midi dress', p: 'neutral' },
+            { t: 'in a burgundy velvet blazer with a white camisole underneath', p: 'warm' },
+            { t: 'wearing a mustard yellow silk blouse, relaxed and editorial', p: 'warm' },
+            { t: 'in a black tailored suit with subtle gold button detail', p: 'neutral' },
+            { t: 'wearing a pale ivory wrap dress with a delicate abstract print', p: 'neutral' },
+            { t: 'in a sage green knit co-ord set, relaxed contemporary', p: 'cool' },
+            { t: 'wearing a striped navy and white Breton top with wide trousers', p: 'cool' },
+            { t: 'in a chocolate brown suede jacket over a cream knit', p: 'warm' },
+            { t: 'wearing an off-white flowing linen shirt-dress, effortless and airy', p: 'neutral' },
+            { t: 'in a muted olive trench coat over dark essentials', p: 'neutral' },
+            { t: 'wearing a rich copper-toned satin blouse with wide trousers', p: 'warm' },
+            { t: 'in a soft ecru ribbed knit dress, minimal and tactile', p: 'neutral' },
         ];
         const maleOutfits = [
-            'in a clean white Oxford shirt, collar open, sleeves rolled',
-            'wearing a slim-cut navy wool blazer over a white tee',
-            'in a camel overcoat over a black turtleneck',
-            'wearing a charcoal grey crewneck sweater with dark trousers',
-            'in a light beige linen suit, Mediterranean editorial',
-            'wearing a deep burgundy crew-neck over clean-cut dark denim',
-            'in a structured slate blue blazer with no tie, relaxed formal',
-            'wearing a soft olive field jacket over a simple white shirt',
-            'in a classic black turtleneck, timeless editorial',
-            'wearing a warm rust-colored knit pullover with clean trousers',
-            'in an unstructured ecru linen suit, relaxed and modern',
-            'wearing a dark indigo denim shirt with rolled sleeves',
-            'in a stone-coloured chore coat over a slim grey turtleneck',
-            'wearing a soft brown suede jacket over a white crewneck',
+            { t: 'in a clean white Oxford shirt, collar open, sleeves rolled', p: 'neutral' },
+            { t: 'wearing a slim-cut navy wool blazer over a white tee', p: 'cool' },
+            { t: 'in a camel overcoat over a black turtleneck', p: 'warm' },
+            { t: 'wearing a charcoal grey crewneck sweater with dark trousers', p: 'cool' },
+            { t: 'in a light beige linen suit, Mediterranean editorial', p: 'warm' },
+            { t: 'wearing a deep burgundy crew-neck over clean-cut dark denim', p: 'warm' },
+            { t: 'in a structured slate blue blazer with no tie, relaxed formal', p: 'cool' },
+            { t: 'wearing a soft olive field jacket over a simple white shirt', p: 'neutral' },
+            { t: 'in a classic black turtleneck, timeless editorial', p: 'neutral' },
+            { t: 'wearing a warm rust-colored knit pullover with clean trousers', p: 'warm' },
+            { t: 'in an unstructured ecru linen suit, relaxed and modern', p: 'warm' },
+            { t: 'wearing a dark indigo denim shirt with rolled sleeves', p: 'cool' },
+            { t: 'in a stone-coloured chore coat over a slim grey turtleneck', p: 'neutral' },
+            { t: 'wearing a soft brown suede jacket over a white crewneck', p: 'warm' },
+            { t: 'in a rich terracotta linen shirt, sleeves half-rolled, effortlessly editorial', p: 'warm' },
+            { t: 'wearing a pale sky-blue Oxford over clean straight-cut grey trousers', p: 'cool' },
         ];
+
         const pool = (gender === 'male') ? maleOutfits : femaleOutfits;
-        return pool[Math.floor(Math.random() * pool.length)];
+        // Prefer palette-matched outfits; fall back to neutral, then any
+        const preferred = pool.filter(o => o.p === matFamily);
+        const neutral   = pool.filter(o => o.p === 'neutral');
+        const chosen    = preferred.length > 0 ? preferred : neutral.length > 0 ? neutral : pool;
+        return chosen[Math.floor(Math.random() * chosen.length)].t;
+    },
+
+        _computePromptSimilarity(text1, text2) {
+        // Simple keyword-overlap similarity (Jaccard-like) between two prompt texts
+        // Returns a 0–1 score; >0.55 = suspiciously similar
+        const tokenise = t => new Set(
+            t.toLowerCase()
+             .replace(/[^a-z0-9 ]/g, ' ')
+             .split(/\s+/)
+             .filter(w => w.length > 4)   // only meaningful words
+        );
+        const s1 = tokenise(text1);
+        const s2 = tokenise(text2);
+        const intersection = [...s1].filter(w => s2.has(w)).length;
+        const union = new Set([...s1, ...s2]).size;
+        return union === 0 ? 0 : intersection / union;
+    },
+
+    _getUsedSubjectKey(archetypeId) {
+        return 'elaris_used_' + archetypeId;
     },
 
     _getUniqueSubject(archetype) {
-        // If pool doesn't exist or is empty, create a new shuffled pool
+        // ── Cross-session deduplication via localStorage ───────────────────
+        // We track which subject indices have been used in previous sessions.
+        // Prefer unused-across-sessions subjects, cycling through them before repeating.
+        const storageKey = this._getUsedSubjectKey(archetype.id);
+        let usedAcrossSessions = [];
+        try {
+            usedAcrossSessions = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        } catch(e) { usedAcrossSessions = []; }
+
+        const allIndices = archetype.subjects.map((_, i) => i);
+        const unusedAcross = allIndices.filter(i => !usedAcrossSessions.includes(i));
+
+        // If pool doesn't exist or is empty, rebuild from unused-across-sessions first
         if (!this._subjectPools[archetype.id] || this._subjectPools[archetype.id].length === 0) {
-            let indices = archetype.subjects.map((_, i) => i);
-            // Fisher-Yates shuffle
-            for (let i = indices.length - 1; i > 0; i--) {
+            // Prefer subjects never seen across sessions; if all seen, reset cross-session memory
+            let candidateIndices = unusedAcross.length > 0 ? unusedAcross : (() => {
+                try { localStorage.removeItem(storageKey); } catch(e) {}
+                return allIndices;
+            })();
+
+            // Fisher-Yates shuffle on candidates
+            for (let i = candidateIndices.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [indices[i], indices[j]] = [indices[j], indices[i]];
+                [candidateIndices[i], candidateIndices[j]] = [candidateIndices[j], candidateIndices[i]];
             }
-            this._subjectPools[archetype.id] = indices;
+            this._subjectPools[archetype.id] = [...candidateIndices];
         }
-        
-        // Pop the next unique index
+
+        // Pop the next unique index from in-session pool
         const idx = this._subjectPools[archetype.id].pop();
+
+        // Mark as used across sessions
+        try {
+            const updated = [...new Set([...usedAcrossSessions, idx])];
+            localStorage.setItem(storageKey, JSON.stringify(updated));
+        } catch(e) {}
+
         return archetype.subjects[idx];
     },
 };
