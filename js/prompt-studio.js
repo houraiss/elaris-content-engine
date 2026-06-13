@@ -1074,6 +1074,8 @@ const PromptStudio = {
         brandTouch: 'none',       // 'none' | 'logomark' | 'wordmark'
         // v3.0
         cameraProfile: 'auto',    // 'auto' | see cameraProfiles array
+        hijabi: false,            // when true: model wears hijab/headscarf
+        hijabStyle: 'classic',    // 'classic' | 'draped' | 'turban' | 'niqab' | 'modern'
     },
 
     // ── Profiles Management ──────────────────────
@@ -1248,11 +1250,18 @@ const PromptStudio = {
             sorted.sort((a, b) => a.name.localeCompare(b.name));
         }
 
+        // v3.0 archetype IDs — shown with a NEW badge
+        const V3_ARCHETYPES = new Set([
+            'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture', 'cinematic-color-story',
+            'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty',
+        ]);
+
         grid.innerHTML = sorted.map(a => {
             // Use the SAME score for display as used for sorting
             const score = this._computeScore(a, this.state);
             const isSelected = this.state.selectedArchetypes.includes(a.id);
             const scoreColor = score >= 85 ? '#4ade80' : score >= 70 ? '#fbbf24' : score >= 50 ? '#f97316' : '#f87171';
+            const isV3 = V3_ARCHETYPES.has(a.id);
             
             // Dynamic translation for archetypes based on ID prefix
             const tPrefix = a.id === 'body-intimate' ? 'body' :
@@ -1271,7 +1280,8 @@ const PromptStudio = {
             const bestForVal = a.bestFor.replace('Best for:', '').trim();
 
             return `
-                <div class="ps-arch-card ${isSelected ? 'active' : ''}" data-arch="${a.id}">
+                <div class="ps-arch-card ${isSelected ? 'active' : ''} ${isV3 ? 'ps-arch-v3' : ''}" data-arch="${a.id}" style="position:relative">
+                    ${isV3 ? `<span style="position:absolute;top:6px;right:6px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:9px;font-weight:700;letter-spacing:0.08em;padding:2px 6px;border-radius:10px;text-transform:uppercase;pointer-events:none">v3.0</span>` : ''}
                     <div class="ps-arch-icon" style="--arch-color:${a.color}">${a.icon}</div>
                     <div class="ps-arch-info">
                         <div class="ps-arch-name">${name}</div>
@@ -1286,6 +1296,199 @@ const PromptStudio = {
         // Update count
         const countEl = this.container.querySelector('#ps-arch-count');
         if (countEl) countEl.textContent = `${this.state.selectedArchetypes.length} selected`;
+    },
+
+    // ── v3.0: Smart Guide ──────────────────────────────────────────────
+    // Generates a contextual recommendation block based on selected archetypes.
+    // Returns an HTML string (empty string when nothing is selected).
+    _buildSmartGuide() {
+        const selected = this.state.selectedArchetypes || [];
+        if (selected.length === 0) {
+            return `
+            <div style="margin-top:12px;border:1px dashed rgba(255,255,255,0.1);border-radius:12px;padding:16px;background:var(--surface);opacity:0.6">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                    <span style="font-size:16px">🧭</span>
+                    <span style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted)">Smart Guide</span>
+                </div>
+                <p style="font-size:12px;color:var(--text-muted);line-height:1.5;margin:0">Select one or more archetypes above to get personalised recommendations for the best modifiers, camera angles, and lighting to achieve great results.</p>
+            </div>`;
+        }
+
+        // Build per-archetype guidance database
+        const guideDB = {
+            'body-intimate': {
+                angle: ['macro', 'extreme-macro', 'eye-level'],
+                lighting: ['soft-box', 'natural', 'ring-light'],
+                mood: ['intimate', 'editorial', 'minimal'],
+                camera: ['macro-100', 'macro-180', 'hasselblad-85'],
+                tips: ['Use Macro or Extreme Macro angles for the most impactful jewelry close-ups.', 'Pair with 100mm f/2.8 Macro or 180mm Macro lens for extraordinary gem detail.', 'Keep styling minimal — skin is the canvas here.'],
+            },
+            'editorial-model': {
+                angle: ['eye-level', '45-degree', 'chin-up', 'low-angle'],
+                lighting: ['studio', 'dramatic', 'soft-box'],
+                mood: ['editorial', 'dramatic', 'confident'],
+                camera: ['hasselblad-85', 'canon-135-l', 'leica-50'],
+                tips: ['The 45° angle or chin-up give the strongest editorial energy.', 'Hasselblad 85mm creates that medium-format luxury look that fashion magazines use.', 'Dramatic or Studio lighting gives the sharpest editorial contrast.'],
+            },
+            'bw-dramatic': {
+                angle: ['side-profile', 'dutch', 'low-angle'],
+                lighting: ['dramatic', 'chiaroscuro', 'harsh'],
+                mood: ['dramatic', 'dark', 'intense'],
+                camera: ['canon-135-l', 'leica-50', 'hasselblad-85'],
+                tips: ['Side profile with harsh chiaroscuro lighting = strongest B&W result.', 'Dutch angle adds tension and cinema energy.', 'Canon 135mm f/2L compresses background beautifully in monochrome.'],
+            },
+            'raw-field-editorial': {
+                angle: ['eye-level', 'wind-blown', 'candid'],
+                lighting: ['natural', 'golden-hour-light', 'harsh-sun'],
+                mood: ['raw', 'natural', 'editorial'],
+                camera: ['hasselblad-85', 'leica-50', 'sony-35-gm'],
+                tips: ['Set the angle to Wind-Blown for full raw field energy — it drives wind and motion in the prompt.', 'Sony 35mm f/1.4 GM gives the wider field inclusion that this archetype needs.', 'Pair with Harsh Sun or Natural lighting — NO studio light for this one.', 'Caftan or minimal styling works best; avoid formal outfits.'],
+            },
+            'veiled-mystery': {
+                angle: ['extreme-close-crop', 'fabric-reveal', 'eye-level'],
+                lighting: ['natural', 'soft-box', 'window'],
+                mood: ['mysterious', 'intimate', 'editorial'],
+                camera: ['hasselblad-85', 'macro-100', 'canon-135-l'],
+                tips: ['Extreme Close Crop is the signature angle for this archetype — eyes fill the frame.', 'Fabric Reveal creates the dramatic pull-aside composition.', 'Enable Hijabi toggle with "Niqab" or "Sheer Veil" style for maximum synergy with this archetype.', 'Keep lighting to Natural or soft Window — harsh studio light kills the mystery.'],
+            },
+            'avant-garde-couture': {
+                angle: ['eye-level', '45-degree', 'low-angle', 'chin-up'],
+                lighting: ['studio', 'dramatic', 'soft-box'],
+                mood: ['avant-garde', 'editorial', 'bold'],
+                camera: ['phase-one-iq4', 'hasselblad-85', 'canon-135-l'],
+                tips: ['Phase One IQ4 or Hasselblad 85mm gives the medium-format luxury depth this fashion archetype deserves.', 'AI-Choice styling lets the engine pick couture-appropriate outfits automatically.', 'Low angle adds grandeur to sculptural headwear.'],
+            },
+            'cinematic-color-story': {
+                angle: ['eye-level', 'low-angle', '45-degree'],
+                lighting: ['dramatic', 'studio', 'gradient'],
+                mood: ['cinematic', 'bold', 'editorial'],
+                camera: ['anamorphic-40', 'canon-135-l', 'hasselblad-85'],
+                tips: ['Anamorphic 40mm lens is the perfect match — it creates cinematic lens flares that reinforce the color story.', 'Set Color Palette to match your chosen color story (e.g. warm amber, deep red).', 'Low angle + dramatic lighting amplifies the single-color immersion.'],
+            },
+            'surreal-scale': {
+                angle: ['worms-eye', 'low-angle', 'overhead'],
+                lighting: ['dramatic', 'natural', 'studio'],
+                mood: ['surreal', 'dramatic', 'cinematic'],
+                camera: ['anamorphic-40', 'sony-35-gm', 'canon-135-l'],
+                tips: ["Worm's Eye angle maximises the scale contrast — makes the environment look even more massive.", 'Anamorphic lens adds a movie-quality widescreen feel to surreal environments.', 'Keep lighting dramatic or natural — no ring lights or beauty dishes for this one.'],
+            },
+            'ghost-double-exposure': {
+                angle: ['eye-level', 'side-profile', '45-degree'],
+                lighting: ['dramatic', 'natural', 'rim-light'],
+                mood: ['ethereal', 'cinematic', 'mysterious'],
+                camera: ['canon-135-l', 'anamorphic-40', 'leica-50'],
+                tips: ['Side profile creates the clearest ghost separation — two distinct silhouettes.', 'Warm amber palette (in Color Palette controls) reinforces the long-exposure aesthetic.', 'Keep expression to "Serene" or "Thoughtful" — matches the dreamy double-exposure mood.'],
+            },
+            'outdoor-masculine': {
+                angle: ['eye-level', 'candid', '45-degree', 'from-behind'],
+                lighting: ['natural', 'golden-hour-light', 'overcast'],
+                mood: ['raw', 'editorial', 'natural'],
+                camera: ['hasselblad-85', 'leica-50', 'sony-35-gm'],
+                tips: ['Set Model Gender to Male — this archetype is designed for masculine editorial.', 'Candid angle delivers the most natural unposed outdoor feel.', 'Leica 50mm Summilux gives that honest documentary rendering that suits outdoor masculine work.', 'Choose Bracelet or Ring category for best compatibility scores.'],
+            },
+            'harsh-sun-beauty': {
+                angle: ['extreme-close-crop', 'eye-level', 'chin-up'],
+                lighting: ['natural', 'harsh-sun', 'direct'],
+                mood: ['raw', 'editorial', 'bold'],
+                camera: ['hasselblad-85', 'macro-100', 'leica-50'],
+                tips: ['Extreme Close Crop + Harsh Sun lighting = the signature look of this archetype.', 'Enable visible Skin Pores in Scene Realism for maximum raw beauty authenticity.', 'Hasselblad 85mm captures the harsh shadow detail with the best tonal range.', 'Avoid smooth or polished skin realism settings — raw texture is the whole point.'],
+            },
+            'macro-detail': {
+                angle: ['macro', 'extreme-macro'],
+                lighting: ['ring-light', 'soft-box', 'studio'],
+                mood: ['minimal', 'editorial', 'precise'],
+                camera: ['macro-100', 'macro-180', 'phase-one-iq4'],
+                tips: ['180mm f/3.5 Macro gives absolute maximum gem detail — individual facets visible.', 'Ring light creates perfect symmetrical catchlights on stones.', 'Phase One IQ4 55mm for catalog-quality detail shots.'],
+            },
+            'hair-drama': {
+                angle: ['from-behind', 'side-profile', 'foreground-blur'],
+                lighting: ['rim-light', 'natural', 'golden-hour-light'],
+                mood: ['dramatic', 'editorial', 'glamour'],
+                camera: ['hasselblad-85', 'canon-135-l', 'leica-50'],
+                tips: ['From Behind or Side Profile angles showcase the hair movement and earring placement best.', 'Rim light or golden hour makes hair textures glow.', 'NOTE: Hijabi toggle will override hair drama — keep it off for this archetype.'],
+            },
+            'cinematic-portrait': {
+                angle: ['eye-level', '45-degree', 'side-profile'],
+                lighting: ['dramatic', 'chiaroscuro', 'rim-light'],
+                mood: ['cinematic', 'dramatic', 'editorial'],
+                camera: ['anamorphic-40', 'canon-135-l', 'hasselblad-85'],
+                tips: ['Anamorphic 40mm is the ideal lens for this archetype — it creates real cinematic lens flares.', '45-degree angle with dramatic chiaroscuro lighting = peak cinematic portrait.', 'Use a Thoughtful or Intense expression for best cinematic depth.'],
+            },
+            'celestial-mythic': {
+                angle: ['low-angle', 'worms-eye', '45-degree'],
+                lighting: ['dramatic', 'rim-light', 'ethereal'],
+                mood: ['mythic', 'dramatic', 'ethereal'],
+                camera: ['anamorphic-40', 'canon-135-l', 'phase-one-iq4'],
+                tips: ["Low angle makes the model appear divine and monumental — perfect for mythic energy.", 'Anamorphic flares reinforce the other-worldly atmosphere.', 'Pair with Pendant or Necklace for the best compatibility score.'],
+            },
+        };
+
+        // Collect all guidance for selected archetypes
+        const guides = selected.map(id => guideDB[id]).filter(Boolean);
+        if (guides.length === 0) {
+            // Selected archetypes exist but no specific guide — show generic advice
+            return `
+            <div style="margin-top:12px;border:1px solid rgba(168,85,247,0.2);border-radius:12px;padding:16px;background:rgba(124,58,237,0.05)">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                    <span style="font-size:16px">🧭</span>
+                    <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#a855f7">Smart Guide</span>
+                </div>
+                <p style="font-size:12px;color:var(--text-muted);line-height:1.5;margin:0">✨ Great selection! Hit Generate Prompts to create your editorial prompts.</p>
+            </div>`;
+        }
+
+        // Aggregate recommendations — rank by frequency across all selected archetypes
+        const rank = (arr) => {
+            const freq = {};
+            arr.forEach(id => freq[id] = (freq[id] || 0) + 1);
+            return Object.entries(freq).sort((a,b) => b[1]-a[1]).map(e => e[0]);
+        };
+        const bestAngles   = rank(guides.flatMap(g => g.angle   || [])).slice(0, 3);
+        const bestLighting = rank(guides.flatMap(g => g.lighting || [])).slice(0, 3);
+        const bestCameras  = rank(guides.flatMap(g => g.camera  || [])).slice(0, 2);
+        const allTips      = [...new Set(guides.flatMap(g => g.tips || []))].slice(0, 4);
+
+        // Translate IDs to human labels
+        const anglesAll    = this.angles;
+        const angleLabel   = id => (anglesAll.find(a => a.id === id) || {}).label || id;
+        const cameraLabel  = id => (this.cameraProfiles.find(c => c.id === id) || {}).label || id;
+        const lightingLabels = { 'soft-box': 'Soft Box', 'natural': 'Natural Light', 'ring-light': 'Ring Light', 'dramatic': 'Dramatic', 'studio': 'Studio', 'chiaroscuro': 'Chiaroscuro', 'rim-light': 'Rim Light', 'golden-hour-light': 'Golden Hour', 'harsh-sun': 'Harsh Sun', 'gradient': 'Gradient', 'window': 'Window Light', 'overcast': 'Overcast', 'ethereal': 'Ethereal', 'direct': 'Direct Sun', 'harsh': 'Harsh' };
+        const lightLabel   = id => lightingLabels[id] || id;
+
+        const archNames = selected.map(id => {
+            const a = this.archetypes.find(x => x.id === id);
+            return a ? `${a.icon} ${a.name}` : id;
+        }).join(', ');
+
+        return `
+        <div style="margin-top:12px;border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:16px;background:rgba(124,58,237,0.06)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font-size:16px">🧭</span>
+                    <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#a855f7">Smart Guide</span>
+                </div>
+                <span style="font-size:10px;color:var(--text-muted);opacity:0.7">Based on your archetype selection</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+                <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px">
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;margin-bottom:6px">📐 Best Angles</div>
+                    ${bestAngles.map((id, i) => `<div style="font-size:11px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:4px">${i === 0 ? '<span style="color:#fbbf24">⭐</span>' : '<span style="opacity:0.4">·</span>'} ${angleLabel(id)}</div>`).join('')}
+                </div>
+                <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px">
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#34d399;margin-bottom:6px">💡 Best Lighting</div>
+                    ${bestLighting.map((id, i) => `<div style="font-size:11px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:4px">${i === 0 ? '<span style="color:#fbbf24">⭐</span>' : '<span style="opacity:0.4">·</span>'} ${lightLabel(id)}</div>`).join('')}
+                </div>
+                <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px">
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f472b6;margin-bottom:6px">📷 Best Camera</div>
+                    ${bestCameras.map((id, i) => `<div style="font-size:11px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:4px">${i === 0 ? '<span style="color:#fbbf24">⭐</span>' : '<span style="opacity:0.4">·</span>'} ${cameraLabel(id)}</div>`).join('')}
+                </div>
+            </div>
+            ${allTips.length > 0 ? `
+            <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:10px">
+                <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#fb923c;margin-bottom:8px">📌 Pro Tips</div>
+                ${allTips.map(tip => `<div style="font-size:11px;color:var(--text-muted);margin-bottom:5px;line-height:1.5;display:flex;gap:6px"><span style="color:#fb923c;flex-shrink:0;margin-top:1px">→</span><span>${tip}</span></div>`).join('')}
+            </div>` : ''}
+        </div>`;
     },
 
     // ── Render ──────────────────────
@@ -1349,6 +1552,32 @@ const PromptStudio = {
                                 <button class="ps-chip ${this.state.modelGender === 'female' ? 'active' : ''}" data-val="female">♀ Female</button>
                                 <button class="ps-chip ${this.state.modelGender === 'male' ? 'active' : ''}" data-val="male">♂ Male</button>
                             </div>
+                        </div>
+
+                        <!-- Hijabi Toggle -->
+                        <div class="form-group" style="padding-top:10px;border-top:1px dashed var(--border)">
+                            <div style="display:flex;align-items:center;justify-content:space-between">
+                                <div>
+                                    <label class="form-label" style="margin-bottom:2px">🧕 Hijabi Model</label>
+                                    <p class="text-sm text-muted" style="line-height:1.4;max-width:220px;margin:0">Model wears a hijab, headscarf, or veil — for cultural, artistic, or identity representation.</p>
+                                </div>
+                                <label class="wm-toggle-label">
+                                    <input type="checkbox" id="ps-hijabi-toggle" ${this.state.hijabi ? 'checked' : ''}>
+                                    <span class="wm-toggle-switch"></span>
+                                </label>
+                            </div>
+                            ${this.state.hijabi ? `
+                            <div style="margin-top:10px">
+                                <label class="form-label" style="font-size:11px;opacity:0.8">Hijab Style</label>
+                                <div class="ps-chip-group" id="ps-hijab-style" style="flex-wrap:wrap">
+                                    <button class="ps-chip ${this.state.hijabStyle === 'classic' ? 'active' : ''}" data-val="classic" title="Traditional draped hijab covering hair and neck">Classic</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'draped' ? 'active' : ''}" data-val="draped" title="Loose elegant fabric draped around head and shoulders">Draped Silk</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'turban' ? 'active' : ''}" data-val="turban" title="Fashion-forward wrapped turban style">Turban</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'niqab' ? 'active' : ''}" data-val="niqab" title="Face veil with eyes exposed — editorial and artistic">Niqab ✦</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'modern' ? 'active' : ''}" data-val="modern" title="Contemporary minimal hijab with face and neck framing">Modern</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'sheer-veil' ? 'active' : ''}" data-val="sheer-veil" title="Sheer translucent fabric — artistic/editorial styling">Sheer Veil</button>
+                                </div>
+                            </div>` : ''}
                         </div>
                         <div class="form-group">
                             <label class="form-label" data-i18n="ps_jewelry_shots">Jewelry Shots</label>
@@ -1555,6 +1784,9 @@ const PromptStudio = {
                         </button>
                     </div>
 
+                    <!-- ── v3.0: Smart Guide Panel ───────────────────────────── -->
+                    <div id="ps-smart-guide-slot">${this._buildSmartGuide()}</div>
+
                     <div id="ps-output-area" style="display:none">
                         <div class="card" style="margin-top:16px">
                             <div class="card-header">
@@ -1653,6 +1885,25 @@ const PromptStudio = {
         q('#ps-hallmark-toggle')?.addEventListener('change', e => {
             this.state.hallmarkEnabled = e.target.checked;
         });
+
+        // v3.0: Hijabi toggle
+        q('#ps-hijabi-toggle')?.addEventListener('change', e => {
+            this.state.hijabi = e.target.checked;
+            this._render();
+            this._renderArchetypeGrid();
+            this._bind();
+        });
+        // Hijab style chips (visible only when hijabi is on)
+        const hijabStyleGroup = q('#ps-hijab-style');
+        if (hijabStyleGroup) {
+            hijabStyleGroup.addEventListener('click', e => {
+                const chip = e.target.closest('.ps-chip');
+                if (!chip) return;
+                hijabStyleGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                this.state.hijabStyle = chip.dataset.val;
+            });
+        }
 
         // Model Consistency Events
         const jcGroup = q('#ps-jewelry-count');
@@ -1786,6 +2037,9 @@ const PromptStudio = {
             }
             const selStr = window.I18n ? window.I18n.t('ps_selected') : 'selected';
             q('#ps-arch-count').innerHTML = `${this.state.selectedArchetypes.length} <span data-i18n="ps_selected">${selStr}</span>`;
+            // v3.0: Refresh Smart Guide live
+            const guideEl = q('#ps-smart-guide-slot');
+            if (guideEl) guideEl.outerHTML = `<div id="ps-smart-guide-slot">${this._buildSmartGuide()}</div>`;
         });
 
         // Generate
@@ -2188,6 +2442,20 @@ const PromptStudio = {
                 'streetwear': 'model in elevated streetwear, contemporary luxury',
             };
             stylingDesc = styleMap[this.state.styling] || '';
+
+            // ── v3.0: Hijabi injection ──────────────────────
+            if (this.state.hijabi) {
+                const hijabStyleMap = {
+                    'classic':    'model wearing a beautifully draped classic hijab covering hair and neck, elegant and dignified styling, fabric falling naturally around the face',
+                    'draped':     'model wearing a luxuriously draped silk hijab loosely arranged around head and shoulders, fabric pooling softly, high-fashion editorial styling',
+                    'turban':     'model wearing a fashion-forward wrapped turban headpiece, contemporary urban styling, bold and confident aesthetic',
+                    'niqab':      'model wearing a flowing niqab — face veil with only the eyes exposed, intensely artistic and editorial, eyes the sole focal point above the veil edge, deeply atmospheric and dramatic',
+                    'modern':     'model wearing a contemporary minimal hijab with clean precise folds framing the face, modern modest fashion aesthetic, sophisticated and editorial',
+                    'sheer-veil': 'model with a sheer translucent chiffon veil draped loosely over the head and partially across the face, ethereal and artistic, fabric creating softness and visual poetry',
+                };
+                const hijabDesc = hijabStyleMap[this.state.hijabStyle || 'classic'];
+                stylingDesc = stylingDesc ? `${stylingDesc}, ${hijabDesc}` : hijabDesc;
+            }
         }
 
         // Pose detail — ONLY injected for archetypes whose subject templates
