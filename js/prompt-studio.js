@@ -1900,7 +1900,13 @@ const PromptStudio = {
         const subject = this._getUniqueSubject(archetype).replace(/\{piece\}/g, piece);
         const sceneVariant = this._getSceneVariant(archetype.id);
         // Coherent lighting: if scene has time-of-day language, align lighting desc
+        // Since humanEnvs is now pure-location, lighting override only happens when
+        // the selected lighting option itself contains time-of-day keywords.
         const lightingCoherent = this._getLightingForScene(sceneVariant, lighting);
+        // Only inject sceneVariant as a bodyPart if it's a location (not a time-of-day variant)
+        // This prevents two lighting descriptions in the same prompt.
+        const _sceneIsLight = /morning|dusk|twilight|blue hour|candlelit|overcast|midday|golden light|lantern light/i.test(sceneVariant);
+        const sceneVariantPart = _sceneIsLight ? '' : sceneVariant;
 
         // ── FIX #1: Unified camera system — one lens per shot, no conflicts ──────────────────────
         // Each angle gets a complete, self-contained camera description:
@@ -2183,12 +2189,13 @@ const PromptStudio = {
             // (1) raised dimensional satin stitch creates micro-shadows for depth even on color-matched fabric
             // (2) hairline contrast outline stitch around each letter guarantees edge separation
             // (3) adaptive color rule: cool-toned thread on warm/yellow/gold fabrics, warm on cool, bright on dark, dark on bright
-            brandTouchDesc = 'a small "Elaris" embroidery detail on the garment — fine single-thread stitching at the cuff edge, collar fold, or chest area, no larger than 2–3 cm in real scale, thread color naturally chosen to contrast the fabric for quiet legibility, styled as an authentic luxury clothing label seamlessly integrated into the garment design, reads as a genuine brand signature not a graphic overlay';
+            const _wPlacement = this._getBrandPlacement(this.state.category);
+            brandTouchDesc = `a small "Elaris" embroidery detail on the garment — fine single-thread stitching ${_wPlacement}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, styled as an authentic luxury clothing label integrated into the garment, reads as a genuine brand signature not a graphic overlay`;
         }
 
         const bodyParts = [
             // SUBJECT — jewelry piece at the center, material injected cleanly on next line
-            subject + '.', sceneVariant + '.',
+            subject + '.', sceneVariantPart ? sceneVariantPart + '.' : '',
             // PLACEMENT RULE — only for human archetypes (product shots have no finger)
             (isHuman && placementRule) ? `${placementRule}.` : '',
             // MATERIAL — stated once, cleanly, with metal descriptor
@@ -2207,10 +2214,11 @@ const PromptStudio = {
             isHuman ? this._getRandomSkinTone() + '.' : '',
             // REALISM (skin texture, wrinkles, body hair, skin detail — user controlled)
             realismDesc ? realismDesc + '.' : '',
-            // SURFACE / PALETTE / STYLING
+            // STYLING (outfit) — placed before realism; clearly defines garment
+            stylingDesc ? stylingDesc + '.' : '',
+            // SURFACE / PALETTE — product/environment descriptors
             surfaceDesc ? surfaceDesc + '.' : '',
             paletteDesc ? paletteDesc + '.' : '',
-            stylingDesc ? stylingDesc + '.' : '',
             // JEWELRY STYLE DIRECTION
             jewelryStyleDesc ? `Style direction: ${jewelryStyleDesc}.` : '',
             // BRAND HALLMARK (optional — jewelry engraving)
@@ -2346,7 +2354,46 @@ const PromptStudio = {
 
     // ── Unique Subject Tracker ──────────────────────
     _subjectPools: {},
-        _getRandomSkinTone() {
+            _getBrandPlacement(category) {
+        // Returns a placement description for the Elaris wordmark.
+        // AVOID: cuff/sleeve near wrist (AI defaults there; also near ring/bracelet jewelry focus).
+        // Placement is category-aware: don't put mark where jewelry draws the eye.
+        const lapelPlacements = [
+            'discreetly embroidered on the lapel, left side',
+            'on the lapel edge, small and precise',
+            'at the lapel near the collarbone',
+        ];
+        const collarPlacements = [
+            'on the inner collar fold, just visible at the neckline',
+            'at the collar stand, barely visible, like a luxury label',
+            'on the shirt collar underside, as a refined interior brand detail',
+        ];
+        const pocketPlacements = [
+            'on the breast pocket edge',
+            'at the chest pocket, positioned precisely',
+            'on the pocket facing, understated and refined',
+        ];
+        const backCollarPlacements = [
+            'on the back of the collar as an interior label detail',
+            'at the nape-facing collar fold, subtle brand signature',
+        ];
+
+        // For necklace/pendant: avoid chest area — use lapel or back collar
+        if (category === 'necklace' || category === 'pendant') {
+            const pool = [...lapelPlacements, ...backCollarPlacements];
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+        // For ring/bracelet: avoid wrist area — use lapel, collar, pocket
+        if (category === 'ring' || category === 'bracelet' || category === 'bangle' || category === 'anklet') {
+            const pool = [...lapelPlacements, ...collarPlacements, ...pocketPlacements];
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+        // For earring/brooch: any placement is fine
+        const pool = [...lapelPlacements, ...collarPlacements, ...pocketPlacements];
+        return pool[Math.floor(Math.random() * pool.length)];
+    },
+
+    _getRandomSkinTone() {
         // Diverse skin tone descriptions — Moroccan-audience-aware representation
         const tones = [
             'model has warm deep brown skin, rich luminous tone with natural warmth',
@@ -2427,41 +2474,39 @@ const PromptStudio = {
         // Returns a random environment/setting phrase to inject variety into any archetype
         // Organized by archetype group — human archetypes get lifestyle settings,
         // product archetypes get surface/environment settings
+        // ── ENVIRONMENT-ONLY pool (pure locations — NO time-of-day language) ──────
+        // Time-of-day is handled exclusively by _getLightingForScene() to prevent
+        // duplicate lighting descriptions in the generated prompt.
         const humanEnvs = [
-            // Time of day / light
-            'early morning golden light streaming through tall windows',
-            'dusk with warm amber light casting long shadows',
-            'blue hour, soft twilight diffused light',
-            'bright midday Mediterranean light, sun-bleached surfaces',
-            'overcast soft-box sky, even diffused daylight',
-            // Interiors
-            'inside a warmly lit café, wooden tables and steam from cups',
-            'a sleek modern hotel lobby, marble floors and moody lighting',
-            'a quiet home library surrounded by stacked books and soft lamplight',
-            'a rooftop terrace overlooking a city skyline at golden hour',
+            // ── Elegant interiors ────────────────────────────────────────────
+            'inside a warmly lit café, wooden tables and ceramic cups on the counter',
+            'a sleek modern hotel lobby with marble floors and architectural lighting',
+            'a quiet home library surrounded by stacked books and warm lamplight',
+            'a rooftop terrace with city skyline as backdrop',
             'a bright Scandinavian-style loft with white walls and oak floors',
-            'a Moroccan riad courtyard with zellige tiles and afternoon shadow patterns',
-            'a sun-drenched terrace in the south of France, potted lavender nearby',
-            'an elegant dressing room with warm vanity lights and a large mirror',
-            // Exteriors
-            'a cobblestone Parisian side street in the rain',
-            'a Mediterranean harbour with boats and turquoise water in the background',
-            'an open desert landscape at golden hour, warm dusty tones',
-            'a lush garden with dappled sunlight through leaves',
-            'a modern glass skyscraper reflection, urban geometry',
-            // Lifestyle moments
-            'inside a car, leather seat and dashboard visible',
-            'at a marble kitchen counter preparing an espresso',
-            'at an outdoor café table in a sunlit square',
-            'in a bookshop between tall shelves, soft ambient reading light',
-            'at a rooftop pool bar, blue water reflecting light',
-            // ── Moroccan / North African cultural occasions ──────────────────
-            'warm Ramadan evening atmosphere, lantern light and ornate zellige tile setting',
-            'festive Eid morning, soft pastel light and celebration energy',
-            'summer rooftop in Marrakech, warm night air and medina skyline lights',
-            'cool Moroccan medina morning, intricate archways and carved plaster light play',
-            'a traditional riad garden at dusk, fountain reflection and jasmine scent implied',
-            'a Moroccan wedding celebration context, gold candlelight and embroidered textiles',
+            'a Moroccan riad courtyard with intricate zellige tile patterns',
+            'a sun-drenched south-of-France terrace with potted lavender nearby',
+            'an elegant dressing room with a floor-length mirror and vanity lighting',
+            'a luxurious boutique hotel suite with European interior design',
+            'a Parisian apartment living room with tall windows and parquet floors',
+            // ── Moroccan / North African settings ────────────────────────────
+            'a traditional riad garden with a central fountain and lush green plants',
+            'a Moroccan medina alleyway framed by carved archways and plaster walls',
+            'a rooftop in Marrakech with the medina panorama visible in the background',
+            'a Moroccan wedding venue with embroidered textiles and ornate lanterns',
+            'a Moroccan hammam anteroom with zellige floors and arched doorways',
+            // ── Aspirational exteriors ───────────────────────────────────────
+            'a cobblestone street in a Mediterranean old town',
+            'a Mediterranean harbour with terracotta buildings and blue water',
+            'a lush private garden with dappled shade and stone pathways',
+            'a modern rooftop pool area with clean geometric lines',
+            'a sunlit outdoor terrace at a luxury resort',
+            // ── Lifestyle settings ───────────────────────────────────────────
+            'inside a luxury car interior, leather seat and clean dashboard visible',
+            'at a polished marble kitchen counter with minimalist design',
+            'at a quiet outdoor café table in a sunlit courtyard',
+            'in a design bookshop between floor-to-ceiling shelves',
+            'at a rooftop bar with panoramic views',
         ];
         const productEnvs = [
             'polished white Carrara marble surface',
@@ -2493,45 +2538,55 @@ const PromptStudio = {
         const matFamily = warmMats.includes(materialId) ? 'warm'
                         : coolMats.includes(materialId) ? 'cool' : 'neutral';
 
+        // ── JEWELRY-CAMPAIGN OUTFITS ──────────────────────────────────────────
+        // Inspired by Cartier, Tiffany, Van Cleef & Arpels, Bulgari campaign styling.
+        // Key principle: shows neck/décolletage (necklaces), ears (earrings), wrists (bracelets).
+        // Never oversized, chunky knitwear, or garments that obscure jewelry.
         const femaleOutfits = [
-            { t: 'wearing a soft camel ribbed turtleneck and tailored wide-leg trousers', p: 'warm' },
-            { t: 'in a crisp white linen button-down shirt, collar open, sleeves casually rolled', p: 'cool' },
-            { t: 'wearing a dusty-rose cashmere cardigan loosely draped over the shoulders', p: 'warm' },
-            { t: 'in a structured terracotta blazer over a simple white fitted tee', p: 'warm' },
-            { t: 'wearing a deep forest-green silk blouse, elegantly draped', p: 'cool' },
-            { t: 'in a light grey oversized knit sweater with clean minimalist styling', p: 'cool' },
-            { t: 'wearing a charcoal wrap coat, belt tied loosely at the waist', p: 'cool' },
-            { t: 'in a cobalt blue fitted turtleneck, clean and editorial', p: 'cool' },
-            { t: 'wearing a cream textured linen midi dress', p: 'neutral' },
-            { t: 'in a burgundy velvet blazer with a white camisole underneath', p: 'warm' },
-            { t: 'wearing a mustard yellow silk blouse, relaxed and editorial', p: 'warm' },
-            { t: 'in a black tailored suit with subtle gold button detail', p: 'neutral' },
-            { t: 'wearing a pale ivory wrap dress with a delicate abstract print', p: 'neutral' },
-            { t: 'in a sage green knit co-ord set, relaxed contemporary', p: 'cool' },
-            { t: 'wearing a striped navy and white Breton top with wide trousers', p: 'cool' },
-            { t: 'in a chocolate brown suede jacket over a cream knit', p: 'warm' },
-            { t: 'wearing an off-white flowing linen shirt-dress, effortless and airy', p: 'neutral' },
-            { t: 'in a muted olive trench coat over dark essentials', p: 'neutral' },
-            { t: 'wearing a rich copper-toned satin blouse with wide trousers', p: 'warm' },
-            { t: 'in a soft ecru ribbed knit dress, minimal and tactile', p: 'neutral' },
+            // Deep necklines — best for necklace/pendant visibility
+            { t: 'in a deep V-neck black silk dress, décolletage open, neckline clean and unobstructed', p: 'neutral' },
+            { t: 'wearing an off-shoulder ivory satin top, collarbone and shoulders fully exposed', p: 'neutral' },
+            { t: 'in a draped one-shoulder champagne silk dress, asymmetric editorial elegance', p: 'warm' },
+            { t: 'wearing a strapless deep bordeaux velvet bodice, shoulders and chest open', p: 'warm' },
+            { t: 'in a plunging-V cream satin blouse, softly draped, wide neckline for jewelry display', p: 'neutral' },
+            // Open collar — versatile for most jewelry types
+            { t: 'in an open-collar white silk button-down, first three buttons undone, crisp editorial', p: 'cool' },
+            { t: 'wearing a stone-colored linen blazer open over a nude silk camisole', p: 'neutral' },
+            { t: 'in a tailored deep navy blazer with nothing underneath, collar wide open', p: 'cool' },
+            { t: 'wearing an open-collar copper-toned silk shirt, the neckline relaxed and visible', p: 'warm' },
+            { t: 'in a terracotta linen open-collar shirt, effortlessly luxurious, neckline exposed', p: 'warm' },
+            // Fine knits that reveal rather than hide
+            { t: 'wearing a fitted deep-V camel cashmere sweater, fine-gauge, showing the collarbone', p: 'warm' },
+            { t: 'in a fitted black fine-knit V-neck top, minimal and jewelry-focused', p: 'neutral' },
+            { t: 'wearing a burgundy fine-knit scoop-neck sweater, clean and editorial', p: 'warm' },
+            // Camisoles and silk tops
+            { t: 'in a fine ivory silk camisole with delicate straps, minimal and luxurious', p: 'neutral' },
+            { t: 'wearing a dusty-rose silk camisole, softly draped, shoulder and neck exposed', p: 'warm' },
+            { t: 'in a midnight blue silk slip top, thin straps, décolletage prominently visible', p: 'cool' },
+            // Sophisticated blazers
+            { t: 'wearing a fitted white power blazer, single button, bare underneath, editorial chic', p: 'neutral' },
+            { t: 'in a structured forest-green blazer, lapels wide open, minimal underneath', p: 'cool' },
+            // Moroccan-influenced elegant options
+            { t: 'in an embroidered ivory kaftan, open at the front neckline, elegant occasion wear', p: 'neutral' },
+            { t: 'wearing a fitted champagne-gold Moroccan-inspired dress with subtle brocade, décolletage visible', p: 'warm' },
         ];
         const maleOutfits = [
-            { t: 'in a clean white Oxford shirt, collar open, sleeves rolled', p: 'neutral' },
-            { t: 'wearing a slim-cut navy wool blazer over a white tee', p: 'cool' },
-            { t: 'in a camel overcoat over a black turtleneck', p: 'warm' },
-            { t: 'wearing a charcoal grey crewneck sweater with dark trousers', p: 'cool' },
-            { t: 'in a light beige linen suit, Mediterranean editorial', p: 'warm' },
-            { t: 'wearing a deep burgundy crew-neck over clean-cut dark denim', p: 'warm' },
-            { t: 'in a structured slate blue blazer with no tie, relaxed formal', p: 'cool' },
-            { t: 'wearing a soft olive field jacket over a simple white shirt', p: 'neutral' },
-            { t: 'in a classic black turtleneck, timeless editorial', p: 'neutral' },
-            { t: 'wearing a warm rust-colored knit pullover with clean trousers', p: 'warm' },
-            { t: 'in an unstructured ecru linen suit, relaxed and modern', p: 'warm' },
-            { t: 'wearing a dark indigo denim shirt with rolled sleeves', p: 'cool' },
-            { t: 'in a stone-coloured chore coat over a slim grey turtleneck', p: 'neutral' },
-            { t: 'wearing a soft brown suede jacket over a white crewneck', p: 'warm' },
-            { t: 'in a rich terracotta linen shirt, sleeves half-rolled, effortlessly editorial', p: 'warm' },
-            { t: 'wearing a pale sky-blue Oxford over clean straight-cut grey trousers', p: 'cool' },
+            // Open collar / dress shirts — shows chain/necklace at chest
+            { t: 'in a crisp white dress shirt with collar fully open, two buttons undone, sleeves 3/4 rolled', p: 'neutral' },
+            { t: 'wearing a pale blue cotton dress shirt, collar open, slim cut, Mediterranean elegance', p: 'cool' },
+            { t: 'in a black dress shirt with collar unbuttoned, showing a chain at the chest, editorial', p: 'neutral' },
+            { t: 'wearing an ecru linen shirt open at the collar, fine fabric, relaxed luxury', p: 'warm' },
+            // V-necks that show necklace
+            { t: 'in a fine black merino V-neck, slim silhouette, neckline showing jewelry', p: 'neutral' },
+            { t: 'wearing a camel V-neck cashmere pullover, fine gauge, collarbone visible', p: 'warm' },
+            // Suits / blazers for formal jewelry shoots
+            { t: 'in a classic black suit, white dress shirt with collar open, no tie, distinguished', p: 'neutral' },
+            { t: 'wearing a tailored charcoal grey suit, shirt open at collar revealing a chain', p: 'cool' },
+            { t: 'in a cream linen suit, shirt open two buttons, warm Mediterranean editorial', p: 'warm' },
+            { t: 'wearing a navy wool blazer with an open-collar white shirt, sophisticated and clean', p: 'cool' },
+            // Simple but jewelry-focused
+            { t: 'in a fitted white V-neck tee, clean and minimal, jewelry as the centerpiece', p: 'neutral' },
+            { t: 'wearing a deep bordeaux open-collar shirt, slim cut, 3/4 sleeves showing wrist', p: 'warm' },
         ];
 
         const pool = (gender === 'male') ? maleOutfits : femaleOutfits;
