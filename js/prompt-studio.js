@@ -2151,6 +2151,12 @@ const PromptStudio = {
             brandTouchDesc = `a small "Elaris" embroidery detail on the garment — fine single-thread stitching ${_wPlacement}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, styled as an authentic luxury clothing label integrated into the garment, reads as a genuine brand signature not a graphic overlay`;
         }
 
+        // hasNamedProfile: computed early to avoid TDZ — used in bodyParts below
+        // When a named profile (Amir, Lina...) is active, don't inject random skin tone on top.
+        const hasNamedProfile = this.state.consistencyOn && !!this.state.profiles.find(
+            prof => prof.id === this.state.activeProfileId
+        );
+
         const bodyParts = [
             // SUBJECT — jewelry piece at the center, material injected cleanly on next line
             subject + '.', sceneVariantPart ? sceneVariantPart + '.' : '',
@@ -2206,11 +2212,6 @@ const PromptStudio = {
             const jc = this.state.jewelryCount;
             const hasModelDesc  = this.state.consistencyOn;               // model descriptor enabled
             const hasModelImage = hasModelDesc && this.state.modelImageAttached; // ALSO has photo attached
-            // When a named profile is active, its descriptor defines the model's appearance.
-            // We must NOT inject random skin tone or random styling on top of it — it contradicts.
-            const hasNamedProfile = hasModelDesc && !!this.state.profiles.find(
-                prof => prof.id === this.state.activeProfileId
-            );
 
             // Gender-correct pronouns
             const modelGender  = this.state.modelGender || 'female';
