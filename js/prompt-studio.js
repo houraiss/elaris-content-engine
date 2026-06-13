@@ -782,6 +782,7 @@ const PromptStudio = {
     get palettes() {
         return [
             { id: 'auto', label: 'Auto / Scene' },
+            { id: 'ai-choice', label: 'AI Chooses ✦' },
             { id: 'neutral', label: window.I18n ? window.I18n.t('ps_pal_neutral') : 'Neutral Beige' },
             { id: 'warm-earth', label: window.I18n ? window.I18n.t('ps_pal_warm') : 'Warm Earth' },
             { id: 'cool-steel', label: window.I18n ? window.I18n.t('ps_pal_cool') : 'Cool Steel' },
@@ -797,6 +798,7 @@ const PromptStudio = {
     get stylings() {
         return [
             { id: 'auto', label: 'Auto / Scene' },
+            { id: 'ai-choice', label: 'AI Chooses ✦' },
             { id: 'minimal', label: window.I18n ? window.I18n.t('ps_sty_minimal') : 'Minimal / Nude' },
             { id: 'black-dress', label: window.I18n ? window.I18n.t('ps_sty_black') : 'Black Dress' },
             { id: 'silk-cami', label: window.I18n ? window.I18n.t('ps_sty_silk') : 'Silk Camisole' },
@@ -2010,6 +2012,7 @@ const PromptStudio = {
         if (isHuman) {
             const styleMap = {
                 'auto': this._getRandomOutfit(modelGenderForStyling, this.state.material),   // auto: palette-matched random outfit
+                'ai-choice': `outfit creatively chosen by the art director — high-fashion luxury jewelry campaign, neckline naturally open to display the ${category} piece, elevated editorial styling, garment silhouette and color chosen by the photographer to best complement the jewelry`,
                 'minimal': modelGenderForStyling === 'male'
                     ? 'model in minimal clean styling, strong build as the canvas'
                     : 'model in minimal styling, skin as the canvas',
@@ -2211,7 +2214,7 @@ const PromptStudio = {
             // EXPRESSION (human only)
             expressionDesc ? `Expression: ${expressionDesc}.` : '',
             // SKIN TONE — randomized per generation for model diversity (human archetypes only)
-            isHuman ? this._getRandomSkinTone() + '.' : '',
+            (isHuman && !hasNamedProfile) ? this._getRandomSkinTone() + '.' : '',  // suppressed when named profile active
             // REALISM (skin texture, wrinkles, body hair, skin detail — user controlled)
             realismDesc ? realismDesc + '.' : '',
             // STYLING (outfit) — placed before realism; clearly defines garment
@@ -2248,6 +2251,11 @@ const PromptStudio = {
             const jc = this.state.jewelryCount;
             const hasModelDesc  = this.state.consistencyOn;               // model descriptor enabled
             const hasModelImage = hasModelDesc && this.state.modelImageAttached; // ALSO has photo attached
+            // When a named profile is active, its descriptor defines the model's appearance.
+            // We must NOT inject random skin tone or random styling on top of it — it contradicts.
+            const hasNamedProfile = hasModelDesc && !!this.state.profiles.find(
+                prof => prof.id === this.state.activeProfileId
+            );
 
             // Gender-correct pronouns
             const modelGender  = this.state.modelGender || 'female';
