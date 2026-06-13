@@ -1147,17 +1147,7 @@ const PromptStudio = {
                                 ${this.stones.map(s => `<option value="${s.id}" data-i18n="ps_stone_${s.id.replace(/-/g, '_')}" ${s.id === this.state.stone ? 'selected' : ''}>${s.label}</option>`).join('')}
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Jewelry Style</label>
-                            <div class="ps-chip-group" id="ps-jewelry-style" style="flex-wrap:wrap">
-                                ${this.jewelryStyles.map(s => `<button class="ps-chip ${(this.state.jewelryStyle||[]).includes(s.id) ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="ps_piece_desc">Piece Description</label>
-                            <textarea class="form-textarea" id="ps-desc" rows="3" data-i18n="ps_piece_desc_ph" placeholder="Describe style only — e.g. multi-band crossover with pavé diamond accents (jewelry type & material are auto-injected from your selections above)"></textarea>
-                        </div>
-                        <button class="btn btn-sm btn-secondary" id="ps-auto-desc" style="width:100%" data-i18n="ps_auto_desc">✨ Auto-describe from category</button>
+
                     </div>
 
                     <div class="card">
@@ -1424,11 +1414,8 @@ const PromptStudio = {
         });
         q('#ps-material').addEventListener('change', e => { this.state.material = e.target.value; });
         q('#ps-stone').addEventListener('change', e => { this.state.stone = e.target.value; });
-        q('#ps-desc').addEventListener('input', e => { this.state.pieceDesc = e.target.value; });
 
         // Auto-describe
-        q('#ps-auto-desc').addEventListener('click', () => this._autoDescribe());
-
         // Sort mode
         const sortGroup = q('#ps-sort-mode');
         if (sortGroup) {
@@ -1470,33 +1457,6 @@ const PromptStudio = {
                 this._render();
                 this._renderArchetypeGrid();
                 this._bind();
-            });
-        }
-
-        // Jewelry Style multi-select chips
-        const jsGroup = q('#ps-jewelry-style');
-        if (jsGroup) {
-            jsGroup.addEventListener('click', e => {
-                const chip = e.target.closest('.ps-chip');
-                if (!chip) return;
-                const val = chip.dataset.val;
-                if (val === 'none') {
-                    this.state.jewelryStyle = [];
-                    jsGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
-                    chip.classList.add('active');
-                } else {
-                    if (!this.state.jewelryStyle) this.state.jewelryStyle = [];
-                    const idx = this.state.jewelryStyle.indexOf(val);
-                    if (idx >= 0) {
-                        this.state.jewelryStyle.splice(idx, 1);
-                        chip.classList.remove('active');
-                    } else {
-                        this.state.jewelryStyle.push(val);
-                        chip.classList.add('active');
-                        const noneChip = jsGroup.querySelector('[data-val="none"]');
-                        if (noneChip) noneChip.classList.remove('active');
-                    }
-                }
             });
         }
 
@@ -1689,9 +1649,8 @@ const PromptStudio = {
         };
 
         const desc = templates[cat] || `${mat.toLowerCase()} ${cat}${stoneText}`;
-        this.container.querySelector('#ps-desc').value = desc;
         this.state.pieceDesc = desc;
-        Elaris.toast('Description auto-generated ✨', 'info');
+        // (textarea removed — desc stored in state only)
     },
 
     // ── Generate Prompts ──────────────────────
@@ -1701,10 +1660,6 @@ const PromptStudio = {
             Elaris.toast('Select at least one archetype', 'error');
             return;
         }
-        if (!this.state.pieceDesc.trim()) {
-            this._autoDescribe();
-        }
-
         const prompts = [];
         for (const archId of selected) {
             const arch = this.archetypes.find(a => a.id === archId);
