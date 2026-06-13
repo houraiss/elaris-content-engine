@@ -1967,7 +1967,7 @@ const PromptStudio = {
         if (isHuman) {
             const styleMap = {
                 'auto': this._getRandomOutfit(modelGenderForStyling, this.state.material),   // auto: palette-matched random outfit
-                'ai-choice': `outfit creatively chosen by the art director — high-fashion luxury jewelry campaign, neckline naturally open to display the ${category} piece, elevated editorial styling, garment silhouette and color chosen by the photographer to best complement the jewelry`,
+                'ai-choice': `outfit creatively chosen by the art director — high-fashion luxury jewelry campaign, neckline naturally open to display the ${this.state.category || 'piece'} piece, elevated editorial styling, garment silhouette and color chosen by the photographer to best complement the jewelry`,
                 'minimal': modelGenderForStyling === 'male'
                     ? 'model in minimal clean styling, strong build as the canvas'
                     : 'model in minimal styling, skin as the canvas',
