@@ -618,6 +618,171 @@ const PromptStudio = {
             scene: 'extreme opulence and wealth, rich deep colors (crimson, gold, royal blue), antique textures, palatial setting, dramatic chiaroscuro lighting, maximalist luxury',
             compat: { ring: 85, necklace: 95, earrings: 90, bracelet: 80, bangles: 75, anklet: 30, brooch: 90, pendant: 85, 'body-jewelry': 40 },
         },
+        // ── v3.0: From Reference Library ──────────────────────
+        {
+            id: 'raw-field-editorial',
+            name: 'Raw Field Editorial',
+            icon: '🌾',
+            tagline: 'Nature as the Studio',
+            bestFor: 'Best for: Necklaces, Earrings, Bracelets — outdoor lifestyle',
+            desc: 'Wind-blown hair, open fields, livestock, raw outdoor natural light — earthy and completely unposed',
+            color: '#2a2015',
+            subjects: [
+                'model with wild wind-blown hair in an open field, {piece} catching sunlight, cattle in soft focus behind',
+                'close-up portrait of model in rolling grasslands wearing {piece}, hair across face, natural breeze',
+                'model in loose linen shirt in open farmland, {piece} at throat, mountains in misty distance behind',
+                'tight face crop of model outdoors, {piece} visible, hair partially crossing face, natural imperfect beauty',
+                'model in golden wheat field at dusk wearing {piece}, warm directional light sculpting face',
+                'editorial portrait among wild flowers, {piece} catching the afternoon sun, raw unretouched skin',
+            ],
+            scene: 'real outdoor location, natural available light only, wind-blown hair, earthy tones, Altai/Sahara/steppe editorial energy, no studio polish, raw beauty, Hasselblad 85mm shallow depth of field',
+            compat: { ring: 60, necklace: 90, earrings: 85, bracelet: 80, bangles: 75, anklet: 70, brooch: 50, pendant: 85, 'body-jewelry': 65 },
+        },
+        {
+            id: 'veiled-mystery',
+            name: 'Veiled Mystery',
+            icon: '👁️',
+            tagline: 'Only Eyes Reveal',
+            bestFor: 'Best for: Earrings, Rings, Pendants — storytelling',
+            desc: 'White linen, sheer silk, or scarf partially covering the face — only eyes or partial face visible, jewelry catching light',
+            color: '#1f2535',
+            subjects: [
+                'model with white linen fabric draped across lower face, only eyes and {piece} earring visible, dark teal studio background',
+                'model pulling sheer silk veil aside to partially reveal face, {piece} on finger or ear catching light',
+                'tight crop of model eye-area, white fabric wrapped loosely, {piece} earring framing the eye',
+                'model with flowing white muslin covering half the face, {piece} resting at chest visible through sheer fabric',
+                'model framed by pulled-apart white fabric gap, {piece} on display, intense eye contact through the gap',
+                'dramatic crop — one eye, one {piece} earring, fabric creating geometry across the frame',
+            ],
+            scene: 'strong studio or natural window light, fabric creates texture contrast with jewelry, high visual drama, cultural editorial aesthetic, dark muted or deep teal background, serene cinematic composition',
+            compat: { ring: 80, necklace: 60, earrings: 98, bracelet: 40, bangles: 35, anklet: 20, brooch: 55, pendant: 75, 'body-jewelry': 45 },
+        },
+        {
+            id: 'avant-garde-couture',
+            name: 'Avant-Garde Couture',
+            icon: '🎩',
+            tagline: 'Fashion as Architecture',
+            bestFor: 'Best for: Earrings, Brooches, Statement Pendants',
+            desc: 'Sculptural headwear, futuristic visors, paper flower headdresses — extreme high fashion where the environment IS the statement',
+            color: '#28201a',
+            subjects: [
+                'model wearing a massive sculptural pleated black sunhat, {piece} at ear, soft blue sky backdrop, high-end fashion editorial',
+                'model with a voluminous white paper flower headdress, {piece} at ear or throat, neutral beige studio backdrop',
+                'model wearing a futuristic shield visor sunglasses, cream pleated dress, {piece} catching light, beach backdrop',
+                'editorial portrait of model with architectural folded headpiece, {piece} as the precision accent, grey studio',
+                'model in zebra-print sculptural dress with 3D petal accessories on head, {piece} visible, ethereal surreal atmosphere',
+                'model in oversized avant-garde hat with dramatic brim, {piece} at neckline, fashion week editorial energy',
+            ],
+            scene: 'extreme high fashion, sculptural accessories dominate the look but jewelry remains the focal fine detail, luxury editorial photography, soft directional studio light, porcelain smooth skin, cinema 4D rendering aesthetic',
+            compat: { ring: 55, necklace: 70, earrings: 98, bracelet: 45, bangles: 40, anklet: 20, brooch: 90, pendant: 85, 'body-jewelry': 50 },
+        },
+        {
+            id: 'cinematic-color-story',
+            name: 'Cinematic Color Story',
+            icon: '🎨',
+            tagline: 'One Color. Total Immersion.',
+            bestFor: 'Best for: All pieces — campaign launches, mood collections',
+            desc: 'Full single-color palette domination — all-orange, all-red, all-ivory — the entire scene, clothing, and backdrop breathe one hue',
+            color: '#2a1510',
+            subjects: [
+                'model in vibrant orange sheer collared dress, warm amber gradient backdrop, {piece} as the silver counterpoint, color-saturated editorial',
+                'powerful low-angle portrait of model against deep red-orange gradient background, {piece} glinting, intense dramatic mood',
+                'full ivory editorial — model in cream silk, pale background, {piece} as the only visual contrast element',
+                'monochromatic warm amber scene, {piece} resting on matching amber velvet, golden hour tones unified throughout',
+                'model in blush-rose silk against dusty rose wall, {piece} softly catching warm reflected light, total palette unity',
+                'deep navy editorial — model in midnight blue, {piece} as silver luminance against the dark monochromatic field',
+            ],
+            scene: 'single dominant color rules the entire frame — clothing, backdrop, and props all share the same palette; jewelry provides the metallic contrast; color grading reinforces the palette; soft directional studio or window light; ghosting/double exposure technique optional for atmosphere',
+            compat: { ring: 80, necklace: 90, earrings: 85, bracelet: 80, bangles: 75, anklet: 50, brooch: 75, pendant: 90, 'body-jewelry': 60 },
+        },
+        {
+            id: 'surreal-scale',
+            name: 'Surreal Scale',
+            icon: '♟️',
+            tagline: 'Impossible Luxury Worlds',
+            bestFor: 'Best for: Statement necklaces, Earrings, Campaign images',
+            desc: 'Model placed in an impossible scaled environment — giant chess pieces, oversized architecture, unrealistic luxury settings at surreal scale',
+            color: '#1a2028',
+            subjects: [
+                'model walking across a giant red-and-white chess board at sea, white and crimson oversized chess pieces around her, {piece} catching ocean light',
+                'model standing between two enormous sculptural forms on a reflective floor, tiny against the monumental scale, {piece} as the human focal point',
+                '{piece} placed on a giant marble plinth the size of a building, model standing beside it dwarfed, Mediterranean blue sky behind',
+                'model in a surreal landscape where everyday objects are monumental in scale, {piece} at normal size as the only real-world anchor',
+                'overhead god-view of model on a giant chessboard pattern, {piece} on hand visible from above, bold graphic composition',
+                'model dwarfed by colossal architectural columns, {piece} catching the only shaft of light through the massive space',
+            ],
+            scene: 'surreal scale contrast between human and environment, photo-realistic CGI quality, bold geometric environments, Mediterranean or luxury coastal light, hyper-polished surfaces, impossible yet believable luxury world',
+            compat: { ring: 50, necklace: 90, earrings: 85, bracelet: 55, bangles: 50, anklet: 30, brooch: 60, pendant: 85, 'body-jewelry': 70 },
+        },
+        {
+            id: 'ghost-double-exposure',
+            name: 'Ghost Double Exposure',
+            icon: '👻',
+            tagline: 'Two Moments. One Frame.',
+            bestFor: 'Best for: Earrings, Necklaces, Statement campaign images',
+            desc: 'Long exposure or digital double-exposure creates a ghosted second silhouette — one sharp model, one soft motion echo behind',
+            color: '#201a2a',
+            subjects: [
+                'model in orange silk standing still, her ghosted motion double slightly behind and to the left, {piece} sharp on the sharp figure only',
+                'double-exposure portrait — crisp model in profile with translucent echo of herself in full face, {piece} visible on both',
+                'model with ghosted duplicate overlapping at shoulder, warm amber background, {piece} catching light at focal sharp figure',
+                'elegant slow-shutter portrait creating soft motion ghost, {piece} pin-sharp on the still figure, dreamy editorial mood',
+                'model turning mid-motion, leaving a soft directional ghost trail behind, {piece} stays in perfect focus',
+            ],
+            scene: 'long exposure or double-exposure blend technique, warm soft background tones (amber/sepia/muted gradient), one sharp anchor figure and one soft ghost 30-50% opacity, cinematic color grading, editorial luxury campaign mood, no text or watermarks',
+            compat: { ring: 55, necklace: 85, earrings: 90, bracelet: 60, bangles: 55, anklet: 30, brooch: 40, pendant: 80, 'body-jewelry': 60 },
+        },
+        {
+            id: 'outdoor-masculine',
+            name: 'Outdoor Masculine',
+            icon: '🏔️',
+            tagline: 'Raw Terrain. Strong Presence.',
+            bestFor: 'Best for: Mens rings, bracelets, chains, cuffs',
+            desc: 'Man in outdoor terrain — tundra, mountains, camping, misty forest — jewelry worn naturally in a real-world masculine context',
+            color: '#1a2020',
+            subjects: [
+                'man in grey windbreaker, {piece} visible at wrist, crouching by camp log in misty mountain forest, tent behind him',
+                'close-up portrait of man wrapped in grey scarf against tundra sky, {piece} at wrist showing from jacket cuff, stoic expression',
+                'man gripping motorcycle handlebar wearing {piece} bracelet, dark jacket, urban outdoor editorial, warm bokeh behind',
+                'man in dark coat standing in rain, {piece} visible as he grips umbrella handle, misty urban backdrop',
+                'man walking through wild terrain, {piece} catching movement light at wrist, natural strong masculine energy',
+                'editorial close-up of man\'s hand resting on log in forest, {piece} in sharp foreground focus, pine forest soft behind',
+            ],
+            scene: 'authentic outdoor location, real available light, masculine editorial energy, natural textures (wood, stone, fabric, rain), muted earthy palette, no glamour — rugged honest photography, Hasselblad 85mm portrait rendering',
+            compat: { ring: 90, necklace: 80, earrings: 30, bracelet: 98, bangles: 60, anklet: 20, brooch: 40, pendant: 75, 'body-jewelry': 55 },
+        },
+        {
+            id: 'harsh-sun-beauty',
+            name: 'Harsh Sun Beauty',
+            icon: '☀️',
+            tagline: 'Unfiltered Midday Drama',
+            bestFor: 'Best for: Earrings, Necklaces, Bracelets, Rings',
+            desc: 'Direct harsh overhead or midday sunlight creates deep shadows across the face — raw, unretouched, high-contrast beauty',
+            color: '#2a2010',
+            subjects: [
+                'model in direct harsh overhead sun, one half of face in deep shadow, {piece} catching intense direct light, raw beauty',
+                'close-up beauty portrait in midday sun, face partially shadowed by brim of hat, {piece} in full direct light catching sunflares',
+                'model outdoors with face partially shadowed by sheer fabric, {piece} earring in direct sun creating a point of brilliance',
+                'model in direct desert sun, sweat-kissed skin, {piece} at throat or wrist, contrasty midday editorial',
+                'extreme close-up of model eye-area in harsh sun, {piece} creating its own small lens flare, skin texture visible',
+                'model with sun behind her creating deep face shadow, {piece} picking up rim-light from behind, silhouette editorial beauty',
+            ],
+            scene: 'harsh direct sunlight, no fill or diffusion, deep contrasty shadows, real skin texture fully visible, golden or bleached color palette, raw editorial beauty photography, no beauty retouching, high-end Vogue editorial quality within imperfection',
+            compat: { ring: 70, necklace: 90, earrings: 95, bracelet: 80, bangles: 75, anklet: 60, brooch: 50, pendant: 85, 'body-jewelry': 65 },
+        },
+    ],
+
+    // ── v3.0: Camera System Profiles ──────────────────────
+    cameraProfiles: [
+        { id: 'auto',              label: 'Auto (Angle Driven)',      desc: '' },
+        { id: 'hasselblad-85',     label: '✦ Hasselblad 85mm',        desc: 'Hasselblad medium format 85mm, exceptional tonal gradation, film-like depth, shallow depth portrait rendering, medium format color science' },
+        { id: 'leica-50',          label: 'Leica 50mm Summilux',       desc: 'Leica 50mm Summilux f/1.4, classic reportage rendering, natural unforced perspective, timeless documentary quality' },
+        { id: 'sony-35-gm',        label: 'Sony 35mm f/1.4 GM',        desc: 'Sony 35mm f/1.4 G Master, lifestyle editorial perspective, slightly wider environment inclusion, modern sharp rendering with smooth bokeh' },
+        { id: 'canon-135-l',       label: 'Canon 135mm f/2 L',         desc: 'Canon EF 135mm f/2L, highly telephoto-compressed background, creamy buttery bokeh, isolated subject against abstract blur' },
+        { id: 'macro-100',         label: '100mm f/2.8 Macro',         desc: '100mm f/2.8 macro lens, razor-thin depth of field, individual metal grain and stone settings visible, studio ring light' },
+        { id: 'macro-180',         label: '180mm f/3.5 Macro',         desc: '180mm macro lens at 2:1 magnification, individual gem facets and hallmark stamps visible, extreme close-up detail, zero breathing room around subject' },
+        { id: 'anamorphic-40',     label: 'Anamorphic 40mm',           desc: 'Anamorphic 40mm lens, horizontal blue lens flares, cinematic oval bokeh, widescreen aspect ratio feel, movie-grade cinematographic quality' },
+        { id: 'phase-one-iq4',     label: 'Phase One IQ4 55mm',        desc: 'Phase One IQ4 150MP medium format digital back, 55mm lens, extraordinary color depth and tonal range, e-commerce and luxury catalog perfection' },
     ],
 
     // ── Modifiers ──────────────────────
@@ -682,6 +847,11 @@ const PromptStudio = {
             { id: 'top-down-hand',  label: 'Top-Down Hand (Aerial Wrist)' },
             { id: 'chin-up',        label: 'Chin Up (Looking Down the Lens)' },
             { id: 'foreground-blur', label: 'Foreground Blur (Bokeh Frame)' },
+            // ── v3.0: New angles from reference library ──────────────────────
+            { id: 'wind-blown',            label: 'Wind-Blown (Field Motion)' },
+            { id: 'extreme-close-crop',    label: 'Extreme Close Crop (Eyes Fill Frame)' },
+            { id: 'fabric-reveal',         label: 'Fabric Reveal (Veil Pull)' },
+            { id: 'three-quarter-above',   label: 'Three-Quarter Above (Diagonal Down)' },
         ];
     },
 
@@ -902,6 +1072,8 @@ const PromptStudio = {
         skinDetail: 'none',
         facialExpression: 'none',
         brandTouch: 'none',       // 'none' | 'logomark' | 'wordmark'
+        // v3.0
+        cameraProfile: 'auto',    // 'auto' | see cameraProfiles array
     },
 
     // ── Profiles Management ──────────────────────
@@ -1342,10 +1514,27 @@ const PromptStudio = {
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <!-- ── v3.0: Camera System ────────────────────────────── -->
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">📷 Camera System</span></div>
+                        <div class="form-group">
+                            <label class="form-label">Lens / Camera Preset <span class="text-sm text-muted">(overrides angle lens)</span></label>
+                            <div class="ps-chip-group" id="ps-camera-profile" style="flex-wrap:wrap">
+                                ${this.cameraProfiles.map(c => `<button class="ps-chip ${c.id === this.state.cameraProfile ? 'active' : ''}" data-val="${c.id}" title="${c.desc || 'Let the selected angle determine the camera'}">${c.label}</button>`).join('')}
+                            </div>
+                            <p class="text-sm text-muted" style="line-height:1.4;margin-top:6px;margin-bottom:0">
+                                ${(this.cameraProfiles.find(c => c.id === this.state.cameraProfile) || {}).desc || 'Camera choice driven by the selected angle above.'}
+                            </p>
+                        </div>
+                    </div>
+
+                </div><!-- /ps-left -->
+
 
                 <!-- CENTER: Archetype Selector + Output -->
                 <div class="ps-center">
+
                     <div class="card">
                         <div class="card-header" style="flex-wrap:wrap;gap:8px">
                             <span class="card-title" data-i18n="ps_arch_title">Select Archetypes</span>
@@ -1611,6 +1800,9 @@ const PromptStudio = {
             q('#ps-history').innerHTML = '<p class="text-sm text-muted" style="text-align:center;padding:20px">No prompts generated yet</p>';
             Elaris.toast('History cleared', 'info');
         });
+
+        // v3.0: Camera System profile selector
+        this._bindChipGroup('ps-camera-profile', 'cameraProfile');
     },
 
     _bindChipGroup(groupId, stateKey) {
@@ -1895,8 +2087,17 @@ const PromptStudio = {
             'top-down-hand':   'aerial wrist-down shot from directly above the hand on 50mm f/2.8, ring or bracelet visible from above, arm extending from frame edge',
             'chin-up':         'model chin slightly up, looking directly down the lens on 85mm f/1.4, commanding editorial gaze, jewelry at chest level in foreground',
             'foreground-blur': 'subject in background, element of the jewelry or scene deliberately blurred in extreme foreground on 85mm f/1.4, framing bokeh effect',
+            // ── v3.0: New angles ─────────────────────────────────────────────
+            'wind-blown':           'model at field level, wide 35mm f/2 lens, wind machine creating hair and fabric motion, natural outdoor available light, Altai/steppe editorial energy',
+            'extreme-close-crop':   'face fills entire frame edge to edge, 100mm f/2.5 lens, eyes and nose dominate, no chin or forehead in frame, extreme intimacy and raw beauty detail',
+            'fabric-reveal':        'fabric being pulled aside to reveal face or jewelry, 85mm f/1.4, the fabric edge cuts diagonally across frame creating dramatic geometry',
+            'three-quarter-above':  'elevated 45-degree diagonal angle looking down at subject, 85mm f/1.8, dimensional depth with slight overhead authority, editorial and elegant',
         };
-        const cameraDesc = cameraMap[this.state.angle] || 'shot on 85mm f/1.4 lens, shallow depth of field';
+        // v3.0: Camera profile override — when not 'auto', the selected lens description replaces the angle-derived one
+        const profileOverride = this.state.cameraProfile && this.state.cameraProfile !== 'auto'
+            ? (this.cameraProfiles.find(c => c.id === this.state.cameraProfile) || {}).desc || ''
+            : '';
+        const cameraDesc = profileOverride || cameraMap[this.state.angle] || 'shot on 85mm f/1.4 lens, shallow depth of field';
 
         // ── Silver-specific material descriptors ──────────────────────
         const silverDesc = this.state.material === '800-silver'
@@ -1958,7 +2159,14 @@ const PromptStudio = {
         }
 
         // ── FIX #4: Detect if this is a product-only vs human archetype ──────────────────────
-        const humanArchetypes = ['body-intimate', 'editorial-model', 'bw-dramatic', 'collection-showcase', 'motion-blur', 'cinematic-portrait', 'celestial-mythic', 'masculine-editorial', 'surface-lean', 'hair-drama', 'lifestyle-moment', 'heritage-moroccan', 'architectural-context', 'wet-element'];
+        const humanArchetypes = [
+            'body-intimate', 'editorial-model', 'bw-dramatic', 'collection-showcase', 'motion-blur',
+            'cinematic-portrait', 'celestial-mythic', 'masculine-editorial', 'surface-lean', 'hair-drama',
+            'lifestyle-moment', 'heritage-moroccan', 'architectural-context', 'wet-element',
+            // v3.0
+            'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture', 'cinematic-color-story',
+            'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty',
+        ];
         const isHuman = humanArchetypes.includes(archetype.id);
 
         // Model styling (only for human archetypes) — gender-aware phrasing

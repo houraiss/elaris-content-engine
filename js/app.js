@@ -6,7 +6,7 @@
 
 const Elaris = {
     currentPage: null,
-    pageScripts: { composer: true, templates: true, captions: true, batch: true },
+    pageScripts: { captions: true, batch: true },
 
     // ── Toast ────────────────────────────────────────────────────
     toast(message, type = 'info') {
@@ -29,8 +29,8 @@ const Elaris = {
 
         window.location.hash = page;
         const titles = {
-            promptstudio: 'Prompt Studio', enhance: 'Enhance', composer: 'Composer', templates: 'Templates',
-            captions: 'Captions', trends: 'Trends', gallery: 'Gallery', watermark: 'Watermark Studio',
+            promptstudio: 'Prompt Studio', captions: 'Captions',
+            trends: 'Trends', gallery: 'Gallery', watermark: 'Watermark Studio', batch: 'Batch Mode',
         };
         document.title = `${titles[page] || page} — Elaris Content Engine`;
 
@@ -62,79 +62,6 @@ const Elaris = {
                 </div>`;
         }
     },
-};
-
-// ── Templates Page ───────────────────────────────────────────────
-window.render_templates = function(container) {
-    const allTemplates = Object.values(ELARIS_TEMPLATES);
-    const categories = [...new Set(allTemplates.map(t => t.category))];
-
-    container.innerHTML = `
-        <div class="page-header">
-            <h1 class="page-title" data-i18n="tpl_title">Templates</h1>
-            <p class="page-subtitle" data-i18n="tpl_subtitle">Browse all available content templates</p>
-        </div>
-        <div class="flex gap-2 mb-4" id="template-filters">
-            <button class="btn btn-sm btn-secondary active" data-filter="all" data-i18n="tpl_all">All</button>
-            <button class="btn btn-sm btn-secondary" data-filter="post" data-i18n="tpl_posts">Posts</button>
-            <button class="btn btn-sm btn-secondary" data-filter="story" data-i18n="tpl_stories">Stories</button>
-            ${categories.map(c => `<button class="btn btn-sm btn-secondary" data-filter="${c}" data-i18n="tpl_cat_${c}">${c.charAt(0).toUpperCase() + c.slice(1)}</button>`).join('')}
-        </div>
-        <div class="templates-browser" id="templates-list"></div>
-    `;
-    if (window.I18n) setTimeout(() => window.I18n.applyLanguage(), 10);
-
-    function renderList(filter = 'all') {
-        let templates = allTemplates;
-        if (filter === 'post' || filter === 'story') {
-            templates = templates.filter(t => t.format === filter);
-        } else if (filter !== 'all') {
-            templates = templates.filter(t => t.category === filter);
-        }
-
-        const list = document.getElementById('templates-list');
-        list.innerHTML = templates.map(t => `
-            <div class="template-browse-card" data-template="${t.id}">
-                <div class="template-browse-preview" style="background:${t.previewColor || '#171717'}">
-                    <canvas data-tpl-preview="${t.id}"></canvas>
-                </div>
-                <div class="template-browse-info">
-                    <div class="template-browse-name">${t.name}</div>
-                    <div class="template-browse-category">${t.category} • ${t.format}</div>
-                    <div class="text-sm text-muted mt-2">${t.description}</div>
-                </div>
-            </div>
-        `).join('');
-
-        list.querySelectorAll('canvas[data-tpl-preview]').forEach(c => {
-            const t = getTemplate(c.dataset.tplPreview);
-            if (t) renderTemplatePreview(t, c, 200);
-        });
-
-        // Click to use in composer
-        list.querySelectorAll('.template-browse-card').forEach(card => {
-            card.addEventListener('click', () => {
-                Elaris.navigate('composer');
-                setTimeout(() => {
-                    if (Composer.activeTemplate !== card.dataset.template) {
-                        Composer._applyTemplate(card.dataset.template);
-                    }
-                }, 100);
-            });
-        });
-    }
-
-    renderList();
-
-    document.getElementById('template-filters').addEventListener('click', (e) => {
-        const btn = e.target.closest('button');
-        if (!btn) return;
-        document.querySelectorAll('#template-filters button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderList(btn.dataset.filter);
-    });
-    
-    if (window.I18n) window.I18n.applyLanguage();
 };
 
 // ── Captions Page ────────────────────────────────────────────────
@@ -343,8 +270,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
         if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
-        const pages = ['promptstudio', 'enhance', 'composer', 'templates', 'captions', 'trends', 'batch', 'watermark'];
-        if (e.key >= '1' && e.key <= '7') {
+        const pages = ['promptstudio', 'generate', 'captions', 'trends', 'batch', 'watermark'];
+        if (e.key >= '1' && e.key <= '6') {
             e.preventDefault();
             Elaris.navigate(pages[parseInt(e.key) - 1]);
         }
@@ -374,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Route from hash
     const hash = window.location.hash.slice(1);
-    const valid = ['promptstudio', 'enhance', 'composer', 'templates', 'captions', 'trends', 'batch', 'watermark'];
+    const valid = ['promptstudio', 'generate', 'captions', 'trends', 'batch', 'watermark'];
     Elaris.navigate(valid.includes(hash) ? hash : 'promptstudio');
 
     // ── Mobile Menu ──────────────────────────────────────────
