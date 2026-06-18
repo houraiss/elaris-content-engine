@@ -770,6 +770,24 @@ const PromptStudio = {
             scene: 'harsh direct sunlight, no fill or diffusion, deep contrasty shadows, real skin texture fully visible, golden or bleached color palette, raw editorial beauty photography, no beauty retouching, high-end Vogue editorial quality within imperfection',
             compat: { ring: 70, necklace: 90, earrings: 95, bracelet: 80, bangles: 75, anklet: 60, brooch: 50, pendant: 85, 'body-jewelry': 65 },
         },
+        {
+            id: 'product-page-clean',
+            name: 'Product Page Clean',
+            icon: '🛒',
+            tagline: 'E-Commerce White Background',
+            bestFor: 'Best for: All categories — product page, website, catalogue',
+            desc: 'Jewelry floating on a solid white or light gray background, clean commercial product photography for e-commerce',
+            color: '#f0f0f0',
+            subjects: [
+                '{piece} floating in center frame against a perfectly solid white background, product levitation, soft diffused shadow beneath, clean e-commerce product photography',
+                '{piece} on a pure white infinity background, soft studio lighting, no props, no distractions, luxury product page hero shot',
+                '{piece} hovering mid-air against a seamless light gray studio background, subtle ground shadow, professional catalogue photography',
+                '{piece} centered on solid white background, perfectly even studio illumination from all sides, no harsh shadows, clean product isolation',
+                '{piece} floating weightlessly against pristine white backdrop, single soft shadow grounding the piece, high-end e-commerce product shot',
+            ],
+            scene: 'solid pure white or very light gray (#f5f5f5) seamless background, perfectly even soft studio lighting from multiple diffused sources, absolutely no props or context objects, product floating or with minimal shadow, clean commercial catalogue photography, neutral color accuracy, sharp edge-to-edge detail, e-commerce product page aesthetic',
+            compat: { ring: 98, necklace: 98, earrings: 98, bracelet: 98, bangles: 98, anklet: 98, brooch: 98, pendant: 98, 'body-jewelry': 90 },
+        },
     ],
 
     // ── v3.0: Camera System Profiles ──────────────────────
@@ -974,6 +992,7 @@ const PromptStudio = {
             'neon-cyberpunk':     ['eye-level', 'dutch', 'low-angle'],
             'vintage-nostalgia':  ['candid', 'eye-level'],
             'zero-gravity':       ['overhead', 'eye-level'],
+            'product-page-clean': ['eye-level', 'flat-lay', '45-degree'],
         };
 
         // Collect boosted angle IDs from currently selected archetypes
@@ -1158,6 +1177,7 @@ const PromptStudio = {
         skinDetail: 'none',
         facialExpression: 'none',
         brandTouch: 'none',       // 'none' | 'logomark' | 'wordmark'
+        realismLevel: 'standard', // 'standard' | 'high' | 'ultra'
         // v3.0
         cameraProfile: 'auto',    // 'auto' | see cameraProfiles array
         hijabi: false,            // when true: model wears hijab/headscarf
@@ -1347,7 +1367,7 @@ const PromptStudio = {
         // v3.0 archetype IDs — shown with a NEW badge
         const V3_ARCHETYPES = new Set([
             'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture', 'cinematic-color-story',
-            'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty',
+            'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty', 'product-page-clean',
         ]);
 
         grid.innerHTML = sorted.map(a => {
@@ -1447,6 +1467,7 @@ const PromptStudio = {
             'neon-cyberpunk': { angle:['eye-level','dutch','low-angle'], lighting:['dramatic','studio','rim-light'], camera:['anamorphic-40','sony-35-gm','canon-135-l'], tips:['Dutch angle amplifies the edgy, disorienting cyberpunk energy.','Anamorphic 40mm turns neon lights into cinematic horizontal lens flares.','Sony 35mm f/1.4 GM gives a wider field to include neon signage context.','Enable No Model for pure product shots -- wet asphalt reflections need no human.'] },
             'vintage-nostalgia': { angle:['candid','eye-level','45-degree'], lighting:['harsh','direct','natural'], camera:['leica-50','canon-135-l','hasselblad-85'], tips:['Candid angle is the heartbeat of this archetype -- unstaged, flash-lit, real.','Direct harsh flash lighting creates the blown-out highlights that define vintage photography.','Leica 50mm Summilux gives the most authentic documentary rendering of this era.','Keep expressions to Laughing or Candid -- stiff poses break the vintage illusion.'] },
             'zero-gravity': { angle:['overhead','eye-level','dutch'], lighting:['studio','dramatic','ring-light'], camera:['phase-one-iq4','macro-100','canon-135-l'], tips:['Overhead (Top-Down) captures floating objects with the clearest gravity-defying illusion.','Enable No Model -- pure product suspension needs no human element.','Phase One IQ4 gives the tonal depth for dark-background frozen-motion shots.','Ring light creates perfect symmetrical catchlights on suspended jewelry.'] },
+            'product-page-clean': { angle:['eye-level','flat-lay','45-degree'], lighting:['studio','soft-box','natural'], camera:['phase-one-iq4','hasselblad-85','macro-100'], tips:['Enable No Model -- this archetype is pure product isolation, no human.','Phase One IQ4 gives maximum detail for e-commerce hero shots.','Use solid white or light gray background -- NO props, NO context objects.','Soft Box or even Studio lighting from multiple angles eliminates harsh shadows.'] },
         };
 
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
@@ -1716,6 +1737,15 @@ const PromptStudio = {
                             <label class="form-label" style="font-size:11px;letter-spacing:0.06em;opacity:0.7;text-transform:uppercase;font-weight:700">🎭 Scene Realism</label>
                         </div>
                         <div class="form-group">
+                            <label class="form-label">📷 Photo Realism Level</label>
+                            <p class="text-sm text-muted" style="line-height:1.3;margin-bottom:6px">Inject photographic realism cues into AI-generated images. Higher = more authentic grain, imperfections, and camera artifacts.</p>
+                            <div class="ps-chip-group" id="ps-realism-level">
+                                <button class="ps-chip ${this.state.realismLevel === 'standard' ? 'active' : ''}" data-val="standard">Standard</button>
+                                <button class="ps-chip ${this.state.realismLevel === 'high' ? 'active' : ''}" data-val="high">High</button>
+                                <button class="ps-chip ${this.state.realismLevel === 'ultra' ? 'active' : ''}" data-val="ultra">⚡ Ultra</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">Skin Texture</label>
                             <div class="ps-chip-group" id="ps-skin-texture">
                                 ${this.skinTextures.map(s => `<button class="ps-chip ${s.id === this.state.skinTexture ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
@@ -1877,6 +1907,7 @@ const PromptStudio = {
         this._bindChipGroup('ps-surface', 'surface');
         this._bindChipGroup('ps-palette', 'palette');
         this._bindChipGroup('ps-styling', 'styling');
+        this._bindChipGroup('ps-realism-level', 'realismLevel');
         this._bindChipGroup('ps-skin-texture', 'skinTexture');
         this._bindChipGroup('ps-wrinkles', 'wrinkles');
         this._bindChipGroup('ps-body-hair', 'bodyHair');
@@ -2173,6 +2204,7 @@ const PromptStudio = {
                     <span>${p.icon} ${p.archetype}${p.similar ? ' <span class="ps-similar-badge" title="This prompt has significant overlap with another prompt in this batch — consider regenerating">⚠️ Similar</span>' : ''}</span>
                     <div class="ps-prompt-actions">
                         <button class="btn btn-sm btn-outline ps-regen-one" data-idx="${i}" data-arch-id="${p.archId}" title="Regenerate this prompt with a different scene">↺ New</button>
+                        <button class="btn btn-sm btn-accent ps-refine-one" data-idx="${i}" data-arch-id="${p.archId}" title="Keep this prompt but apply your current modifier changes (ratio, model, hijab, etc.)">✨ Refine</button>
                         <button class="btn btn-sm btn-secondary ps-copy-one" data-idx="${i}">📋 Copy</button>
                     </div>
                 </div>
@@ -2211,6 +2243,26 @@ const PromptStudio = {
                 }
                 prompts[idx].text = newText;
                 Elaris.toast('New prompt generated ✨', 'info');
+            });
+        });
+
+        // ✨ Refine: surgically apply modifier changes to an existing prompt
+        list.querySelectorAll('.ps-refine-one').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const archId = btn.dataset.archId;
+                const idx    = parseInt(btn.dataset.idx, 10);
+                const arch   = this.archetypes.find(a => a.id === archId);
+                if (!arch) return;
+                const existingText = prompts[idx].text;
+                const refined = this._refinePrompt(existingText, arch);
+                const block = list.querySelector(`[data-idx="${idx}"]`);
+                if (block) {
+                    block.querySelector('.ps-prompt-text').textContent = refined;
+                    const capDiv = block.querySelector('.ps-caption-block');
+                    if (capDiv) { capDiv.innerHTML = ''; capDiv.style.display = 'none'; delete capDiv.dataset.generated; }
+                }
+                prompts[idx].text = refined;
+                Elaris.toast('Prompt refined with current settings ✨', 'success');
             });
         });
 
@@ -2670,7 +2722,7 @@ const PromptStudio = {
             // (2) hairline contrast outline stitch around each letter guarantees edge separation
             // (3) adaptive color rule: cool-toned thread on warm/yellow/gold fabrics, warm on cool, bright on dark, dark on bright
             const _wPlacement = this._getBrandPlacement(this.state.category);
-            brandTouchDesc = `a small "Elaris" embroidery detail on the garment — fine single-thread stitching ${_wPlacement}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, styled as an authentic luxury clothing label integrated into the garment, reads as a genuine brand signature not a graphic overlay`;
+            brandTouchDesc = `a small "ELARIS" embroidered wordmark on the garment in capitalized spaced serif lettering — fine single-thread stitching ${_wPlacement}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, styled as an authentic luxury clothing label integrated into the garment, reads as a genuine brand signature not a graphic overlay`;
         }
 
         // hasNamedProfile: computed early to avoid TDZ — used in bodyParts below
@@ -2720,7 +2772,13 @@ const PromptStudio = {
             : `Aspect ratio ${ratio}.`;
 
                 const tailParts = [
-            'Sharp critical focus on jewelry, perfect geometric proportions, 8K resolution, style photographic, professional commercial photography, RAW quality.',
+            (() => {
+                const rl = this.state.realismLevel || 'standard';
+                const base = 'Sharp critical focus on jewelry, perfect geometric proportions, 8K resolution, style photographic, professional commercial photography, RAW quality.';
+                if (rl === 'high') return base + ' Shot on DSLR sensor, natural micro-imperfections in lighting, subtle film grain texture, shallow depth of field falloff at edges, natural lens vignetting, subsurface scattering on skin.';
+                if (rl === 'ultra') return base + ' Shot on full-frame DSLR sensor, visible sensor noise at ISO 400, natural chromatic aberration at frame edges, organic film grain texture, micro-detail on fabric weave and thread texture, individual skin pores and micro-hairs visible, subsurface light scattering through earlobes and thin skin, natural lens imperfections including slight barrel distortion, captured in RAW format with DNG color profile, real photography not CGI not 3D render.';
+                return base;
+            })(),
             anatomyConstraint,
             // Aspect ratio: aerial/flat-lay angles read better in square/4:5
             ratioStr,
@@ -3081,6 +3139,75 @@ const PromptStudio = {
         const neutral   = pool.filter(o => o.p === 'neutral');
         const chosen    = preferred.length > 0 ? preferred : neutral.length > 0 ? neutral : pool;
         return chosen[Math.floor(Math.random() * chosen.length)].t;
+    },
+
+    // ── Refine: surgically update an existing prompt with current modifier state ──
+    // Keeps the core scene/subject/archetype DNA but swaps modifiers the user changed
+    _refinePrompt(existingText, archetype) {
+        let text = existingText;
+
+        // ── RATIO: swap "Aspect ratio X:Y" with current ratio ──────────
+        const fmt = this.formats.find(f => f.id === this.state.format);
+        const newRatio = fmt ? fmt.ratio : '1:1';
+        text = text.replace(/Aspect ratio \d+:\d+/g, 'Aspect ratio ' + newRatio);
+
+        // ── HIJAB: inject or remove hijab language ──────────────────────
+        const hijabPatterns = /,?\s*(wearing a (?:classic draped|modern wrapped|loose flowing|turban-style)(?: hijab| headscarf| veil)[^,.]*)\.?/gi;
+        text = text.replace(hijabPatterns, '');
+        if (this.state.hijabi) {
+            const hijabStyles = {
+                'classic':   'wearing a classic draped hijab in a complementary neutral tone',
+                'modern':    'wearing a modern wrapped headscarf styled for editorial fashion',
+                'loose':     'wearing a loose flowing veil draped over the head and shoulders',
+                'turban':    'wearing a turban-style hijab wrapped elegantly',
+            };
+            const hijabDesc = hijabStyles[this.state.hijabStyle] || hijabStyles['classic'];
+            // Insert after the first period (after the subject sentence)
+            const firstDot = text.indexOf('.');
+            if (firstDot > 0) {
+                text = text.substring(0, firstDot) + ', ' + hijabDesc + text.substring(firstDot);
+            }
+        }
+
+        // ── MODEL GENDER: swap gender pronouns and descriptors ─────────
+        const gender = this.state.modelGender || 'female';
+        if (gender === 'male') {
+            text = text.replace(/\bwoman\b/gi, 'man').replace(/\bher\b/g, 'his').replace(/\bshe\b/gi, 'he');
+        } else if (gender === 'female') {
+            text = text.replace(/\bman\b/gi, 'woman').replace(/\bhis\b/g, 'her').replace(/\bhe\b/gi, 'she');
+        }
+
+        // ── LIGHTING/MOOD: swap mood description ───────────────────────
+        const _lm = this.lightingMoods.find(m => m.id === this.state.lightingMood)
+            || this.lightingMoods[0];
+        const newMood = _lm.label.toLowerCase();
+        text = text.replace(/[\w-]+ mood,\s*[\w\s,-]+ lighting[\w\s]*/i, newMood + ' mood, ' + newMood + ' lighting');
+
+        // ── CAMERA: swap lens description if user changed it ───────────
+        const camProfile = this.cameraProfiles.find(c => c.id === this.state.cameraProfile);
+        if (camProfile && camProfile.desc) {
+            // Replace the old camera sentence (starts with "Shot on" or lens name pattern)
+            text = text.replace(/(?:Shot on |Captured with |Photographed using )?(?:Hasselblad|Leica|Sony|Canon|Phase One|Fujifilm|Anamorphic|Nikon)[^.]+\./i, camProfile.desc + '.');
+        }
+
+        // ── ANGLE: swap angle name ─────────────────────────────────────
+        const newAngle = this.angles.find(a => a.id === this.state.angle);
+        if (newAngle) {
+            // Replace "shot from X angle" or "X perspective" patterns
+            text = text.replace(/shot from [\w-]+ angle/i, 'shot from ' + newAngle.label.toLowerCase() + ' angle');
+        }
+
+        // ── MODEL CONSISTENCY: swap model reference count ──────────────
+        if (this.state.jewelryCount > 0) {
+            text = text.replace(/Images? \d+ (?:to \d+ )?show(?:s)? the exact jewelry/i,
+                this.state.jewelryCount === 1
+                    ? 'Image 1 shows the exact jewelry'
+                    : 'Images 1 to ' + this.state.jewelryCount + ' show the exact jewelry');
+        }
+
+        // Clean up double spaces/periods
+        text = text.replace(/\s{2,}/g, ' ').replace(/\.{2,}/g, '.').trim();
+        return text;
     },
 
         _computePromptSimilarity(text1, text2) {

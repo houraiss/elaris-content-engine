@@ -436,6 +436,17 @@ body { display: flex; }
     background: rgba(255,255,255,0.08);
     color: var(--text-primary);
 }
+.btn-accent {
+    background: linear-gradient(135deg, var(--moroccan-bronze), #c4935f);
+    color: #fff;
+    border-color: transparent;
+    font-weight: 600;
+}
+.btn-accent:hover {
+    background: linear-gradient(135deg, #c4935f, var(--moroccan-bronze));
+    box-shadow: 0 0 12px rgba(166,124,82,0.4);
+    transform: translateY(-1px);
+}
 .btn-sm { padding: 7px 14px; font-size: 12px; }
 .btn-lg { padding: 13px 28px; font-size: 15px; }
 .btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
