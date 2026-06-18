@@ -1237,6 +1237,26 @@ code {
     background: var(--accent-subtle);
     box-shadow: 0 0 16px var(--accent-glow);
 }
+/* v3.0 badge — top LEFT corner so it never overlaps the score (top-right) */
+.ps-v3-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 2px 5px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    pointer-events: none;
+    line-height: 1.4;
+    z-index: 1;
+}
+/* Offset icon slightly when v3 badge is present so badge doesn't overlap it */
+.ps-arch-v3 .ps-arch-icon { margin-top: 6px; }
+
 .ps-arch-icon {
     width: 48px; height: 48px;
     border-radius: var(--radius-md);

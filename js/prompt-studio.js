@@ -786,28 +786,27 @@ const PromptStudio = {
     ],
 
     // ── Modifiers ──────────────────────
-    moods: [
-        { id: 'dramatic', label: 'Dramatic' },
-        { id: 'soft', label: 'Soft & Romantic' },
-        { id: 'warm', label: 'Warm & Inviting' },
-        { id: 'cool', label: 'Cool & Modern' },
-        { id: 'surreal', label: 'Surreal & Dreamy' },
-        { id: 'editorial', label: 'Editorial & Sharp' },
-        { id: 'mystical', label: 'Mystical & Dark' },
-        { id: 'candid', label: 'Candid & Lifestyle' },
-        { id: 'avant-garde', label: 'Avant-Garde & High Fashion' },
+    // v3.1: Unified Lighting & Mood (replaces separate moods[] and lightings[])
+    lightingMoods: [
+        { id: 'editorial',       label: 'Editorial & Sharp' },
+        { id: 'dramatic',        label: 'Dramatic Shadows' },
+        { id: 'golden-hour',     label: 'Golden Hour' },
+        { id: 'studio',          label: 'Studio Lighting' },
+        { id: 'natural',         label: 'Natural Daylight' },
+        { id: 'soft',            label: 'Soft & Romantic' },
+        { id: 'warm',            label: 'Warm & Inviting' },
+        { id: 'cool',            label: 'Cool & Modern' },
+        { id: 'backlit',         label: 'Backlit / Rim Light' },
+        { id: 'surreal',         label: 'Surreal & Dreamy' },
+        { id: 'mystical',        label: 'Mystical & Dark' },
+        { id: 'candid',          label: 'Candid & Lifestyle' },
+        { id: 'avant-garde',     label: 'Avant-Garde Fashion' },
+        { id: 'hard-flash',      label: 'Hard Flash / Paparazzi' },
+        { id: 'dappled',         label: 'Dappled Sunlight' },
     ],
-
-    lightings: [
-        { id: 'golden-hour', label: 'Golden Hour' },
-        { id: 'studio', label: 'Studio Lighting' },
-        { id: 'natural', label: 'Natural Daylight' },
-        { id: 'dramatic-shadows', label: 'Dramatic Shadows' },
-        { id: 'backlit', label: 'Backlit / Rim Light' },
-        { id: 'soft-diffused', label: 'Soft Diffused' },
-        { id: 'hard-flash', label: 'Hard Flash / Paparazzi' },
-        { id: 'dappled-sunlight', label: 'Dappled Sunlight' },
-    ],
+    // Legacy aliases so old saved state keys still map — read-only, not rendered
+    get moods() { return this.lightingMoods; },
+    get lightings() { return this.lightingMoods; },
 
     formats: [
         { id: 'square', label: '1:1 Post', ratio: '1:1' },
@@ -927,6 +926,90 @@ const PromptStudio = {
             const bi = order.indexOf(b.id);
             return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
         });
+    },
+
+    // ── v3.1: Build angle chip HTML with top-5 highlights + archetype boost ──────
+    _buildAngleChips() {
+        const category = this.state.category || 'ring';
+        const sorted = this._getAnglesForCategory(category);
+
+        // Archetype-angle affinity: selected archetypes boost certain angles to top
+        const archetypeAngleBoost = {
+            'body-intimate':       ['macro', 'extreme-macro'],
+            'object-pairing':      ['flat-lay', 'overhead'],
+            'editorial-model':     ['eye-level', '45-degree', 'chin-up'],
+            'surreal-animal':      ['eye-level', 'macro'],
+            'gradient-product':    ['45-degree', 'flat-lay'],
+            'bw-dramatic':         ['side-profile', 'dutch'],
+            'shadow-play':         ['flat-lay', 'overhead'],
+            'bold-typography':     ['eye-level', 'flat-lay'],
+            'collection-showcase': ['eye-level', 'from-behind'],
+            'macro-detail':        ['macro', 'extreme-macro'],
+            'wet-element':         ['eye-level', 'macro'],
+            'architectural-context':['eye-level', '45-degree'],
+            'flat-lay-composition':['flat-lay', 'overhead'],
+            'motion-blur':         ['eye-level', 'wind-blown'],
+            'cinematic-portrait':  ['eye-level', '45-degree'],
+            'mirror-reflection':   ['eye-level', 'flat-lay'],
+            'texture-contrast':    ['45-degree', 'macro'],
+            'celestial-mythic':    ['low-angle', 'worms-eye'],
+            'seasonal-holiday':    ['flat-lay', 'eye-level'],
+            'lifestyle-moment':    ['eye-level', 'candid'],
+            'nature-botanical':    ['macro', 'flat-lay'],
+            'heritage-moroccan':   ['eye-level', '45-degree'],
+            'minimalist-space':    ['flat-lay', 'eye-level'],
+            'surface-lean':        ['knuckle-level', '45-degree'],
+            'hair-drama':          ['from-behind', 'side-profile'],
+            'masculine-editorial': ['eye-level', '45-degree'],
+            'royal-opulence':      ['eye-level', 'low-angle'],
+            'raw-field-editorial': ['eye-level', 'wind-blown'],
+            'veiled-mystery':      ['extreme-close-crop', 'fabric-reveal'],
+            'avant-garde-couture': ['eye-level', '45-degree', 'chin-up'],
+            'cinematic-color-story':['eye-level', 'low-angle'],
+            'surreal-scale':       ['worms-eye', 'low-angle'],
+            'ghost-double-exposure':['eye-level', 'side-profile'],
+            'outdoor-masculine':   ['eye-level', 'candid'],
+            'harsh-sun-beauty':    ['extreme-close-crop', 'eye-level'],
+        };
+
+        // Collect boosted angle IDs from currently selected archetypes
+        const boosted = new Set();
+        (this.state.selectedArchetypes || []).forEach(id => {
+            (archetypeAngleBoost[id] || []).forEach(a => boosted.add(a));
+        });
+
+        // Re-sort: boosted angles come first, preserving their relative order
+        let finalOrder = [];
+        if (boosted.size > 0) {
+            const boostedAngles  = sorted.filter(a => boosted.has(a.id));
+            const remainingAngles = sorted.filter(a => !boosted.has(a.id));
+            finalOrder = [...boostedAngles, ...remainingAngles];
+        } else {
+            finalOrder = sorted;
+        }
+
+        const contextLabel = boosted.size > 0
+            ? `— boosted for selected archetype`
+            : `— best for ${category}`;
+        // Update the context label if element exists
+        const ctxEl = this.container ? this.container.querySelector('#ps-angle-context') : null;
+        if (ctxEl) ctxEl.textContent = contextLabel;
+
+        return finalOrder.map((a, i) => {
+            const isTop  = i === 0;
+            const isRec  = i < 5;
+            const isBoosted = boosted.has(a.id);
+            const style = isTop
+                ? 'border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-glow);'
+                : isRec
+                ? 'border-color:var(--accent);opacity:0.85;'
+                : '';
+            const prefix = isTop ? '⭐ ' : (isBoosted && i < 5 ? '✦ ' : '');
+            const title  = isRec
+                ? (isBoosted ? `Boosted by selected archetype` : `Top recommended for ${category}`)
+                : a.label;
+            return `<button class="ps-chip ${a.id === this.state.angle ? 'active' : ''}" data-val="${a.id}" title="${title}" style="${style}">${prefix}${a.label}</button>`;
+        }).join('');
     },
 
     // ── Surface / Backdrop ──────────────────────
@@ -1049,8 +1132,7 @@ const PromptStudio = {
         material: 'sterling-silver',
         stone: 'diamond',
         selectedArchetypes: [],
-        mood: 'editorial',
-        lighting: 'studio',
+        lightingMood: 'editorial',   // v3.1: merged mood+lighting
         format: 'square',
         angle: 'eye-level',
         surface: 'none',
@@ -1061,7 +1143,7 @@ const PromptStudio = {
         jewelryCount: 0,
         consistencyOn: false,
         modelImageAttached: true,   // when false: use model descriptor only (no image ref slot)
-        modelGender: 'female',
+        modelGender: 'female',     // 'female' | 'male' | 'none'
         jewelryStyle: [],
         activeProfileId: 'lina',
         profiles: [],
@@ -1281,7 +1363,7 @@ const PromptStudio = {
 
             return `
                 <div class="ps-arch-card ${isSelected ? 'active' : ''} ${isV3 ? 'ps-arch-v3' : ''}" data-arch="${a.id}" style="position:relative">
-                    ${isV3 ? `<span style="position:absolute;top:6px;right:6px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:9px;font-weight:700;letter-spacing:0.08em;padding:2px 6px;border-radius:10px;text-transform:uppercase;pointer-events:none">v3.0</span>` : ''}
+                    ${isV3 ? `<span class="ps-v3-badge">v3.0</span>` : ''}
                     <div class="ps-arch-icon" style="--arch-color:${a.color}">${a.icon}</div>
                     <div class="ps-arch-info">
                         <div class="ps-arch-name">${name}</div>
@@ -1298,9 +1380,7 @@ const PromptStudio = {
         if (countEl) countEl.textContent = `${this.state.selectedArchetypes.length} selected`;
     },
 
-    // ── v3.0: Smart Guide ──────────────────────────────────────────────
-    // Generates a contextual recommendation block based on selected archetypes.
-    // Returns an HTML string (empty string when nothing is selected).
+    // ── v3.1: Smart Guide — all 39 archetypes ──────────────────────────────────
     _buildSmartGuide() {
         const selected = this.state.selectedArchetypes || [];
         if (selected.length === 0) {
@@ -1310,123 +1390,52 @@ const PromptStudio = {
                     <span style="font-size:16px">🧭</span>
                     <span style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted)">Smart Guide</span>
                 </div>
-                <p style="font-size:12px;color:var(--text-muted);line-height:1.5;margin:0">Select one or more archetypes above to get personalised recommendations for the best modifiers, camera angles, and lighting to achieve great results.</p>
+                <p style="font-size:12px;color:var(--text-muted);line-height:1.5;margin:0">Select one or more archetypes above to get personalised recommendations for the best camera angles, lighting &amp; mood, and lens profiles.</p>
             </div>`;
         }
 
-        // Build per-archetype guidance database
         const guideDB = {
-            'body-intimate': {
-                angle: ['macro', 'extreme-macro', 'eye-level'],
-                lighting: ['soft-box', 'natural', 'ring-light'],
-                mood: ['intimate', 'editorial', 'minimal'],
-                camera: ['macro-100', 'macro-180', 'hasselblad-85'],
-                tips: ['Use Macro or Extreme Macro angles for the most impactful jewelry close-ups.', 'Pair with 100mm f/2.8 Macro or 180mm Macro lens for extraordinary gem detail.', 'Keep styling minimal — skin is the canvas here.'],
-            },
-            'editorial-model': {
-                angle: ['eye-level', '45-degree', 'chin-up', 'low-angle'],
-                lighting: ['studio', 'dramatic', 'soft-box'],
-                mood: ['editorial', 'dramatic', 'confident'],
-                camera: ['hasselblad-85', 'canon-135-l', 'leica-50'],
-                tips: ['The 45° angle or chin-up give the strongest editorial energy.', 'Hasselblad 85mm creates that medium-format luxury look that fashion magazines use.', 'Dramatic or Studio lighting gives the sharpest editorial contrast.'],
-            },
-            'bw-dramatic': {
-                angle: ['side-profile', 'dutch', 'low-angle'],
-                lighting: ['dramatic', 'chiaroscuro', 'harsh'],
-                mood: ['dramatic', 'dark', 'intense'],
-                camera: ['canon-135-l', 'leica-50', 'hasselblad-85'],
-                tips: ['Side profile with harsh chiaroscuro lighting = strongest B&W result.', 'Dutch angle adds tension and cinema energy.', 'Canon 135mm f/2L compresses background beautifully in monochrome.'],
-            },
-            'raw-field-editorial': {
-                angle: ['eye-level', 'wind-blown', 'candid'],
-                lighting: ['natural', 'golden-hour-light', 'harsh-sun'],
-                mood: ['raw', 'natural', 'editorial'],
-                camera: ['hasselblad-85', 'leica-50', 'sony-35-gm'],
-                tips: ['Set the angle to Wind-Blown for full raw field energy — it drives wind and motion in the prompt.', 'Sony 35mm f/1.4 GM gives the wider field inclusion that this archetype needs.', 'Pair with Harsh Sun or Natural lighting — NO studio light for this one.', 'Caftan or minimal styling works best; avoid formal outfits.'],
-            },
-            'veiled-mystery': {
-                angle: ['extreme-close-crop', 'fabric-reveal', 'eye-level'],
-                lighting: ['natural', 'soft-box', 'window'],
-                mood: ['mysterious', 'intimate', 'editorial'],
-                camera: ['hasselblad-85', 'macro-100', 'canon-135-l'],
-                tips: ['Extreme Close Crop is the signature angle for this archetype — eyes fill the frame.', 'Fabric Reveal creates the dramatic pull-aside composition.', 'Enable Hijabi toggle with "Niqab" or "Sheer Veil" style for maximum synergy with this archetype.', 'Keep lighting to Natural or soft Window — harsh studio light kills the mystery.'],
-            },
-            'avant-garde-couture': {
-                angle: ['eye-level', '45-degree', 'low-angle', 'chin-up'],
-                lighting: ['studio', 'dramatic', 'soft-box'],
-                mood: ['avant-garde', 'editorial', 'bold'],
-                camera: ['phase-one-iq4', 'hasselblad-85', 'canon-135-l'],
-                tips: ['Phase One IQ4 or Hasselblad 85mm gives the medium-format luxury depth this fashion archetype deserves.', 'AI-Choice styling lets the engine pick couture-appropriate outfits automatically.', 'Low angle adds grandeur to sculptural headwear.'],
-            },
-            'cinematic-color-story': {
-                angle: ['eye-level', 'low-angle', '45-degree'],
-                lighting: ['dramatic', 'studio', 'gradient'],
-                mood: ['cinematic', 'bold', 'editorial'],
-                camera: ['anamorphic-40', 'canon-135-l', 'hasselblad-85'],
-                tips: ['Anamorphic 40mm lens is the perfect match — it creates cinematic lens flares that reinforce the color story.', 'Set Color Palette to match your chosen color story (e.g. warm amber, deep red).', 'Low angle + dramatic lighting amplifies the single-color immersion.'],
-            },
-            'surreal-scale': {
-                angle: ['worms-eye', 'low-angle', 'overhead'],
-                lighting: ['dramatic', 'natural', 'studio'],
-                mood: ['surreal', 'dramatic', 'cinematic'],
-                camera: ['anamorphic-40', 'sony-35-gm', 'canon-135-l'],
-                tips: ["Worm's Eye angle maximises the scale contrast — makes the environment look even more massive.", 'Anamorphic lens adds a movie-quality widescreen feel to surreal environments.', 'Keep lighting dramatic or natural — no ring lights or beauty dishes for this one.'],
-            },
-            'ghost-double-exposure': {
-                angle: ['eye-level', 'side-profile', '45-degree'],
-                lighting: ['dramatic', 'natural', 'rim-light'],
-                mood: ['ethereal', 'cinematic', 'mysterious'],
-                camera: ['canon-135-l', 'anamorphic-40', 'leica-50'],
-                tips: ['Side profile creates the clearest ghost separation — two distinct silhouettes.', 'Warm amber palette (in Color Palette controls) reinforces the long-exposure aesthetic.', 'Keep expression to "Serene" or "Thoughtful" — matches the dreamy double-exposure mood.'],
-            },
-            'outdoor-masculine': {
-                angle: ['eye-level', 'candid', '45-degree', 'from-behind'],
-                lighting: ['natural', 'golden-hour-light', 'overcast'],
-                mood: ['raw', 'editorial', 'natural'],
-                camera: ['hasselblad-85', 'leica-50', 'sony-35-gm'],
-                tips: ['Set Model Gender to Male — this archetype is designed for masculine editorial.', 'Candid angle delivers the most natural unposed outdoor feel.', 'Leica 50mm Summilux gives that honest documentary rendering that suits outdoor masculine work.', 'Choose Bracelet or Ring category for best compatibility scores.'],
-            },
-            'harsh-sun-beauty': {
-                angle: ['extreme-close-crop', 'eye-level', 'chin-up'],
-                lighting: ['natural', 'harsh-sun', 'direct'],
-                mood: ['raw', 'editorial', 'bold'],
-                camera: ['hasselblad-85', 'macro-100', 'leica-50'],
-                tips: ['Extreme Close Crop + Harsh Sun lighting = the signature look of this archetype.', 'Enable visible Skin Pores in Scene Realism for maximum raw beauty authenticity.', 'Hasselblad 85mm captures the harsh shadow detail with the best tonal range.', 'Avoid smooth or polished skin realism settings — raw texture is the whole point.'],
-            },
-            'macro-detail': {
-                angle: ['macro', 'extreme-macro'],
-                lighting: ['ring-light', 'soft-box', 'studio'],
-                mood: ['minimal', 'editorial', 'precise'],
-                camera: ['macro-100', 'macro-180', 'phase-one-iq4'],
-                tips: ['180mm f/3.5 Macro gives absolute maximum gem detail — individual facets visible.', 'Ring light creates perfect symmetrical catchlights on stones.', 'Phase One IQ4 55mm for catalog-quality detail shots.'],
-            },
-            'hair-drama': {
-                angle: ['from-behind', 'side-profile', 'foreground-blur'],
-                lighting: ['rim-light', 'natural', 'golden-hour-light'],
-                mood: ['dramatic', 'editorial', 'glamour'],
-                camera: ['hasselblad-85', 'canon-135-l', 'leica-50'],
-                tips: ['From Behind or Side Profile angles showcase the hair movement and earring placement best.', 'Rim light or golden hour makes hair textures glow.', 'NOTE: Hijabi toggle will override hair drama — keep it off for this archetype.'],
-            },
-            'cinematic-portrait': {
-                angle: ['eye-level', '45-degree', 'side-profile'],
-                lighting: ['dramatic', 'chiaroscuro', 'rim-light'],
-                mood: ['cinematic', 'dramatic', 'editorial'],
-                camera: ['anamorphic-40', 'canon-135-l', 'hasselblad-85'],
-                tips: ['Anamorphic 40mm is the ideal lens for this archetype — it creates real cinematic lens flares.', '45-degree angle with dramatic chiaroscuro lighting = peak cinematic portrait.', 'Use a Thoughtful or Intense expression for best cinematic depth.'],
-            },
-            'celestial-mythic': {
-                angle: ['low-angle', 'worms-eye', '45-degree'],
-                lighting: ['dramatic', 'rim-light', 'ethereal'],
-                mood: ['mythic', 'dramatic', 'ethereal'],
-                camera: ['anamorphic-40', 'canon-135-l', 'phase-one-iq4'],
-                tips: ["Low angle makes the model appear divine and monumental — perfect for mythic energy.", 'Anamorphic flares reinforce the other-worldly atmosphere.', 'Pair with Pendant or Necklace for the best compatibility score.'],
-            },
+            'body-intimate': { angle:['macro','extreme-macro','eye-level'], lighting:['soft-box','natural','ring-light'], camera:['macro-100','macro-180','hasselblad-85'], tips:['Use Macro or Extreme Macro angles for the most impactful jewelry close-ups.','Pair with 100mm f/2.8 Macro or 180mm Macro lens for extraordinary gem detail.','Keep styling minimal — skin is the canvas here.'] },
+            'object-pairing': { angle:['flat-lay','overhead','45-degree'], lighting:['natural','soft-box','studio'], camera:['leica-50','sony-35-gm','hasselblad-85'], tips:['Flat Lay (Top-Down) is the signature angle — keeps the composition graphic.','Leica 50mm Summilux gives a natural unforced perspective that feels documentary.','Pair objects with complementary textures — botanical, stone, fabric.'] },
+            'editorial-model': { angle:['eye-level','45-degree','chin-up','low-angle'], lighting:['studio','dramatic','soft-box'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['The 45° angle or Chin Up give the strongest editorial energy.','Hasselblad 85mm creates that medium-format luxury look that fashion magazines use.','Dramatic or Studio lighting gives the sharpest editorial contrast.'] },
+            'surreal-animal': { angle:['eye-level','macro','45-degree'], lighting:['natural','dramatic','studio'], camera:['macro-100','hasselblad-85','phase-one-iq4'], tips:['Eye Level meets the animal at its own perspective — the most intimate angle.','100mm f/2.8 Macro reveals extraordinary texture in feathers, scales, or fur.','Enable "No Model" gender mode — this archetype works without a human subject.'] },
+            'gradient-product': { angle:['45-degree','flat-lay','low-angle'], lighting:['studio','soft-box','dramatic'], camera:['hasselblad-85','phase-one-iq4','canon-135-l'], tips:['45° Three-Quarter shows the dimensional depth of gradient surfaces best.','Phase One IQ4 gives extraordinary tonal range — perfect for subtle gradients.','Choose Color Palette to match or complement the gradient hue.'] },
+            'bw-dramatic': { angle:['side-profile','dutch','low-angle'], lighting:['dramatic','chiaroscuro','harsh'], camera:['canon-135-l','leica-50','hasselblad-85'], tips:['Side Profile with harsh chiaroscuro lighting = strongest B&W result.','Dutch angle adds tension and cinema energy.','Canon 135mm f/2L compresses background beautifully in monochrome.'] },
+            'shadow-play': { angle:['flat-lay','overhead','knuckle-level'], lighting:['dramatic','directional','natural'], camera:['sony-35-gm','leica-50','hasselblad-85'], tips:['Flat Lay gives the purest shadow projection on horizontal surfaces.','Sony 35mm f/1.4 GM captures the widest shadow spread without distortion.','Enable "No Model" mode — shadows and objects only.'] },
+            'bold-typography': { angle:['eye-level','flat-lay','45-degree'], lighting:['studio','natural','soft-box'], camera:['phase-one-iq4','hasselblad-85','leica-50'], tips:['Eye Level keeps typography legible and forward-facing.','Phase One IQ4 provides the sharpness needed for editorial type clarity.','High contrast Color Palette (Monochrome, Noir) makes typography pop.'] },
+            'collection-showcase': { angle:['eye-level','from-behind','over-shoulder'], lighting:['studio','natural','soft-box'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['From Behind (Nape) angle shows necklaces and ear jewelry simultaneously.','Over the Shoulder creates an intimate reveal of the collection.','Hasselblad 85mm gives depth and separation to each piece.'] },
+            'macro-detail': { angle:['macro','extreme-macro'], lighting:['ring-light','soft-box','studio'], camera:['macro-100','macro-180','phase-one-iq4'], tips:['180mm f/3.5 Macro gives absolute maximum gem detail — individual facets visible.','Ring light creates perfect symmetrical catchlights on stones.','Enable "No Model" mode — pure jewelry close-up.'] },
+            'wet-element': { angle:['eye-level','macro','knuckle-level'], lighting:['natural','rim-light','soft-box'], camera:['macro-100','hasselblad-85','leica-50'], tips:['Macro angle reveals droplet texture in extraordinary detail.','Rim light makes water droplets glow and adds dimensionality.','Knuckle Level gives a jewelry-height perspective with water context.'] },
+            'architectural-context': { angle:['eye-level','45-degree','side-profile'], lighting:['natural','dramatic','studio'], camera:['hasselblad-85','leica-50','sony-35-gm'], tips:['Eye Level aligns the model with the architectural geometry.','Sony 35mm f/1.4 GM includes more of the architectural setting in frame.','Use Stone Wall or Concrete surface to reinforce architectural context.'] },
+            'flat-lay-composition': { angle:['flat-lay','overhead'], lighting:['natural','soft-box','studio'], camera:['leica-50','sony-35-gm','phase-one-iq4'], tips:['Pure Flat Lay (Top-Down) is the only angle — commit to it.','Natural daylight from a window creates the softest editorial flat-lay shadow.','Enable "No Model" mode and keep composition clean.'] },
+            'motion-blur': { angle:['eye-level','wind-blown','side-profile'], lighting:['natural','golden-hour-light','overcast'], camera:['canon-135-l','hasselblad-85','leica-50'], tips:['Wind-Blown angle is the signature — set it for fabric and hair motion.','Canon 135mm f/2L captures motion blur beautifully while keeping jewelry sharp.','Natural or Golden Hour lighting gives the most authentic motion editorial.'] },
+            'cinematic-portrait': { angle:['eye-level','45-degree','side-profile'], lighting:['dramatic','chiaroscuro','rim-light'], camera:['anamorphic-40','canon-135-l','hasselblad-85'], tips:['Anamorphic 40mm is the ideal lens — it creates real cinematic lens flares.','45° angle with dramatic chiaroscuro lighting = peak cinematic portrait.','Use a Thoughtful or Intense expression for best cinematic depth.'] },
+            'mirror-reflection': { angle:['eye-level','flat-lay','knuckle-level'], lighting:['natural','studio','rim-light'], camera:['canon-135-l','hasselblad-85','leica-50'], tips:['Eye Level captures both the subject and its reflection equally well.','Mirrored Glass surface setting reinforces the reflection theme.','Studio or Rim light makes reflections crisp and infinite.'] },
+            'texture-contrast': { angle:['45-degree','macro','eye-level'], lighting:['natural','rim-light','dramatic'], camera:['macro-100','hasselblad-85','phase-one-iq4'], tips:['45° Three-Quarter shows both jewelry surface and contrasting texture.','100mm Macro reveals micro-texture in both the jewelry and background.','Enable "No Model" mode and pair with Marble, Concrete, or Wood surface.'] },
+            'celestial-mythic': { angle:['low-angle','worms-eye','45-degree'], lighting:['dramatic','rim-light','ethereal'], camera:['anamorphic-40','canon-135-l','phase-one-iq4'], tips:['Low Angle makes the model appear divine and monumental — perfect for mythic energy.','Anamorphic flares reinforce the other-worldly atmosphere.','Pair with Pendant or Necklace for the best compatibility score.'] },
+            'seasonal-holiday': { angle:['flat-lay','eye-level','candid'], lighting:['natural','soft-box','warm'], camera:['leica-50','sony-35-gm','hasselblad-85'], tips:['Flat Lay gives the most editorial gift and holiday layout.','Natural or Warm lighting creates the festive atmosphere.','Candid angle adds spontaneous lifestyle energy to seasonal shoots.'] },
+            'lifestyle-moment': { angle:['eye-level','candid','knuckle-level'], lighting:['natural','golden-hour-light','soft-box'], camera:['leica-50','sony-35-gm','hasselblad-85'], tips:['Candid angle is the backbone of lifestyle — unstaged, real moment energy.','Leica 50mm Summilux gives timeless documentary rendering.','Knuckle Level is perfect for lifestyle coffee, hand, or table scenes.'] },
+            'nature-botanical': { angle:['macro','flat-lay','45-degree'], lighting:['natural','dappled','soft-box'], camera:['macro-100','leica-50','hasselblad-85'], tips:['Macro Close-Up reveals the texture relationship between botanical elements and jewelry.','Dappled Sunlight creates the most authentic organic atmosphere.','Enable "No Model" mode — botanical objects only.'] },
+            'heritage-moroccan': { angle:['eye-level','45-degree','side-profile'], lighting:['natural','warm','golden-hour-light'], camera:['hasselblad-85','leica-50','sony-35-gm'], tips:['Eye Level gives the most dignified and authentic cultural portrait.','Hasselblad 85mm captures the warmth of Moroccan light with exceptional depth.','Choose Terracotta / Zellige surface for maximum heritage context.'] },
+            'minimalist-space': { angle:['flat-lay','eye-level','macro'], lighting:['natural','soft-box','studio'], camera:['macro-100','phase-one-iq4','leica-50'], tips:['Flat Lay with generous negative space creates the most striking minimalist composition.','Phase One IQ4 gives the color depth needed for clean product shots.','Enable "No Model" and keep Color Palette to Neutral Beige or Monochrome.'] },
+            'surface-lean': { angle:['knuckle-level','45-degree','eye-level'], lighting:['natural','studio','soft-box'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Knuckle Level gives the most intimate surface-height perspective.','45° Three-Quarter shows both face and surface texture simultaneously.','Hasselblad 85mm renders the depth between model and surface beautifully.'] },
+            'hair-drama': { angle:['from-behind','side-profile','foreground-blur'], lighting:['rim-light','natural','golden-hour-light'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['From Behind or Side Profile angles showcase hair movement and earring placement best.','Rim light or Golden Hour makes hair textures glow and creates a halo effect.','NOTE: Hijabi toggle will override hair drama — keep it off for this archetype.'] },
+            'masculine-editorial': { angle:['eye-level','45-degree','low-angle'], lighting:['studio','dramatic','natural'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Set Model Gender to Male — this archetype is designed for masculine editorial.','Low Angle adds authority and power to the masculine editorial look.','Hasselblad 85mm renders masculine skin tones with exceptional depth.'] },
+            'royal-opulence': { angle:['eye-level','low-angle','45-degree'], lighting:['dramatic','rim-light','studio'], camera:['canon-135-l','phase-one-iq4','hasselblad-85'], tips:['Eye Level with Low Angle combined gives a regal, authoritative presence.','Phase One IQ4 captures the richness of opulent materials with extraordinary fidelity.','Jewel Tones or Deep Ocean Color Palette reinforces the opulence atmosphere.'] },
+            // v3.0 archetypes
+            'raw-field-editorial': { angle:['eye-level','wind-blown','candid'], lighting:['natural','harsh-sun','golden-hour-light'], camera:['hasselblad-85','leica-50','sony-35-gm'], tips:['Wind-Blown angle drives wind and motion in the prompt — set it for full raw field energy.','Sony 35mm f/1.4 GM gives the wider field inclusion that this archetype needs.','Pair with Harsh Sun or Natural lighting — NO studio light.','Caftan or minimal styling works best; avoid formal outfits.'] },
+            'veiled-mystery': { angle:['extreme-close-crop','fabric-reveal','eye-level'], lighting:['natural','soft-box','window'], camera:['hasselblad-85','macro-100','canon-135-l'], tips:['Extreme Close Crop is the signature angle — eyes fill the frame.','Fabric Reveal creates the dramatic pull-aside composition.','Enable Hijabi with "Niqab" or "Sheer Veil" for maximum synergy.','Keep lighting Natural or soft — harsh studio light kills the mystery.'] },
+            'avant-garde-couture': { angle:['eye-level','45-degree','low-angle','chin-up'], lighting:['studio','dramatic','soft-box'], camera:['phase-one-iq4','hasselblad-85','canon-135-l'], tips:['Phase One IQ4 or Hasselblad 85mm gives the medium-format luxury depth this archetype deserves.','AI-Choice styling lets the engine pick couture-appropriate outfits automatically.','Low Angle adds grandeur to sculptural headwear.'] },
+            'cinematic-color-story': { angle:['eye-level','low-angle','45-degree'], lighting:['dramatic','studio','natural'], camera:['anamorphic-40','canon-135-l','hasselblad-85'], tips:['Anamorphic 40mm creates cinematic lens flares that reinforce the color story perfectly.','Set Color Palette to match your chosen color story (e.g. warm amber, deep red).','Low Angle + Dramatic lighting amplifies the single-color immersion.'] },
+            'surreal-scale': { angle:['worms-eye','low-angle','overhead'], lighting:['dramatic','natural','studio'], camera:['anamorphic-40','sony-35-gm','canon-135-l'], tips:["Worm's Eye maximises scale contrast — makes the environment look enormous.",'Anamorphic lens adds a movie-quality widescreen feel.','Keep lighting dramatic or natural — no ring lights or beauty dishes.'] },
+            'ghost-double-exposure': { angle:['eye-level','side-profile','45-degree'], lighting:['dramatic','natural','rim-light'], camera:['canon-135-l','anamorphic-40','leica-50'], tips:['Side Profile creates the clearest ghost separation — two distinct silhouettes.','Warm Amber palette reinforces the long-exposure aesthetic.','Keep expression to "Serene" or "Thoughtful" — matches the dreamy double-exposure mood.'] },
+            'outdoor-masculine': { angle:['eye-level','candid','45-degree','from-behind'], lighting:['natural','golden-hour-light','overcast'], camera:['hasselblad-85','leica-50','sony-35-gm'], tips:['Set Model Gender to Male — this archetype is designed for masculine editorial.','Candid angle delivers the most natural unposed outdoor feel.','Leica 50mm Summilux gives honest documentary rendering that suits this archetype.'] },
+            'harsh-sun-beauty': { angle:['extreme-close-crop','eye-level','chin-up'], lighting:['natural','harsh-sun','direct'], camera:['hasselblad-85','macro-100','leica-50'], tips:['Extreme Close Crop + Harsh Sun lighting = the signature look of this archetype.','Enable visible Skin Pores in Scene Realism for maximum raw beauty authenticity.','Hasselblad 85mm captures harsh shadow detail with the best tonal range.','Avoid smooth or polished skin realism — raw texture IS the point.'] },
         };
 
-        // Collect all guidance for selected archetypes
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
+
         if (guides.length === 0) {
-            // Selected archetypes exist but no specific guide — show generic advice
             return `
             <div style="margin-top:12px;border:1px solid rgba(168,85,247,0.2);border-radius:12px;padding:16px;background:rgba(124,58,237,0.05)">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
@@ -1437,7 +1446,6 @@ const PromptStudio = {
             </div>`;
         }
 
-        // Aggregate recommendations — rank by frequency across all selected archetypes
         const rank = (arr) => {
             const freq = {};
             arr.forEach(id => freq[id] = (freq[id] || 0) + 1);
@@ -1448,17 +1456,11 @@ const PromptStudio = {
         const bestCameras  = rank(guides.flatMap(g => g.camera  || [])).slice(0, 2);
         const allTips      = [...new Set(guides.flatMap(g => g.tips || []))].slice(0, 4);
 
-        // Translate IDs to human labels
-        const anglesAll    = this.angles;
-        const angleLabel   = id => (anglesAll.find(a => a.id === id) || {}).label || id;
-        const cameraLabel  = id => (this.cameraProfiles.find(c => c.id === id) || {}).label || id;
-        const lightingLabels = { 'soft-box': 'Soft Box', 'natural': 'Natural Light', 'ring-light': 'Ring Light', 'dramatic': 'Dramatic', 'studio': 'Studio', 'chiaroscuro': 'Chiaroscuro', 'rim-light': 'Rim Light', 'golden-hour-light': 'Golden Hour', 'harsh-sun': 'Harsh Sun', 'gradient': 'Gradient', 'window': 'Window Light', 'overcast': 'Overcast', 'ethereal': 'Ethereal', 'direct': 'Direct Sun', 'harsh': 'Harsh' };
-        const lightLabel   = id => lightingLabels[id] || id;
-
-        const archNames = selected.map(id => {
-            const a = this.archetypes.find(x => x.id === id);
-            return a ? `${a.icon} ${a.name}` : id;
-        }).join(', ');
+        const anglesAll   = this.angles;
+        const angleLabel  = id => (anglesAll.find(a => a.id === id) || {}).label || id;
+        const cameraLabel = id => (this.cameraProfiles.find(c => c.id === id) || {}).label || id;
+        const lightingLabels = { 'soft-box':'Soft Box','natural':'Natural Light','ring-light':'Ring Light','dramatic':'Dramatic','studio':'Studio','chiaroscuro':'Chiaroscuro','rim-light':'Rim Light','golden-hour-light':'Golden Hour','harsh-sun':'Harsh Sun','gradient':'Gradient','window':'Window Light','overcast':'Overcast','ethereal':'Ethereal','direct':'Direct Sun','harsh':'Harsh','warm':'Warm Light','dappled':'Dappled Sunlight','directional':'Directional','raking':'Raking Light' };
+        const lightLabel  = id => lightingLabels[id] || id;
 
         return `
         <div style="margin-top:12px;border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:16px;background:rgba(124,58,237,0.06)">
@@ -1490,6 +1492,7 @@ const PromptStudio = {
             </div>` : ''}
         </div>`;
     },
+
 
     // ── Render ──────────────────────
     _render() {
@@ -1551,7 +1554,9 @@ const PromptStudio = {
                             <div id="ps-gender-select" class="ps-chip-group" style="margin-bottom:0">
                                 <button class="ps-chip ${this.state.modelGender === 'female' ? 'active' : ''}" data-val="female">♀ Female</button>
                                 <button class="ps-chip ${this.state.modelGender === 'male' ? 'active' : ''}" data-val="male">♂ Male</button>
+                                <button class="ps-chip ${this.state.modelGender === 'none' ? 'active' : ''}" data-val="none" title="Product / surreal shots — no human model in scene">⊖ No Model</button>
                             </div>
+                            ${this.state.modelGender === 'none' ? `<p class="text-sm text-muted" style="margin-top:6px;margin-bottom:0;line-height:1.4">Product-only or surreal mode — all human elements are suppressed from prompts.</p>` : ''}
                         </div>
 
                         <!-- Hijabi Toggle -->
@@ -1648,17 +1653,11 @@ const PromptStudio = {
                     </div>
 
                     <div class="card">
-                        <div class="card-header"><span class="card-title" data-i18n="ps_modifiers">Modifiers</span></div>
+                        <div class="card-header"><span class="card-title">Modifiers</span></div>
                         <div class="form-group">
-                            <label class="form-label" data-i18n="ps_mood">Mood</label>
-                            <div class="ps-chip-group" id="ps-mood">
-                                ${this.moods.map(m => `<button class="ps-chip ${m.id === this.state.mood ? 'active' : ''}" data-val="${m.id}" data-i18n="ps_mood_${m.id.replace(/-/g, '_')}">${m.label}</button>`).join('')}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="ps_lighting">Lighting</label>
-                            <div class="ps-chip-group" id="ps-lighting">
-                                ${this.lightings.map(l => `<button class="ps-chip ${l.id === this.state.lighting ? 'active' : ''}" data-val="${l.id}" data-i18n="ps_light_${l.id.replace(/-/g, '_')}">${l.label}</button>`).join('')}
+                            <label class="form-label">💡 Lighting &amp; Mood</label>
+                            <div class="ps-chip-group" id="ps-lighting-mood">
+                                ${this.lightingMoods.map(m => `<button class="ps-chip ${m.id === this.state.lightingMood ? 'active' : ''}" data-val="${m.id}">${m.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
@@ -1850,9 +1849,8 @@ const PromptStudio = {
             });
         }
 
-        // Chip groups
-        this._bindChipGroup('ps-mood', 'mood');
-        this._bindChipGroup('ps-lighting', 'lighting');
+        // Chip groups — v3.1: unified lightingMood replaces separate mood+lighting
+        this._bindChipGroup('ps-lighting-mood', 'lightingMood');
         this._bindChipGroup('ps-format', 'format');
         this._bindChipGroup('ps-angle', 'angle');
         this._bindChipGroup('ps-surface', 'surface');
@@ -2040,6 +2038,9 @@ const PromptStudio = {
             // v3.0: Refresh Smart Guide live
             const guideEl = q('#ps-smart-guide-slot');
             if (guideEl) guideEl.outerHTML = `<div id="ps-smart-guide-slot">${this._buildSmartGuide()}</div>`;
+            // v3.1: Refresh angle chips live to reflect archetype-aware ranking
+            const angleGroup = q('#ps-angle');
+            if (angleGroup) angleGroup.innerHTML = this._buildAngleChips();
         });
 
         // Generate
@@ -2290,8 +2291,12 @@ const PromptStudio = {
         const piece = _rawDesc ? `${material} ${catWord} ${_rawDesc}` : `${material} ${catWord}`;
         this._lastPiece = piece;
         this._lastMaterial = material;
-        const mood = this.moods.find(m => m.id === this.state.mood)?.label.toLowerCase() || '';
-        const lighting = this.lightings.find(l => l.id === this.state.lighting)?.label.toLowerCase() || '';
+        // v3.1: unified lighting+mood single state key
+        const _lm = this.lightingMoods.find(m => m.id === this.state.lightingMood)
+            || this.lightingMoods.find(m => m.id === this.state.mood)   // legacy fallback
+            || this.lightingMoods[0];
+        const mood    = _lm.label.toLowerCase();
+        const lighting = _lm.label.toLowerCase();
         const fmt = this.formats.find(f => f.id === this.state.format);
         const ratio = fmt ? fmt.ratio : '1:1';
         const angleName = this.angles.find(a => a.id === this.state.angle)?.label.toLowerCase() || '';
@@ -2422,11 +2427,14 @@ const PromptStudio = {
             'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty',
         ];
         const isHuman = humanArchetypes.includes(archetype.id);
+        // v3.1: "No Model" gender mode — treat as product-only regardless of archetype
+        const noModel = this.state.modelGender === 'none';
+        const isHumanActive = isHuman && !noModel;  // true only if archetype is human AND gender != none
 
         // Model styling (only for human archetypes) — gender-aware phrasing
-        const modelGenderForStyling = this.state.modelGender || 'female';
+        const modelGenderForStyling = this.state.modelGender === 'none' ? 'female' : (this.state.modelGender || 'female');
         let stylingDesc = '';
-        if (isHuman) {
+        if (isHumanActive) {
             const styleMap = {
                 'auto': this._getRandomOutfit(modelGenderForStyling, this.state.material),   // auto: palette-matched random outfit
                 'ai-choice': `outfit creatively chosen by the art director — high-fashion luxury jewelry campaign, neckline naturally open to display the ${this.state.category || 'piece'} piece, elevated editorial styling, garment silhouette and color chosen by the photographer to best complement the jewelry`,
@@ -2465,7 +2473,7 @@ const PromptStudio = {
         // poseDesc on top would create two conflicting body descriptions.
         const POSE_ARCHETYPES = new Set(['editorial-model', 'bw-dramatic', 'cinematic-portrait', 'lifestyle-moment']);
         let poseDesc = '';
-        if (isHuman && POSE_ARCHETYPES.has(archetype.id)) {
+        if (isHumanActive && POSE_ARCHETYPES.has(archetype.id)) {
             const poseMap = {
                 'body-intimate': [
                     'hand touching chin, {piece} centered on finger',
@@ -2566,7 +2574,7 @@ const PromptStudio = {
 
         // ── Facial Expression (human archetypes only) ──────────────────────
         let expressionDesc = '';
-        if (isHuman) {
+        if (isHumanActive) {
             const expressionMap = {
                 'none':       '',
                 'serene':     'serene calm expression, soft relaxed face, eyes slightly downcast, peaceful',
@@ -2582,7 +2590,7 @@ const PromptStudio = {
 
         // ── Anatomy constraints (only when humans are present) ──────────────────────
         let anatomyConstraint = '';
-        if (isHuman || archetype.id === 'shadow-play') {
+        if (isHumanActive || (archetype.id === 'shadow-play' && !noModel)) {
             anatomyConstraint = 'CRITICAL: Flawless human anatomy — exactly two arms, exactly two hands, exactly five fingers per hand, correct joint proportions, natural knuckle spacing, no extra or fused digits, photorealistic skin texture.';
         }
 
@@ -2615,7 +2623,7 @@ const PromptStudio = {
         // higher token weight than the negative prompt.
         // ── Brand Touch (Elaris identity on model clothing) ──────────────────────
         let brandTouchDesc = '';
-        if (isHuman && this.state.brandTouch === 'logomark') {
+        if (isHumanActive && this.state.brandTouch === 'logomark') {
             // Enamel-filled pin: dark enamel body + polished gold outline = always visible on any garment
             brandTouchDesc = 'model wearing a small "Elaris" four-pointed star pin at the lapel — a discreet luxury pin worn as a brand signature, enamel-and-metal two-tone finish naturally contrasting the garment, pin size proportional to real luxury brand pins (small and refined), positioned naturally on the clothing as an authentic styling detail';
         } else if (isHuman && this.state.brandTouch === 'wordmark') {
@@ -2637,21 +2645,21 @@ const PromptStudio = {
             // SUBJECT — jewelry piece at the center, material injected cleanly on next line
             subject + '.', sceneVariantPart ? sceneVariantPart + '.' : '',
             // PLACEMENT RULE — only for human archetypes (product shots have no finger)
-            (isHuman && placementRule) ? `${placementRule}.` : '',
+            (isHumanActive && placementRule) ? `${placementRule}.` : '',
             // MATERIAL — stated once, cleanly, with metal descriptor
             `${material}, ${silverDesc}.`,
             // SCENE — archetype visual story (lighting, composition, mood)
             archetype.scene + '.',
             // CAMERA — lens, aperture, depth of field (no angle conflict)
             `${cameraDesc}.`,
-            // MOOD & LIGHTING
+            // MOOD & LIGHTING (v3.1: single unified value)
             `${mood} mood, ${lightingCoherent}.`,
             // POSE (human only, no embedded skin notes)
             poseDesc ? `Pose: ${poseDesc}.` : '',
             // EXPRESSION (human only)
             expressionDesc ? `Expression: ${expressionDesc}.` : '',
             // SKIN TONE — randomized per generation for model diversity (human archetypes only)
-            (isHuman && !hasNamedProfile) ? this._getRandomSkinTone() + '.' : '',  // suppressed when named profile active
+            (isHumanActive && !hasNamedProfile) ? this._getRandomSkinTone() + '.' : '',
             // REALISM (skin texture, wrinkles, body hair, skin detail — user controlled)
             realismDesc ? realismDesc + '.' : '',
             // STYLING (outfit) — placed before realism; clearly defines garment

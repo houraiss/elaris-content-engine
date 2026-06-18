@@ -1,0 +1,136 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.wrap{padding:1rem 0}
+.search-row{display:flex;gap:8px;margin-bottom:1rem;align-items:center}
+.search-row input{flex:1;height:36px;padding:0 12px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)}
+.filter-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.fbtn{font-size:11px;padding:4px 10px;border:0.5px solid var(--color-border-secondary);border-radius:20px;background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;white-space:nowrap}
+.fbtn.active{background:var(--color-background-secondary);color:var(--color-text-primary);border-color:var(--color-border-primary)}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.tbl th{text-align:left;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);padding:8px 10px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.tbl th:nth-child(1){width:32px}
+.tbl th:nth-child(2){width:170px}
+.tbl th:nth-child(3){width:170px}
+.tbl th:nth-child(4){width:160px}
+.tbl td{padding:9px 10px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;color:var(--color-text-primary)}
+.tbl tr:hover td{background:var(--color-background-secondary)}
+.name{font-weight:500;font-size:12px;color:var(--color-text-primary)}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;margin-top:3px;font-weight:400}
+.tag-product{background:#E6F1FB;color:#185FA5}
+.tag-human{background:#E1F5EE;color:#0F6E56}
+.tag-mixed{background:#EEEDFE;color:#534AB7}
+.angle-primary{font-size:12px;color:var(--color-text-primary);font-weight:500;display:flex;align-items:center;gap:4px}
+.angle-alt{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.cam-primary{font-size:12px;color:var(--color-text-primary);font-weight:500}
+.cam-alt{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.star{color:#BA7517;font-size:10px}
+.count{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px}
+.hidden{display:none}
+</style>
+<div class="wrap">
+<h2 class="sr-only">Elaris Content Engine — archetype camera angle and lens preset reference guide</h2>
+<div class="search-row">
+  <input type="text" id="srch" placeholder="Search archetype..." oninput="filter()">
+</div>
+<div class="filter-btns">
+  <button class="fbtn active" data-type="all" onclick="setType(this,'all')">All archetypes</button>
+  <button class="fbtn" data-type="product" onclick="setType(this,'product')">Product only</button>
+  <button class="fbtn" data-type="human" onclick="setType(this,'human')">Human / model</button>
+  <button class="fbtn" data-type="mixed" onclick="setType(this,'mixed')">Mixed</button>
+</div>
+<div class="count" id="cnt"></div>
+<table class="tbl" id="tbl">
+<thead><tr>
+  <th></th>
+  <th>Archetype</th>
+  <th>Best camera angle</th>
+  <th>Lens / camera preset</th>
+</tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+<script>
+const archetypes=[
+{icon:'🤲',name:'Body Intimate',type:'human',angle:'Macro Close-up',angleAlt:'Extreme Macro · Eye Level',cam:'100mm f/2.8 Macro',camAlt:'180mm f/3.5 Macro · Hasselblad 85mm'},
+{icon:'🌿',name:'Object Pairing',type:'product',angle:"Flat Lay (Top-Down)",angleAlt:"Overhead · 45° Three-Quarter",cam:'Leica 50mm Summilux',camAlt:'Sony 35mm f/1.4 GM · Hasselblad 85mm'},
+{icon:'📸',name:'Editorial Model',type:'human',angle:'Eye Level',angleAlt:"45° Three-Quarter · Chin Up · Low Angle",cam:'✦ Hasselblad 85mm',camAlt:'Canon 135mm f/2 L · Leica 50mm Summilux'},
+{icon:'🦋',name:'Surreal Animal',type:'product',angle:'Eye Level',angleAlt:'Macro Close-up · 45° Three-Quarter',cam:'100mm f/2.8 Macro',camAlt:'Hasselblad 85mm · Phase One IQ4 55mm'},
+{icon:'💎',name:'Gradient Product',type:'product',angle:'45° Three-Quarter',angleAlt:'Low Angle · Flat Lay',cam:'Hasselblad 85mm',camAlt:'Phase One IQ4 55mm · Canon 135mm f/2 L'},
+{icon:'🎭',name:'B&W Dramatic',type:'human',angle:'Side Profile',angleAlt:'Dutch Angle · Low Angle',cam:'Canon 135mm f/2 L',camAlt:'Leica 50mm Summilux · Hasselblad 85mm'},
+{icon:'🌑',name:'Shadow Play',type:'product',angle:"Flat Lay (Top-Down)",angleAlt:'Overhead · Knuckle Level',cam:'Sony 35mm f/1.4 GM',camAlt:'Leica 50mm Summilux'},
+{icon:'🔡',name:'Bold Typography',type:'mixed',angle:'Eye Level',angleAlt:'Flat Lay · 45° Three-Quarter',cam:'Phase One IQ4 55mm',camAlt:'Hasselblad 85mm'},
+{icon:'✨',name:'Collection Showcase',type:'human',angle:'Eye Level',angleAlt:'From Behind (Nape) · Over the Shoulder',cam:'✦ Hasselblad 85mm',camAlt:'Canon 135mm f/2 L'},
+{icon:'🔬',name:'Macro Detail',type:'product',angle:'Macro Close-up',angleAlt:'Extreme Macro',cam:'100mm f/2.8 Macro',camAlt:'180mm f/3.5 Macro · Phase One IQ4 55mm'},
+{icon:'💧',name:'Wet Element',type:'mixed',angle:'Eye Level',angleAlt:'Macro Close-up · Knuckle Level',cam:'100mm f/2.8 Macro',camAlt:'Hasselblad 85mm'},
+{icon:'🏛️',name:'Architectural Context',type:'human',angle:'Eye Level',angleAlt:"45° Three-Quarter · Side Profile",cam:'Hasselblad 85mm',camAlt:'Leica 50mm Summilux · Sony 35mm f/1.4 GM'},
+{icon:'📐',name:'Flat Lay Composition',type:'product',angle:"Flat Lay (Top-Down)",angleAlt:'Overhead',cam:'Leica 50mm Summilux',camAlt:'Sony 35mm f/1.4 GM'},
+{icon:'💨',name:'Motion & Flow',type:'human',angle:'Eye Level',angleAlt:'Wind-Blown · Side Profile',cam:'Canon 135mm f/2 L',camAlt:'Hasselblad 85mm'},
+{icon:'🎬',name:'Cinematic Portrait',type:'human',angle:'Eye Level',angleAlt:"45° Three-Quarter · Side Profile",cam:'Anamorphic 40mm',camAlt:'Canon 135mm f/2 L · Hasselblad 85mm'},
+{icon:'🪞',name:'Mirror & Reflection',type:'mixed',angle:'Eye Level',angleAlt:'Flat Lay · Knuckle Level',cam:'Canon 135mm f/2 L',camAlt:'Hasselblad 85mm'},
+{icon:'🪨',name:'Texture Contrast',type:'product',angle:'45° Three-Quarter',angleAlt:'Macro Close-up · Eye Level',cam:'100mm f/2.8 Macro',camAlt:'Hasselblad 85mm'},
+{icon:'🌙',name:'Celestial & Mythic',type:'human',angle:'Low Angle (Hero)',angleAlt:"Worm's Eye · 45° Three-Quarter",cam:'Anamorphic 40mm',camAlt:'Canon 135mm f/2 L · Phase One IQ4 55mm'},
+{icon:'🎁',name:'Seasonal & Holiday',type:'mixed',angle:"Flat Lay (Top-Down)",angleAlt:'Eye Level · Candid',cam:'Leica 50mm Summilux',camAlt:'Sony 35mm f/1.4 GM · Hasselblad 85mm'},
+{icon:'☕',name:'Lifestyle Moment',type:'human',angle:'Eye Level',angleAlt:'Candid · Knuckle Level',cam:'Leica 50mm Summilux',camAlt:'Sony 35mm f/1.4 GM'},
+{icon:'🌿',name:'Nature & Botanical',type:'product',angle:'Macro Close-up',angleAlt:"Flat Lay · 45° Three-Quarter",cam:'100mm f/2.8 Macro',camAlt:'Leica 50mm Summilux'},
+{icon:'🏺',name:'Heritage & Moroccan',type:'mixed',angle:'Eye Level',angleAlt:"45° Three-Quarter · Side Profile",cam:'Hasselblad 85mm',camAlt:'Leica 50mm Summilux · Sony 35mm f/1.4 GM'},
+{icon:'🤍',name:'Minimalist & Space',type:'product',angle:"Flat Lay (Top-Down)",angleAlt:'Eye Level',cam:'100mm f/2.8 Macro',camAlt:'Phase One IQ4 55mm'},
+{icon:'🪑',name:'Surface Lean',type:'human',angle:'Knuckle Level',angleAlt:"45° Three-Quarter · Eye Level",cam:'Hasselblad 85mm',camAlt:'Canon 135mm f/2 L'},
+{icon:'💇',name:'Hair Drama',type:'human',angle:'From Behind (Nape)',angleAlt:'Side Profile · Foreground Blur',cam:'Hasselblad 85mm',camAlt:'Canon 135mm f/2 L · Leica 50mm Summilux'},
+{icon:'🧔',name:'Masculine Editorial',type:'human',angle:'Eye Level',angleAlt:"45° Three-Quarter · Low Angle",cam:'Hasselblad 85mm',camAlt:'Canon 135mm f/2 L'},
+{icon:'👑',name:'Royal Opulence',type:'mixed',angle:'Eye Level',angleAlt:'Low Angle · 45° Three-Quarter',cam:'Canon 135mm f/2 L',camAlt:'Phase One IQ4 55mm'},
+{icon:'🌾',name:'Raw Field Editorial',type:'human',angle:'Eye Level',angleAlt:'Wind-Blown · Candid',cam:'Hasselblad 85mm',camAlt:'Leica 50mm Summilux · Sony 35mm f/1.4 GM'},
+{icon:'👁️',name:'Veiled Mystery',type:'human',angle:'Extreme Close Crop',angleAlt:'Fabric Reveal · Eye Level',cam:'Hasselblad 85mm',camAlt:'100mm f/2.8 Macro · Canon 135mm f/2 L'},
+{icon:'🎩',name:'Avant-Garde Couture',type:'human',angle:'Eye Level',angleAlt:"45° Three-Quarter · Low Angle · Chin Up",cam:'Phase One IQ4 55mm',camAlt:'Hasselblad 85mm · Canon 135mm f/2 L'},
+{icon:'🎨',name:'Cinematic Color Story',type:'human',angle:'Eye Level',angleAlt:"Low Angle · 45° Three-Quarter",cam:'Anamorphic 40mm',camAlt:'Canon 135mm f/2 L · Hasselblad 85mm'},
+{icon:'♟️',name:'Surreal Scale',type:'human',angle:"Worm's Eye",angleAlt:'Low Angle · Overhead',cam:'Anamorphic 40mm',camAlt:'Sony 35mm f/1.4 GM · Canon 135mm f/2 L'},
+{icon:'👻',name:'Ghost Double Exposure',type:'human',angle:'Eye Level',angleAlt:"Side Profile · 45° Three-Quarter",cam:'Canon 135mm f/2 L',camAlt:'Anamorphic 40mm · Leica 50mm Summilux'},
+{icon:'🏔️',name:'Outdoor Masculine',type:'human',angle:'Eye Level',angleAlt:"Candid · 45° Three-Quarter · From Behind",cam:'Hasselblad 85mm',camAlt:'Leica 50mm Summilux · Sony 35mm f/1.4 GM'},
+{icon:'☀️',name:'Harsh Sun Beauty',type:'human',angle:'Extreme Close Crop',angleAlt:'Eye Level · Chin Up',cam:'Hasselblad 85mm',camAlt:'100mm f/2.8 Macro · Leica 50mm Summilux'},
+];
+
+let activeType='all';
+function tagClass(t){return t==='product'?'tag-product':t==='human'?'tag-human':'tag-mixed'}
+function tagLabel(t){return t==='product'?'Product':t==='human'?'Model':'Mixed'}
+
+function render(data){
+  const tbody=document.getElementById('tbody');
+  tbody.innerHTML=data.map((a,i)=>`
+<tr class="row" data-type="${a.type}">
+  <td style="text-align:center;font-size:18px;line-height:1">${a.icon}</td>
+  <td>
+    <div class="name">${a.name}</div>
+    <span class="tag ${tagClass(a.type)}">${tagLabel(a.type)}</span>
+  </td>
+  <td>
+    <div class="angle-primary"><span class="star">★</span>${a.angle}</div>
+    <div class="angle-alt">${a.angleAlt}</div>
+  </td>
+  <td>
+    <div class="cam-primary"><span class="star">★</span>${a.cam}</div>
+    <div class="cam-alt">${a.camAlt}</div>
+  </td>
+</tr>`).join('');
+  document.getElementById('cnt').textContent=data.length+' archetype'+(data.length===1?'':'s');
+}
+
+function filter(){
+  const q=document.getElementById('srch').value.toLowerCase();
+  const filtered=archetypes.filter(a=>{
+    const matchQ=!q||a.name.toLowerCase().includes(q)||a.angle.toLowerCase().includes(q)||a.cam.toLowerCase().includes(q);
+    const matchT=activeType==='all'||a.type===activeType;
+    return matchQ&&matchT;
+  });
+  render(filtered);
+}
+
+function setType(btn,type){
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeType=type;
+  filter();
+}
+
+render(archetypes);
+</script>
