@@ -887,11 +887,45 @@ body { display: flex; }
     display: flex; justify-content: space-between;
 }
 
-/* ── Scrollbar ─────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 5px; }
+
+/* ── Global Smooth Scroll ───────────────────────────────────── */
+html {
+    scroll-behavior: smooth;
+}
+/* Firefox smooth scrolling */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(166,124,82,0.35) transparent;
+}
+
+/* ── Scrollbar (WebKit) ─────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(166,124,82,0.2); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(166,124,82,0.4); }
+::-webkit-scrollbar-thumb {
+    background: rgba(166,124,82,0.25);
+    border-radius: 99px;
+    transition: background 0.25s ease;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(166,124,82,0.55); }
+
+/* Smooth scroll momentum on scrollable sections */
+.ps-arch-area,
+.ps-layout,
+.ps-right,
+.ps-left,
+.ps-history-list,
+.card,
+.page-content,
+main {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* Subtle scroll-snap for the archetype grid area */
+.ps-arch-area {
+    scroll-snap-type: y proximity;
+}
+
 
 /* ── Utilities ─────────────────────────────────────────────── */
 .flex { display: flex; }

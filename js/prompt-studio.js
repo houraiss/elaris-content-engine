@@ -1,4 +1,4 @@
-/**
+﻿/**
  * prompt-studio.js — Prompt Engineering Studio for Elaris Content Engine.
  *
  * Generates battle-tested prompts by combining:
@@ -970,6 +970,10 @@ const PromptStudio = {
             'ghost-double-exposure':['eye-level', 'side-profile'],
             'outdoor-masculine':   ['eye-level', 'candid'],
             'harsh-sun-beauty':    ['extreme-close-crop', 'eye-level'],
+            'desert-mirage':      ['eye-level', 'low-angle', 'wind-blown'],
+            'neon-cyberpunk':     ['eye-level', 'dutch', 'low-angle'],
+            'vintage-nostalgia':  ['candid', 'eye-level'],
+            'zero-gravity':       ['overhead', 'eye-level'],
         };
 
         // Collect boosted angle IDs from currently selected archetypes
@@ -1272,11 +1276,15 @@ const PromptStudio = {
     // ── Compute a single consistent score for sort + display ──────────────────────
     // This guarantees that badge rank = visual rank. Score is always 0-100.
     _computeScore(archetype, state) {
+        // All archetypes that require a human subject
         const HUMAN = new Set([
             'body-intimate', 'editorial-model', 'collection-showcase', 'bw-dramatic',
             'motion-blur', 'cinematic-portrait', 'lifestyle-moment', 'heritage-moroccan',
             'celestial-mythic', 'architectural-context', 'masculine-editorial',
             'surface-lean', 'hair-drama', 'wet-element',
+            'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture',
+            'cinematic-color-story', 'ghost-double-exposure', 'outdoor-masculine',
+            'harsh-sun-beauty', 'desert-mirage', 'vintage-nostalgia',
         ]);
         const cat     = state.category || 'ring';
         const isHuman = HUMAN.has(archetype.id);
@@ -1284,32 +1292,36 @@ const PromptStudio = {
         // Base score from category compatibility table
         let score = (archetype.compat && archetype.compat[cat]) || 50;
 
-        // ── Consistency mode adjustments ───────────────────────────────
-        // When a model reference is active, human archetypes are preferred.
-        if (state.consistencyOn) {
-            if (isHuman)  score += 18;   // human archetype + consistency → strong boost
-            else          score -= 8;    // product-only archetypes are less relevant
+        // No Model mode: strongly re-rank to product/surreal archetypes
+        if (state.modelGender === 'none') {
+            if (isHuman)  score -= 28;
+            else          score += 18;
         }
 
-        // ── No reference images: product archetypes are equally valid ──
-        // When jewelryCount === 0 there is no multi-image context, so
-        // product archetypes that work well alone should rank higher.
+        // Consistency mode adjustments
+        if (state.consistencyOn && state.modelGender !== 'none') {
+            if (isHuman)  score += 18;
+            else          score -= 8;
+        }
+
+        // No reference images: product archetypes are equally valid
         if (!state.consistencyOn && state.jewelryCount === 0 && !isHuman) {
             score += 5;
         }
 
-        // ── Gender-specific archetype adjustments ──────────────────────
+        // Gender-specific archetype adjustments
         if (state.modelGender === 'male') {
-            if (archetype.id === 'masculine-editorial') score += 15; // ideal male archetype
-            if (archetype.id === 'hair-drama')          score -= 10; // less natural for men
-            if (archetype.id === 'body-intimate')       score -=  5; // slightly less fitting
-        } else {
-            // female default
-            if (archetype.id === 'masculine-editorial') score -= 10; // intended for men
-            if (archetype.id === 'hair-drama')          score +=  5; // great for long hair
+            if (archetype.id === 'masculine-editorial') score += 15;
+            if (archetype.id === 'outdoor-masculine')   score += 12;
+            if (archetype.id === 'hair-drama')          score -= 10;
+            if (archetype.id === 'body-intimate')       score -=  5;
+            if (archetype.id === 'veiled-mystery')      score -= 20;
+        } else if (state.modelGender === 'female') {
+            if (archetype.id === 'masculine-editorial') score -= 10;
+            if (archetype.id === 'outdoor-masculine')   score -= 10;
+            if (archetype.id === 'hair-drama')          score +=  5;
         }
 
-        // Clamp to 0-100
         return Math.max(0, Math.min(100, Math.round(score)));
     },
 
@@ -1431,6 +1443,10 @@ const PromptStudio = {
             'ghost-double-exposure': { angle:['eye-level','side-profile','45-degree'], lighting:['dramatic','natural','rim-light'], camera:['canon-135-l','anamorphic-40','leica-50'], tips:['Side Profile creates the clearest ghost separation — two distinct silhouettes.','Warm Amber palette reinforces the long-exposure aesthetic.','Keep expression to "Serene" or "Thoughtful" — matches the dreamy double-exposure mood.'] },
             'outdoor-masculine': { angle:['eye-level','candid','45-degree','from-behind'], lighting:['natural','golden-hour-light','overcast'], camera:['hasselblad-85','leica-50','sony-35-gm'], tips:['Set Model Gender to Male — this archetype is designed for masculine editorial.','Candid angle delivers the most natural unposed outdoor feel.','Leica 50mm Summilux gives honest documentary rendering that suits this archetype.'] },
             'harsh-sun-beauty': { angle:['extreme-close-crop','eye-level','chin-up'], lighting:['natural','harsh-sun','direct'], camera:['hasselblad-85','macro-100','leica-50'], tips:['Extreme Close Crop + Harsh Sun lighting = the signature look of this archetype.','Enable visible Skin Pores in Scene Realism for maximum raw beauty authenticity.','Hasselblad 85mm captures harsh shadow detail with the best tonal range.','Avoid smooth or polished skin realism — raw texture IS the point.'] },
+            'desert-mirage': { angle:['eye-level','low-angle','wind-blown'], lighting:['harsh-sun','golden-hour-light','natural'], camera:['hasselblad-85','leica-50','sony-35-gm'], tips:['Low Angle under intense desert sun creates the strongest heat-haze silhouette.','Harsh Sun or Golden Hour lighting is non-negotiable -- studio light kills the desert energy.','Wind-Blown angle adds fabric motion for the flowing editorial look.','Pair with Necklace or Bangles -- they read best under direct sunlight.'] },
+            'neon-cyberpunk': { angle:['eye-level','dutch','low-angle'], lighting:['dramatic','studio','rim-light'], camera:['anamorphic-40','sony-35-gm','canon-135-l'], tips:['Dutch angle amplifies the edgy, disorienting cyberpunk energy.','Anamorphic 40mm turns neon lights into cinematic horizontal lens flares.','Sony 35mm f/1.4 GM gives a wider field to include neon signage context.','Enable No Model for pure product shots -- wet asphalt reflections need no human.'] },
+            'vintage-nostalgia': { angle:['candid','eye-level','45-degree'], lighting:['harsh','direct','natural'], camera:['leica-50','canon-135-l','hasselblad-85'], tips:['Candid angle is the heartbeat of this archetype -- unstaged, flash-lit, real.','Direct harsh flash lighting creates the blown-out highlights that define vintage photography.','Leica 50mm Summilux gives the most authentic documentary rendering of this era.','Keep expressions to Laughing or Candid -- stiff poses break the vintage illusion.'] },
+            'zero-gravity': { angle:['overhead','eye-level','dutch'], lighting:['studio','dramatic','ring-light'], camera:['phase-one-iq4','macro-100','canon-135-l'], tips:['Overhead (Top-Down) captures floating objects with the clearest gravity-defying illusion.','Enable No Model -- pure product suspension needs no human element.','Phase One IQ4 gives the tonal depth for dark-background frozen-motion shots.','Ring light creates perfect symmetrical catchlights on suspended jewelry.'] },
         };
 
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
@@ -1831,6 +1847,11 @@ const PromptStudio = {
         q('#ps-category').addEventListener('change', e => {
             this.state.category = e.target.value;
             this._renderArchetypeGrid();
+            // Also refresh angle chips - category affects best-angle recommendations
+            const _ag = q('#ps-angle');
+            if (_ag) _ag.innerHTML = this._buildAngleChips();
+            const _ctx = q('#ps-angle-context');
+            if (_ctx) _ctx.textContent = '-- best for ' + this.state.category;
         });
         q('#ps-material').addEventListener('change', e => { this.state.material = e.target.value; });
         q('#ps-stone').addEventListener('change', e => { this.state.stone = e.target.value; });
@@ -2058,6 +2079,23 @@ const PromptStudio = {
 
         // v3.0: Camera System profile selector
         this._bindChipGroup('ps-camera-profile', 'cameraProfile');
+
+        // Ensure angle chips render with 5 stars on fresh page load
+        this._refreshAngles();
+    },
+
+    // Refresh angle chips and context label without full re-render
+    _refreshAngles() {
+        const q = id => this.container.querySelector(id);
+        const ag = q('#ps-angle');
+        if (ag) ag.innerHTML = this._buildAngleChips();
+        const ctx = q('#ps-angle-context');
+        if (ctx) {
+            const hasSel = (this.state.selectedArchetypes || []).length > 0;
+            ctx.textContent = hasSel
+                ? '-- boosted for selected archetype'
+                : '-- best for ' + (this.state.category || 'ring');
+        }
     },
 
     _bindChipGroup(groupId, stateKey) {
