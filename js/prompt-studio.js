@@ -1,4 +1,4 @@
-﻿/**
+/**
  * prompt-studio.js — Prompt Engineering Studio for Elaris Content Engine.
  *
  * Generates battle-tested prompts by combining:
@@ -788,6 +788,61 @@ const PromptStudio = {
             scene: 'solid pure white or very light gray (#f5f5f5) seamless background, perfectly even soft studio lighting from multiple diffused sources, absolutely no props or context objects, product floating or with minimal shadow, clean commercial catalogue photography, neutral color accuracy, sharp edge-to-edge detail, e-commerce product page aesthetic',
             compat: { ring: 98, necklace: 98, earrings: 98, bracelet: 98, bangles: 98, anklet: 98, brooch: 98, pendant: 98, 'body-jewelry': 90 },
         },
+        {
+            id: 'textured-prop',
+            name: 'Textured Prop Staging',
+            icon: '🪢',
+            tagline: 'Tactile Storytelling',
+            bestFor: 'Best for: Earrings, Necklaces, Bracelets, Rings',
+            desc: 'Jewelry displayed on or alongside tactile materials — rope knots, lemon slices, dried flowers, raw silk, velvet, marble slabs, or natural fibers',
+            color: '#8b6914',
+            subjects: [
+                '{piece} draped over a thick nautical rope knot against a warm amber background, product editorial',
+                '{piece} arranged on thin slices of lemon on dark green marble surface, color contrast editorial photography',
+                '{piece} resting on crumpled raw silk fabric, texture contrast between metal and organic fiber',
+                '{piece} balanced on the edge of a rough-hewn stone slab, raw natural backdrop, editorial product shot',
+                '{piece} nestled among dried lavender stems and seed pods on a linen surface, organic luxury staging',
+            ],
+            scene: 'tactile material props, natural fiber textures, color contrast between metal and organic materials, warm editorial product photography, no human model, no distractions beyond the prop, luxury still-life composition',
+            compat: { ring: 90, necklace: 85, earrings: 95, bracelet: 90, bangles: 85, anklet: 70, brooch: 80, pendant: 85, 'body-jewelry': 60 },
+        },
+        {
+            id: 'mouth-lips-editorial',
+            name: 'Lips & Mouth Editorial',
+            icon: '👄',
+            tagline: 'Sensual Close-Up',
+            bestFor: 'Best for: Necklaces, Pendants, Earrings',
+            desc: 'Extreme close-up of lips, mouth, or lower face with jewelry held between teeth, draped from lips, or resting on chin — provocative editorial',
+            color: '#8b2252',
+            subjects: [
+                'extreme close-up of model biting down gently on {piece} chain, jewelry pendant hanging from between parted lips, glossy skin, editorial',
+                'model with {piece} necklace draped across lower lip, mouth slightly open, natural skin texture visible, artistic beauty photography',
+                'macro close-up of model chin and mouth area, {piece} earring catching light at jawline, dewy skin, moody editorial',
+                'model holding {piece} chain in teeth, pendant dangling, raw skin detail with freckles visible, provocative luxury editorial',
+                'lower face close-up, {piece} resting on the cupids bow of the lips, natural lip texture, high-fashion beauty shot',
+            ],
+            scene: 'extreme mouth/lips close-up, visible skin texture (pores, freckles, natural glow), dewy or glossy skin finish, shallow depth of field, editorial beauty photography, provocative but tasteful, high-end jewelry campaign aesthetic',
+            compat: { ring: 30, necklace: 95, earrings: 80, bracelet: 20, bangles: 15, anklet: 10, brooch: 40, pendant: 98, 'body-jewelry': 60 },
+        },
+        {
+            id: 'dark-moody-editorial',
+            name: 'Dark Moody Editorial',
+            icon: '🖤',
+            tagline: 'Shadow & Mystery',
+            bestFor: 'Best for: Earrings, Necklaces, Rings, Bracelets',
+            desc: 'Deep shadow, low-key lighting, dramatic chiaroscuro — the piece emerges from darkness like a point of light',
+            color: '#1a1a1a',
+            subjects: [
+                'model in deep shadow, only the neck and ear area lit, {piece} catching a single beam of warm light, dark moody editorial',
+                'low-key portrait, model face partially hidden in shadow, {piece} ring on hand touching chin, single light source from side',
+                'dark editorial, model silhouette with {piece} as the brightest element, Rembrandt lighting triangle on cheek, mystery mood',
+                'chiaroscuro portrait, deep black background, model hand reaching toward camera with {piece} catching golden side-light',
+                'model neck and ear in pools of shadow and light, {piece} earring as single point of brilliance, dramatic fine art portrait',
+            ],
+            scene: 'low-key lighting, deep shadows, single light source creating dramatic fall-off, dark background near black, chiaroscuro oil-painting quality, jewelry as the brightest element in frame, fine art editorial photography, Rembrandt or loop lighting pattern',
+            compat: { ring: 85, necklace: 90, earrings: 98, bracelet: 80, bangles: 75, anklet: 30, brooch: 70, pendant: 88, 'body-jewelry': 55 },
+        },
+
     ],
 
     // ── v3.0: Camera System Profiles ──────────────────────
@@ -821,6 +876,13 @@ const PromptStudio = {
         { id: 'avant-garde',     label: 'Avant-Garde Fashion' },
         { id: 'hard-flash',      label: 'Hard Flash / Paparazzi' },
         { id: 'dappled',         label: 'Dappled Sunlight' },
+        { id: 'chiaroscuro',     label: 'Chiaroscuro (Rembrandt)' },
+        { id: 'neon-glow',       label: 'Neon Glow' },
+        { id: 'window-light',    label: 'Window Light (Side)' },
+        { id: 'overcast',        label: 'Overcast Diffused' },
+        { id: 'candlelight',     label: 'Candlelight Warm' },
+        { id: 'blue-hour',       label: 'Blue Hour (Twilight)' },
+        { id: 'split-light',     label: 'Split Lighting (50/50)' },
     ],
     // Legacy aliases so old saved state keys still map — read-only, not rendered
     get moods() { return this.lightingMoods; },
@@ -869,6 +931,13 @@ const PromptStudio = {
             { id: 'extreme-close-crop',    label: 'Extreme Close Crop (Eyes Fill Frame)' },
             { id: 'fabric-reveal',         label: 'Fabric Reveal (Veil Pull)' },
             { id: 'three-quarter-above',   label: 'Three-Quarter Above (Diagonal Down)' },
+            // ── v3.2: New angles from reference image analysis ──────────────────
+            { id: 'mouth-bite',            label: 'Mouth Bite (Lips & Jewelry)' },
+            { id: 'neck-close-up',         label: 'Neck Close-Up (Collarbone)' },
+            { id: 'hand-on-face',          label: 'Hand on Face (Touch Frame)' },
+            { id: 'wrist-cross',           label: 'Crossed Wrists (Stacked)' },
+            { id: 'mirror-angle',          label: 'Mirror Reflection Angle' },
+            { id: 'upward-gaze',           label: 'Upward Gaze (Looking Up)' },
         ];
     },
 
@@ -993,6 +1062,9 @@ const PromptStudio = {
             'vintage-nostalgia':  ['candid', 'eye-level'],
             'zero-gravity':       ['overhead', 'eye-level'],
             'product-page-clean': ['eye-level', 'flat-lay', '45-degree'],
+            'textured-prop': ['45-degree', 'flat-lay', 'macro'],
+            'mouth-lips-editorial': ['mouth-bite', 'extreme-close-crop', 'macro'],
+            'dark-moody-editorial': ['side-profile', 'eye-level', '45-degree'],
         };
 
         // Collect boosted angle IDs from currently selected archetypes
@@ -1305,6 +1377,7 @@ const PromptStudio = {
             'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture',
             'cinematic-color-story', 'ghost-double-exposure', 'outdoor-masculine',
             'harsh-sun-beauty', 'desert-mirage', 'vintage-nostalgia',
+            'mouth-lips-editorial', 'dark-moody-editorial',
         ]);
         const cat     = state.category || 'ring';
         const isHuman = HUMAN.has(archetype.id);
@@ -1367,7 +1440,7 @@ const PromptStudio = {
         // v3.0 archetype IDs — shown with a NEW badge
         const V3_ARCHETYPES = new Set([
             'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture', 'cinematic-color-story',
-            'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty', 'product-page-clean',
+            'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty', 'product-page-clean', 'textured-prop', 'mouth-lips-editorial', 'dark-moody-editorial',
         ]);
 
         grid.innerHTML = sorted.map(a => {
@@ -1467,6 +1540,9 @@ const PromptStudio = {
             'neon-cyberpunk': { angle:['eye-level','dutch','low-angle'], lighting:['dramatic','studio','rim-light'], camera:['anamorphic-40','sony-35-gm','canon-135-l'], tips:['Dutch angle amplifies the edgy, disorienting cyberpunk energy.','Anamorphic 40mm turns neon lights into cinematic horizontal lens flares.','Sony 35mm f/1.4 GM gives a wider field to include neon signage context.','Enable No Model for pure product shots -- wet asphalt reflections need no human.'] },
             'vintage-nostalgia': { angle:['candid','eye-level','45-degree'], lighting:['harsh','direct','natural'], camera:['leica-50','canon-135-l','hasselblad-85'], tips:['Candid angle is the heartbeat of this archetype -- unstaged, flash-lit, real.','Direct harsh flash lighting creates the blown-out highlights that define vintage photography.','Leica 50mm Summilux gives the most authentic documentary rendering of this era.','Keep expressions to Laughing or Candid -- stiff poses break the vintage illusion.'] },
             'zero-gravity': { angle:['overhead','eye-level','dutch'], lighting:['studio','dramatic','ring-light'], camera:['phase-one-iq4','macro-100','canon-135-l'], tips:['Overhead (Top-Down) captures floating objects with the clearest gravity-defying illusion.','Enable No Model -- pure product suspension needs no human element.','Phase One IQ4 gives the tonal depth for dark-background frozen-motion shots.','Ring light creates perfect symmetrical catchlights on suspended jewelry.'] },
+            'textured-prop': { angle:['45-degree','flat-lay','macro','overhead'], lighting:['natural','warm','window-light','golden-hour'], camera:['hasselblad-85','phase-one-iq4','macro-100'], tips:['Use No Model -- this is a pure product-on-prop archetype.','Natural or Window Light preserves the texture of organic materials.','45-degree or Flat Lay angles work best for showing the jewelry+prop relationship.','Choose props with complementary textures: rope, marble, citrus, dried flowers.'] },
+            'mouth-lips-editorial': { angle:['mouth-bite','extreme-close-crop','macro','neck-close-up'], lighting:['dramatic','chiaroscuro','natural','soft'], camera:['canon-135-l','hasselblad-85','macro-100'], tips:['Canon 135mm L creates beautiful compression for face close-ups.','Dramatic or Chiaroscuro lighting adds editorial depth.','Use Extreme Close Crop or the new Mouth Bite angle for maximum impact.','Ultra Realism recommended -- skin pores, lip texture, and freckles sell the shot.'] },
+            'dark-moody-editorial': { angle:['side-profile','eye-level','45-degree','silhouette'], lighting:['dramatic','chiaroscuro','mystical','split-light'], camera:['canon-135-l','leica-50','hasselblad-85'], tips:['Chiaroscuro or Split Lighting is essential for the dark moody aesthetic.','Side Profile or Silhouette angles maximise the shadow drama.','Keep the jewelry as the brightest element -- it should emerge from darkness.','Dark backgrounds (near black) prevent the shadow mood from being diluted.'] },
             'product-page-clean': { angle:['eye-level','flat-lay','45-degree'], lighting:['studio','soft-box','natural'], camera:['phase-one-iq4','hasselblad-85','macro-100'], tips:['Enable No Model -- this archetype is pure product isolation, no human.','Phase One IQ4 gives maximum detail for e-commerce hero shots.','Use solid white or light gray background -- NO props, NO context objects.','Soft Box or even Studio lighting from multiple angles eliminates harsh shadows.'] },
         };
 
@@ -1596,8 +1672,8 @@ const PromptStudio = {
                             ${this.state.modelGender === 'none' ? `<p class="text-sm text-muted" style="margin-top:6px;margin-bottom:0;line-height:1.4">Product-only or surreal mode — all human elements are suppressed from prompts.</p>` : ''}
                         </div>
 
-                        <!-- Hijabi Toggle -->
-                        <div class="form-group" style="padding-top:10px;border-top:1px dashed var(--border)">
+                        <!-- Hijabi Toggle (hidden for male / no-model) -->
+                        <div class="form-group" style="padding-top:10px;border-top:1px dashed var(--border);${this.state.modelGender === 'female' ? '' : 'display:none'}">
                             <div style="display:flex;align-items:center;justify-content:space-between">
                                 <div>
                                     <label class="form-label" style="margin-bottom:2px">🧕 Hijabi Model</label>
@@ -1627,7 +1703,7 @@ const PromptStudio = {
                                 ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => `<button class="ps-chip ${this.state.jewelryCount === n ? 'active' : ''}" data-val="${n}">${n === 0 ? (window.I18n ? window.I18n.t('ps_none') : 'None') : n}</button>`).join('')}
                             </div>
                         </div>
-                        <div class="form-group" style="padding-top:12px;border-top:1px solid var(--border)">
+                        <div class="form-group" style="padding-top:12px;border-top:1px solid var(--border);${this.state.modelGender === 'none' ? 'display:none' : ''}">
                             <div style="display:flex;align-items:center;justify-content:space-between">
                                 <div>
                                     <label class="form-label" style="margin-bottom:2px" data-i18n="ps_consistency_toggle">Model Consistency</label>
@@ -1692,13 +1768,28 @@ const PromptStudio = {
                     <div class="card">
                         <div class="card-header"><span class="card-title">Modifiers</span></div>
                         <div class="form-group">
+                            <label class="form-label">📐 Camera Angle</label>
+                            <div class="ps-chip-group" id="ps-angle" style="flex-wrap:wrap">
+                                ${this._getAnglesForCategory(this.state.category).map((a, i) => `<button class="ps-chip ${a.id === this.state.angle ? 'active' : ''}" data-val="${a.id}" title="${i < 3 ? 'Recommended for ' + (this.state.category || 'ring') : a.label}" style="${i === 0 ? 'border-color:var(--accent);' : i < 3 ? 'border-color:var(--accent);opacity:0.85;' : ''}">${i === 0 ? '⭐ ' : ''}${a.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="form-label">💡 Lighting &amp; Mood</label>
-                            <div class="ps-chip-group" id="ps-lighting-mood">
+                            <div class="ps-chip-group" id="ps-lighting-mood" style="flex-wrap:wrap">
                                 ${this.lightingMoods.map(m => `<button class="ps-chip ${m.id === this.state.lightingMood ? 'active' : ''}" data-val="${m.id}">${m.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" data-i18n="ps_format">Format</label>
+                            <label class="form-label">📷 Lens / Camera Preset <span class="text-sm text-muted">(overrides angle lens)</span></label>
+                            <div class="ps-chip-group" id="ps-camera-profile" style="flex-wrap:wrap">
+                                ${this.cameraProfiles.map(c => `<button class="ps-chip ${c.id === this.state.cameraProfile ? 'active' : ''}" data-val="${c.id}" title="${c.desc || 'Let the selected angle determine the camera'}">${c.label}</button>`).join('')}
+                            </div>
+                            <p class="text-sm text-muted" style="line-height:1.4;margin-top:6px;margin-bottom:0">
+                                ${(this.cameraProfiles.find(c => c.id === this.state.cameraProfile) || {}).desc || 'Camera choice driven by the selected angle above.'}
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="ps_format">🖼️ Format</label>
                             <div class="ps-chip-group" id="ps-format">
                                 ${this.formats.map(f => `<button class="ps-chip ${f.id === this.state.format ? 'active' : ''}" data-val="${f.id}" data-i18n="ps_fmt_${f.id.replace(/-/g, '_')}">${f.label}</button>`).join('')}
                             </div>
@@ -1707,12 +1798,6 @@ const PromptStudio = {
 
                     <div class="card">
                         <div class="card-header"><span class="card-title" data-i18n="ps_adv_controls">Advanced Controls</span></div>
-                        <div class="form-group">
-                            <label class="form-label" data-i18n="ps_angle">Camera Angle</label>
-                            <div class="ps-chip-group" id="ps-angle">
-                                ${this._getAnglesForCategory(this.state.category).map((a, i) => `<button class="ps-chip ${a.id === this.state.angle ? 'active' : ''}" data-val="${a.id}" title="${i < 3 ? 'Recommended for ' + (this.state.category || 'ring') : a.label}" style="${i === 0 ? 'border-color:var(--accent);' : i < 3 ? 'border-color:var(--accent);opacity:0.85;' : ''}">${i === 0 ? '⭐ ' : ''}${a.label}</button>`).join('')}
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label class="form-label" data-i18n="ps_surface">Surface / Backdrop</label>
                             <div class="ps-chip-group" id="ps-surface">
@@ -1725,7 +1810,7 @@ const PromptStudio = {
                                 ${this.palettes.map(p => `<button class="ps-chip ${p.id === this.state.palette ? 'active' : ''}" data-val="${p.id}">${p.label}</button>`).join('')}
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="${this.state.modelGender === 'none' ? 'display:none' : ''}">
                             <label class="form-label"><span data-i18n="ps_styling">Model Styling</span> <span class="text-sm text-muted">(human archetypes)</span></label>
                             <div class="ps-chip-group" id="ps-styling">
                                 ${this.stylings.map(s => `<button class="ps-chip ${s.id === this.state.styling ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
@@ -1757,7 +1842,7 @@ const PromptStudio = {
                                 ${this.wrinkleLevels.map(w => `<button class="ps-chip ${w.id === this.state.wrinkles ? 'active' : ''}" data-val="${w.id}">${w.label}</button>`).join('')}
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="${this.state.modelGender === 'none' ? 'display:none' : ''}">
                             <label class="form-label">Body Hair <span class="text-sm text-muted">(human archetypes)</span></label>
                             <div class="ps-chip-group" id="ps-body-hair">
                                 ${this.bodyHairLevels.map(b => `<button class="ps-chip ${b.id === this.state.bodyHair ? 'active' : ''}" data-val="${b.id}">${b.label}</button>`).join('')}
@@ -1769,7 +1854,7 @@ const PromptStudio = {
                                 ${this.skinDetails.map(d => `<button class="ps-chip ${d.id === this.state.skinDetail ? 'active' : ''}" data-val="${d.id}">${d.label}</button>`).join('')}
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="${this.state.modelGender === 'none' ? 'display:none' : ''}">
                             <label class="form-label">Facial Expression <span class="text-sm text-muted">(human archetypes)</span></label>
                             <div class="ps-chip-group" id="ps-facial-expression">
                                 ${this.facialExpressions.map(f => `<button class="ps-chip ${f.id === this.state.facialExpression ? 'active' : ''}" data-val="${f.id}">${f.label}</button>`).join('')}
@@ -1789,19 +1874,6 @@ const PromptStudio = {
                         </div>
                     </div>
 
-                    <!-- ── v3.0: Camera System ────────────────────────────── -->
-                    <div class="card">
-                        <div class="card-header"><span class="card-title">📷 Camera System</span></div>
-                        <div class="form-group">
-                            <label class="form-label">Lens / Camera Preset <span class="text-sm text-muted">(overrides angle lens)</span></label>
-                            <div class="ps-chip-group" id="ps-camera-profile" style="flex-wrap:wrap">
-                                ${this.cameraProfiles.map(c => `<button class="ps-chip ${c.id === this.state.cameraProfile ? 'active' : ''}" data-val="${c.id}" title="${c.desc || 'Let the selected angle determine the camera'}">${c.label}</button>`).join('')}
-                            </div>
-                            <p class="text-sm text-muted" style="line-height:1.4;margin-top:6px;margin-bottom:0">
-                                ${(this.cameraProfiles.find(c => c.id === this.state.cameraProfile) || {}).desc || 'Camera choice driven by the selected angle above.'}
-                            </p>
-                        </div>
-                    </div>
 
                 </div><!-- /ps-left -->
 
@@ -2515,6 +2587,7 @@ const PromptStudio = {
             // v3.0
             'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture', 'cinematic-color-story',
             'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty',
+            'mouth-lips-editorial', 'dark-moody-editorial',
         ];
         const isHuman = humanArchetypes.includes(archetype.id);
         // v3.1: "No Model" gender mode — treat as product-only regardless of archetype
