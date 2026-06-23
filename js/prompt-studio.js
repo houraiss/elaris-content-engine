@@ -1254,6 +1254,7 @@ const PromptStudio = {
         cameraProfile: 'auto',    // 'auto' | see cameraProfiles array
         hijabi: false,            // when true: model wears hijab/headscarf
         hijabStyle: 'classic',    // 'classic' | 'draped' | 'turban' | 'niqab' | 'modern'
+        modelEthnicity: 'diverse', // 'diverse' | 'fair' | 'olive' | 'warm' | 'caramel' | 'deep'
     },
 
     // ── Profiles Management ──────────────────────
@@ -1653,7 +1654,7 @@ const PromptStudio = {
                                 <button class="ps-chip ${this.state.brandTouch === 'wordmark' ? 'active' : ''}" data-val="wordmark" title="ELARIS wordmark embroidered on clothing">ELARIS Wordmark</button>
                             </div>
                             <p class="text-sm text-muted" style="line-height:1.4;margin-top:6px;margin-bottom:0">
-                                ${this.state.brandTouch === 'logomark' ? '⭐ Four-pointed star pin brooch on lapel — Elaris signature.' : this.state.brandTouch === 'wordmark' ? '"ELARIS" embroidered on lapel or collar — brand always present.' : 'No brand marking added to scene.'}
+                                ${this.state.brandTouch === 'logomark' ? '⭐ Four-pointed star pin brooch on lapel — Elaris signature.' : this.state.brandTouch === 'wordmark' ? '"ELARIS" embroidered on visible garment area — brand always present.' : 'No brand marking added to scene.'}
                             </p>
                         </div>
                     </div>
@@ -1670,6 +1671,20 @@ const PromptStudio = {
                                 <button class="ps-chip ${this.state.modelGender === 'none' ? 'active' : ''}" data-val="none" title="Product / surreal shots — no human model in scene">⊖ No Model</button>
                             </div>
                             ${this.state.modelGender === 'none' ? `<p class="text-sm text-muted" style="margin-top:6px;margin-bottom:0;line-height:1.4">Product-only or surreal mode — all human elements are suppressed from prompts.</p>` : ''}
+                        </div>
+
+                        <!-- Skin Tone selector (hidden for no-model) -->
+                        <div class="form-group" style="padding-top:10px;border-top:1px dashed var(--border);${this.state.modelGender === 'none' ? 'display:none' : ''}">
+                            <label class="form-label" style="margin-bottom:2px">🎨 Skin Tone</label>
+                            <p class="text-sm text-muted" style="line-height:1.4;max-width:220px;margin:0;margin-bottom:6px">Choose the model's skin tone or let it vary automatically.</p>
+                            <div class="ps-chip-group" id="ps-ethnicity" style="flex-wrap:wrap">
+                                <button class="ps-chip ${this.state.modelEthnicity === 'diverse' ? 'active' : ''}" data-val="diverse" title="Random diverse skin tones each generation">🎲 Diverse</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'fair' ? 'active' : ''}" data-val="fair" title="Fair ivory skin with cool undertones">🌾 Light / Fair</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'olive' ? 'active' : ''}" data-val="olive" title="Olive Mediterranean complexion">☀️ Olive</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'warm' ? 'active' : ''}" data-val="warm" title="Warm golden sun-kissed skin">🌅 Warm / Tan</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'caramel' ? 'active' : ''}" data-val="caramel" title="Caramel medium complexion">🍯 Caramel</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'deep' ? 'active' : ''}" data-val="deep" title="Deep rich brown skin">🌰 Deep / Rich</button>
+                            </div>
                         </div>
 
                         <!-- Hijabi Toggle (hidden for male / no-model) -->
@@ -1776,7 +1791,7 @@ const PromptStudio = {
                         <div class="form-group">
                             <label class="form-label">💡 Lighting &amp; Mood</label>
                             <div class="ps-chip-group" id="ps-lighting-mood" style="flex-wrap:wrap">
-                                ${this.lightingMoods.map(m => `<button class="ps-chip ${m.id === this.state.lightingMood ? 'active' : ''}" data-val="${m.id}">${m.label}</button>`).join('')}
+                                ${this._getLightingForArchetypes(this.state.selectedArchetypes).map((m, i) => `<button class="ps-chip ${m.id === this.state.lightingMood ? 'active' : ''}" data-val="${m.id}" style="${i < 3 && this.state.selectedArchetypes.length > 0 ? 'border-color:rgba(168,85,247,0.5);' : ''}">${i < 3 && this.state.selectedArchetypes.length > 0 ? '⭐ ' : ''}${m.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
@@ -1980,6 +1995,7 @@ const PromptStudio = {
         this._bindChipGroup('ps-palette', 'palette');
         this._bindChipGroup('ps-styling', 'styling');
         this._bindChipGroup('ps-realism-level', 'realismLevel');
+        this._bindChipGroup('ps-ethnicity', 'modelEthnicity');
         this._bindChipGroup('ps-skin-texture', 'skinTexture');
         this._bindChipGroup('ps-wrinkles', 'wrinkles');
         this._bindChipGroup('ps-body-hair', 'bodyHair');
@@ -2513,6 +2529,13 @@ const PromptStudio = {
             'extreme-close-crop':   'face fills entire frame edge to edge, 100mm f/2.5 lens, eyes and nose dominate, no chin or forehead in frame, extreme intimacy and raw beauty detail',
             'fabric-reveal':        'fabric being pulled aside to reveal face or jewelry, 85mm f/1.4, the fabric edge cuts diagonally across frame creating dramatic geometry',
             'three-quarter-above':  'elevated 45-degree diagonal angle looking down at subject, 85mm f/1.8, dimensional depth with slight overhead authority, editorial and elegant',
+            // v3.3: New angles with full camera descriptions
+            'mouth-bite':           'extreme close-up on 100mm f/2.8 macro lens, model gently biting down on the jewelry piece physically held between her front teeth, lips parted naturally around the metal, real physical contact between teeth and jewelry, visible jaw tension and slight lip pressure from biting, the jewelry is gripped by the teeth NOT floating or hovering near the mouth, intimate sensual editorial, lip texture and skin pores visible',
+            'neck-close-up':        'tight close-up on 100mm f/2.8 lens focused on the neck and collarbone area, necklace or pendant as central subject, skin texture and chain detail visible, elegant vertical composition',
+            'hand-on-face':         'model with hand placed against face or cheek on 85mm f/1.4 lens, ring or bracelet framed by face contact, intimate touch-frame composition, natural finger placement',
+            'wrist-cross':          'both wrists crossed or stacked in frame on 85mm f/1.8 lens, bracelets and rings on full display, editorial hand composition, geometric arm arrangement',
+            'mirror-angle':         'shot through or against a mirror on 85mm f/1.4 lens, dual perspective showing jewelry from two angles simultaneously, reflection composition, infinite depth effect',
+            'upward-gaze':          'camera positioned below chin level on 85mm f/1.8 lens, model gazing upward, elongated neck line showcasing necklace or earrings, dramatic editorial perspective, jaw and neck as sculptural lines',
         };
         // v3.0: Camera profile override — when not 'auto', the selected lens description replaces the angle-derived one
         const profileOverride = this.state.cameraProfile && this.state.cameraProfile !== 'auto'
@@ -2795,7 +2818,7 @@ const PromptStudio = {
             // (2) hairline contrast outline stitch around each letter guarantees edge separation
             // (3) adaptive color rule: cool-toned thread on warm/yellow/gold fabrics, warm on cool, bright on dark, dark on bright
             const _wPlacement = this._getBrandPlacement(this.state.category);
-            brandTouchDesc = `a small "ELARIS" embroidered wordmark on the garment in capitalized spaced serif lettering — fine single-thread stitching ${_wPlacement}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, styled as an authentic luxury clothing label integrated into the garment, reads as a genuine brand signature not a graphic overlay`;
+            brandTouchDesc = `a small "ELARIS" embroidered wordmark on the garment in capitalized tight-kerned serif lettering with minimal letter spacing, letters nearly touching like a real luxury clothing label — fine single-thread stitching ${_wPlacement}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, styled as an authentic luxury clothing label integrated into the garment, reads as a genuine brand signature not a graphic overlay, NOT widely spaced, NOT spread apart letters`;
         }
 
         // hasNamedProfile: computed early to avoid TDZ — used in bodyParts below
@@ -2858,7 +2881,14 @@ const PromptStudio = {
             negativePrompt,
         ];
 
-        const standardPrompt = [...bodyParts, ...tailParts].filter(Boolean).join(' ');
+        // v3.3: Inject realism prefix at the START of the prompt for higher token priority
+        const realismPrefix = (() => {
+            const rl = this.state.realismLevel || 'standard';
+            if (rl === 'high') return 'Hyper-realistic editorial photograph. Real photography, not AI-generated. Natural imperfections: slight lens vignetting, organic film grain, authentic skin texture with visible pores, natural color cast from real lighting.';
+            if (rl === 'ultra') return 'Indistinguishable from a real photograph taken by a professional photographer on a real camera sensor. Visible: natural sensor noise, chromatic aberration at frame edges, organic film grain, fabric thread texture, individual skin pores and micro-hairs, subsurface light scattering through thin skin and earlobes, natural lens barrel distortion, captured in RAW format with real DNG color profile. NOT CGI, NOT 3D render, NOT illustration, NOT digital art.';
+            return '';
+        })();
+        const standardPrompt = [realismPrefix, ...bodyParts, ...tailParts].filter(Boolean).join(' ');
 
         // ── MULTI-IMAGE CONSISTENCY LOGIC ──────────────────────
         if (this.state.jewelryCount > 0) {
@@ -2972,7 +3002,7 @@ const PromptStudio = {
     // ── Unique Subject Tracker ──────────────────────
     _subjectPools: {},
             _getBrandPlacement(category) {
-        // Returns a placement description for the Elaris wordmark.
+        // v3.3: Returns a scene-aware placement description for the Elaris wordmark.
         // AVOID: cuff/sleeve near wrist (AI defaults there; also near ring/bracelet jewelry focus).
         // Placement is category-aware: don't put mark where jewelry draws the eye.
         const lapelPlacements = [
@@ -2994,6 +3024,23 @@ const PromptStudio = {
             'on the back of the collar as an interior label detail',
             'at the nape-facing collar fold, subtle brand signature',
         ];
+        // v3.3: Lower-body placements for anklet/leg-only scenes
+        const hemPlacements = [
+            'embroidered at the hem of the pants or trouser cuff near the ankle, small and visible',
+            'on the trouser leg near the shoe line, a subtle brand signature on the garment',
+            'on the visible clothing near the ankle, pants hem or sock band',
+            'embroidered on the pant leg above the ankle, naturally framed in the shot',
+        ];
+        const waistPlacements = [
+            'embroidered at the waistband, tucked discreetly',
+            'on the belt line or hip area, small and precise brand detail',
+        ];
+        const _angle = this.state.angle || 'eye-level';
+        const isLowerBody = category === 'anklet' || _angle === 'knuckle-level';
+        if (isLowerBody) {
+            const pool = [...hemPlacements, ...waistPlacements];
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
 
         // For necklace/pendant: avoid chest area — use lapel or back collar
         if (category === 'necklace' || category === 'pendant') {
@@ -3011,8 +3058,8 @@ const PromptStudio = {
     },
 
     _getRandomSkinTone() {
-        // Diverse skin tone descriptions — Moroccan-audience-aware representation
-        const tones = [
+        // v3.3: Ethnicity-aware skin tone — Moroccan-audience-aware representation
+        const diversePool = [
             'model has warm deep brown skin, rich luminous tone with natural warmth',
             'model has medium olive complexion, Mediterranean warm undertones, healthy glow',
             'model has light warm golden skin, sun-kissed undertones, smooth texture',
@@ -3024,7 +3071,102 @@ const PromptStudio = {
             'model has bronze sun-warmed complexion, Mediterranean golden tones',
             'model has warm chestnut complexion, luminous North African colouring',
         ];
-        return tones[Math.floor(Math.random() * tones.length)];
+        const fixedTones = {
+            'fair':    'model has fair ivory skin with cool rose undertones, delicate and luminous complexion',
+            'olive':   'model has medium olive complexion, Mediterranean warm undertones, healthy sun-kissed glow',
+            'warm':    'model has light warm golden skin, sun-kissed undertones, smooth radiant texture',
+            'caramel': 'model has caramel medium complexion, even warm tone, approachable and photogenic',
+            'deep':    'model has warm deep brown skin, rich luminous tone with natural warmth and depth',
+        };
+        const eth = this.state.modelEthnicity || 'diverse';
+        if (eth !== 'diverse' && fixedTones[eth]) return fixedTones[eth];
+        return diversePool[Math.floor(Math.random() * diversePool.length)];
+    },
+
+    // v3.3: Returns lighting moods sorted by archetype recommendation
+    _getLightingForArchetypes(selectedArchetypes) {
+        const guideDB = this._getGuideDB();
+        if (!guideDB || !selectedArchetypes || selectedArchetypes.length === 0) {
+            return this.lightingMoods;
+        }
+        const freq = {};
+        selectedArchetypes.forEach(id => {
+            const guide = guideDB[id];
+            if (guide && guide.lighting) {
+                guide.lighting.forEach((lid, idx) => {
+                    freq[lid] = (freq[lid] || 0) + (guide.lighting.length - idx);
+                });
+            }
+        });
+        if (Object.keys(freq).length === 0) return this.lightingMoods;
+        const idMapping = {
+            'soft-box': 'soft-box', 'natural': 'natural', 'ring-light': 'ring-light',
+            'dramatic': 'dramatic', 'studio': 'studio', 'chiaroscuro': 'chiaroscuro',
+            'rim-light': 'backlit', 'golden-hour-light': 'golden-hour',
+            'harsh-sun': 'hard-flash', 'harsh': 'hard-flash', 'direct': 'hard-flash',
+            'window': 'window-light', 'window-light': 'window-light',
+            'overcast': 'overcast', 'ethereal': 'surreal', 'dappled': 'dappled',
+            'warm': 'warm', 'soft': 'soft-romantic', 'mystical': 'mystical',
+            'split-light': 'split-light', 'directional': 'dramatic',
+        };
+        const scored = this.lightingMoods.map(m => {
+            let score = 0;
+            if (freq[m.id]) score += freq[m.id] * 10;
+            Object.entries(idMapping).forEach(([guideId, moodId]) => {
+                if (moodId === m.id && freq[guideId]) score += freq[guideId] * 10;
+            });
+            return { mood: m, score };
+        });
+        scored.sort((a, b) => b.score - a.score);
+        return scored.map(s => s.mood);
+    },
+
+    _getGuideDB() {
+        return {
+            'body-intimate': { lighting: ['soft-box','natural','ring-light'] },
+            'object-pairing': { lighting: ['natural','soft-box','studio'] },
+            'editorial-model': { lighting: ['studio','dramatic','soft-box'] },
+            'surreal-animal': { lighting: ['natural','dramatic','studio'] },
+            'gradient-product': { lighting: ['studio','soft-box','dramatic'] },
+            'bw-dramatic': { lighting: ['dramatic','chiaroscuro','harsh'] },
+            'shadow-play': { lighting: ['dramatic','directional','natural'] },
+            'bold-typography': { lighting: ['studio','natural','soft-box'] },
+            'collection-showcase': { lighting: ['studio','natural','soft-box'] },
+            'macro-detail': { lighting: ['ring-light','soft-box','studio'] },
+            'wet-element': { lighting: ['natural','rim-light','soft-box'] },
+            'architectural-context': { lighting: ['natural','dramatic','studio'] },
+            'flat-lay-composition': { lighting: ['natural','soft-box','studio'] },
+            'motion-blur': { lighting: ['natural','golden-hour-light','overcast'] },
+            'cinematic-portrait': { lighting: ['dramatic','chiaroscuro','rim-light'] },
+            'mirror-reflection': { lighting: ['natural','studio','rim-light'] },
+            'texture-contrast': { lighting: ['natural','rim-light','dramatic'] },
+            'celestial-mythic': { lighting: ['dramatic','rim-light','ethereal'] },
+            'seasonal-holiday': { lighting: ['natural','soft-box','warm'] },
+            'lifestyle-moment': { lighting: ['natural','golden-hour-light','soft-box'] },
+            'nature-botanical': { lighting: ['natural','dappled','soft-box'] },
+            'heritage-moroccan': { lighting: ['natural','warm','golden-hour-light'] },
+            'minimalist-space': { lighting: ['natural','soft-box','studio'] },
+            'surface-lean': { lighting: ['natural','studio','soft-box'] },
+            'hair-drama': { lighting: ['rim-light','natural','golden-hour-light'] },
+            'masculine-editorial': { lighting: ['studio','dramatic','natural'] },
+            'royal-opulence': { lighting: ['dramatic','rim-light','studio'] },
+            'raw-field-editorial': { lighting: ['natural','harsh-sun','golden-hour-light'] },
+            'veiled-mystery': { lighting: ['natural','soft-box','window'] },
+            'avant-garde-couture': { lighting: ['studio','dramatic','soft-box'] },
+            'cinematic-color-story': { lighting: ['dramatic','studio','natural'] },
+            'surreal-scale': { lighting: ['dramatic','natural','studio'] },
+            'ghost-double-exposure': { lighting: ['dramatic','natural','rim-light'] },
+            'outdoor-masculine': { lighting: ['natural','golden-hour-light','overcast'] },
+            'harsh-sun-beauty': { lighting: ['natural','harsh-sun','direct'] },
+            'desert-mirage': { lighting: ['harsh-sun','golden-hour-light','natural'] },
+            'neon-cyberpunk': { lighting: ['dramatic','studio','rim-light'] },
+            'vintage-nostalgia': { lighting: ['harsh','direct','natural'] },
+            'zero-gravity': { lighting: ['studio','dramatic','ring-light'] },
+            'textured-prop': { lighting: ['natural','warm','window-light'] },
+            'mouth-lips-editorial': { lighting: ['dramatic','chiaroscuro','natural','soft'] },
+            'dark-moody-editorial': { lighting: ['dramatic','chiaroscuro','mystical','split-light'] },
+            'product-page-clean': { lighting: ['studio','soft-box','natural'] },
+        };
     },
 
     _getLightingForScene(sceneVariant, selectedLighting) {
