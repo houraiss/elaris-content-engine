@@ -900,6 +900,83 @@ const PromptStudio = {
             scene: 'vehicle as luxury lifestyle prop, vintage or premium car interiors and exteriors, warm golden or amber light, chrome reflections complementing silver jewelry, shallow depth of field, aspirational road-trip narrative, lifestyle editorial photography',
             compat: { ring: 98, necklace: 65, earrings: 40, bracelet: 95, bangles: 85, anklet: 25, brooch: 30, pendant: 55, 'body-jewelry': 30 },
         },
+        // ── v3.4: From Sheets 8–10 Reference Analysis ──────────────────────
+        {
+            id: 'weather-drama',
+            name: 'Weather Drama',
+            icon: '🌧️',
+            tagline: 'Nature Sets the Scene',
+            bestFor: 'Best for: Necklaces, Earrings, Rings — campaign storytelling',
+            desc: 'Weather conditions as the creative element — rain, snow, fog, mist, wind. Jewelry catches the only light in the atmosphere.',
+            color: '#1a2028',
+            subjects: [
+                'model holding black umbrella in heavy rain, {piece} catching a single reflection from a streetlight, rain streaking through frame',
+                'model standing in morning fog, {piece} emerging as the brightest point in the muted scene, misty soft-focus surroundings',
+                'close-up of model face with rain droplets on skin and hair, {piece} at ear gleaming despite the overcast mood',
+                'model in wool coat walking through light snowfall, {piece} at neckline catching flakes of light, cinematic winter editorial',
+                'model on rain-soaked city street, puddle reflection showing {piece}, wet surfaces creating mirror effects everywhere',
+                'model in wind-blown scarf and coat, {piece} exposed at the collar opening, storm clouds behind, dramatic atmosphere',
+            ],
+            scene: 'real weather conditions (rain, snow, fog, mist), moody atmospheric light, desaturated or muted palette, wet surfaces creating natural reflections, weather as creative element not obstacle, editorial campaign photography, raw and authentic',
+            compat: { ring: 70, necklace: 90, earrings: 85, bracelet: 65, bangles: 55, anklet: 25, brooch: 60, pendant: 85, 'body-jewelry': 40 },
+        },
+        {
+            id: 'prop-power-play',
+            name: 'Prop Power Play',
+            icon: '♟️',
+            tagline: 'Strategy Meets Silver',
+            bestFor: 'Best for: Rings, Brooches, Pendants — conceptual campaigns',
+            desc: 'Symbolic power objects paired with jewelry — chess pieces, vintage keys, crystal balls, crowns, playing cards, dice',
+            color: '#1a1520',
+            subjects: [
+                'model seated behind glass chess set, hands showing {piece}, reflective surface, strategic power mood',
+                '{piece} balanced on the tip of a white chess queen piece, dramatic spotlight, conceptual product shot',
+                '{piece} placed inside an open antique pocket watch, time-and-luxury metaphor, warm tones',
+                'model holding a single playing card (ace of spades) between fingers wearing {piece}, mysterious editorial',
+                '{piece} resting on a stack of vintage leather-bound books, intellectual luxury, warm library light',
+                'hand wearing {piece} gripping a crystal ball, reflections and distortions visible inside the sphere',
+            ],
+            scene: 'symbolic power objects as compositional partners, reflective or glass surfaces, strategic conceptual mood, dramatic studio spotlight, luxury meets intellect narrative, high-end campaign photography',
+            compat: { ring: 95, necklace: 55, earrings: 45, bracelet: 70, bangles: 50, anklet: 20, brooch: 90, pendant: 75, 'body-jewelry': 30 },
+        },
+        {
+            id: 'skin-canvas',
+            name: 'Skin Canvas',
+            icon: '🎭',
+            tagline: 'Body as Art',
+            bestFor: 'Best for: Earrings, Nose rings, Pendants — editorial art campaigns',
+            desc: 'Skin treated as artistic surface — botanical elements sculpted onto face, clay-like texture, gold leaf patches, freckles as design, embellishments directly on skin',
+            color: '#2a2018',
+            subjects: [
+                'extreme close-up of model face with dried blue flower petals and lace sculpted across one cheek, {piece} earring as the metallic accent, closed eyes, ethereal beauty',
+                'model with heavy natural freckles covering entire face, no makeup, {piece} as the only adornment, raw skin texture in sharp detail',
+                'model with gold leaf patches on forehead and cheekbones, {piece} at ear, warm tones, fine-art beauty editorial',
+                'close-up portrait of model with clay-like texture painted across the jawline, {piece} pendant resting on the textured surface of the skin',
+                'model with pressed dried flowers adhered to temples and forehead, {piece} catching light below, botanical-skin hybrid editorial',
+                'extreme macro of freckled skin with {piece} resting on collarbone, individual pores and freckles visible, raw beauty aesthetic',
+            ],
+            scene: 'skin as artistic canvas, natural textures (botanical, clay, gold leaf, freckles) applied to or celebrated on the face and body, extreme close-up, jewelry as the metallic punctuation mark, fine art beauty photography, no heavy makeup — the skin texture IS the art',
+            compat: { ring: 40, necklace: 70, earrings: 95, bracelet: 30, bangles: 25, anklet: 15, brooch: 55, pendant: 80, 'body-jewelry': 65 },
+        },
+        {
+            id: 'reaching-gesture',
+            name: 'Reaching Gesture',
+            icon: '🤚',
+            tagline: 'Hand Breaks the Fourth Wall',
+            bestFor: 'Best for: Rings, Bracelets, Bangles — dynamic campaigns',
+            desc: 'Model reaching hand toward camera, creating dramatic foreshortening. Ring or bracelet in sharp foreground, face in soft background.',
+            color: '#2a1018',
+            subjects: [
+                'model reaching open palm toward camera, {piece} ring in razor-sharp foreground focus, face softly blurred behind, dramatic colored background',
+                'model extending arm toward lens showing {piece} bracelet, shallow depth compresses distance, intense eye contact through the hand',
+                'low-angle shot of model reaching down toward camera, {piece} on hand filling foreground, powerful presence',
+                'model pressing {piece}-adorned hand against invisible glass surface, palm spread, ring detail at center, dramatic backlight',
+                'close-up of reaching hand with {piece}, fingers spread, background in deep bokeh, gesture of offering or power',
+                'model extending both hands toward camera wearing {piece} on multiple fingers, dynamic foreshortening, editorial intensity',
+            ],
+            scene: 'dramatic hand-toward-camera gesture, extreme foreshortening, jewelry in sharp foreground plane, face or body in soft background bokeh, vivid single-color background (red, orange, teal), low-angle dramatic perspective, editorial campaign energy',
+            compat: { ring: 98, necklace: 30, earrings: 35, bracelet: 95, bangles: 90, anklet: 15, brooch: 20, pendant: 25, 'body-jewelry': 30 },
+        },
 
     ],
 
@@ -945,6 +1022,9 @@ const PromptStudio = {
         { id: 'shimmer-particle', label: 'Shimmer Particles (Skin Glow)' },
         { id: 'transit-streak',   label: 'Transit Streak (Motion Light)' },
         { id: 'chrome-bounce',    label: 'Chrome Bounce (Reflective Metal)' },
+        // v3.4: From Sheets 8–10
+        { id: 'rain-diffused',    label: 'Rain Diffused (Wet Atmosphere)' },
+        { id: 'color-gel-backlit', label: 'Color Gel Backlit (Vivid Rim)' },
     ],
     // Legacy aliases so old saved state keys still map — read-only, not rendered
     get moods() { return this.lightingMoods; },
@@ -1005,6 +1085,10 @@ const PromptStudio = {
             { id: 'vehicle-frame',         label: 'Vehicle Frame (Window/Door)' },
             { id: 'profile-accessory',     label: 'Profile + Accessory Stack' },
             { id: 'macro-with-creature',   label: 'Macro with Micro-Fauna' },
+            // ── v3.4: New angles from Sheets 8–10 analysis ──────────────────────
+            { id: 'through-windshield',    label: 'Through Windshield (Car Interior)' },
+            { id: 'hands-toward-camera',   label: 'Hands Toward Camera (Reaching)' },
+            { id: 'face-flora-frame',      label: 'Face Flora Frame (Botanical Mask)' },
         ];
     },
 
@@ -1136,6 +1220,11 @@ const PromptStudio = {
             'frozen-subject':    ['frozen-in-crowd', 'eye-level', 'side-profile'],
             'micro-surreal':     ['macro-with-creature', 'extreme-macro', 'macro'],
             'vehicle-lifestyle': ['vehicle-frame', 'knuckle-level', 'candid'],
+            // v3.4: Sheets 8–10 archetypes
+            'weather-drama':      ['eye-level', 'side-profile', 'candid'],
+            'prop-power-play':    ['45-degree', 'eye-level', 'macro'],
+            'skin-canvas':        ['face-flora-frame', 'extreme-close-crop', 'macro'],
+            'reaching-gesture':   ['hands-toward-camera', 'low-angle', 'foreground-blur'],
         };
 
         // Collect boosted angle IDs from currently selected archetypes
@@ -1515,6 +1604,8 @@ const PromptStudio = {
             'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty', 'product-page-clean', 'textured-prop', 'mouth-lips-editorial', 'dark-moody-editorial',
             // v3.3: Sheet 15 archetypes
             'frozen-subject', 'micro-surreal', 'vehicle-lifestyle',
+            // v3.4: Sheets 8–10 archetypes
+            'weather-drama', 'prop-power-play', 'skin-canvas', 'reaching-gesture',
         ]);
 
         grid.innerHTML = sorted.map(a => {
@@ -1559,7 +1650,7 @@ const PromptStudio = {
         if (countEl) countEl.textContent = `${this.state.selectedArchetypes.length} selected`;
     },
 
-    // ── v3.1: Smart Guide — all 42 archetypes ──────────────────────────────────
+    // ── v3.1: Smart Guide — all 46 archetypes ──────────────────────────────────
     _buildSmartGuide() {
         const selected = this.state.selectedArchetypes || [];
         if (selected.length === 0) {
@@ -1622,6 +1713,11 @@ const PromptStudio = {
             'frozen-subject': { angle:['frozen-in-crowd','eye-level','side-profile'], lighting:['dramatic','natural','overcast'], camera:['canon-135-l','leica-50','sony-35-gm'], tips:['Frozen in Crowd is the signature angle — subject sharp, world blurred.','Canon 135mm f/2L compresses the crowd beautifully into smooth motion blur.','Transit Streak or Overcast lighting sells the urban isolation mood.','Keep model expression Serene or Thoughtful — stillness is the story.'] },
             'micro-surreal': { angle:['macro-with-creature','extreme-macro','macro'], lighting:['natural','soft','warm'], camera:['macro-180','macro-100','phase-one-iq4'], tips:['180mm f/3.5 Macro at 2:1 magnification reveals individual insect anatomy.','Enable No Model — this is pure jewelry + micro-fauna, no human.','Natural or Warm lighting keeps the insect and jewelry looking organic.','Pair with Ring or Brooch for best compatibility — small pieces at macro scale.'] },
             'vehicle-lifestyle': { angle:['vehicle-frame','knuckle-level','candid'], lighting:['golden-hour-light','warm','natural'], camera:['leica-50','hasselblad-85','sony-35-gm'], tips:['Vehicle Frame angle uses car window rails and door edges as leading lines.','Golden Hour or Warm lighting creates the best chrome reflections on silver.','Leica 50mm Summilux gives a natural perspective that feels like real road-trip photography.','Pair with Rings or Bracelets — hand-on-wheel and window-grip compositions need wrist/finger jewelry.'] },
+            // v3.4: Sheets 8–10 archetypes
+            'weather-drama': { angle:['eye-level','side-profile','candid'], lighting:['overcast','natural','dramatic'], camera:['leica-50','sony-35-gm','hasselblad-85'], tips:['Weather IS the creative director — rain, fog, snow, mist as the backdrop.','Rain Diffused lighting creates soft, reflective light on all wet surfaces.','Leica 50mm Summilux gives documentary authenticity in bad weather.','Pair with Necklace or Earrings — they catch the moody ambient light best.'] },
+            'prop-power-play': { angle:['45-degree','eye-level','macro'], lighting:['studio','dramatic','chiaroscuro'], camera:['phase-one-iq4','canon-135-l','hasselblad-85'], tips:['Use reflective or glass props (chess sets, crystal balls, vintage watches) for visual depth.','Studio lighting gives precise control over reflections on glass/metallic props.','Enable No Model for pure product-on-prop conceptual shots.','Phase One IQ4 captures extraordinary prop texture and detail.'] },
+            'skin-canvas': { angle:['face-flora-frame','extreme-close-crop','macro'], lighting:['natural','soft','warm'], camera:['macro-100','hasselblad-85','canon-135-l'], tips:['Face Flora Frame is the signature angle — botanicals or textures ON the face.','Natural or Soft lighting preserves the authenticity of skin texture as art.','Enable Ultra Realism — pores, freckles, and natural skin detail sell this look.','Earrings and Nose Rings pair best — small pieces as metallic accents on the skin canvas.'] },
+            'reaching-gesture': { angle:['hands-toward-camera','low-angle','foreground-blur'], lighting:['dramatic','color-gel-backlit','studio'], camera:['canon-135-l','sony-35-gm','hasselblad-85'], tips:['Hands Toward Camera is the signature — dramatic foreshortening with jewelry in sharp foreground.','Use a vivid single-color background (red, orange, teal) for maximum drama.','Canon 135mm f/2L creates beautiful depth compression between hand and face.','Pair with Rings or Bracelets — hand-forward compositions demand finger and wrist jewelry.'] },
         };
 
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
