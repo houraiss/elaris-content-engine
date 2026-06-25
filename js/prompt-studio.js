@@ -842,6 +842,64 @@ const PromptStudio = {
             scene: 'low-key lighting, deep shadows, single light source creating dramatic fall-off, dark background near black, chiaroscuro oil-painting quality, jewelry as the brightest element in frame, fine art editorial photography, Rembrandt or loop lighting pattern',
             compat: { ring: 85, necklace: 90, earrings: 98, bracelet: 80, bangles: 75, anklet: 30, brooch: 70, pendant: 88, 'body-jewelry': 55 },
         },
+        // ── v3.3: From Sheet 15 Reference Analysis ──────────────────────
+        {
+            id: 'frozen-subject',
+            name: 'Frozen Subject',
+            icon: '🚶',
+            tagline: 'Still in a Moving World',
+            bestFor: 'Best for: Necklaces, Earrings, Rings — urban campaign content',
+            desc: 'Subject stands perfectly still while the world moves around them — blurred crowds, streaking traffic, rushing trains. Jewelry is the sharpest element.',
+            color: '#1a2530',
+            subjects: [
+                'model standing still in busy city crosswalk, blurred pedestrians streaming past, {piece} in perfect focus catching light',
+                'model seated on urban bench, metro train streaking behind in long-exposure blur, {piece} as the only sharp detail',
+                'model in black coat standing motionless in rainy crowd, umbrellas blurring around, {piece} catching a single streetlight reflection',
+                'model standing in subway station doorway, commuters blurring in and out, {piece} pin-sharp at neckline',
+                'model at outdoor café table, blurred waiters and passersby creating motion streaks, {piece} frozen in perfect detail on hand resting on table',
+                'model standing at crosswalk at night, car headlight trails streaking behind, {piece} illuminated by streetlight',
+            ],
+            scene: 'long-exposure motion blur on environment ONLY, subject frozen and sharp, urban location, cool teal-grey cinematic color grading, isolation-in-the-crowd narrative, jewelry as the sharpest element in frame, editorial campaign photography',
+            compat: { ring: 75, necklace: 90, earrings: 85, bracelet: 70, bangles: 60, anklet: 30, brooch: 50, pendant: 85, 'body-jewelry': 55 },
+        },
+        {
+            id: 'micro-surreal',
+            name: 'Micro Surreal',
+            icon: '🐝',
+            tagline: 'Tiny Worlds on Silver',
+            bestFor: 'Best for: Rings, Brooches, Earrings — viral campaign content',
+            desc: 'Extreme macro where micro-fauna (bees, butterflies, ladybugs) or tiny natural elements interact with the jewelry at hyper-detailed scale',
+            color: '#2a2818',
+            subjects: [
+                'extreme macro of {piece} with a honey bee resting on the band, individual leg hairs and wing veins visible, warm golden light',
+                'ladybug crawling across the surface of {piece}, red shell contrasting against silver, dew drops on metal',
+                'tiny blue morpho butterfly perched on {piece} edge, iridescent wing scales catching light, shallow depth of field',
+                'ant carrying a grain of pollen walking along the chain of {piece}, surreal scale contrast',
+                'dragonfly with translucent wings resting on {piece}, macro lens revealing wing membrane texture against polished metal',
+                'small snail leaving a glistening trail across {piece} surface, moisture droplets catching light on silver',
+            ],
+            scene: 'extreme macro photography, 2:1 magnification or higher, hyper-detailed skin/metal texture, tiny living creature as scale reference, warm soft light, shallow razor-thin depth of field, surreal yet photorealistic, National Geographic meets luxury advertising',
+            compat: { ring: 95, necklace: 40, earrings: 70, bracelet: 60, bangles: 50, anklet: 45, brooch: 90, pendant: 65, 'body-jewelry': 25 },
+        },
+        {
+            id: 'vehicle-lifestyle',
+            name: 'Vehicle Lifestyle',
+            icon: '🚗',
+            tagline: 'Silver on the Road',
+            bestFor: 'Best for: Rings, Bracelets, Necklaces — aspirational lifestyle',
+            desc: 'Jewelry featured in and around vehicles — hands on steering wheels, arms out windows, fingers gripping door frames of vintage or luxury cars',
+            color: '#252020',
+            subjects: [
+                'hand gripping vintage car window rail with {piece} prominently displayed, shallow depth of field blurring the road behind, warm golden hour light',
+                'hand resting on leather steering wheel of classic car wearing {piece}, dashboard gauges softly blurred, interior warm tones',
+                'arm hanging out of vintage convertible window wearing {piece} bracelet, wind-blown motion feel, coastal road behind',
+                'model leaning against vintage car door, {piece} catching the sun reflection off the chrome body, retro-luxury lifestyle',
+                'close-up of hand on gear shift wearing {piece}, leather interior, warm side-light from open window',
+                'fingers gripping motorcycle handlebar wearing {piece}, chrome reflections, urban street behind in bokeh',
+            ],
+            scene: 'vehicle as luxury lifestyle prop, vintage or premium car interiors and exteriors, warm golden or amber light, chrome reflections complementing silver jewelry, shallow depth of field, aspirational road-trip narrative, lifestyle editorial photography',
+            compat: { ring: 98, necklace: 65, earrings: 40, bracelet: 95, bangles: 85, anklet: 25, brooch: 30, pendant: 55, 'body-jewelry': 30 },
+        },
 
     ],
 
@@ -883,6 +941,10 @@ const PromptStudio = {
         { id: 'candlelight',     label: 'Candlelight Warm' },
         { id: 'blue-hour',       label: 'Blue Hour (Twilight)' },
         { id: 'split-light',     label: 'Split Lighting (50/50)' },
+        // v3.3: From Sheet 15
+        { id: 'shimmer-particle', label: 'Shimmer Particles (Skin Glow)' },
+        { id: 'transit-streak',   label: 'Transit Streak (Motion Light)' },
+        { id: 'chrome-bounce',    label: 'Chrome Bounce (Reflective Metal)' },
     ],
     // Legacy aliases so old saved state keys still map — read-only, not rendered
     get moods() { return this.lightingMoods; },
@@ -938,6 +1000,11 @@ const PromptStudio = {
             { id: 'wrist-cross',           label: 'Crossed Wrists (Stacked)' },
             { id: 'mirror-angle',          label: 'Mirror Reflection Angle' },
             { id: 'upward-gaze',           label: 'Upward Gaze (Looking Up)' },
+            // ── v3.3: New angles from Sheet 15 analysis ──────────────────────
+            { id: 'frozen-in-crowd',       label: 'Frozen in Crowd (Environment Blur)' },
+            { id: 'vehicle-frame',         label: 'Vehicle Frame (Window/Door)' },
+            { id: 'profile-accessory',     label: 'Profile + Accessory Stack' },
+            { id: 'macro-with-creature',   label: 'Macro with Micro-Fauna' },
         ];
     },
 
@@ -1065,6 +1132,10 @@ const PromptStudio = {
             'textured-prop': ['45-degree', 'flat-lay', 'macro'],
             'mouth-lips-editorial': ['mouth-bite', 'extreme-close-crop', 'macro'],
             'dark-moody-editorial': ['side-profile', 'eye-level', '45-degree'],
+            // v3.3: Sheet 15 archetypes
+            'frozen-subject':    ['frozen-in-crowd', 'eye-level', 'side-profile'],
+            'micro-surreal':     ['macro-with-creature', 'extreme-macro', 'macro'],
+            'vehicle-lifestyle': ['vehicle-frame', 'knuckle-level', 'candid'],
         };
 
         // Collect boosted angle IDs from currently selected archetypes
@@ -1442,6 +1513,8 @@ const PromptStudio = {
         const V3_ARCHETYPES = new Set([
             'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture', 'cinematic-color-story',
             'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty', 'product-page-clean', 'textured-prop', 'mouth-lips-editorial', 'dark-moody-editorial',
+            // v3.3: Sheet 15 archetypes
+            'frozen-subject', 'micro-surreal', 'vehicle-lifestyle',
         ]);
 
         grid.innerHTML = sorted.map(a => {
@@ -1486,7 +1559,7 @@ const PromptStudio = {
         if (countEl) countEl.textContent = `${this.state.selectedArchetypes.length} selected`;
     },
 
-    // ── v3.1: Smart Guide — all 39 archetypes ──────────────────────────────────
+    // ── v3.1: Smart Guide — all 42 archetypes ──────────────────────────────────
     _buildSmartGuide() {
         const selected = this.state.selectedArchetypes || [];
         if (selected.length === 0) {
@@ -1545,6 +1618,10 @@ const PromptStudio = {
             'mouth-lips-editorial': { angle:['mouth-bite','extreme-close-crop','macro','neck-close-up'], lighting:['dramatic','chiaroscuro','natural','soft'], camera:['canon-135-l','hasselblad-85','macro-100'], tips:['Canon 135mm L creates beautiful compression for face close-ups.','Dramatic or Chiaroscuro lighting adds editorial depth.','Use Extreme Close Crop or the new Mouth Bite angle for maximum impact.','Ultra Realism recommended -- skin pores, lip texture, and freckles sell the shot.'] },
             'dark-moody-editorial': { angle:['side-profile','eye-level','45-degree','silhouette'], lighting:['dramatic','chiaroscuro','mystical','split-light'], camera:['canon-135-l','leica-50','hasselblad-85'], tips:['Chiaroscuro or Split Lighting is essential for the dark moody aesthetic.','Side Profile or Silhouette angles maximise the shadow drama.','Keep the jewelry as the brightest element -- it should emerge from darkness.','Dark backgrounds (near black) prevent the shadow mood from being diluted.'] },
             'product-page-clean': { angle:['eye-level','flat-lay','45-degree'], lighting:['studio','soft-box','natural'], camera:['phase-one-iq4','hasselblad-85','macro-100'], tips:['Enable No Model -- this archetype is pure product isolation, no human.','Phase One IQ4 gives maximum detail for e-commerce hero shots.','Use solid white or light gray background -- NO props, NO context objects.','Soft Box or even Studio lighting from multiple angles eliminates harsh shadows.'] },
+            // v3.3: Sheet 15 archetypes
+            'frozen-subject': { angle:['frozen-in-crowd','eye-level','side-profile'], lighting:['dramatic','natural','overcast'], camera:['canon-135-l','leica-50','sony-35-gm'], tips:['Frozen in Crowd is the signature angle — subject sharp, world blurred.','Canon 135mm f/2L compresses the crowd beautifully into smooth motion blur.','Transit Streak or Overcast lighting sells the urban isolation mood.','Keep model expression Serene or Thoughtful — stillness is the story.'] },
+            'micro-surreal': { angle:['macro-with-creature','extreme-macro','macro'], lighting:['natural','soft','warm'], camera:['macro-180','macro-100','phase-one-iq4'], tips:['180mm f/3.5 Macro at 2:1 magnification reveals individual insect anatomy.','Enable No Model — this is pure jewelry + micro-fauna, no human.','Natural or Warm lighting keeps the insect and jewelry looking organic.','Pair with Ring or Brooch for best compatibility — small pieces at macro scale.'] },
+            'vehicle-lifestyle': { angle:['vehicle-frame','knuckle-level','candid'], lighting:['golden-hour-light','warm','natural'], camera:['leica-50','hasselblad-85','sony-35-gm'], tips:['Vehicle Frame angle uses car window rails and door edges as leading lines.','Golden Hour or Warm lighting creates the best chrome reflections on silver.','Leica 50mm Summilux gives a natural perspective that feels like real road-trip photography.','Pair with Rings or Bracelets — hand-on-wheel and window-grip compositions need wrist/finger jewelry.'] },
         };
 
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
