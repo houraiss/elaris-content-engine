@@ -2709,6 +2709,15 @@ const PromptStudio = {
             'wrist-cross':          'both wrists crossed or stacked in frame on 85mm f/1.8 lens, bracelets and rings on full display, editorial hand composition, geometric arm arrangement',
             'mirror-angle':         'shot through or against a mirror on 85mm f/1.4 lens, dual perspective showing jewelry from two angles simultaneously, reflection composition, infinite depth effect',
             'upward-gaze':          'camera positioned below chin level on 85mm f/1.8 lens, model gazing upward, elongated neck line showcasing necklace or earrings, dramatic editorial perspective, jaw and neck as sculptural lines',
+            // ── v3.3: Sheet 15 angles ──────────────────────────────────────────
+            'frozen-in-crowd':      'shot on 135mm f/2 lens with 1/15s shutter, subject frozen sharp while background pedestrians and environment blur into motion streaks, long-exposure urban isolation technique',
+            'vehicle-frame':        'shot through car window frame or door opening on 50mm f/2 lens, vehicle metal as natural leading line framing the subject, warm golden interior light',
+            'profile-accessory':    'tight profile crop on 100mm f/2.5 lens, earring + sunglasses + necklace all visible simultaneously on the side of the face, maximum accessory density in one angle',
+            'macro-with-creature':  'shot on 180mm f/3.5 macro lens at 2:1 magnification, tiny insect resting on or near the jewelry, both creature anatomy and metal detail razor-sharp, surreal scale',
+            // ── v3.4: Sheets 8–10 angles ─────────────────────────────────────────
+            'through-windshield':   'shot through car windshield or side window glass on 85mm f/1.8 lens, slight glass distortion and reflections layered over the model, automotive-interior editorial framing',
+            'hands-toward-camera':  'model reaching hand directly toward camera on 35mm f/2 lens, dramatic foreshortening, jewelry on fingers/wrist in razor-sharp foreground, face softly blurred behind',
+            'face-flora-frame':     'extreme close-up on 100mm f/2.8 macro lens, botanical elements (dried petals, leaves, gold leaf) arranged on or around the face framing the jewelry, fine-art beauty editorial',
         };
         // v3.0: Camera profile override — when not 'auto', the selected lens description replaces the angle-derived one
         const profileOverride = this.state.cameraProfile && this.state.cameraProfile !== 'auto'
@@ -2784,6 +2793,10 @@ const PromptStudio = {
             'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture', 'cinematic-color-story',
             'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty',
             'mouth-lips-editorial', 'dark-moody-editorial',
+            // v3.3: Sheet 15 archetypes (human)
+            'frozen-subject', 'vehicle-lifestyle',
+            // v3.4: Sheets 8–10 archetypes (human)
+            'weather-drama', 'prop-power-play', 'skin-canvas', 'reaching-gesture',
         ];
         const isHuman = humanArchetypes.includes(archetype.id);
         // v3.1: "No Model" gender mode — treat as product-only regardless of archetype
