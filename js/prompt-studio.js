@@ -977,6 +977,64 @@ const PromptStudio = {
             scene: 'dramatic hand-toward-camera gesture, extreme foreshortening, jewelry in sharp foreground plane, face or body in soft background bokeh, vivid single-color background (red, orange, teal), low-angle dramatic perspective, editorial campaign energy',
             compat: { ring: 98, necklace: 30, earrings: 35, bracelet: 95, bangles: 90, anklet: 15, brooch: 20, pendant: 25, 'body-jewelry': 30 },
         },
+        // ── v3.5: From Sheets 16–19 Reference Analysis ──────────────────────
+        {
+            id: 'power-stance',
+            name: 'Power Stance',
+            icon: '💪',
+            tagline: 'Full-Body Authority',
+            bestFor: 'Best for: Necklaces, Brooches, Earrings — campaign hero shots',
+            desc: 'Full-body editorial portraits with power posing against bold solid-color backdrops. Jewelry as the finishing punctuation on a commanding silhouette.',
+            color: '#2a0a0a',
+            subjects: [
+                'full-body shot of model in tailored black power suit, hand on hip, frontal stance, {piece} as the only accessory, solid vibrant red background',
+                'model in floor-length black gown, arms slightly spread, {piece} catching light at neckline, solid deep blue backdrop, editorial authority',
+                'model standing wide stance in structured blazer and trousers, {piece} visible at lapel, solid burnt orange background, Vogue cover energy',
+                'model in all-white suit, power pose with one hand on hip, {piece} as bold contrast, solid charcoal grey background',
+                'model in sleek black turtleneck and wide-leg pants, chin slightly up, {piece} earrings catching studio light, solid crimson backdrop',
+                'model in statement coat, arms crossed confidently, {piece} prominently displayed, solid emerald green background, full-body editorial',
+            ],
+            scene: 'full-body editorial portrait, solid vibrant single-color backdrop (red, blue, orange, emerald), power stance and authority, Richard Avedon minimalist studio aesthetic, clean negative space, Vogue cover quality, strong directional studio lighting, jewelry as the exclamation mark on the silhouette',
+            compat: { ring: 50, necklace: 90, earrings: 85, bracelet: 60, bangles: 55, anklet: 30, brooch: 95, pendant: 80, 'body-jewelry': 70 },
+        },
+        {
+            id: 'stacked-maximalist',
+            name: 'Stacked Maximalist',
+            icon: '💎',
+            tagline: 'More is More',
+            bestFor: 'Best for: Rings, Bracelets, Bangles — luxury campaign content',
+            desc: 'Multiple pieces stacked and layered — rings on every finger, bracelets stacked wrist-to-elbow, necklaces layered. Maximum jewelry density.',
+            color: '#1a1510',
+            subjects: [
+                'close-up of clasped hands wearing {piece} stacked on every finger, multiple diamond tennis bracelets on both wrists, warm intimate light',
+                'model wrist covered from wrist to mid-forearm in stacked {piece} bracelets and bangles, each piece catching light differently, luxury maximalism',
+                'both hands displayed showing {piece} on each finger, rings of different sizes and stones, dramatic black background, jewelry as the sole subject',
+                'model neck with five layered necklaces of varying lengths including {piece}, cascading chains from choker to pendant length, elegant stacking',
+                'close-up of ear with three {piece} earrings stacked — stud, hoop, and drop — plus ear cuff, maximum ear jewelry layering',
+                'model hands resting on dark velvet, {piece} on multiple fingers, several bracelets and bangles stacked, warm golden spotlight, opulent editorial',
+            ],
+            scene: 'extreme jewelry stacking and layering, maximum piece density on body, every finger and wrist adorned, warm intimate studio lighting against dark backdrop, luxury editorial photography, jewelry-as-armor aesthetic, opulent and unapologetic',
+            compat: { ring: 98, necklace: 75, earrings: 80, bracelet: 98, bangles: 98, anklet: 40, brooch: 30, pendant: 60, 'body-jewelry': 50 },
+        },
+        {
+            id: 'sculptural-headpiece',
+            name: 'Sculptural Headpiece',
+            icon: '👑',
+            tagline: 'Architecture on the Head',
+            bestFor: 'Best for: Earrings, Brooches, Necklaces — avant-garde editorial',
+            desc: 'Dramatic sculptural headpieces, pleated hats, floral crowns, or architectural hair accessories as the primary fashion statement. Jewelry complements the structure.',
+            color: '#181828',
+            subjects: [
+                'close-up beauty portrait of model wearing massive sculptural pleated black fan headpiece, {piece} earrings visible beneath, minimal makeup, blue sky behind',
+                'model in oversized voluminous sculptural black outfit, {piece} as bold geometric earrings, blunt bangs framing face, grey studio backdrop',
+                'model wearing white sculpted floral headpiece covering hair, futuristic transparent glasses, {piece} at ear, porcelain skin, fine-art editorial',
+                'model in dramatic wide-brimmed architectural hat, face partially shadowed, {piece} necklace catching the only light, moody editorial',
+                'model wearing origami-style folded metallic headpiece, {piece} brooch at the headpiece base, chrome and silver tonal harmony',
+                'model with towering sculptural wire-frame crown, {piece} pendant hanging at center of exposed neck, dramatic overhead lighting',
+            ],
+            scene: 'sculptural architectural headpiece or fashion hat as primary visual element, model face partially shadowed or framed by the headpiece, jewelry as the metallic accent complementing the structural fashion, fine-art beauty photography, minimal background, fashion-as-art editorial',
+            compat: { ring: 25, necklace: 75, earrings: 95, bracelet: 30, bangles: 20, anklet: 10, brooch: 85, pendant: 70, 'body-jewelry': 40 },
+        },
 
     ],
 
@@ -1025,6 +1083,9 @@ const PromptStudio = {
         // v3.4: From Sheets 8–10
         { id: 'rain-diffused',    label: 'Rain Diffused (Wet Atmosphere)' },
         { id: 'color-gel-backlit', label: 'Color Gel Backlit (Vivid Rim)' },
+        // v3.5: From Sheets 16–19
+        { id: 'solid-color-backdrop', label: 'Solid Color Backdrop (Studio Power)' },
+        { id: 'neon-tube-glow',       label: 'Neon Tube Glow (Bar/Club)' },
     ],
     // Legacy aliases so old saved state keys still map — read-only, not rendered
     get moods() { return this.lightingMoods; },
@@ -1089,6 +1150,10 @@ const PromptStudio = {
             { id: 'through-windshield',    label: 'Through Windshield (Car Interior)' },
             { id: 'hands-toward-camera',   label: 'Hands Toward Camera (Reaching)' },
             { id: 'face-flora-frame',      label: 'Face Flora Frame (Botanical Mask)' },
+            // ── v3.5: New angles from Sheets 16–19 analysis ──────────────────────
+            { id: 'watch-on-eye',          label: 'Watch on Eye (Product Viewfinder)' },
+            { id: 'full-body-power',       label: 'Full Body Power Stance' },
+            { id: 'hood-peek',             label: 'Hood Peek (Fabric Slit)' },
         ];
     },
 
@@ -1225,6 +1290,10 @@ const PromptStudio = {
             'prop-power-play':    ['45-degree', 'eye-level', 'macro'],
             'skin-canvas':        ['face-flora-frame', 'extreme-close-crop', 'macro'],
             'reaching-gesture':   ['hands-toward-camera', 'low-angle', 'foreground-blur'],
+            // v3.5: Sheets 16–19 archetypes
+            'power-stance':         ['full-body-power', 'eye-level', 'low-angle'],
+            'stacked-maximalist':   ['macro', 'knuckle-level', '45-degree'],
+            'sculptural-headpiece': ['hood-peek', 'eye-level', 'chin-up'],
         };
 
         // Collect boosted angle IDs from currently selected archetypes
@@ -1606,6 +1675,8 @@ const PromptStudio = {
             'frozen-subject', 'micro-surreal', 'vehicle-lifestyle',
             // v3.4: Sheets 8–10 archetypes
             'weather-drama', 'prop-power-play', 'skin-canvas', 'reaching-gesture',
+            // v3.5: Sheets 16–19 archetypes
+            'power-stance', 'stacked-maximalist', 'sculptural-headpiece',
         ]);
 
         grid.innerHTML = sorted.map(a => {
@@ -1650,7 +1721,7 @@ const PromptStudio = {
         if (countEl) countEl.textContent = `${this.state.selectedArchetypes.length} selected`;
     },
 
-    // ── v3.1: Smart Guide — all 46 archetypes ──────────────────────────────────
+    // ── v3.1: Smart Guide — all 49 archetypes ──────────────────────────────────
     _buildSmartGuide() {
         const selected = this.state.selectedArchetypes || [];
         if (selected.length === 0) {
@@ -1718,6 +1789,10 @@ const PromptStudio = {
             'prop-power-play': { angle:['45-degree','eye-level','macro'], lighting:['studio','dramatic','chiaroscuro'], camera:['phase-one-iq4','canon-135-l','hasselblad-85'], tips:['Use reflective or glass props (chess sets, crystal balls, vintage watches) for visual depth.','Studio lighting gives precise control over reflections on glass/metallic props.','Enable No Model for pure product-on-prop conceptual shots.','Phase One IQ4 captures extraordinary prop texture and detail.'] },
             'skin-canvas': { angle:['face-flora-frame','extreme-close-crop','macro'], lighting:['natural','soft','warm'], camera:['macro-100','hasselblad-85','canon-135-l'], tips:['Face Flora Frame is the signature angle — botanicals or textures ON the face.','Natural or Soft lighting preserves the authenticity of skin texture as art.','Enable Ultra Realism — pores, freckles, and natural skin detail sell this look.','Earrings and Nose Rings pair best — small pieces as metallic accents on the skin canvas.'] },
             'reaching-gesture': { angle:['hands-toward-camera','low-angle','foreground-blur'], lighting:['dramatic','color-gel-backlit','studio'], camera:['canon-135-l','sony-35-gm','hasselblad-85'], tips:['Hands Toward Camera is the signature — dramatic foreshortening with jewelry in sharp foreground.','Use a vivid single-color background (red, orange, teal) for maximum drama.','Canon 135mm f/2L creates beautiful depth compression between hand and face.','Pair with Rings or Bracelets — hand-forward compositions demand finger and wrist jewelry.'] },
+            // v3.5: Sheets 16–19 archetypes
+            'power-stance': { angle:['full-body-power','eye-level','low-angle'], lighting:['solid-color-backdrop','studio','dramatic'], camera:['hasselblad-85','canon-135-l','sony-35-gm'], tips:['Full Body Power is the signature — full-length editorial with clean negative space.','Solid Color Backdrop lighting (red, blue, emerald) creates maximum visual impact.','Hasselblad 85mm medium format captures the full silhouette with editorial depth.','Pair with Necklaces or Brooches — large visible pieces that punctuate the full-body silhouette.'] },
+            'stacked-maximalist': { angle:['macro','knuckle-level','45-degree'], lighting:['warm','studio','dramatic'], camera:['phase-one-iq4','macro-100','canon-135-l'], tips:['Macro or Knuckle-Level reveals every stacked piece in sharp detail.','Warm or Studio lighting creates the best reflections across multiple metal pieces.','Phase One IQ4 captures the individual facets of every stacked ring and bracelet.','This archetype is about MAXIMUM density — stack rings on every finger and bracelets wrist-to-elbow.'] },
+            'sculptural-headpiece': { angle:['hood-peek','eye-level','chin-up'], lighting:['dramatic','natural','studio'], camera:['hasselblad-85','canon-135-l','sony-35-gm'], tips:['Hood Peek angle creates mystery — one eye visible through fabric or headpiece structure.','Dramatic lighting sculpts the headpiece architecture with shadow and highlight.','Hasselblad 85mm captures the full headpiece structure with beautiful tonal gradation.','Pair with Earrings or Brooches — visible pieces that complement the sculptural headwear.'] },
         };
 
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
@@ -2718,6 +2793,10 @@ const PromptStudio = {
             'through-windshield':   'shot through car windshield or side window glass on 85mm f/1.8 lens, slight glass distortion and reflections layered over the model, automotive-interior editorial framing',
             'hands-toward-camera':  'model reaching hand directly toward camera on 35mm f/2 lens, dramatic foreshortening, jewelry on fingers/wrist in razor-sharp foreground, face softly blurred behind',
             'face-flora-frame':     'extreme close-up on 100mm f/2.8 macro lens, botanical elements (dried petals, leaves, gold leaf) arranged on or around the face framing the jewelry, fine-art beauty editorial',
+            // ── v3.5: Sheets 16–19 angles ─────────────────────────────────────────
+            'watch-on-eye':         'product held directly in front of one eye on 85mm f/1.4 lens, model peering through the jewelry or watch face as a viewfinder, clenched fist framing, dramatic studio light',
+            'full-body-power':      'full-body editorial shot on 50mm f/2.8 lens, model in power stance filling the frame vertically, solid-color studio backdrop, clean negative space, Avedon-style authority',
+            'hood-peek':            'extreme close-up on 100mm f/2.8 lens, model face partially hidden behind fabric slit or hood opening, only one eye and partial face visible, freckled skin detail, mystery and intimacy',
         };
         // v3.0: Camera profile override — when not 'auto', the selected lens description replaces the angle-derived one
         const profileOverride = this.state.cameraProfile && this.state.cameraProfile !== 'auto'
@@ -2797,6 +2876,8 @@ const PromptStudio = {
             'frozen-subject', 'vehicle-lifestyle',
             // v3.4: Sheets 8–10 archetypes (human)
             'weather-drama', 'prop-power-play', 'skin-canvas', 'reaching-gesture',
+            // v3.5: Sheets 16–19 archetypes (human)
+            'power-stance', 'stacked-maximalist', 'sculptural-headpiece',
         ];
         const isHuman = humanArchetypes.includes(archetype.id);
         // v3.1: "No Model" gender mode — treat as product-only regardless of archetype
