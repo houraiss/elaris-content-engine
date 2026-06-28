@@ -1035,6 +1035,64 @@ const PromptStudio = {
             scene: 'sculptural architectural headpiece or fashion hat as primary visual element, model face partially shadowed or framed by the headpiece, jewelry as the metallic accent complementing the structural fashion, fine-art beauty photography, minimal background, fashion-as-art editorial',
             compat: { ring: 25, necklace: 75, earrings: 95, bracelet: 30, bangles: 20, anklet: 10, brooch: 85, pendant: 70, 'body-jewelry': 40 },
         },
+        // ── v3.6: From Sheets 2, 4, 7, 20 Reference Analysis ──────────────────────
+        {
+            id: 'equestrian-luxury',
+            name: 'Equestrian Luxury',
+            icon: '🐴',
+            tagline: 'Riding Into Elegance',
+            bestFor: 'Best for: Rings, Bracelets, Necklaces — equestrian lifestyle campaigns',
+            desc: 'Horse-adjacent fashion editorial — saddle leather, bridles, equestrian gear, warm earthy tones with jewelry as the refined accent against raw animal power',
+            color: '#3a2a1a',
+            subjects: [
+                'extreme close-up of model face next to horse muzzle, {piece} on hand resting against horse jaw, warm skin tones and soft brown fur',
+                'model hand gripping leather horse bridle wearing {piece}, close-up of fingers on reins, equestrian editorial',
+                'model in riding jacket and tall boots, hand resting on horse neck showing {piece}, golden hour stable light',
+                'side profile of model and horse together, {piece} earring catching sunlight, warm amber tones, equestrian bond',
+                'close-up of model wrist with {piece} against polished saddle leather, brass buckle detail visible, earthy warm palette',
+                'model standing beside horse in stable doorway, {piece} at neckline, hay dust particles catching golden backlight',
+            ],
+            scene: 'equestrian luxury lifestyle, warm earthy tones (leather, amber, saddle brown), horse as powerful living prop, raw tactile textures (leather, fur, brass), fashion editorial meets equestrian sport, shallow depth of field on jewelry, golden warm directional light',
+            compat: { ring: 90, necklace: 85, earrings: 75, bracelet: 95, bangles: 80, anklet: 30, brooch: 65, pendant: 80, 'body-jewelry': 40 },
+        },
+        {
+            id: 'pop-color-portrait',
+            name: 'Pop Color Portrait',
+            icon: '🎀',
+            tagline: 'Bold. Bright. Unapologetic.',
+            bestFor: 'Best for: Earrings, Rings, Necklaces — social media, Gen-Z campaigns',
+            desc: 'Oversized bold-colored accessories, vivid saturated backgrounds, pop-art energy — pink sunglasses, neon frames, tattoo-visible, contemporary edge',
+            color: '#c2185b',
+            subjects: [
+                'close-up portrait of model wearing oversized pink sunglasses, {piece} earring visible below frame, bold pop-art editorial, clean white background',
+                'model with platinum bob haircut and visible tattoos, {piece} catching light against warm skin, soft directional studio light, contemporary edge',
+                'model biting oversized candy-colored sunglasses frame, {piece} on hand near mouth, vivid magenta or lime backdrop, playful editorial',
+                'three-quarter portrait of model with bold statement glasses in electric blue, {piece} at neckline, saturated color palette, trend-driven editorial',
+                'model in neon windbreaker with {piece} stacked on fingers, making hand gesture near face, vivid studio backdrop, Gen-Z campaign energy',
+                'close-up of model face with matching bold lipstick and {piece}, complementary vivid background, pop color harmony, maximum saturation',
+            ],
+            scene: 'bold saturated pop colors (pink, magenta, lime, electric blue), oversized fashion accessories as compositional elements, clean studio backdrop in complementary vivid color, contemporary Gen-Z fashion editorial, visible tattoos and individual expression encouraged, high saturation color grading',
+            compat: { ring: 90, necklace: 80, earrings: 98, bracelet: 75, bangles: 65, anklet: 40, brooch: 50, pendant: 70, 'body-jewelry': 55 },
+        },
+        {
+            id: 'urban-glass-power',
+            name: 'Urban Glass Power',
+            icon: '🏙️',
+            tagline: 'City as Backdrop, Silver as Statement',
+            bestFor: 'Best for: Rings, Bracelets, Necklaces, Earrings — power editorial',
+            desc: 'Model posed against glass skyscrapers, modern architecture, city reflections — hand forward showing jewelry with urban skyline reflected in glass behind',
+            color: '#1a2535',
+            subjects: [
+                'model standing against glass skyscraper facade, reflection visible, hand reaching forward showing {piece}, city light behind, power editorial',
+                'model in structured blazer against modern glass building, wind blowing hair, {piece} at wrist prominently displayed, low-angle urban authority',
+                'close-up of model hand pressing against glass wall with {piece} ring, cityscape reflected in the glass, urban luxury lifestyle',
+                'model walking on reflective glass floor with city skyline behind, {piece} catching architectural light, modern power editorial',
+                'model leaning on glass balustrade of rooftop, city below in bokeh, {piece} bracelet visible on resting hand, golden hour rooftop editorial',
+                'three-quarter portrait of model against floor-to-ceiling windows, {piece} at ear and neck, city grid reflected in glass, contemporary fashion editorial',
+            ],
+            scene: 'modern glass and steel urban architecture, reflective glass surfaces, city skyline as backdrop, contemporary power-fashion editorial, structured clothing (blazers, tailored outfits), natural city light or golden hour from between buildings, architectural leading lines, confident powerful mood',
+            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 90, bangles: 70, anklet: 25, brooch: 60, pendant: 75, 'body-jewelry': 45 },
+        },
 
     ],
 
@@ -1086,6 +1144,10 @@ const PromptStudio = {
         // v3.5: From Sheets 16–19
         { id: 'solid-color-backdrop', label: 'Solid Color Backdrop (Studio Power)' },
         { id: 'neon-tube-glow',       label: 'Neon Tube Glow (Bar/Club)' },
+        // v3.6: From Sheets 2, 4, 7, 20
+        { id: 'neon-bar-warm',         label: 'Neon Bar Warm (Amber Tubes)' },
+        { id: 'crimson-studio',        label: 'Crimson Studio (Bold Red Backdrop)' },
+        { id: 'bronzed-beauty',        label: 'Bronzed Beauty Light (Skin Glow)' },
     ],
     // Legacy aliases so old saved state keys still map — read-only, not rendered
     get moods() { return this.lightingMoods; },
@@ -1154,6 +1216,10 @@ const PromptStudio = {
             { id: 'watch-on-eye',          label: 'Watch on Eye (Product Viewfinder)' },
             { id: 'full-body-power',       label: 'Full Body Power Stance' },
             { id: 'hood-peek',             label: 'Hood Peek (Fabric Slit)' },
+            // ── v3.6: New angles from Sheets 2, 4, 7, 20 analysis ──────────────────────
+            { id: 'pov-ring-reach',        label: 'POV Ring Reach (Hand Toward Viewer)' },
+            { id: 'grip-close-up',         label: 'Grip Close-Up (Object in Hand)' },
+            { id: 'playing-card-mirror',   label: 'Playing Card Mirror (Reflected Symmetry)' },
         ];
     },
 
@@ -1294,6 +1360,10 @@ const PromptStudio = {
             'power-stance':         ['full-body-power', 'eye-level', 'low-angle'],
             'stacked-maximalist':   ['macro', 'knuckle-level', '45-degree'],
             'sculptural-headpiece': ['hood-peek', 'eye-level', 'chin-up'],
+            // v3.6: Sheets 2, 4, 7, 20 archetypes
+            'equestrian-luxury':    ['eye-level', 'grip-close-up', 'side-profile'],
+            'pop-color-portrait':   ['eye-level', '45-degree', 'pov-ring-reach'],
+            'urban-glass-power':    ['low-angle', 'eye-level', 'pov-ring-reach'],
         };
 
         // Collect boosted angle IDs from currently selected archetypes
@@ -1793,6 +1863,10 @@ const PromptStudio = {
             'power-stance': { angle:['full-body-power','eye-level','low-angle'], lighting:['solid-color-backdrop','studio','dramatic'], camera:['hasselblad-85','canon-135-l','sony-35-gm'], tips:['Full Body Power is the signature — full-length editorial with clean negative space.','Solid Color Backdrop lighting (red, blue, emerald) creates maximum visual impact.','Hasselblad 85mm medium format captures the full silhouette with editorial depth.','Pair with Necklaces or Brooches — large visible pieces that punctuate the full-body silhouette.'] },
             'stacked-maximalist': { angle:['macro','knuckle-level','45-degree'], lighting:['warm','studio','dramatic'], camera:['phase-one-iq4','macro-100','canon-135-l'], tips:['Macro or Knuckle-Level reveals every stacked piece in sharp detail.','Warm or Studio lighting creates the best reflections across multiple metal pieces.','Phase One IQ4 captures the individual facets of every stacked ring and bracelet.','This archetype is about MAXIMUM density — stack rings on every finger and bracelets wrist-to-elbow.'] },
             'sculptural-headpiece': { angle:['hood-peek','eye-level','chin-up'], lighting:['dramatic','natural','studio'], camera:['hasselblad-85','canon-135-l','sony-35-gm'], tips:['Hood Peek angle creates mystery — one eye visible through fabric or headpiece structure.','Dramatic lighting sculpts the headpiece architecture with shadow and highlight.','Hasselblad 85mm captures the full headpiece structure with beautiful tonal gradation.','Pair with Earrings or Brooches — visible pieces that complement the sculptural headwear.'] },
+            // v3.6: Sheets 2, 4, 7, 20 archetypes
+            'equestrian-luxury': { angle:['eye-level','grip-close-up','side-profile'], lighting:['golden-hour-light','warm','natural'], camera:['hasselblad-85','leica-50','canon-135-l'], tips:['Eye Level captures the intimate bond between model and horse.','Golden Hour or Warm lighting creates the best leather and fur tonal warmth.','Hasselblad 85mm renders the equestrian textures (leather, brass, fur) with rich depth.','Pair with Rings or Bracelets — hand-on-bridle compositions showcase wrist and finger jewelry.'] },
+            'pop-color-portrait': { angle:['eye-level','45-degree','pov-ring-reach'], lighting:['studio','neon-glow','dramatic'], camera:['sony-35-gm','hasselblad-85','canon-135-l'], tips:['Use bold saturated backdrops (magenta, lime, electric blue) for maximum pop energy.','Studio or Neon Glow lighting maintains vivid color saturation on accessories.','Sony 35mm f/1.4 GM includes enough environmental color for the pop aesthetic.','Pair with Earrings — oversized sunglasses frame earrings perfectly in this archetype.'] },
+            'urban-glass-power': { angle:['low-angle','eye-level','pov-ring-reach'], lighting:['natural','editorial','backlit'], camera:['sony-35-gm','hasselblad-85','leica-50'], tips:['Low Angle against glass skyscrapers adds urban authority and scale.','Natural city light or golden hour between buildings creates architectural drama.','Sony 35mm f/1.4 GM captures the glass architecture and city skyline context.','Pair with structured clothing (blazers, tailored outfits) for maximum power editorial energy.'] },
         };
 
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
@@ -2039,7 +2113,7 @@ const PromptStudio = {
                         <div class="form-group">
                             <label class="form-label">💡 Lighting &amp; Mood</label>
                             <div class="ps-chip-group" id="ps-lighting-mood" style="flex-wrap:wrap">
-                                ${this._getLightingForArchetypes(this.state.selectedArchetypes).map((m, i) => `<button class="ps-chip ${m.id === this.state.lightingMood ? 'active' : ''}" data-val="${m.id}" style="${i < 3 && this.state.selectedArchetypes.length > 0 ? 'border-color:rgba(168,85,247,0.5);' : ''}">${i < 3 && this.state.selectedArchetypes.length > 0 ? '⭐ ' : ''}${m.label}</button>`).join('')}
+                                ${this._buildLightingChips()}
                             </div>
                         </div>
                         <div class="form-group">
@@ -2217,6 +2291,8 @@ const PromptStudio = {
             if (_ag) _ag.innerHTML = this._buildAngleChips();
             const _ctx = q('#ps-angle-context');
             if (_ctx) _ctx.textContent = '-- best for ' + this.state.category;
+            // v3.6: Also refresh lighting chips - category affects best-lighting recommendations
+            this._refreshLighting();
         });
         q('#ps-material').addEventListener('change', e => { this.state.material = e.target.value; });
         q('#ps-stone').addEventListener('change', e => { this.state.stone = e.target.value; });
@@ -2429,6 +2505,8 @@ const PromptStudio = {
             // v3.1: Refresh angle chips live to reflect archetype-aware ranking
             const angleGroup = q('#ps-angle');
             if (angleGroup) angleGroup.innerHTML = this._buildAngleChips();
+            // v3.6: Refresh lighting chips live to reflect archetype-aware ranking
+            this._refreshLighting();
         });
 
         // Generate
@@ -2449,6 +2527,8 @@ const PromptStudio = {
 
         // Ensure angle chips render with 5 stars on fresh page load
         this._refreshAngles();
+        // v3.6: Ensure lighting chips render with stars on fresh page load
+        this._refreshLighting();
     },
 
     // Refresh angle chips and context label without full re-render
@@ -2463,6 +2543,168 @@ const PromptStudio = {
                 ? '-- boosted for selected archetype'
                 : '-- best for ' + (this.state.category || 'ring');
         }
+    },
+
+    // ── v3.6: Dynamic Lighting Chips with per-category + per-archetype sorting ──────
+    _getLightingForCategory(category) {
+        const rankings = {
+            'ring': [
+                'studio', 'editorial', 'dramatic', 'soft', 'golden-hour',
+                'natural', 'warm', 'backlit', 'window-light', 'cool',
+                'chiaroscuro', 'hard-flash',
+            ],
+            'necklace': [
+                'golden-hour', 'dramatic', 'editorial', 'studio', 'natural',
+                'soft', 'backlit', 'warm', 'chiaroscuro', 'window-light',
+                'cool', 'split-light',
+            ],
+            'earrings': [
+                'dramatic', 'editorial', 'studio', 'golden-hour', 'split-light',
+                'chiaroscuro', 'soft', 'backlit', 'natural', 'window-light',
+                'neon-glow', 'cool',
+            ],
+            'bracelet': [
+                'studio', 'golden-hour', 'natural', 'editorial', 'warm',
+                'soft', 'dramatic', 'window-light', 'backlit', 'cool',
+                'candid', 'dappled',
+            ],
+            'bangles': [
+                'warm', 'golden-hour', 'natural', 'studio', 'editorial',
+                'soft', 'dramatic', 'dappled', 'window-light', 'backlit',
+                'candid', 'chiaroscuro',
+            ],
+            'anklet': [
+                'natural', 'golden-hour', 'dappled', 'studio', 'warm',
+                'soft', 'editorial', 'overcast', 'backlit', 'window-light',
+                'dramatic', 'cool',
+            ],
+            'brooch': [
+                'studio', 'editorial', 'dramatic', 'soft', 'natural',
+                'golden-hour', 'chiaroscuro', 'warm', 'backlit', 'window-light',
+                'cool', 'hard-flash',
+            ],
+            'pendant': [
+                'golden-hour', 'dramatic', 'editorial', 'studio', 'backlit',
+                'soft', 'natural', 'warm', 'chiaroscuro', 'window-light',
+                'cool', 'split-light',
+            ],
+            'body-jewelry': [
+                'dramatic', 'editorial', 'surreal', 'mystical', 'studio',
+                'backlit', 'golden-hour', 'soft', 'neon-glow', 'natural',
+                'cool', 'warm',
+            ],
+        };
+        const order = rankings[category] || rankings['ring'];
+        return [...this.lightingMoods].sort((a, b) => {
+            const ai = order.indexOf(a.id);
+            const bi = order.indexOf(b.id);
+            return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+        });
+    },
+
+    _buildLightingChips() {
+        const category = this.state.category || 'ring';
+        const sorted = this._getLightingForCategory(category);
+
+        // Archetype-lighting affinity: selected archetypes boost certain lighting to top
+        const archetypeLightingBoost = {
+            'body-intimate':        ['soft', 'natural', 'warm'],
+            'object-pairing':       ['natural', 'soft', 'studio'],
+            'editorial-model':      ['studio', 'dramatic', 'editorial'],
+            'surreal-animal':       ['studio', 'dramatic', 'natural'],
+            'gradient-product':     ['studio', 'dramatic', 'warm'],
+            'bw-dramatic':          ['dramatic', 'chiaroscuro', 'hard-flash'],
+            'shadow-play':          ['dramatic', 'dappled', 'natural'],
+            'bold-typography':      ['studio', 'editorial', 'natural'],
+            'collection-showcase':  ['studio', 'soft', 'editorial'],
+            'macro-detail':         ['studio', 'soft', 'editorial'],
+            'wet-element':          ['dramatic', 'backlit', 'natural'],
+            'architectural-context':['natural', 'golden-hour', 'dramatic'],
+            'flat-lay-composition': ['natural', 'soft', 'window-light'],
+            'motion-blur':          ['natural', 'golden-hour', 'backlit'],
+            'cinematic-portrait':   ['dramatic', 'chiaroscuro', 'backlit'],
+            'mirror-reflection':    ['studio', 'natural', 'backlit'],
+            'texture-contrast':     ['natural', 'backlit', 'dramatic'],
+            'celestial-mythic':     ['dramatic', 'surreal', 'mystical'],
+            'seasonal-holiday':     ['warm', 'natural', 'soft'],
+            'lifestyle-moment':     ['natural', 'golden-hour', 'candid'],
+            'nature-botanical':     ['natural', 'dappled', 'soft'],
+            'heritage-moroccan':    ['golden-hour', 'warm', 'natural'],
+            'minimalist-space':     ['studio', 'natural', 'soft'],
+            'surface-lean':         ['natural', 'studio', 'window-light'],
+            'hair-drama':           ['backlit', 'golden-hour', 'natural'],
+            'masculine-editorial':  ['dramatic', 'studio', 'chiaroscuro'],
+            'royal-opulence':       ['dramatic', 'warm', 'candlelight'],
+            'raw-field-editorial':  ['natural', 'golden-hour', 'overcast'],
+            'veiled-mystery':       ['window-light', 'natural', 'soft'],
+            'avant-garde-couture':  ['studio', 'dramatic', 'editorial'],
+            'cinematic-color-story':['dramatic', 'studio', 'backlit'],
+            'surreal-scale':        ['dramatic', 'natural', 'studio'],
+            'ghost-double-exposure':['dramatic', 'natural', 'backlit'],
+            'outdoor-masculine':    ['natural', 'golden-hour', 'overcast'],
+            'harsh-sun-beauty':     ['hard-flash', 'natural', 'golden-hour'],
+            'desert-mirage':        ['golden-hour', 'hard-flash', 'natural'],
+            'neon-cyberpunk':       ['neon-glow', 'dramatic', 'backlit'],
+            'vintage-nostalgia':    ['hard-flash', 'natural', 'candid'],
+            'zero-gravity':         ['studio', 'dramatic', 'editorial'],
+            'product-page-clean':   ['studio', 'soft', 'natural'],
+            'textured-prop':        ['natural', 'warm', 'window-light'],
+            'mouth-lips-editorial': ['dramatic', 'chiaroscuro', 'soft'],
+            'dark-moody-editorial': ['chiaroscuro', 'dramatic', 'mystical', 'split-light'],
+            'frozen-subject':       ['overcast', 'dramatic', 'natural'],
+            'micro-surreal':        ['natural', 'soft', 'warm'],
+            'vehicle-lifestyle':    ['golden-hour', 'warm', 'natural'],
+            'weather-drama':        ['overcast', 'rain-diffused', 'dramatic'],
+            'prop-power-play':      ['studio', 'dramatic', 'chiaroscuro'],
+            'skin-canvas':          ['natural', 'soft', 'warm'],
+            'reaching-gesture':     ['dramatic', 'color-gel-backlit', 'studio'],
+            'power-stance':         ['solid-color-backdrop', 'studio', 'dramatic'],
+            'stacked-maximalist':   ['warm', 'studio', 'dramatic'],
+            'sculptural-headpiece': ['dramatic', 'studio', 'natural'],
+            // v3.6: Sheets 2, 4, 7, 20 archetypes
+            'equestrian-luxury':    ['golden-hour', 'warm', 'natural'],
+            'pop-color-portrait':   ['studio', 'neon-glow', 'neon-bar-warm'],
+            'urban-glass-power':    ['natural', 'editorial', 'backlit'],
+        };
+
+        // Collect boosted lighting IDs from currently selected archetypes
+        const boosted = new Set();
+        (this.state.selectedArchetypes || []).forEach(id => {
+            (archetypeLightingBoost[id] || []).forEach(l => boosted.add(l));
+        });
+
+        // Re-sort: boosted lighting comes first, preserving their relative order
+        let finalOrder = [];
+        if (boosted.size > 0) {
+            const boostedLights   = sorted.filter(l => boosted.has(l.id));
+            const remainingLights = sorted.filter(l => !boosted.has(l.id));
+            finalOrder = [...boostedLights, ...remainingLights];
+        } else {
+            finalOrder = sorted;
+        }
+
+        return finalOrder.map((m, i) => {
+            const isTop     = i === 0;
+            const isRec     = i < 5;
+            const isBoosted = boosted.has(m.id);
+            const style = isTop
+                ? 'border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-glow);'
+                : isRec
+                ? 'border-color:var(--accent);opacity:0.85;'
+                : '';
+            const prefix = isTop ? '⭐ ' : (isBoosted && i < 5 ? '✦ ' : '');
+            const title  = isRec
+                ? (isBoosted ? `Boosted by selected archetype` : `Top recommended for ${category}`)
+                : m.label;
+            return `<button class="ps-chip ${m.id === this.state.lightingMood ? 'active' : ''}" data-val="${m.id}" title="${title}" style="${style}">${prefix}${m.label}</button>`;
+        }).join('');
+    },
+
+    // Refresh lighting chips and rebind without full re-render
+    _refreshLighting() {
+        const q = id => this.container.querySelector(id);
+        const lg = q('#ps-lighting-mood');
+        if (lg) lg.innerHTML = this._buildLightingChips();
     },
 
     _bindChipGroup(groupId, stateKey) {
@@ -3433,6 +3675,10 @@ const PromptStudio = {
             'mouth-lips-editorial': { lighting: ['dramatic','chiaroscuro','natural','soft'] },
             'dark-moody-editorial': { lighting: ['dramatic','chiaroscuro','mystical','split-light'] },
             'product-page-clean': { lighting: ['studio','soft-box','natural'] },
+            // v3.6: Sheets 2, 4, 7, 20 archetypes
+            'equestrian-luxury': { lighting: ['golden-hour-light','warm','natural'] },
+            'pop-color-portrait': { lighting: ['studio','dramatic','rim-light'] },
+            'urban-glass-power': { lighting: ['natural','studio','rim-light'] },
         };
     },
 
