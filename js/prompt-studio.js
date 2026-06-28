@@ -1527,11 +1527,11 @@ const PromptStudio = {
         stone: 'diamond',
         selectedArchetypes: [],
         lightingMood: 'editorial',   // v3.1: merged mood+lighting
-        format: 'square',
+        format: 'story',           // v3.6: default 9:16 Story
         angle: 'eye-level',
         surface: 'none',
-        palette: 'auto',
-        styling: 'auto',
+        palette: 'ai-choice',      // v3.6: default AI Chooses
+        styling: 'ai-choice',      // v3.6: default AI Chooses
         hallmarkEnabled: false,
         history: [],
         jewelryCount: 0,
@@ -1547,7 +1547,8 @@ const PromptStudio = {
         bodyHair: 'none',
         skinDetail: 'none',
         facialExpression: 'none',
-        brandTouch: 'none',       // 'none' | 'logomark' | 'wordmark'
+        brandTouch: 'none',            // 'none' | 'logomark' | 'wordmark' | 'logo-embedded'
+        brandIdentityEnabled: false,   // v3.6: toggle on/off for brand identity section
         realismLevel: 'standard', // 'standard' | 'high' | 'ultra'
         // v3.0
         cameraProfile: 'auto',    // 'auto' | see cameraProfiles array
@@ -1747,6 +1748,8 @@ const PromptStudio = {
             'weather-drama', 'prop-power-play', 'skin-canvas', 'reaching-gesture',
             // v3.5: Sheets 16–19 archetypes
             'power-stance', 'stacked-maximalist', 'sculptural-headpiece',
+            // v3.6: Sheets 2, 4, 7, 20 archetypes
+            'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
         ]);
 
         grid.innerHTML = sorted.map(a => {
@@ -1965,19 +1968,25 @@ const PromptStudio = {
                     </div>
 
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
                             <span class="card-title">Brand Identity</span>
+                            <label class="wm-toggle-label">
+                                <input type="checkbox" id="ps-brand-identity-toggle" ${this.state.brandIdentityEnabled ? 'checked' : ''}>
+                                <span class="wm-toggle-switch"></span>
+                            </label>
                         </div>
-                        <div class="form-group">
-                            <p class="text-sm text-muted" style="line-height:1.4;margin-bottom:8px">Add Elaris signature to the model's clothing — a subtle brand identifier so your images are unmistakably yours.</p>
-                            <div class="ps-chip-group" id="ps-brand-touch">
-                                <button class="ps-chip ${this.state.brandTouch === 'none' ? 'active' : ''}" data-val="none">None</button>
-                                <button class="ps-chip ${this.state.brandTouch === 'logomark' ? 'active' : ''}" data-val="logomark" title="Small four-pointed star brooch on lapel">⭐ Logomark</button>
-                                <button class="ps-chip ${this.state.brandTouch === 'wordmark' ? 'active' : ''}" data-val="wordmark" title="ELARIS wordmark embroidered on clothing">ELARIS Wordmark</button>
+                        <div id="ps-brand-identity-body" style="${this.state.brandIdentityEnabled ? '' : 'display:none'}">
+                            <div class="form-group">
+                                <p class="text-sm text-muted" style="line-height:1.4;margin-bottom:8px">Add Elaris signature to your images — choose how the brand appears in each shot.</p>
+                                <div class="ps-chip-group" id="ps-brand-touch">
+                                    <button class="ps-chip ${this.state.brandTouch === 'logomark' ? 'active' : ''}" data-val="logomark" title="Small four-pointed star brooch on lapel">⭐ Logomark</button>
+                                    <button class="ps-chip ${this.state.brandTouch === 'wordmark' ? 'active' : ''}" data-val="wordmark" title="ELARIS wordmark embroidered on clothing">ELARIS Wordmark</button>
+                                    <button class="ps-chip ${this.state.brandTouch === 'logo-embedded' ? 'active' : ''}" data-val="logo-embedded" title="ELARIS logo composited into the image like a luxury fashion campaign">🖼️ Logo Embedded</button>
+                                </div>
+                                <p class="text-sm text-muted" style="line-height:1.4;margin-top:6px;margin-bottom:0">
+                                    ${this.state.brandTouch === 'logomark' ? '⭐ Four-pointed star pin brooch on lapel — Elaris signature.' : this.state.brandTouch === 'wordmark' ? '"ELARIS" embroidered on visible garment area — brand always present.' : this.state.brandTouch === 'logo-embedded' ? '🖼️ Sophisticated "ELARIS" logo rendered within the image — AI chooses placement & sizing for each shot, like a luxury fashion campaign.' : 'Select a brand identity option above.'}
+                                </p>
                             </div>
-                            <p class="text-sm text-muted" style="line-height:1.4;margin-top:6px;margin-bottom:0">
-                                ${this.state.brandTouch === 'logomark' ? '⭐ Four-pointed star pin brooch on lapel — Elaris signature.' : this.state.brandTouch === 'wordmark' ? '"ELARIS" embroidered on visible garment area — brand always present.' : 'No brand marking added to scene.'}
-                            </p>
                         </div>
                     </div>
 
@@ -2403,6 +2412,17 @@ const PromptStudio = {
                 this._bind();
             });
         }
+
+        // v3.6: Brand Identity toggle
+        q('#ps-brand-identity-toggle')?.addEventListener('change', e => {
+            this.state.brandIdentityEnabled = e.target.checked;
+            if (e.target.checked && this.state.brandTouch === 'none') {
+                this.state.brandTouch = 'logomark'; // default to logomark when enabling
+            }
+            this._render();
+            this._renderArchetypeGrid();
+            this._bind();
+        });
 
         // Brand Touch chips — needs _render() to update the hint text
         const btGroup = q('#ps-brand-touch');
@@ -3316,18 +3336,20 @@ const PromptStudio = {
         // Splitting into body/tail allows Model Details to be injected BEFORE the
         // technical tail in consistency mode, ensuring the model descriptor has
         // higher token weight than the negative prompt.
-        // ── Brand Touch (Elaris identity on model clothing) ──────────────────────
+        // ── Brand Touch (Elaris identity on model clothing / image) ──────────────────
         let brandTouchDesc = '';
-        if (isHumanActive && this.state.brandTouch === 'logomark') {
-            // Enamel-filled pin: dark enamel body + polished gold outline = always visible on any garment
-            brandTouchDesc = 'model wearing a small "Elaris" four-pointed star pin at the lapel — a discreet luxury pin worn as a brand signature, enamel-and-metal two-tone finish naturally contrasting the garment, pin size proportional to real luxury brand pins (small and refined), positioned naturally on the clothing as an authentic styling detail';
-        } else if (isHuman && this.state.brandTouch === 'wordmark') {
-            // Luxury tri-layer embroidery technique used by haute couture houses:
-            // (1) raised dimensional satin stitch creates micro-shadows for depth even on color-matched fabric
-            // (2) hairline contrast outline stitch around each letter guarantees edge separation
-            // (3) adaptive color rule: cool-toned thread on warm/yellow/gold fabrics, warm on cool, bright on dark, dark on bright
-            const _wPlacement = this._getBrandPlacement(this.state.category);
-            brandTouchDesc = `a small "ELARIS" embroidered wordmark on the garment in capitalized tight-kerned serif lettering with minimal letter spacing, letters nearly touching like a real luxury clothing label — fine single-thread stitching ${_wPlacement}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, styled as an authentic luxury clothing label integrated into the garment, reads as a genuine brand signature not a graphic overlay, NOT widely spaced, NOT spread apart letters`;
+        if (this.state.brandIdentityEnabled) {
+            if (isHumanActive && this.state.brandTouch === 'logomark') {
+                // Enamel-filled pin: dark enamel body + polished gold outline = always visible on any garment
+                brandTouchDesc = 'model wearing a small "Elaris" four-pointed star pin at the lapel — a discreet luxury pin worn as a brand signature, enamel-and-metal two-tone finish naturally contrasting the garment, pin size proportional to real luxury brand pins (small and refined), positioned naturally on the clothing as an authentic styling detail';
+            } else if (isHuman && this.state.brandTouch === 'wordmark') {
+                // Luxury tri-layer embroidery technique
+                const _wPlacement = this._getBrandPlacement(this.state.category);
+                brandTouchDesc = `a small "ELARIS" embroidered wordmark on the garment in capitalized tight-kerned serif lettering with minimal letter spacing, letters nearly touching like a real luxury clothing label — fine single-thread stitching ${_wPlacement}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, styled as an authentic luxury clothing label integrated into the garment, reads as a genuine brand signature not a graphic overlay, NOT widely spaced, NOT spread apart letters`;
+            } else if (this.state.brandTouch === 'logo-embedded') {
+                // v3.6: Sophisticated logo composited into the image like Dior/Chanel campaigns
+                brandTouchDesc = 'Include a sophisticated "ELARIS" brand logo rendered directly within the image composition — elegant serif typography in a luxury fashion campaign style, the AI must choose the placement and sizing to best complement this specific shot (options: elegant corner placement, center overlapping the subject like Dior campaign advertising, lower-third banner, or subtly integrated into the scene background), the logo should feel like an authentic part of a high-end luxury fashion campaign advertisement not a watermark, vary the placement and scale naturally with each generation, the typography should be bold and confident like Dior or Chanel campaign logos';
+            }
         }
 
         // hasNamedProfile: computed early to avoid TDZ — used in bodyParts below
