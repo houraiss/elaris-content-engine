@@ -1679,6 +1679,8 @@ const PromptStudio = {
             'cinematic-color-story', 'ghost-double-exposure', 'outdoor-masculine',
             'harsh-sun-beauty', 'desert-mirage', 'vintage-nostalgia',
             'mouth-lips-editorial', 'dark-moody-editorial',
+            // v3.6: Sheets 2, 4, 7, 20 archetypes (human)
+            'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
         ]);
         const cat     = state.category || 'ring';
         const isHuman = HUMAN.has(archetype.id);
@@ -3140,6 +3142,8 @@ const PromptStudio = {
             'weather-drama', 'prop-power-play', 'skin-canvas', 'reaching-gesture',
             // v3.5: Sheets 16–19 archetypes (human)
             'power-stance', 'stacked-maximalist', 'sculptural-headpiece',
+            // v3.6: Sheets 2, 4, 7, 20 archetypes (human)
+            'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
         ];
         const isHuman = humanArchetypes.includes(archetype.id);
         // v3.1: "No Model" gender mode — treat as product-only regardless of archetype
