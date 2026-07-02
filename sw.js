@@ -6,7 +6,7 @@
  * This ensures the app works fully offline after the first visit.
  */
 
-const CACHE_NAME = 'elaris-v32';
+const CACHE_NAME = 'elaris-v33';
 
 // App shell — everything needed for the app to work offline
 const APP_SHELL = [
@@ -15,14 +15,10 @@ const APP_SHELL = [
     './css/styles.css',
     './js/app.js',
     './js/canvas-engine.js',
-    './js/templates.js',
     './js/captions.js',
     './js/export.js',
-    './js/enhance.js',
     './js/enhance-prompt.js',
     './js/prompt-studio.js',
-    './js/composer.js',
-    './js/gallery.js',
     './js/watermark.js',
     './js/generate.js',
     './js/batch.js',

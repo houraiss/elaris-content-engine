@@ -18,6 +18,10 @@ const PromptStudio = {
     materials: [
         { id: 'sterling-silver', label: '925 Sterling Silver' },
         { id: '800-silver', label: '800 Moroccan Silver' },
+        { id: 'oxidized-silver', label: 'Oxidized / Antiqued Silver' },
+        { id: 'brushed-matte', label: 'Brushed Matte Silver' },
+        { id: 'high-polish', label: 'High-Polish / Rhodium-Plated' },
+        { id: 'silver-vermeil', label: 'Silver Vermeil' },
     ],
 
     stones: [
@@ -28,6 +32,8 @@ const PromptStudio = {
         { id: 'ruby', label: 'Rubies' },
         { id: 'pearl', label: 'Pearls' },
         { id: 'turquoise', label: 'Turquoise' },
+        { id: 'amber', label: 'Amber' },
+        { id: 'coral', label: 'Coral' },
         { id: 'cubic-zirconia', label: 'Cubic Zirconia' },
         { id: 'mixed', label: 'Mixed Gemstones' },
     ],
@@ -1093,6 +1099,86 @@ const PromptStudio = {
             scene: 'modern glass and steel urban architecture, reflective glass surfaces, city skyline as backdrop, contemporary power-fashion editorial, structured clothing (blazers, tailored outfits), natural city light or golden hour from between buildings, architectural leading lines, confident powerful mood',
             compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 90, bangles: 70, anklet: 25, brooch: 60, pendant: 75, 'body-jewelry': 45 },
         },
+        // ── NEW: Artisan at Work ──────────────────────
+        {
+            id: 'artisan-at-work',
+            name: 'Artisan at Work',
+            icon: '🔨',
+            tagline: 'Hands That Shape Silver',
+            bestFor: 'Best for: All pieces — provenance & behind-the-scenes content',
+            desc: 'Close-up of hands shaping silver at the workbench — artisan craft, raw process, authenticity storytelling',
+            color: '#2a1f15',
+            subjects: [
+                'close-up of artisan hands hammering {piece} on a worn wooden workbench, metal filings visible, warm workshop light',
+                'silversmith hands holding {piece} with jeweler\'s loupe, inspecting detail under focused bench lamp',
+                'artisan fingers polishing {piece} with cloth on leather work surface, tools scattered around, intimate workshop moment',
+                'hands using fine pliers to set stone in {piece}, extreme close-up of skilled fingers, blurred workshop background',
+                'craftsman hands dipping freshly finished {piece} in patina solution, dark liquid reflecting workshop ceiling',
+                'two hands presenting just-completed {piece} against rough leather apron, pride-of-craft moment, natural window light',
+            ],
+            scene: 'intimate workshop setting, warm tungsten/natural window light, worn wooden workbench, artisan tools (hammers, pliers, files, torch), leather apron, metal filings and raw materials visible, documentary/editorial photography, authentic provenance storytelling',
+            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 90, bangles: 95, anklet: 70, brooch: 85, pendant: 85, 'body-jewelry': 60 },
+        },
+        // ── NEW: Bridal / Trousseau ──────────────────────
+        {
+            id: 'bridal-trousseau',
+            name: 'Bridal & Trousseau',
+            icon: '💒',
+            tagline: 'Silver for the Wedding Day',
+            bestFor: 'Best for: Necklaces, Earrings, Bangles, Bracelets — high-value bridal sets',
+            desc: 'Traditional Moroccan wedding jewelry sets — bridal preparation, trousseau display, ceremonial elegance',
+            color: '#1f1a2a',
+            subjects: [
+                'bridal hands with henna patterns wearing {piece}, soft veil fabric draped in background, warm intimate light',
+                '{piece} displayed on white satin cushion alongside other silver bridal jewelry, traditional Moroccan wedding setting',
+                'bride adjusting {piece} in ornate mirror, reflection showing traditional kaftan embroidery, golden hour light',
+                'close-up of {piece} against embroidered white wedding kaftan fabric, intricate silver against intricate textile',
+                'multiple {piece} arranged on a traditional Moroccan brass tray with rose petals and orange blossom, trousseau display',
+                'mother\'s hands fastening {piece} on daughter\'s neck, emotional bridal preparation moment, soft backlight',
+            ],
+            scene: 'Moroccan bridal setting, white and gold fabrics, henna-decorated hands, ornate mirrors, rose petals, orange blossom, traditional kaftan details, warm golden light, emotional family moments, high-end wedding editorial photography',
+            compat: { ring: 80, necklace: 95, earrings: 95, bracelet: 90, bangles: 95, anklet: 75, brooch: 70, pendant: 90, 'body-jewelry': 55 },
+        },
+        // ── NEW: Souk / Market Editorial ──────────────────────
+        {
+            id: 'souk-editorial',
+            name: 'Souk & Market Editorial',
+            icon: '🏪',
+            tagline: 'Silver Meets the Souk',
+            bestFor: 'Best for: All pieces — cultural context & texture storytelling',
+            desc: 'Jewelry styled against Agadir souk textures — brass trays, spices, woven baskets, market colors',
+            color: '#2a2510',
+            subjects: [
+                '{piece} resting on a mound of saffron threads in a brass market bowl, warm souk light filtering through cloth canopy',
+                'hand wearing {piece} reaching into a woven basket of dried roses in a Moroccan souk, vibrant market colors behind',
+                '{piece} displayed on a hand-hammered copper plate next to colorful spice pyramids, editorial market still life',
+                'model wearing {piece} walking through narrow souk alley, hanging lanterns and textiles creating tunnel of color',
+                '{piece} draped over the edge of a traditional woven Moroccan basket, dried herbs and argan nuts visible, natural light',
+                'close-up of {piece} on aged wooden market counter, brass teapots and ceramic tagines blurred in background',
+            ],
+            scene: 'Moroccan souk/market environment, vibrant spice colors (saffron, paprika, cumin), brass and copper vessels, woven baskets, hanging textiles and lanterns, narrow alleyways, dappled market light through cloth canopies, editorial travel photography meets product styling',
+            compat: { ring: 85, necklace: 90, earrings: 80, bracelet: 85, bangles: 90, anklet: 80, brooch: 75, pendant: 85, 'body-jewelry': 65 },
+        },
+        // ── NEW: Heirloom / Generational ──────────────────────
+        {
+            id: 'heirloom-generational',
+            name: 'Heirloom & Generational',
+            icon: '👵',
+            tagline: 'Handed Down Through Craft',
+            bestFor: 'Best for: Necklaces, Bangles, Rings — heritage & emotional storytelling',
+            desc: 'Mother-daughter or hand-to-hand framing — generational jewelry passing, heritage craft, emotional connection',
+            color: '#1a1520',
+            subjects: [
+                'older woman\'s weathered hand placing {piece} into younger woman\'s open palm, soft backlight, emotional moment',
+                'mother and daughter hands intertwined both wearing {piece}, close-up showing age contrast, warm golden light',
+                '{piece} on aged velvet in an antique wooden jewelry box, grandmother\'s hand opening the lid, dust motes in light',
+                'three generations of hands stacked — grandmother, mother, daughter — each wearing {piece}, tight crop, emotional editorial',
+                'young woman holding vintage {piece} up to window light, old photograph of grandmother wearing same piece visible on table',
+                'hands carefully wrapping {piece} in traditional fabric for gifting, intergenerational ceremony, intimate close-up',
+            ],
+            scene: 'intimate family setting, warm nostalgic light, generational hands (weathered and young), antique jewelry boxes, vintage photographs, traditional fabrics, emotional storytelling, documentary-editorial hybrid, "handed down through craft" narrative voice',
+            compat: { ring: 90, necklace: 95, earrings: 80, bracelet: 85, bangles: 95, anklet: 60, brooch: 80, pendant: 90, 'body-jewelry': 40 },
+        },
 
     ],
 
@@ -1364,6 +1450,11 @@ const PromptStudio = {
             'equestrian-luxury':    ['eye-level', 'grip-close-up', 'side-profile'],
             'pop-color-portrait':   ['eye-level', '45-degree', 'pov-ring-reach'],
             'urban-glass-power':    ['low-angle', 'eye-level', 'pov-ring-reach'],
+            // v3.7: Brand-grounded archetypes
+            'artisan-at-work':         ['macro', 'knuckle-level', '45-degree'],
+            'bridal-trousseau':        ['eye-level', '45-degree', 'from-behind'],
+            'souk-editorial':          ['eye-level', '45-degree', 'candid'],
+            'heirloom-generational':   ['macro', 'eye-level', '45-degree'],
         };
 
         // Collect boosted angle IDs from currently selected archetypes
@@ -1752,6 +1843,8 @@ const PromptStudio = {
             'power-stance', 'stacked-maximalist', 'sculptural-headpiece',
             // v3.6: Sheets 2, 4, 7, 20 archetypes
             'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
+            // v3.7: Brand-grounded archetypes
+            'artisan-at-work', 'bridal-trousseau', 'souk-editorial', 'heirloom-generational',
         ]);
 
         grid.innerHTML = sorted.map(a => {
@@ -1872,6 +1965,11 @@ const PromptStudio = {
             'equestrian-luxury': { angle:['eye-level','grip-close-up','side-profile'], lighting:['golden-hour-light','warm','natural'], camera:['hasselblad-85','leica-50','canon-135-l'], tips:['Eye Level captures the intimate bond between model and horse.','Golden Hour or Warm lighting creates the best leather and fur tonal warmth.','Hasselblad 85mm renders the equestrian textures (leather, brass, fur) with rich depth.','Pair with Rings or Bracelets — hand-on-bridle compositions showcase wrist and finger jewelry.'] },
             'pop-color-portrait': { angle:['eye-level','45-degree','pov-ring-reach'], lighting:['studio','neon-glow','dramatic'], camera:['sony-35-gm','hasselblad-85','canon-135-l'], tips:['Use bold saturated backdrops (magenta, lime, electric blue) for maximum pop energy.','Studio or Neon Glow lighting maintains vivid color saturation on accessories.','Sony 35mm f/1.4 GM includes enough environmental color for the pop aesthetic.','Pair with Earrings — oversized sunglasses frame earrings perfectly in this archetype.'] },
             'urban-glass-power': { angle:['low-angle','eye-level','pov-ring-reach'], lighting:['natural','editorial','backlit'], camera:['sony-35-gm','hasselblad-85','leica-50'], tips:['Low Angle against glass skyscrapers adds urban authority and scale.','Natural city light or golden hour between buildings creates architectural drama.','Sony 35mm f/1.4 GM captures the glass architecture and city skyline context.','Pair with structured clothing (blazers, tailored outfits) for maximum power editorial energy.'] },
+            // v3.7: Brand-grounded archetypes
+            'artisan-at-work': { angle:['macro','knuckle-level','45-degree'], lighting:['warm','natural','window-light'], camera:['macro-100','leica-50','hasselblad-85'], tips:['Macro or Knuckle Level captures the intimate hand-on-bench perspective.','Warm tungsten or Window Light recreates the authentic workshop atmosphere.','Leica 50mm Summilux gives the honest documentary rendering perfect for craft storytelling.','Enable "No Model" for pure hands + tools compositions — no face needed.'] },
+            'bridal-trousseau': { angle:['eye-level','45-degree','from-behind'], lighting:['golden-hour-light','warm','soft'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Eye Level or 45° captures the bridal preparation moment with maximum intimacy.','Golden Hour or Warm lighting creates the romantic ceremonial atmosphere.','Hasselblad 85mm medium format renders skin tones and henna detail beautifully.','Pair with Necklaces, Earrings, or Bangles for the most authentic bridal sets.'] },
+            'souk-editorial': { angle:['eye-level','45-degree','candid'], lighting:['natural','warm','dappled'], camera:['leica-50','sony-35-gm','hasselblad-85'], tips:['Eye Level or Candid gives the most authentic market documentary feel.','Natural dappled light through souk cloth canopies is the signature atmosphere.','Sony 35mm f/1.4 GM includes enough market context and environmental color.','Pair spices, brass, and woven baskets as props — they create the cultural texture.'] },
+            'heirloom-generational': { angle:['macro','eye-level','45-degree'], lighting:['warm','natural','window-light'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Macro captures the hand-to-hand transfer moment with emotional detail.','Warm or Window Light creates the nostalgic, intimate family atmosphere.','Canon 135mm f/2L compresses the generational depth beautifully — two faces, one frame.','Keep expressions to Serene or Thoughtful — matches the heirloom narrative voice.'] },
         };
 
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
@@ -2687,6 +2785,11 @@ const PromptStudio = {
             'equestrian-luxury':    ['golden-hour', 'warm', 'natural'],
             'pop-color-portrait':   ['studio', 'neon-glow', 'neon-bar-warm'],
             'urban-glass-power':    ['natural', 'editorial', 'backlit'],
+            // v3.7: Brand-grounded archetypes
+            'artisan-at-work':         ['warm', 'natural', 'window-light'],
+            'bridal-trousseau':        ['golden-hour', 'warm', 'soft'],
+            'souk-editorial':          ['natural', 'warm', 'dappled'],
+            'heirloom-generational':   ['warm', 'natural', 'window-light'],
         };
 
         // Collect boosted lighting IDs from currently selected archetypes

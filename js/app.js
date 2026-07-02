@@ -30,7 +30,7 @@ const Elaris = {
         window.location.hash = page;
         const titles = {
             promptstudio: 'Prompt Studio', captions: 'Captions',
-            trends: 'Trends', gallery: 'Gallery', watermark: 'Watermark Studio', batch: 'Batch Mode',
+            trends: 'Trends', watermark: 'Watermark Studio', batch: 'Batch Mode',
         };
         document.title = `${titles[page] || page} — Elaris Content Engine`;
 
@@ -199,10 +199,30 @@ window.render_trends = function(container) {
             const content = document.getElementById('trends-content');
             content.style.display = '';
 
+            // ── Staleness check: warn if data is older than 30 days ──
+            let stalenessHtml = '';
+            if (data.lastUpdated) {
+                const lastDate = new Date(data.lastUpdated);
+                const daysSince = Math.floor((Date.now() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+                if (daysSince > 30) {
+                    stalenessHtml = `
+                        <div class="card mb-4" style="background:linear-gradient(135deg, rgba(255,107,107,0.12), rgba(255,159,67,0.08)); border-color:rgba(255,107,107,0.3); border-left:3px solid #ff6b6b;">
+                            <div class="flex items-center gap-3">
+                                <span style="font-size:24px">⚠️</span>
+                                <div>
+                                    <div style="font-weight:600;margin-bottom:2px;color:#ff6b6b">Trends Data is ${daysSince} Days Old</div>
+                                    <div class="text-sm text-muted">This data was last refreshed on ${data.lastUpdated}. Trends move fast — ask Antigravity to refresh with the latest jewelry & content trends.</div>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+            }
+
             const relevanceColors = { high: 'var(--success)', medium: 'var(--warning)', low: 'var(--text-muted)' };
             const categoryIcons = { design: '🎨', photography: '📸', content: '📱', strategy: '📊', video: '🎬' };
 
             content.innerHTML = `
+                ${stalenessHtml}
                 <div class="card mb-4" style="background:linear-gradient(135deg, rgba(166,124,82,0.1), rgba(54,68,45,0.08));border-color:rgba(166,124,82,0.15)">
                     <div class="flex items-center gap-3">
                         <span style="font-size:24px">💡</span>

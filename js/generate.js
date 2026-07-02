@@ -105,8 +105,12 @@ window.render_generate = function(container) {
                 imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${Math.floor(Math.random() * 1000000)}`;
             } else if (model === 'gemini') {
                 imageUrl = await generateWithGemini(prompt, apiKey);
+            } else if (model === 'fal') {
+                imageUrl = await generateWithFal(prompt, apiKey);
+            } else if (model === 'openai') {
+                imageUrl = await generateWithOpenAI(prompt, apiKey);
             } else {
-                // Mock integration for the others to show the UI works
+                // Mock integration for together & replicate
                 await new Promise(r => setTimeout(r, 2000));
                 window.Elaris.toast(`${model.toUpperCase()} integration coming soon!`, 'info');
                 throw new Error('API not fully implemented for this provider yet.');
@@ -166,4 +170,95 @@ async function generateWithGemini(prompt, apiKey) {
     } else {
         throw new Error('No image returned from API');
     }
+}
+
+// Fal AI (Flux Schnell) — fast image generation
+async function generateWithFal(prompt, apiKey) {
+    // Submit the request
+    const submitRes = await fetch('https://queue.fal.run/fal-ai/flux/schnell', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Key ${apiKey}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            prompt: prompt,
+            image_size: 'square_hd',
+            num_images: 1,
+            enable_safety_checker: true,
+        })
+    });
+
+    if (!submitRes.ok) {
+        const err = await submitRes.json().catch(() => ({}));
+        throw new Error(err.detail || err.message || `Fal API error (${submitRes.status})`);
+    }
+
+    const result = await submitRes.json();
+
+    // Flux Schnell is fast enough to return synchronously in most cases
+    if (result.images && result.images.length > 0 && result.images[0].url) {
+        return result.images[0].url;
+    }
+
+    // If we got a request_id, poll for the result
+    if (result.request_id) {
+        const statusUrl = `https://queue.fal.run/fal-ai/flux/schnell/requests/${result.request_id}/status`;
+        for (let i = 0; i < 30; i++) {
+            await new Promise(r => setTimeout(r, 2000));
+            const pollRes = await fetch(statusUrl, {
+                headers: { 'Authorization': `Key ${apiKey}` }
+            });
+            const pollData = await pollRes.json();
+
+            if (pollData.status === 'COMPLETED') {
+                // Fetch the final result
+                const resultUrl = `https://queue.fal.run/fal-ai/flux/schnell/requests/${result.request_id}`;
+                const finalRes = await fetch(resultUrl, {
+                    headers: { 'Authorization': `Key ${apiKey}` }
+                });
+                const finalData = await finalRes.json();
+                if (finalData.images && finalData.images.length > 0) {
+                    return finalData.images[0].url;
+                }
+                throw new Error('No image in completed Fal result');
+            } else if (pollData.status === 'FAILED') {
+                throw new Error('Fal generation failed: ' + (pollData.error || 'Unknown error'));
+            }
+        }
+        throw new Error('Fal generation timed out after 60 seconds');
+    }
+
+    throw new Error('Unexpected Fal API response format');
+}
+
+// OpenAI (DALL-E 3) — high-quality image generation
+async function generateWithOpenAI(prompt, apiKey) {
+    const res = await fetch('https://api.openai.com/v1/images/generations', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            model: 'dall-e-3',
+            prompt: prompt,
+            n: 1,
+            size: '1024x1024',
+            quality: 'hd',
+            response_format: 'url',
+        })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(data.error?.message || `OpenAI API error (${res.status})`);
+    }
+
+    if (data.data && data.data.length > 0 && data.data[0].url) {
+        return data.data[0].url;
+    }
+
+    throw new Error('No image returned from OpenAI');
 }
