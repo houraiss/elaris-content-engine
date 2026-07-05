@@ -1179,6 +1179,106 @@ const PromptStudio = {
             scene: 'intimate family setting, warm nostalgic light, generational hands (weathered and young), antique jewelry boxes, vintage photographs, traditional fabrics, emotional storytelling, documentary-editorial hybrid, "handed down through craft" narrative voice',
             compat: { ring: 90, necklace: 95, earrings: 80, bracelet: 85, bangles: 95, anklet: 60, brooch: 80, pendant: 90, 'body-jewelry': 40 },
         },
+        // ── NEW V2: Futuristic Chrome Editorial ──────────────────────
+        {
+            id: 'futuristic-chrome',
+            name: 'Futuristic Chrome Editorial',
+            icon: '🪩',
+            tagline: 'Silver Meets the Future',
+            bestFor: 'Best for: Rings, Earrings, Necklaces — sci-fi editorial, avant-garde campaigns',
+            desc: 'Model immersed in chrome, glass, and metallic sculptural environments — futuristic fashion with reflective surfaces, space-age headwear, and high-concept styling',
+            color: '#2a3040',
+            subjects: [
+                'model in futuristic chrome visor helmet, {piece} on hand near chin, reflective metallic surfaces, sci-fi editorial',
+                'model in sleek silver suit inside chrome sculptural tunnel, {piece} catching reflections, futuristic fashion campaign',
+                'close-up of model face behind transparent visor, {piece} earring visible, chrome and glass refractions, space-age beauty',
+                'model surrounded by liquid-chrome spheres and curved reflective panels, {piece} at neckline, surreal futuristic environment',
+                'three-quarter portrait of model in metallic structured bodysuit, {piece} bracelet prominent on wrist, chrome studio set',
+                'model standing inside glass sculpture installation, {piece} catching architectural light, clean futuristic editorial',
+            ],
+            scene: 'futuristic chrome and glass environment, sculptural metallic surfaces, reflective panels and curved chrome shapes, space-age fashion (visors, metallic suits, structured bodysuits), high-concept avant-garde styling, cold metallic color palette (silver, chrome, ice blue), clean geometric architecture, sci-fi editorial photography',
+            compat: { ring: 90, necklace: 85, earrings: 90, bracelet: 80, bangles: 65, anklet: 30, brooch: 70, pendant: 80, 'body-jewelry': 60 },
+        },
+        // ── NEW V2: Submerged Beauty ──────────────────────
+        {
+            id: 'submerged-beauty',
+            name: 'Submerged Beauty',
+            icon: '🫧',
+            tagline: 'Beauty Beyond the Surface',
+            bestFor: 'Best for: Earrings, Necklaces, Rings — beauty editorial, luxury campaigns',
+            desc: 'Model face or body partially submerged in clear water — split-level photography, water surface bisecting the face, underwater caustic light patterns',
+            color: '#1a2a35',
+            subjects: [
+                'model face half-submerged in clear water, {piece} earring visible above waterline, soft refracted light below surface, beauty editorial',
+                'close-up of model lips and chin breaking water surface, {piece} necklace visible through clear water, serene submerged beauty',
+                'model hand emerging from still water wearing {piece}, water droplets on skin, caustic light patterns on water surface',
+                'split-level shot of model face — eyes above water, mouth below surface, {piece} earring catching diffused underwater light',
+                'model reclining in shallow clear water, {piece} visible at neckline, soft ripples distorting light, dream-like beauty editorial',
+                'extreme close-up of model eye and cheek at water surface level, {piece} ring on hand resting at waterline, ethereal liquid boundary',
+            ],
+            scene: 'clear still water as primary element, split-level waterline photography, face or body partially submerged, underwater caustic light patterns, water surface reflections and refractions, soft diffused light through liquid, minimal styling — water is the set, serene and ethereal atmosphere, high-end beauty editorial',
+            compat: { ring: 80, necklace: 90, earrings: 95, bracelet: 70, bangles: 50, anklet: 40, brooch: 35, pendant: 85, 'body-jewelry': 55 },
+        },
+        // ── NEW V2: Surreal Material Fusion ──────────────────────
+        {
+            id: 'surreal-material-fusion',
+            name: 'Surreal Material Fusion',
+            icon: '🪨',
+            tagline: 'Where Skin Becomes Stone',
+            bestFor: 'Best for: Rings, Earrings, Brooches — art editorial, conceptual campaigns',
+            desc: 'Skin merging with organic or mineral materials — marble veins across face, coral and crystal growing from skin, surreal body-material transformation',
+            color: '#2a2520',
+            subjects: [
+                'extreme macro of model eye with marble texture growing across eyelid and brow, {piece} earring visible, veined stone merging with skin',
+                'model face emerging from coral-like organic growth, {piece} ring on hand pushing through material, vivid red and blue surreal editorial',
+                'close-up of model cheekbone with crystalline mineral formations growing from skin surface, {piece} at ear, sci-art beauty',
+                'model portrait with one half of face transformed into polished stone — marble, onyx, or agate — {piece} at the boundary line',
+                'model hands covered in delicate moss and lichen growth, {piece} ring emerging from organic material, macro nature-fusion detail',
+                'model neck and collarbone with petrified wood texture merging into skin, {piece} pendant resting at the transition point, surreal beauty',
+            ],
+            scene: 'surreal material-body fusion, skin transforming into stone (marble, onyx, agate), organic growth on skin (coral, crystal, moss, lichen), sci-art conceptual beauty photography, macro detail of texture boundaries, vivid organic color palettes, editorial art photography with CGI-quality material blending, body-as-landscape concept',
+            compat: { ring: 85, necklace: 70, earrings: 90, bracelet: 65, bangles: 50, anklet: 30, brooch: 85, pendant: 75, 'body-jewelry': 60 },
+        },
+        // ── NEW V2: Luxury Leather Editorial ──────────────────────
+        {
+            id: 'luxury-leather-editorial',
+            name: 'Luxury Leather Editorial',
+            icon: '🧥',
+            tagline: 'Silver Against Second Skin',
+            bestFor: 'Best for: Earrings, Necklaces, Rings — fashion editorial, luxury campaigns',
+            desc: 'High-fashion leather as primary styling — leather jackets, coats, and structured garments with jewelry as the refined metallic accent against rich leather textures',
+            color: '#1a1210',
+            subjects: [
+                'beauty close-up of model in dark leather jacket, gold zipper visible, {piece} earring catching specular highlight, editorial glamour',
+                'model in oversized red leather coat, hand pulling collar to reveal {piece} necklace, bold lip, confident editorial',
+                'close-up portrait of model in black leather jacket with {piece}, brown and dark tones, matte skin, strong brows, luxury fashion editorial',
+                'model in aviator sunglasses and structured leather blazer, {piece} ring visible on hand adjusting glasses, bold fashion moment',
+                'model in patent leather puffer jacket, gold zipper detail, {piece} chain necklace visible at collar, contemporary luxury editorial',
+                'three-quarter portrait of model in vintage leather moto jacket, {piece} earring and bracelet prominent, warm editorial tones',
+            ],
+            scene: 'luxury leather fashion as primary wardrobe (jackets, coats, blazers, moto jackets), rich leather textures (matte, patent, vintage), metallic hardware (zippers, buckles, studs) complementing silver jewelry, bold lip and strong styling, warm-to-cool editorial tones, specular highlights on leather surfaces, contemporary luxury fashion photography',
+            compat: { ring: 85, necklace: 90, earrings: 95, bracelet: 80, bangles: 60, anklet: 25, brooch: 75, pendant: 85, 'body-jewelry': 45 },
+        },
+        // ── NEW V2: Monochrome Jewelry Ad ──────────────────────
+        {
+            id: 'monochrome-jewelry-ad',
+            name: 'Monochrome Jewelry Ad',
+            icon: '◻️',
+            tagline: 'The Piece Speaks for Itself',
+            bestFor: 'Best for: Rings, Earrings, Necklaces — brand campaigns, print ads',
+            desc: 'Clean black-and-white campaign imagery — model with jewelry as sole focal point, high-contrast monochrome with luxury brand ad aesthetic',
+            color: '#1a1a1a',
+            subjects: [
+                'black-and-white three-quarter portrait of model touching face, {piece} ring and earring visible, clean campaign style, luxury brand advertisement',
+                'monochrome close-up of model hand near jawline wearing {piece}, high-contrast B&W, detail showing gem facets, ad campaign',
+                'B&W beauty portrait of model with {piece} earring, hand resting on cheek, stark contrast, luxury jewelry brand campaign aesthetic',
+                'clean monochrome shot of model profile, {piece} necklace visible against bare skin, high-fashion B&W print ad composition',
+                'black-and-white hand study — model fingers displaying {piece} ring, negative space, luxury brand campaign, magazine ad layout',
+                'monochrome portrait of model looking directly at camera, {piece} as the only reflective element in frame, editorial ad photography',
+            ],
+            scene: 'high-contrast black-and-white photography, luxury jewelry brand campaign aesthetic, clean minimal composition, jewelry as the singular focal point in monochrome, model as backdrop for the piece, ad and campaign framing with generous negative space, premium print-ready quality, no environmental distractions',
+            compat: { ring: 95, necklace: 90, earrings: 95, bracelet: 75, bangles: 55, anklet: 25, brooch: 70, pendant: 85, 'body-jewelry': 40 },
+        },
 
     ],
 
@@ -1234,6 +1334,10 @@ const PromptStudio = {
         { id: 'neon-bar-warm',         label: 'Neon Bar Warm (Amber Tubes)' },
         { id: 'crimson-studio',        label: 'Crimson Studio (Bold Red Backdrop)' },
         { id: 'bronzed-beauty',        label: 'Bronzed Beauty Light (Skin Glow)' },
+        // v4.0: From V2 Reference Sheets
+        { id: 'chrome-wrap',           label: 'Chrome Wrap Light (360° Reflection)' },
+        { id: 'submerged-diffused',    label: 'Submerged Diffused (Underwater Caustics)' },
+        { id: 'leather-highlight',     label: 'Leather Highlight (Specular Contrast)' },
     ],
     // Legacy aliases so old saved state keys still map — read-only, not rendered
     get moods() { return this.lightingMoods; },
@@ -1455,6 +1559,12 @@ const PromptStudio = {
             'bridal-trousseau':        ['eye-level', '45-degree', 'from-behind'],
             'souk-editorial':          ['eye-level', '45-degree', 'candid'],
             'heirloom-generational':   ['macro', 'eye-level', '45-degree'],
+            // v4.0: V2 Reference Sheet archetypes
+            'futuristic-chrome':          ['eye-level', 'low-angle', '45-degree'],
+            'submerged-beauty':           ['eye-level', 'extreme-close-crop', 'macro'],
+            'surreal-material-fusion':    ['macro', 'extreme-macro', 'extreme-close-crop'],
+            'luxury-leather-editorial':   ['eye-level', '45-degree', 'side-profile'],
+            'monochrome-jewelry-ad':      ['eye-level', '45-degree', 'macro'],
         };
 
         // Collect boosted angle IDs from currently selected archetypes
@@ -1845,6 +1955,8 @@ const PromptStudio = {
             'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
             // v3.7: Brand-grounded archetypes
             'artisan-at-work', 'bridal-trousseau', 'souk-editorial', 'heirloom-generational',
+            // v4.0: V2 Reference Sheet archetypes
+            'futuristic-chrome', 'submerged-beauty', 'surreal-material-fusion', 'luxury-leather-editorial', 'monochrome-jewelry-ad',
         ]);
 
         grid.innerHTML = sorted.map(a => {
@@ -1970,6 +2082,12 @@ const PromptStudio = {
             'bridal-trousseau': { angle:['eye-level','45-degree','from-behind'], lighting:['golden-hour-light','warm','soft'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Eye Level or 45° captures the bridal preparation moment with maximum intimacy.','Golden Hour or Warm lighting creates the romantic ceremonial atmosphere.','Hasselblad 85mm medium format renders skin tones and henna detail beautifully.','Pair with Necklaces, Earrings, or Bangles for the most authentic bridal sets.'] },
             'souk-editorial': { angle:['eye-level','45-degree','candid'], lighting:['natural','warm','dappled'], camera:['leica-50','sony-35-gm','hasselblad-85'], tips:['Eye Level or Candid gives the most authentic market documentary feel.','Natural dappled light through souk cloth canopies is the signature atmosphere.','Sony 35mm f/1.4 GM includes enough market context and environmental color.','Pair spices, brass, and woven baskets as props — they create the cultural texture.'] },
             'heirloom-generational': { angle:['macro','eye-level','45-degree'], lighting:['warm','natural','window-light'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Macro captures the hand-to-hand transfer moment with emotional detail.','Warm or Window Light creates the nostalgic, intimate family atmosphere.','Canon 135mm f/2L compresses the generational depth beautifully — two faces, one frame.','Keep expressions to Serene or Thoughtful — matches the heirloom narrative voice.'] },
+            // v4.0: V2 Reference Sheet archetypes
+            'futuristic-chrome': { angle:['eye-level','low-angle','45-degree'], lighting:['studio','chrome-bounce','dramatic'], camera:['phase-one-iq4','hasselblad-85','anamorphic-40'], tips:['Studio or Chrome Bounce lighting creates 360-degree reflections on metallic surfaces.','Phase One IQ4 captures chrome detail with extraordinary tonal range.','Anamorphic lens adds cinematic horizontal flares on reflective chrome.','Pair with Earrings or Rings — small metallic pieces that harmonize with the chrome environment.'] },
+            'submerged-beauty': { angle:['eye-level','extreme-close-crop','macro'], lighting:['natural','soft','rim-light'], camera:['hasselblad-85','macro-100','canon-135-l'], tips:['Eye Level at the waterline creates the signature split-level composition.','Natural or Soft lighting avoids harsh reflections on the water surface.','Hasselblad 85mm captures the tonal subtlety of light through water.','Pair with Earrings or Necklaces — above-waterline pieces catch the most light.'] },
+            'surreal-material-fusion': { angle:['macro','extreme-macro','extreme-close-crop'], lighting:['natural','soft','studio'], camera:['macro-180','macro-100','phase-one-iq4'], tips:['Macro or Extreme Macro reveals the texture boundary between skin and material.','180mm Macro at 2:1 shows individual mineral grain and skin pore detail.','Natural or Soft lighting preserves the organic quality of the fusion.','Enable No Model for pure material-fusion abstract close-ups.'] },
+            'luxury-leather-editorial': { angle:['eye-level','45-degree','side-profile'], lighting:['studio','dramatic','warm'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Studio or Dramatic lighting creates rich specular highlights on leather.','Hasselblad 85mm renders leather texture with exceptional tonal depth.','45-degree Three-Quarter shows both the leather garment and jewelry simultaneously.','Bold lip color and strong brows complete the luxury leather aesthetic.'] },
+            'monochrome-jewelry-ad': { angle:['eye-level','45-degree','macro'], lighting:['studio','soft-box','dramatic'], camera:['phase-one-iq4','hasselblad-85','canon-135-l'], tips:['Studio or Soft Box lighting gives clean, controlled highlights for campaign work.','Phase One IQ4 provides maximum detail for print-ready ad photography.','Set Color Palette to Monochrome or Noir for authentic B&W rendering.','Keep composition minimal — generous negative space, jewelry as sole focus.'] },
         };
 
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
@@ -2790,6 +2908,12 @@ const PromptStudio = {
             'bridal-trousseau':        ['golden-hour', 'warm', 'soft'],
             'souk-editorial':          ['natural', 'warm', 'dappled'],
             'heirloom-generational':   ['warm', 'natural', 'window-light'],
+            // v4.0: V2 Reference Sheet archetypes
+            'futuristic-chrome':          ['studio', 'dramatic', 'chrome-wrap'],
+            'submerged-beauty':           ['natural', 'soft', 'submerged-diffused'],
+            'surreal-material-fusion':    ['natural', 'soft', 'studio'],
+            'luxury-leather-editorial':   ['studio', 'dramatic', 'leather-highlight'],
+            'monochrome-jewelry-ad':      ['studio', 'soft', 'dramatic'],
         };
 
         // Collect boosted lighting IDs from currently selected archetypes
@@ -3746,6 +3870,10 @@ const PromptStudio = {
             'overcast': 'overcast', 'ethereal': 'surreal', 'dappled': 'dappled',
             'warm': 'warm', 'soft': 'soft-romantic', 'mystical': 'mystical',
             'split-light': 'split-light', 'directional': 'dramatic',
+            // v4.0: V2 Reference Sheet lighting
+            'chrome-bounce': 'chrome-wrap', 'chrome-wrap': 'chrome-wrap',
+            'submerged-diffused': 'submerged-diffused',
+            'leather-highlight': 'leather-highlight',
         };
         const scored = this.lightingMoods.map(m => {
             let score = 0;
@@ -3808,6 +3936,17 @@ const PromptStudio = {
             'equestrian-luxury': { lighting: ['golden-hour-light','warm','natural'] },
             'pop-color-portrait': { lighting: ['studio','dramatic','rim-light'] },
             'urban-glass-power': { lighting: ['natural','studio','rim-light'] },
+            // v4.0: V2 Reference Sheet archetypes
+            'futuristic-chrome': { lighting: ['studio','dramatic','rim-light'] },
+            'submerged-beauty': { lighting: ['natural','soft','rim-light'] },
+            'surreal-material-fusion': { lighting: ['natural','soft','studio'] },
+            'luxury-leather-editorial': { lighting: ['studio','dramatic','warm'] },
+            'monochrome-jewelry-ad': { lighting: ['studio','soft-box','dramatic'] },
+            // v3.7 backfill (missing from previous implementation)
+            'artisan-at-work': { lighting: ['warm','natural','window-light'] },
+            'bridal-trousseau': { lighting: ['golden-hour-light','warm','soft'] },
+            'souk-editorial': { lighting: ['natural','warm','dappled'] },
+            'heirloom-generational': { lighting: ['warm','natural','window-light'] },
         };
     },
 
@@ -3857,6 +3996,12 @@ const PromptStudio = {
             'through-glass':       'Seen through light. Defined by craft.',
             'heritage-moroccan':   'Heritage handcrafted. Future worn.',
             'celestial-mythic':    'Born from light. Made for you.',
+            // v4.0: V2 Reference Sheet archetypes
+            'futuristic-chrome':        'The future is already wearing it.',
+            'submerged-beauty':         'Beauty that surfaces on its own.',
+            'surreal-material-fusion':  'Where nature ends, craft begins.',
+            'luxury-leather-editorial': 'Leather softens. Silver endures.',
+            'monochrome-jewelry-ad':    'No color needed. Just craft.',
         };
         const hashtags = {
             'ring':     '#ElarisRing #SterlingRing #MoroccanJewelry #LuxuryRing #JewelryDesign',
