@@ -2998,6 +2998,8 @@ const PromptStudio = {
 
     // ── Generate Prompts ──────────────────────
     _generate() {
+        // Fix: Ensure piece description is built from current category + material + stone selections
+        this._autoDescribe();
         const selected = this.state.selectedArchetypes;
         if (selected.length === 0) {
             Elaris.toast('Select at least one archetype', 'error');
@@ -3363,6 +3365,8 @@ const PromptStudio = {
             'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture', 'cinematic-color-story',
             'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty',
             'mouth-lips-editorial', 'dark-moody-editorial',
+            // v3.0: Expansion archetypes (human subjects)
+            'desert-mirage', 'neon-cyberpunk', 'vintage-nostalgia',
             // v3.3: Sheet 15 archetypes (human)
             'frozen-subject', 'vehicle-lifestyle',
             // v3.4: Sheets 8–10 archetypes (human)
@@ -3371,6 +3375,11 @@ const PromptStudio = {
             'power-stance', 'stacked-maximalist', 'sculptural-headpiece',
             // v3.6: Sheets 2, 4, 7, 20 archetypes (human)
             'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
+            // v3.7: Brand-grounded archetypes (human)
+            'artisan-at-work', 'bridal-trousseau', 'souk-editorial', 'heirloom-generational',
+            // v4.0: V2 Reference Sheet archetypes (human)
+            'futuristic-chrome', 'submerged-beauty', 'surreal-material-fusion',
+            'luxury-leather-editorial', 'monochrome-jewelry-ad',
         ];
         const isHuman = humanArchetypes.includes(archetype.id);
         // v3.1: "No Model" gender mode — treat as product-only regardless of archetype
@@ -3387,12 +3396,18 @@ const PromptStudio = {
                 'minimal': modelGenderForStyling === 'male'
                     ? 'model in minimal clean styling, strong build as the canvas'
                     : 'model in minimal styling, skin as the canvas',
-                'black-dress': 'model wearing elegant black dress, jewelry as the contrast',
-                'silk-cami': 'model in silk camisole, effortless luxury',
+                'black-dress': modelGenderForStyling === 'male'
+                    ? 'model in tailored all-black outfit, dark shirt open at collar, jewelry as the contrast'
+                    : 'model wearing elegant black dress, jewelry as the contrast',
+                'silk-cami': modelGenderForStyling === 'male'
+                    ? 'model in fitted silk shirt, open collar, effortless luxury'
+                    : 'model in silk camisole, effortless luxury',
                 'blazer': 'model in tailored suit/blazer, power dressing',
                 'caftan': 'model in traditional Moroccan caftan, heritage styling',
                 'white-shirt': 'model in crisp white button-down shirt, classic editorial',
-                'evening-gown': 'model in floor-length evening gown, red carpet elegance',
+                'evening-gown': modelGenderForStyling === 'male'
+                    ? 'model in formal black-tie tuxedo, red carpet elegance'
+                    : 'model in floor-length evening gown, red carpet elegance',
                 'streetwear': 'model in elevated streetwear, contemporary luxury',
             };
             stylingDesc = styleMap[this.state.styling] || '';
@@ -3573,7 +3588,7 @@ const PromptStudio = {
             if (isHumanActive && this.state.brandTouch === 'logomark') {
                 // Enamel-filled pin: dark enamel body + polished gold outline = always visible on any garment
                 brandTouchDesc = 'model wearing a small "Elaris" four-pointed star pin at the lapel — a discreet luxury pin worn as a brand signature, enamel-and-metal two-tone finish naturally contrasting the garment, pin size proportional to real luxury brand pins (small and refined), positioned naturally on the clothing as an authentic styling detail';
-            } else if (isHuman && this.state.brandTouch === 'wordmark') {
+            } else if (isHumanActive && this.state.brandTouch === 'wordmark') {
                 // Luxury tri-layer embroidery technique
                 const _wPlacement = this._getBrandPlacement(this.state.category);
                 brandTouchDesc = `a small "ELARIS" embroidered wordmark on the garment in capitalized tight-kerned serif lettering with minimal letter spacing, letters nearly touching like a real luxury clothing label — fine single-thread stitching ${_wPlacement}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, styled as an authentic luxury clothing label integrated into the garment, reads as a genuine brand signature not a graphic overlay, NOT widely spaced, NOT spread apart letters`;
@@ -3592,6 +3607,8 @@ const PromptStudio = {
         const bodyParts = [
             // SUBJECT — jewelry piece at the center, material injected cleanly on next line
             subject + '.', sceneVariantPart ? sceneVariantPart + '.' : '',
+            // MODEL GENDER — explicit instruction for AI (human archetypes only, standard path)
+            (isHumanActive) ? `${this.state.modelGender === 'male' ? 'Male model, man' : 'Female model, woman'}.` : '',
             // PLACEMENT RULE — only for human archetypes (product shots have no finger)
             (isHumanActive && placementRule) ? `${placementRule}.` : '',
             // MATERIAL — stated once, cleanly, with metal descriptor
@@ -3607,7 +3624,7 @@ const PromptStudio = {
             // EXPRESSION (human only)
             expressionDesc ? `Expression: ${expressionDesc}.` : '',
             // SKIN TONE — randomized per generation for model diversity (human archetypes only)
-            (isHumanActive && !hasNamedProfile) ? this._getRandomSkinTone() + '.' : '',
+            (isHumanActive && !hasNamedProfile) ? this._getRandomSkinTone(this.state.modelGender) + '.' : '',
             // REALISM (skin texture, wrinkles, body hair, skin detail — user controlled)
             realismDesc ? realismDesc + '.' : '',
             // STYLING (outfit) — placed before realism; clearly defines garment
@@ -3819,26 +3836,28 @@ const PromptStudio = {
         return pool[Math.floor(Math.random() * pool.length)];
     },
 
-    _getRandomSkinTone() {
+    _getRandomSkinTone(gender) {
         // v3.3: Ethnicity-aware skin tone — Moroccan-audience-aware representation
+        // v3.7: Gender-aware prefix to reinforce model gender in skin tone text
+        const genderWord = gender === 'male' ? 'male model' : 'female model';
         const diversePool = [
-            'model has warm deep brown skin, rich luminous tone with natural warmth',
-            'model has medium olive complexion, Mediterranean warm undertones, healthy glow',
-            'model has light warm golden skin, sun-kissed undertones, smooth texture',
-            'model has deep espresso skin, high contrast, beautifully luminous',
-            'model has warm tawny complexion, North African skin tones, rich depth',
-            'model has fair ivory skin with cool rose undertones, delicate and luminous',
-            'model has caramel medium complexion, even tone, warm and approachable',
-            'model has rich amber skin, deep warm undertones, photogenic contrast',
-            'model has bronze sun-warmed complexion, Mediterranean golden tones',
-            'model has warm chestnut complexion, luminous North African colouring',
+            `${genderWord} has warm deep brown skin, rich luminous tone with natural warmth`,
+            `${genderWord} has medium olive complexion, Mediterranean warm undertones, healthy glow`,
+            `${genderWord} has light warm golden skin, sun-kissed undertones, smooth texture`,
+            `${genderWord} has deep espresso skin, high contrast, beautifully luminous`,
+            `${genderWord} has warm tawny complexion, North African skin tones, rich depth`,
+            `${genderWord} has fair ivory skin with cool rose undertones, delicate and luminous`,
+            `${genderWord} has caramel medium complexion, even tone, warm and approachable`,
+            `${genderWord} has rich amber skin, deep warm undertones, photogenic contrast`,
+            `${genderWord} has bronze sun-warmed complexion, Mediterranean golden tones`,
+            `${genderWord} has warm chestnut complexion, luminous North African colouring`,
         ];
         const fixedTones = {
-            'fair':    'model has fair ivory skin with cool rose undertones, delicate and luminous complexion',
-            'olive':   'model has medium olive complexion, Mediterranean warm undertones, healthy sun-kissed glow',
-            'warm':    'model has light warm golden skin, sun-kissed undertones, smooth radiant texture',
-            'caramel': 'model has caramel medium complexion, even warm tone, approachable and photogenic',
-            'deep':    'model has warm deep brown skin, rich luminous tone with natural warmth and depth',
+            'fair':    `${genderWord} has fair ivory skin with cool rose undertones, delicate and luminous complexion`,
+            'olive':   `${genderWord} has medium olive complexion, Mediterranean warm undertones, healthy sun-kissed glow`,
+            'warm':    `${genderWord} has light warm golden skin, sun-kissed undertones, smooth radiant texture`,
+            'caramel': `${genderWord} has caramel medium complexion, even warm tone, approachable and photogenic`,
+            'deep':    `${genderWord} has warm deep brown skin, rich luminous tone with natural warmth and depth`,
         };
         const eth = this.state.modelEthnicity || 'diverse';
         if (eth !== 'diverse' && fixedTones[eth]) return fixedTones[eth];

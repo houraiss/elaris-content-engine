@@ -2060,3 +2060,355 @@ code {
 .ps-enhance-text { white-space: pre-wrap; }
 .ps-enhance-actions { display: flex; gap: 8px; justify-content: flex-end; }
 @media (max-width: 768px) { .ps-enhance-diff { grid-template-columns: 1fr; } }
+
+/* ═══════════════════════════════════════════════════════════════
+   MOTION STUDIO (ms-*)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Layout Grid ──────────────────────────────────────────────── */
+.ms-layout {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr) 280px;
+    gap: 20px;
+    align-items: start;
+    width: 100%;
+}
+
+.ms-left,
+.ms-right {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+.ms-center {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+/* ── Chip Groups & Chips ─────────────────────────────────────── */
+.ms-chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+.ms-chip {
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 11px; font-weight: 600;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    transition: all var(--transition);
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+}
+.ms-chip:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+    background: var(--bg-hover);
+}
+.ms-chip.active {
+    background: var(--accent-subtle);
+    border-color: var(--moroccan-bronze);
+    color: var(--moroccan-bronze);
+}
+
+/* ── Sort/View Toggle ────────────────────────────────────────── */
+.ms-sort-group, .ms-view-group { gap: 4px !important; }
+
+/* ── Archetype Grid ──────────────────────────────────────────── */
+.ms-archetype-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    overflow: hidden;
+    padding-bottom: 4px;
+}
+
+/* ── Archetype Cards ─────────────────────────────────────────── */
+.ms-archetype-card {
+    position: relative;
+    padding: 14px;
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: linear-gradient(135deg, var(--arch-color, #1a1a2a) 0%, transparent 100%);
+    background-size: 200% 200%;
+    min-width: 0;
+    overflow: hidden;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.ms-archetype-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+.ms-archetype-card.selected {
+    border-color: var(--moroccan-bronze);
+    background: var(--accent-subtle);
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+.ms-archetype-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: var(--moroccan-bronze);
+    color: #fff;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+}
+
+.ms-arch-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+.ms-arch-icon { font-size: 22px; }
+.ms-arch-badge { font-size: 14px; }
+.ms-image-badge, .ms-video-badge {
+    font-size: 10px;
+    margin-left: auto;
+    opacity: 0.7;
+}
+.ms-arch-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+.ms-arch-tagline {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-style: italic;
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+.ms-arch-score {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+.ms-score-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.ms-score-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--moroccan-bronze), #d4a76a);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+.ms-score-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+    min-width: 30px;
+    text-align: right;
+}
+.ms-arch-best {
+    font-size: 10px;
+    color: var(--moroccan-bronze);
+    font-weight: 500;
+    opacity: 0.85;
+    line-height: 1.3;
+}
+
+/* ── Prompt Output ───────────────────────────────────────────── */
+.ms-prompt-block {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+.ms-prompt-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px; font-weight: 600;
+    color: var(--text-primary); gap: 8px;
+}
+.ms-prompt-text {
+    padding: 14px;
+    font-size: 12px; line-height: 1.7;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    word-break: break-word; overflow-wrap: break-word;
+}
+.ms-prompt-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* ── Shot Sequence Builder ───────────────────────────────────── */
+.ms-shot-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ms-shot-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--bg-secondary);
+    transition: all 0.2s ease;
+}
+.ms-shot-card:hover {
+    border-color: var(--border-hover);
+}
+
+.ms-shot-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+}
+.ms-shot-num {
+    background: var(--moroccan-bronze);
+    color: #fff;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+}
+.ms-shot-name {
+    flex: 1;
+    color: var(--text-primary);
+}
+.ms-shot-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.ms-shot-details {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.ms-shot-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+}
+
+/* ── History ──────────────────────────────────────────────────── */
+.ms-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+.ms-history-item {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-secondary);
+    position: relative;
+    transition: all 0.2s ease;
+    cursor: default;
+}
+.ms-history-item:hover {
+    border-color: var(--border-hover);
+}
+.ms-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+.ms-history-text {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    padding-right: 32px;
+}
+.ms-history-copy {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.ms-history-item:hover .ms-history-copy {
+    opacity: 1;
+}
+
+/* ── Tips ─────────────────────────────────────────────────────── */
+.ms-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 4px 0;
+}
+.ms-tip {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    padding: 4px 0;
+    border-bottom: 1px dashed var(--border);
+}
+.ms-tip:last-child { border-bottom: none; }
+
+/* ── Template Chips ──────────────────────────────────────────── */
+.ms-template-chip {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)) !important;
+    border-style: dashed !important;
+}
+.ms-template-chip:hover {
+    border-style: solid !important;
+    border-color: var(--moroccan-bronze) !important;
+}
+
+/* ═══ Responsive ═══════════════════════════════════════════════ */
+@media (max-width: 1400px) {
+    .ms-layout { grid-template-columns: 320px minmax(0, 1fr) 300px; }
+}
+@media (max-width: 1200px) {
+    .ms-layout { grid-template-columns: 280px minmax(0, 1fr) 260px; gap: 16px; }
+}
+@media (max-width: 1024px) {
+    .ms-layout { grid-template-columns: 260px minmax(0, 1fr); }
+    .ms-right { display: none; }
+    .ms-archetype-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+    .ms-layout { grid-template-columns: 1fr !important; gap: 12px; }
+    .ms-right { display: flex !important; }
+    .ms-archetype-grid { grid-template-columns: 1fr !important; }
+    .ms-shot-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+    .ms-archetype-grid { grid-template-columns: 1fr !important; gap: 6px; }
+}
