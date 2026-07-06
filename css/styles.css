@@ -2128,15 +2128,19 @@ code {
 }
 
 /* ── Archetype Cards ─────────────────────────────────────────── */
+/* Horizontal layout: icon-box | info | score — mirrors Prompt Studio */
 .ms-archetype-card {
     position: relative;
-    padding: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
     border-radius: var(--radius-lg);
     border: 2px solid var(--border);
     cursor: pointer;
-    transition: all 0.25s ease;
-    background: linear-gradient(135deg, var(--arch-color, #1a1a2a) 0%, transparent 100%);
-    background-size: 200% 200%;
+    transition: all var(--transition);
+    background: rgba(255,255,255,0.02);
+    min-height: 68px;
     min-width: 0;
     overflow: hidden;
     user-select: none;
@@ -2144,88 +2148,120 @@ code {
 }
 .ms-archetype-card:hover {
     border-color: var(--border-hover);
+    background: rgba(255,255,255,0.05);
     transform: translateY(-2px);
     box-shadow: var(--shadow-sm);
 }
 .ms-archetype-card.selected {
     border-color: var(--moroccan-bronze);
     background: var(--accent-subtle);
-    box-shadow: 0 0 20px var(--accent-glow);
-}
-.ms-archetype-card.selected::after {
-    content: '✓';
-    position: absolute;
-    top: 8px;
-    right: 10px;
-    background: var(--moroccan-bronze);
-    color: #fff;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700;
+    box-shadow: 0 0 16px var(--accent-glow);
 }
 
-.ms-arch-header {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
+/* Light theme adjustments */
+[data-theme="light"] .ms-archetype-card {
+    background: rgba(0,0,0,0.015);
 }
-.ms-arch-icon { font-size: 22px; }
-.ms-arch-badge { font-size: 14px; }
-.ms-image-badge, .ms-video-badge {
-    font-size: 10px;
-    margin-left: auto;
-    opacity: 0.7;
+[data-theme="light"] .ms-archetype-card:hover {
+    background: rgba(0,0,0,0.035);
 }
+[data-theme="light"] .ms-archetype-card.selected {
+    background: var(--accent-subtle);
+}
+
+/* ── Icon Box ─────────────────────────────────────────────────── */
+.ms-arch-icon-box {
+    width: 48px; height: 48px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    font-size: 22px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    position: relative;
+}
+.ms-archetype-card:hover .ms-arch-icon-box {
+    border-color: var(--border-hover);
+    transform: scale(1.05);
+}
+.ms-archetype-card.selected .ms-arch-icon-box {
+    border-color: var(--moroccan-bronze);
+    background: var(--accent-subtle);
+}
+
+/* ── Type Badge (VID / IMG) ──────────────────────────────────── */
+.ms-type-badge {
+    position: absolute;
+    bottom: -4px; right: -4px;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    padding: 1px 4px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    pointer-events: none;
+    line-height: 1.4;
+}
+.ms-type-video {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff;
+}
+.ms-type-image {
+    background: linear-gradient(135deg, #0369a1, #38bdf8);
+    color: #fff;
+}
+
+/* ── Rank Badges ─────────────────────────────────────────────── */
+.ms-rank-badge {
+    position: absolute;
+    top: 4px; left: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ── Info Column ─────────────────────────────────────────────── */
+.ms-arch-info { flex: 1; min-width: 0; }
 .ms-arch-name {
     font-size: 14px;
     font-weight: 700;
     color: var(--text-primary);
-    line-height: 1.2;
-    margin-bottom: 4px;
+    line-height: 1.25;
 }
 .ms-arch-tagline {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-secondary);
     font-style: italic;
+    margin-top: 3px;
     line-height: 1.3;
-    margin-bottom: 8px;
-}
-.ms-arch-score {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-}
-.ms-score-bar {
-    flex: 1;
-    height: 4px;
-    background: var(--border);
-    border-radius: 4px;
     overflow: hidden;
-}
-.ms-score-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--moroccan-bronze), #d4a76a);
-    border-radius: 4px;
-    transition: width 0.4s ease;
-}
-.ms-score-num {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-secondary);
-    font-variant-numeric: tabular-nums;
-    min-width: 30px;
-    text-align: right;
+    text-overflow: ellipsis;
 }
 .ms-arch-best {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--moroccan-bronze);
+    margin-top: 3px;
     font-weight: 500;
-    opacity: 0.85;
-    line-height: 1.3;
+    opacity: 0.9;
+    line-height: 1.4;
 }
+
+/* ── Score Column ────────────────────────────────────────────── */
+.ms-arch-score-col {
+    flex-shrink: 0;
+    margin-left: auto;
+    min-width: 28px;
+    text-align: right;
+}
+.ms-score-num {
+    font-size: 13px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.85;
+    color: var(--text-primary);
+}
+.ms-archetype-card:hover .ms-score-num { opacity: 1; }
 
 /* ── Prompt Output ───────────────────────────────────────────── */
 .ms-prompt-block {

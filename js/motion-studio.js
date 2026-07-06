@@ -687,26 +687,27 @@ const MotionStudio = {
             const score = this._computeScore(arch, this.state);
             const isSelected = this.state.selectedArchetypes.includes(arch.id);
             const badge = this._sortMode === 'recommended'
-                ? (i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '')
+                ? (i === 0 ? '<span class="ms-rank-badge ms-rank-1">🥇</span>' : i === 1 ? '<span class="ms-rank-badge ms-rank-2">🥈</span>' : i === 2 ? '<span class="ms-rank-badge ms-rank-3">🥉</span>' : '')
                 : '';
-            const fromImage = arch._fromImage
-                ? '<span class="ms-image-badge" title="Adapted from Image Archetype">📸</span>'
-                : '<span class="ms-video-badge" title="Video-Native Archetype">🎬</span>';
+            const typeBadge = arch._fromImage
+                ? '<span class="ms-type-badge ms-type-image" title="Adapted from Image Archetype">IMG</span>'
+                : '<span class="ms-type-badge ms-type-video" title="Video-Native Archetype">VID</span>';
 
             return `
-                <div class="ms-archetype-card ${isSelected ? 'selected' : ''}" data-id="${arch.id}" style="--arch-color:${arch.color || '#1a1a2a'}">
-                    <div class="ms-arch-header">
+                <div class="ms-archetype-card ${isSelected ? 'selected' : ''}" data-id="${arch.id}">
+                    ${badge}
+                    <div class="ms-arch-icon-box">
                         <span class="ms-arch-icon">${arch.icon}</span>
-                        <span class="ms-arch-badge">${badge}</span>
-                        ${fromImage}
+                        ${typeBadge}
                     </div>
-                    <div class="ms-arch-name">${arch.name}</div>
-                    <div class="ms-arch-tagline">${arch.tagline}</div>
-                    <div class="ms-arch-score" title="Compatibility score for ${this.state.category}">
-                        <div class="ms-score-bar"><div class="ms-score-fill" style="width:${score}%"></div></div>
-                        <span class="ms-score-num">${score}%</span>
+                    <div class="ms-arch-info">
+                        <div class="ms-arch-name">${arch.name}</div>
+                        <div class="ms-arch-tagline">${arch.tagline}</div>
+                        <div class="ms-arch-best">${arch.bestFor}</div>
                     </div>
-                    <div class="ms-arch-best">${arch.bestFor}</div>
+                    <div class="ms-arch-score-col">
+                        <span class="ms-score-num">${score}</span>
+                    </div>
                 </div>
             `;
         }).join('');
