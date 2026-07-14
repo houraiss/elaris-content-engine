@@ -13,8 +13,8 @@
 
 const MotionStudio = {
 
-    // ── Jewelry & Watch Categories (same as PromptStudio) ──────────────────────
-    categories: ['ring','necklace','earrings','bracelet','bangles','anklet','brooch','pendant','body-jewelry','watch'],
+    // ── Jewelry Categories (same as PromptStudio) ──────────────────────
+    categories: ['ring','necklace','earrings','bracelet','bangles','anklet','brooch','pendant','body-jewelry'],
 
     materials: [
         { id: 'sterling-silver', label: '925 Sterling Silver' },
@@ -598,6 +598,7 @@ const MotionStudio = {
 
     // ── State ──────────────────────
     state: {
+        product: 'silver',     // 'silver' | 'watch'
         pieceDesc: '',
         category: 'ring',
         material: 'sterling-silver',
@@ -730,12 +731,19 @@ const MotionStudio = {
                     <div class="card">
                         <div class="card-header"><span class="card-title">Describe Your Piece</span></div>
                         <div class="form-group">
+                            <label class="form-label">Product</label>
+                            <select class="form-select" id="ms-product">
+                                <option value="silver" ${this.state.product === 'silver' ? 'selected' : ''}>Silver</option>
+                                <option value="watch" ${this.state.product === 'watch' ? 'selected' : ''}>Watch</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="ms-category-group" style="${this.state.product === 'watch' ? 'display:none' : ''}">
                             <label class="form-label">Category</label>
                             <select class="form-select" id="ms-category">
                                 ${this.categories.map(c => `<option value="${c}" ${c === this.state.category ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1).replace('-', ' ')}</option>`).join('')}
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="ms-material-group" style="${this.state.product === 'watch' ? 'display:none' : ''}">
                             <label class="form-label">Material</label>
                             <select class="form-select" id="ms-material">
                                 ${this.materials.map(m => `<option value="${m.id}" ${m.id === this.state.material ? 'selected' : ''}>${m.label}</option>`).join('')}
@@ -1001,6 +1009,16 @@ const MotionStudio = {
             this._bind();
         });
 
+        // Product selector — toggle Category + Material visibility
+        q('#ms-product')?.addEventListener('change', e => {
+            this.state.product = e.target.value;
+            const isWatch = e.target.value === 'watch';
+            const catGroup = q('#ms-category-group');
+            const matGroup = q('#ms-material-group');
+            if (catGroup) catGroup.style.display = isWatch ? 'none' : '';
+            if (matGroup) matGroup.style.display = isWatch ? 'none' : '';
+            this._renderArchetypeGrid();
+        });
         // Dropdowns
         q('#ms-category')?.addEventListener('change', e => {
             this.state.category = e.target.value;
@@ -1190,10 +1208,13 @@ const MotionStudio = {
 
     // ── Build Video Prompt ──────────────────────
     _buildVideoPrompt(archetype) {
-        const material = this.materials.find(m => m.id === this.state.material)?.label || '925 sterling silver';
-        const catWord = this.state.category || 'ring';
+        const isWatchProduct = this.state.product === 'watch';
+        const material = isWatchProduct ? '' : (this.materials.find(m => m.id === this.state.material)?.label || '925 sterling silver');
+        const catWord = isWatchProduct ? 'watch' : (this.state.category || 'ring');
         let rawDesc = this.state.pieceDesc || '';
-        const piece = rawDesc ? `${material} ${catWord} ${rawDesc}` : `${material} ${catWord}`;
+        const piece = isWatchProduct
+            ? (rawDesc ? `luxury watch ${rawDesc}` : 'luxury watch')
+            : (rawDesc ? `${material} ${catWord} ${rawDesc}` : `${material} ${catWord}`);
 
         const subject = this._getUniqueSubject(archetype).replace(/\{piece\}/g, piece);
 
@@ -1315,9 +1336,11 @@ const MotionStudio = {
         const stoneDesc = stone && stone.id !== 'none' ? `, set with ${stone.label.toLowerCase()}` : '';
 
         // Silver descriptor
-        const silverDesc = this.state.material === '800-silver'
-            ? 'warm oxidized patina, traditional Moroccan silverwork'
-            : 'mirror-polished surface, brilliant metallic luster';
+        const silverDesc = isWatchProduct
+            ? 'precision timepiece, polished case and crystal, refined dial detail'
+            : (this.state.material === '800-silver'
+                ? 'warm oxidized patina, traditional Moroccan silverwork'
+                : 'mirror-polished surface, brilliant metallic luster');
 
         // Assemble
         const parts = [
@@ -1325,7 +1348,7 @@ const MotionStudio = {
             `Camera: ${cameraDesc}.`,
             subject + '.',
             archetype.scene || '',
-            `${lightDesc}, ${silverDesc}${stoneDesc}.`,
+            isWatchProduct ? `${lightDesc}, ${silverDesc}.` : `${lightDesc}, ${silverDesc}${stoneDesc}.`,
             speed !== 'real-time speed' ? `Speed: ${speed}.` : '',
             transText,
             paletteDesc,

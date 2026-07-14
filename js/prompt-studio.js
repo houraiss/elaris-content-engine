@@ -12,8 +12,8 @@
 
 const PromptStudio = {
 
-    // ── Jewelry & Watch Categories ──────────────────────
-    categories: ['ring','necklace','earrings','bracelet','bangles','anklet','brooch','pendant','body-jewelry','watch'],
+    // ── Jewelry Categories ──────────────────────
+    categories: ['ring','necklace','earrings','bracelet','bangles','anklet','brooch','pendant','body-jewelry'],
 
     materials: [
         { id: 'sterling-silver', label: '925 Sterling Silver' },
@@ -1722,6 +1722,7 @@ const PromptStudio = {
     ],
 
     state: {
+        product: 'silver',     // 'silver' | 'watch'
         pieceDesc: '',
         category: 'ring',
         material: 'sterling-silver',
@@ -1883,7 +1884,7 @@ const PromptStudio = {
             // v3.6: Sheets 2, 4, 7, 20 archetypes (human)
             'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
         ]);
-        const cat     = state.category || 'ring';
+        const cat     = state.product === 'watch' ? 'watch' : (state.category || 'ring');
         const isHuman = HUMAN.has(archetype.id);
 
         // Base score from category compatibility table
@@ -2165,12 +2166,19 @@ const PromptStudio = {
                     <div class="card">
                         <div class="card-header"><span class="card-title" data-i18n="ps_describe_piece">Describe Your Piece</span></div>
                         <div class="form-group">
+                            <label class="form-label" data-i18n="ps_product">Product</label>
+                            <select class="form-select" id="ps-product">
+                                <option value="silver" data-i18n="ps_product_silver" ${this.state.product === 'silver' ? 'selected' : ''}>Silver</option>
+                                <option value="watch" data-i18n="ps_product_watch" ${this.state.product === 'watch' ? 'selected' : ''}>Watch</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="ps-category-group" style="${this.state.product === 'watch' ? 'display:none' : ''}">
                             <label class="form-label" data-i18n="ps_category">Category</label>
                             <select class="form-select" id="ps-category">
                                 ${this.categories.map(c => `<option value="${c}" data-i18n="ps_cat_${c.replace(/-/g, '_')}" ${c === this.state.category ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1).replace('-', ' ')}</option>`).join('')}
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="ps-material-group" style="${this.state.product === 'watch' ? 'display:none' : ''}">
                             <label class="form-label" data-i18n="ps_material">Material</label>
                             <select class="form-select" id="ps-material">
                                 ${this.materials.map(m => `<option value="${m.id}" data-i18n="ps_mat_${m.id.replace(/-/g, '_')}" ${m.id === this.state.material ? 'selected' : ''}>${m.label}</option>`).join('')}
@@ -2510,6 +2518,16 @@ const PromptStudio = {
     _bind() {
         // Selects
         const q = id => this.container.querySelector(id);
+        // Product selector — toggle Category + Material visibility
+        q('#ps-product').addEventListener('change', e => {
+            this.state.product = e.target.value;
+            const isWatch = e.target.value === 'watch';
+            const catGroup = q('#ps-category-group');
+            const matGroup = q('#ps-material-group');
+            if (catGroup) catGroup.style.display = isWatch ? 'none' : '';
+            if (matGroup) matGroup.style.display = isWatch ? 'none' : '';
+            this._renderArchetypeGrid();
+        });
         q('#ps-category').addEventListener('change', e => {
             this.state.category = e.target.value;
             this._renderArchetypeGrid();
@@ -3191,23 +3209,27 @@ const PromptStudio = {
         // selected, or carry over an old description from a previous category session).
         // We sanitize the raw description by stripping ALL jewelry-type words and any
         // material descriptors, then always prepend: material + correct category type.
-        const material = this.materials.find(m => m.id === this.state.material)?.label || '925 sterling silver';
+        // ── Product-aware piece label ──────────────────────
+        const isWatchProduct = this.state.product === 'watch';
+        const material = isWatchProduct ? '' : (this.materials.find(m => m.id === this.state.material)?.label || '925 sterling silver');
         const catLabels = {
             'ring': 'ring', 'necklace': 'necklace', 'earring': 'earrings',
             'bracelet': 'bracelet', 'bangle': 'bangle', 'anklet': 'anklet',
             'pendant': 'pendant', 'brooch': 'brooch',
         };
-        const catWord = catLabels[this.state.category] || this.state.category;
+        const catWord = isWatchProduct ? 'watch' : (catLabels[this.state.category] || this.state.category);
         // Strip jewelry type words so wrong category can't bleed in
-        const _typeWords = 'ring|rings|necklace|necklaces|earring|earrings|bracelet|bracelets|bangle|bangles|anklet|anklets|pendant|pendants|brooch|brooches|brooche';
+        const _typeWords = 'ring|rings|necklace|necklaces|earring|earrings|bracelet|bracelets|bangle|bangles|anklet|anklets|pendant|pendants|brooch|brooches|brooche|watch|watches';
         // Strip material text the user may have typed manually
         const _matWords = '925\\s*sterling\\s*silver|sterling\\s*silver|18k\\s*gold|14k\\s*gold|rose\\s*gold|yellow\\s*gold|white\\s*gold|platinum|\\b925\\b';
         let _rawDesc = this.state.pieceDesc || '';
         _rawDesc = _rawDesc.replace(new RegExp('\\b(' + _typeWords + ')\\b', 'gi'), '');
         _rawDesc = _rawDesc.replace(new RegExp('(' + _matWords + ')', 'gi'), '');
         _rawDesc = _rawDesc.replace(/\s+/g, ' ').trim();
-        // piece = "925 Sterling Silver ring with diamonds accents" (always correct type)
-        const piece = _rawDesc ? `${material} ${catWord} ${_rawDesc}` : `${material} ${catWord}`;
+        // piece = "925 Sterling Silver ring with diamonds accents" OR "luxury watch" for watch product
+        const piece = isWatchProduct
+            ? (_rawDesc ? `luxury watch ${_rawDesc}` : 'luxury watch')
+            : (_rawDesc ? `${material} ${catWord} ${_rawDesc}` : `${material} ${catWord}`);
         this._lastPiece = piece;
         this._lastMaterial = material;
         // v3.1: unified lighting+mood single state key
@@ -3297,10 +3319,12 @@ const PromptStudio = {
             : '';
         const cameraDesc = profileOverride || cameraMap[this.state.angle] || 'shot on 85mm f/1.4 lens, shallow depth of field';
 
-        // ── Silver-specific material descriptors ──────────────────────
-        const silverDesc = this.state.material === '800-silver'
-            ? 'warm oxidized patina, traditional Moroccan silverwork texture, hand-hammered artisanal finish'
-            : 'rhodium-plated sheen, mirror-polished surface, brilliant metallic luster';
+        // ── Silver-specific material descriptors (skipped for watches) ──────────────────────
+        const silverDesc = isWatchProduct
+            ? 'precision timepiece, polished case and crystal, refined dial detail, luxury watch craftsmanship'
+            : (this.state.material === '800-silver'
+                ? 'warm oxidized patina, traditional Moroccan silverwork texture, hand-hammered artisanal finish'
+                : 'rhodium-plated sheen, mirror-polished surface, brilliant metallic luster');
 
         // ── Surface/backdrop override ──────────────────────
         let surfaceDesc = '';
@@ -3611,8 +3635,8 @@ const PromptStudio = {
             (isHumanActive) ? `${this.state.modelGender === 'male' ? 'Male model, man' : 'Female model, woman'}.` : '',
             // PLACEMENT RULE — only for human archetypes (product shots have no finger)
             (isHumanActive && placementRule) ? `${placementRule}.` : '',
-            // MATERIAL — stated once, cleanly, with metal descriptor
-            `${material}, ${silverDesc}.`,
+            // MATERIAL — stated once, cleanly, with metal descriptor (watch: skip material, use watch descriptor)
+            isWatchProduct ? `${silverDesc}.` : `${material}, ${silverDesc}.`,
             // SCENE — archetype visual story (lighting, composition, mood)
             archetype.scene + '.',
             // CAMERA — lens, aperture, depth of field (no angle conflict)
