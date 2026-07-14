@@ -13,8 +13,8 @@
 
 const MotionStudio = {
 
-    // ── Jewelry Categories (same as PromptStudio) ──────────────────────
-    categories: ['ring','necklace','earrings','bracelet','bangles','anklet','brooch','pendant','body-jewelry'],
+    // ── Jewelry & Watch Categories (same as PromptStudio) ──────────────────────
+    categories: ['ring','necklace','earrings','bracelet','bangles','anklet','brooch','pendant','body-jewelry','watch'],
 
     materials: [
         { id: 'sterling-silver', label: '925 Sterling Silver' },
@@ -58,7 +58,7 @@ const MotionStudio = {
                 'camera starts inside the reflection on {piece} surface, pulls back to reveal piece on marble pedestal',
             ],
             scene: 'smooth continuous dolly-out, extreme macro to full product reveal, gradient or solid backdrop, dramatic lighting shift as scale changes',
-            compat: { ring: 95, necklace: 90, earrings: 85, bracelet: 90, bangles: 85, anklet: 70, brooch: 90, pendant: 95, 'body-jewelry': 60 },
+            compat: { ring: 95, necklace: 90, earrings: 85, bracelet: 90, bangles: 85, anklet: 70, brooch: 90, pendant: 95, 'body-jewelry': 60, watch: 90 },
         },
         {
             id: 'jewelry-orbit',
@@ -77,7 +77,7 @@ const MotionStudio = {
                 'multi-angle orbit around {piece} on mirrored surface, reflection creating perfect symmetry as it turns',
             ],
             scene: '360° orbit or product rotation, floating or turntable, gradient backdrop, dramatic rim lighting, every angle visible',
-            compat: { ring: 98, necklace: 80, earrings: 85, bracelet: 85, bangles: 80, anklet: 70, brooch: 95, pendant: 95, 'body-jewelry': 50 },
+            compat: { ring: 98, necklace: 80, earrings: 85, bracelet: 85, bangles: 80, anklet: 70, brooch: 95, pendant: 95, 'body-jewelry': 50, watch: 80 },
         },
         {
             id: 'walk-and-shine',
@@ -96,7 +96,7 @@ const MotionStudio = {
                 'side tracking shot of model walking along wall, {piece} catching light through architectural shadows',
             ],
             scene: 'tracking or dolly movement, model in motion, jewelry catching dynamic changing light, fashion film aesthetic',
-            compat: { ring: 60, necklace: 95, earrings: 90, bracelet: 70, bangles: 85, anklet: 55, brooch: 50, pendant: 85, 'body-jewelry': 65 },
+            compat: { ring: 60, necklace: 95, earrings: 90, bracelet: 70, bangles: 85, anklet: 55, brooch: 50, pendant: 85, 'body-jewelry': 65, watch: 80 },
         },
         {
             id: 'unboxing-moment',
@@ -115,7 +115,7 @@ const MotionStudio = {
                 'hands carefully removing {piece} from branded Elaris box, placing it on wrist/neck, the wearing ritual',
             ],
             scene: 'intimate overhead or eye-level, hands as subject, luxury packaging, warm soft lighting, slow deliberate movements, ASMR quality',
-            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 90, bangles: 85, anklet: 70, brooch: 75, pendant: 90, 'body-jewelry': 50 },
+            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 90, bangles: 85, anklet: 70, brooch: 75, pendant: 90, 'body-jewelry': 50, watch: 80 },
         },
         {
             id: 'golden-hour-pass',
@@ -134,7 +134,7 @@ const MotionStudio = {
                 'model on rooftop at sunset, slowly turning to camera, {piece} transitioning from shadow to golden light',
             ],
             scene: 'golden hour directional sunlight, warm amber tones, lens flares optional, outdoor environment, jewelry as light catcher',
-            compat: { ring: 75, necklace: 95, earrings: 90, bracelet: 80, bangles: 75, anklet: 60, brooch: 50, pendant: 85, 'body-jewelry': 55 },
+            compat: { ring: 75, necklace: 95, earrings: 90, bracelet: 80, bangles: 75, anklet: 60, brooch: 50, pendant: 85, 'body-jewelry': 55, watch: 80 },
         },
         {
             id: 'hand-showcase',
@@ -153,7 +153,7 @@ const MotionStudio = {
                 'single hand slowly clenching and opening fist, {piece} catching different light angles with each position',
             ],
             scene: 'macro lens, hand choreography, smooth slow movements, studio or natural light, jewelry as the star',
-            compat: { ring: 98, necklace: 40, earrings: 30, bracelet: 95, bangles: 90, anklet: 30, brooch: 40, pendant: 35, 'body-jewelry': 25 },
+            compat: { ring: 98, necklace: 40, earrings: 30, bracelet: 95, bangles: 90, anklet: 30, brooch: 40, pendant: 35, 'body-jewelry': 25, watch: 80 },
         },
         {
             id: 'mirror-vanity',
@@ -172,7 +172,7 @@ const MotionStudio = {
                 'hands reaching for {piece} from jewelry tray on vanity, lifting it into frame, putting it on in mirror',
             ],
             scene: 'vanity mirror setting, warm intimate lighting, reflections as dual perspectives, getting-ready narrative, elegant ritual',
-            compat: { ring: 70, necklace: 90, earrings: 95, bracelet: 85, bangles: 80, anklet: 35, brooch: 55, pendant: 80, 'body-jewelry': 45 },
+            compat: { ring: 70, necklace: 90, earrings: 95, bracelet: 85, bangles: 80, anklet: 35, brooch: 55, pendant: 80, 'body-jewelry': 45, watch: 80 },
         },
         {
             id: 'water-interaction',
@@ -191,7 +191,7 @@ const MotionStudio = {
                 'rain falling on {piece} resting on stone surface, each raindrop impact captured in hyper slow motion',
             ],
             scene: 'ultra slow motion water interaction, high-speed photography quality, dramatic lighting on water, reflective surfaces, visceral impact',
-            compat: { ring: 90, necklace: 55, earrings: 50, bracelet: 85, bangles: 80, anklet: 60, brooch: 45, pendant: 75, 'body-jewelry': 35 },
+            compat: { ring: 90, necklace: 55, earrings: 50, bracelet: 85, bangles: 80, anklet: 60, brooch: 45, pendant: 75, 'body-jewelry': 35, watch: 80 },
         },
         {
             id: 'fabric-flow',
@@ -210,7 +210,7 @@ const MotionStudio = {
                 'fabric dropped from above in slow motion, {piece} revealed beneath as silk falls away elegantly',
             ],
             scene: 'flowing fabric as primary motion element, silk or chiffon, jewelry stays pin-sharp, slow motion, editorial beauty',
-            compat: { ring: 55, necklace: 90, earrings: 85, bracelet: 60, bangles: 65, anklet: 40, brooch: 45, pendant: 80, 'body-jewelry': 75 },
+            compat: { ring: 55, necklace: 90, earrings: 85, bracelet: 60, bangles: 65, anklet: 40, brooch: 45, pendant: 80, 'body-jewelry': 75, watch: 80 },
         },
         {
             id: 'street-strut',
@@ -229,7 +229,7 @@ const MotionStudio = {
                 'model emerging from subway stairs onto city street, {piece} catching first daylight, urban lifestyle',
             ],
             scene: 'urban street environment, tracking camera movement, city lights and neon, confident walk, editorial fashion film',
-            compat: { ring: 80, necklace: 90, earrings: 85, bracelet: 85, bangles: 70, anklet: 40, brooch: 50, pendant: 80, 'body-jewelry': 55 },
+            compat: { ring: 80, necklace: 90, earrings: 85, bracelet: 85, bangles: 70, anklet: 40, brooch: 50, pendant: 80, 'body-jewelry': 55, watch: 80 },
         },
         {
             id: 'detail-macro-pan',
@@ -248,7 +248,7 @@ const MotionStudio = {
                 'camera creeps across {piece} hallmark stamp, zooming into the artisanal detail, pulling back to full piece',
             ],
             scene: 'extreme macro lens, slow deliberate camera pan, studio lighting revealing surface detail, individual grain visible',
-            compat: { ring: 95, necklace: 65, earrings: 70, bracelet: 70, bangles: 60, anklet: 55, brooch: 85, pendant: 80, 'body-jewelry': 40 },
+            compat: { ring: 95, necklace: 65, earrings: 70, bracelet: 70, bangles: 60, anklet: 55, brooch: 85, pendant: 80, 'body-jewelry': 40, watch: 80 },
         },
         {
             id: 'day-to-night',
@@ -267,7 +267,7 @@ const MotionStudio = {
                 'model wearing {piece} walks from sunlit park into moody evening street, continuous tracking shot through time change',
             ],
             scene: 'day-to-night transition, same piece in contrasting light conditions, smooth morph or match-cut, versatility narrative',
-            compat: { ring: 85, necklace: 90, earrings: 85, bracelet: 85, bangles: 80, anklet: 60, brooch: 70, pendant: 85, 'body-jewelry': 55 },
+            compat: { ring: 85, necklace: 90, earrings: 85, bracelet: 85, bangles: 80, anklet: 60, brooch: 70, pendant: 85, 'body-jewelry': 55, watch: 80 },
         },
         {
             id: 'multi-piece-stack',
@@ -286,7 +286,7 @@ const MotionStudio = {
                 'time-lapse of bare hand transforming to fully adorned with {piece} collection, fast then slow on final piece',
             ],
             scene: 'sequential piece addition, building luxury, satisfying stacking rhythm, close-up focus, ASMR-quality sound design',
-            compat: { ring: 98, necklace: 70, earrings: 65, bracelet: 98, bangles: 98, anklet: 55, brooch: 40, pendant: 55, 'body-jewelry': 40 },
+            compat: { ring: 98, necklace: 70, earrings: 65, bracelet: 98, bangles: 98, anklet: 55, brooch: 40, pendant: 55, 'body-jewelry': 40, watch: 80 },
         },
         {
             id: 'spinning-hero',
@@ -305,7 +305,7 @@ const MotionStudio = {
                 '{piece} spinning with subtle bounce motion, gradient background shifting colors subtly during rotation',
             ],
             scene: 'product rotation/spin, floating or turntable, clean gradient backdrop, studio product lighting, hero shot in motion',
-            compat: { ring: 95, necklace: 85, earrings: 80, bracelet: 90, bangles: 85, anklet: 75, brooch: 85, pendant: 95, 'body-jewelry': 50 },
+            compat: { ring: 95, necklace: 85, earrings: 80, bracelet: 90, bangles: 85, anklet: 75, brooch: 85, pendant: 95, 'body-jewelry': 50, watch: 80 },
         },
         {
             id: 'lifestyle-vignette',
@@ -324,7 +324,7 @@ const MotionStudio = {
                 'lifestyle montage: {piece} at gym mirror, coffee shop, flower market, restaurant — urban luxury life',
             ],
             scene: 'multi-shot lifestyle montage, quick cuts between moments, consistent jewelry visibility, aspirational everyday luxury',
-            compat: { ring: 95, necklace: 85, earrings: 80, bracelet: 95, bangles: 85, anklet: 50, brooch: 40, pendant: 75, 'body-jewelry': 35 },
+            compat: { ring: 95, necklace: 85, earrings: 80, bracelet: 95, bangles: 85, anklet: 50, brooch: 40, pendant: 75, 'body-jewelry': 35, watch: 95 },
         },
         {
             id: 'souk-walkthrough',
@@ -343,7 +343,7 @@ const MotionStudio = {
                 'following shot of model from behind walking through brass market stalls, {piece} visible as she turns to browse',
             ],
             scene: 'Moroccan souk/market, steadicam follow, vibrant colors (spices, textiles, brass), dappled light through canopies, cultural immersion',
-            compat: { ring: 85, necklace: 90, earrings: 80, bracelet: 85, bangles: 90, anklet: 75, brooch: 70, pendant: 85, 'body-jewelry': 60 },
+            compat: { ring: 85, necklace: 90, earrings: 80, bracelet: 85, bangles: 90, anklet: 75, brooch: 70, pendant: 85, 'body-jewelry': 60, watch: 80 },
         },
         {
             id: 'crafting-process',
@@ -362,7 +362,7 @@ const MotionStudio = {
                 'split-screen: artisan working on {piece} in left half, finished piece rotating on gradient in right half',
             ],
             scene: 'artisan workshop, macro and time-lapse, warm tungsten lighting, raw materials to finished product, craft storytelling',
-            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 90, bangles: 95, anklet: 70, brooch: 85, pendant: 85, 'body-jewelry': 55 },
+            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 90, bangles: 95, anklet: 70, brooch: 85, pendant: 85, 'body-jewelry': 55, watch: 80 },
         },
         {
             id: 'reel-hook',
@@ -381,7 +381,7 @@ const MotionStudio = {
                 'HOOK: hand slams down on table with {piece} ring — impact cut. THEN: smooth close-up of piece, gentle turn to show all angles',
             ],
             scene: 'attention-grabbing first second, dramatic light or movement hook, then slow deliberate reveal, designed for social scroll-stopping',
-            compat: { ring: 90, necklace: 90, earrings: 85, bracelet: 90, bangles: 85, anklet: 70, brooch: 80, pendant: 90, 'body-jewelry': 60 },
+            compat: { ring: 90, necklace: 90, earrings: 85, bracelet: 90, bangles: 85, anklet: 70, brooch: 80, pendant: 90, 'body-jewelry': 60, watch: 80 },
         },
         {
             id: 'parallax-layers',
@@ -400,7 +400,7 @@ const MotionStudio = {
                 'depth layers: sheer fabric in blurred foreground, {piece} on skin in perfect focus, window light in soft background',
             ],
             scene: 'parallax depth layers, foreground-midground-background separation, lateral or vertical camera movement, cinematic depth',
-            compat: { ring: 65, necklace: 90, earrings: 85, bracelet: 60, bangles: 55, anklet: 35, brooch: 50, pendant: 85, 'body-jewelry': 55 },
+            compat: { ring: 65, necklace: 90, earrings: 85, bracelet: 60, bangles: 55, anklet: 35, brooch: 50, pendant: 85, 'body-jewelry': 55, watch: 80 },
         },
         {
             id: 'catch-the-light',
@@ -419,7 +419,7 @@ const MotionStudio = {
                 'model moving through shaft of light, {piece} erupting in prismatic sparkle as it enters the beam',
             ],
             scene: 'slow motion sparkle capture, single directional light source, explosive light reflection moment, viral-worthy visual',
-            compat: { ring: 95, necklace: 75, earrings: 90, bracelet: 80, bangles: 75, anklet: 50, brooch: 70, pendant: 90, 'body-jewelry': 40 },
+            compat: { ring: 95, necklace: 75, earrings: 90, bracelet: 80, bangles: 75, anklet: 50, brooch: 70, pendant: 90, 'body-jewelry': 40, watch: 80 },
         },
     ],
 

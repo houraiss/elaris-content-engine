@@ -12,8 +12,8 @@
 
 const PromptStudio = {
 
-    // ── Jewelry Categories ──────────────────────
-    categories: ['ring','necklace','earrings','bracelet','bangles','anklet','brooch','pendant','body-jewelry'],
+    // ── Jewelry & Watch Categories ──────────────────────
+    categories: ['ring','necklace','earrings','bracelet','bangles','anklet','brooch','pendant','body-jewelry','watch'],
 
     materials: [
         { id: 'sterling-silver', label: '925 Sterling Silver' },
@@ -57,7 +57,7 @@ const PromptStudio = {
                 'hand resting on shoulder displaying {piece}',
             ],
             scene: 'extreme close-up, warm skin tones, soft focus on face/body, sharp focus on jewelry, minimal makeup, sensual but editorial, warm studio lighting',
-            compat: { ring: 95, necklace: 85, earrings: 90, bracelet: 70, bangles: 80, anklet: 50, brooch: 40, pendant: 75, 'body-jewelry': 60 },
+            compat: { ring: 95, necklace: 85, earrings: 90, bracelet: 70, bangles: 80, anklet: 50, brooch: 40, pendant: 75, 'body-jewelry': 60, watch: 85 },
         },
         {
             id: 'object-pairing',
@@ -78,7 +78,7 @@ const PromptStudio = {
                 '{piece} wrapped around a single long-stem rose',
             ],
             scene: 'clean background, natural lighting, overhead or editorial angle, visual storytelling through contrast, ultra-realistic',
-            compat: { ring: 90, necklace: 60, earrings: 50, bracelet: 65, bangles: 55, anklet: 45, brooch: 85, pendant: 80, 'body-jewelry': 30 },
+            compat: { ring: 90, necklace: 60, earrings: 50, bracelet: 65, bangles: 55, anklet: 45, brooch: 85, pendant: 80, 'body-jewelry': 30, watch: 80 },
         },
         {
             id: 'editorial-model',
@@ -97,7 +97,7 @@ const PromptStudio = {
                 'model in profile view showing {piece} catching the light',
             ],
             scene: 'clean white/grey background, black clothing to let jewelry pop, expressive hand poses, fashion magazine quality, professional studio lighting',
-            compat: { ring: 60, necklace: 95, earrings: 90, bracelet: 55, bangles: 60, anklet: 30, brooch: 65, pendant: 85, 'body-jewelry': 90 },
+            compat: { ring: 60, necklace: 95, earrings: 90, bracelet: 55, bangles: 60, anklet: 30, brooch: 65, pendant: 85, 'body-jewelry': 90, watch: 75 },
         },
         {
             id: 'surreal-animal',
@@ -116,7 +116,7 @@ const PromptStudio = {
                 'dove in flight with {piece} in its beak against soft sky backdrop',
             ],
             scene: 'pure white or black studio background, studio-perfect lighting, surrealist concept, ultra-sharp detail, 4K photorealistic',
-            compat: { ring: 80, necklace: 50, earrings: 40, bracelet: 55, bangles: 50, anklet: 35, brooch: 85, pendant: 75, 'body-jewelry': 30 },
+            compat: { ring: 80, necklace: 50, earrings: 40, bracelet: 55, bangles: 50, anklet: 35, brooch: 85, pendant: 75, 'body-jewelry': 30, watch: 65 },
         },
         {
             id: 'gradient-product',
@@ -135,7 +135,7 @@ const PromptStudio = {
                 '{piece} placed on velvet draped surface with moody lighting',
             ],
             scene: 'warm gradient or moody background, dramatic angles, product appears to float, zero clutter, hero shot',
-            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 85, bangles: 80, anklet: 70, brooch: 80, pendant: 90, 'body-jewelry': 50 },
+            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 85, bangles: 80, anklet: 70, brooch: 80, pendant: 90, 'body-jewelry': 50, watch: 90 },
         },
         {
             id: 'bw-dramatic',
@@ -153,7 +153,7 @@ const PromptStudio = {
                 'profile silhouette with {piece} catching the only light source',
             ],
             scene: 'high contrast black and white, jewelry either stays monochrome or gets selective color treatment, very editorial, fashion-forward, cinematic',
-            compat: { ring: 85, necklace: 70, earrings: 80, bracelet: 75, bangles: 65, anklet: 45, brooch: 60, pendant: 70, 'body-jewelry': 60 },
+            compat: { ring: 85, necklace: 70, earrings: 80, bracelet: 75, bangles: 65, anklet: 45, brooch: 60, pendant: 70, 'body-jewelry': 60, watch: 80 },
         },
         {
             id: 'shadow-play',
@@ -171,7 +171,7 @@ const PromptStudio = {
                 '{piece} with geometric shadow pattern from perforated screen',
             ],
             scene: 'overhead angle, harsh natural light, shadows as compositional element, minimal text, muted earth tones, art-directed',
-            compat: { ring: 85, necklace: 50, earrings: 40, bracelet: 80, bangles: 75, anklet: 70, brooch: 55, pendant: 55, 'body-jewelry': 35 },
+            compat: { ring: 85, necklace: 50, earrings: 40, bracelet: 80, bangles: 75, anklet: 70, brooch: 55, pendant: 55, 'body-jewelry': 35, watch: 85 },
         },
         {
             id: 'bold-typography',
@@ -188,7 +188,7 @@ const PromptStudio = {
                 '{piece} integrated into a typographic poster layout',
             ],
             scene: 'serif/display typography, brand name as design element, typography interacts with product, minimal color palette, premium editorial layout',
-            compat: { ring: 75, necklace: 80, earrings: 70, bracelet: 75, bangles: 70, anklet: 50, brooch: 80, pendant: 80, 'body-jewelry': 55 },
+            compat: { ring: 75, necklace: 80, earrings: 70, bracelet: 75, bangles: 70, anklet: 50, brooch: 80, pendant: 80, 'body-jewelry': 55, watch: 75 },
         },
         {
             id: 'collection-showcase',
@@ -206,7 +206,7 @@ const PromptStudio = {
                 'model touching collarbone, showing earrings, pendant, and ring from the same {piece} collection',
             ],
             scene: 'soft neutral or stone wall backdrop, black or jewel-tone clothing, all pieces visible simultaneously, editorial fashion photography, 85mm lens shallow depth of field',
-            compat: { ring: 70, necklace: 95, earrings: 90, bracelet: 85, bangles: 80, anklet: 40, brooch: 50, pendant: 80, 'body-jewelry': 65 },
+            compat: { ring: 70, necklace: 95, earrings: 90, bracelet: 85, bangles: 80, anklet: 40, brooch: 50, pendant: 80, 'body-jewelry': 65, watch: 70 },
         },
         {
             id: 'macro-detail',
@@ -224,7 +224,7 @@ const PromptStudio = {
                 'side profile macro of {piece} showing band thickness and interior polish',
             ],
             scene: 'macro photography, 100mm macro lens, razor-thin depth of field, individual metal grain visible, studio ring light, clean black or white backdrop',
-            compat: { ring: 95, necklace: 60, earrings: 70, bracelet: 65, bangles: 55, anklet: 50, brooch: 80, pendant: 75, 'body-jewelry': 40 },
+            compat: { ring: 95, necklace: 60, earrings: 70, bracelet: 65, bangles: 55, anklet: 50, brooch: 80, pendant: 75, 'body-jewelry': 40, watch: 90 },
         },
         {
             id: 'wet-element',
@@ -243,7 +243,7 @@ const PromptStudio = {
                 'model\u2019s wet hand emerging from water showing {piece}, water cascading off fingers',
             ],
             scene: 'high-speed photography to freeze water motion, dramatic side lighting hitting water droplets, dark moody backdrop, reflective surfaces, ultra-sharp detail',
-            compat: { ring: 90, necklace: 55, earrings: 50, bracelet: 80, bangles: 75, anklet: 60, brooch: 45, pendant: 70, 'body-jewelry': 35 },
+            compat: { ring: 90, necklace: 55, earrings: 50, bracelet: 80, bangles: 75, anklet: 60, brooch: 45, pendant: 70, 'body-jewelry': 35, watch: 85 },
         },
         {
             id: 'architectural-context',
@@ -262,7 +262,7 @@ const PromptStudio = {
                 '{piece} resting on terrazzo step, geometric pattern complementing jewelry design',
             ],
             scene: 'architectural photography meets fashion, leading lines from building elements, natural textures (stone, concrete, tile), warm Mediterranean or North African light, editorial crop',
-            compat: { ring: 55, necklace: 90, earrings: 85, bracelet: 60, bangles: 65, anklet: 45, brooch: 50, pendant: 80, 'body-jewelry': 55 },
+            compat: { ring: 55, necklace: 90, earrings: 85, bracelet: 60, bangles: 65, anklet: 45, brooch: 50, pendant: 80, 'body-jewelry': 55, watch: 70 },
         },
         {
             id: 'flat-lay',
@@ -281,7 +281,7 @@ const PromptStudio = {
                 '{piece} set laid out on silk fabric with perfume bottle and dried lavender',
             ],
             scene: 'strict top-down overhead angle, carefully curated negative space, props tell a lifestyle story, soft natural window light from one side, Instagram-ready composition',
-            compat: { ring: 80, necklace: 80, earrings: 80, bracelet: 80, bangles: 80, anklet: 70, brooch: 75, pendant: 80, 'body-jewelry': 45 },
+            compat: { ring: 80, necklace: 80, earrings: 80, bracelet: 80, bangles: 80, anklet: 70, brooch: 75, pendant: 80, 'body-jewelry': 45, watch: 85 },
         },
         {
             id: 'motion-blur',
@@ -299,7 +299,7 @@ const PromptStudio = {
                 'model spinning, {piece} frozen in sharp detail while dress blurs around her',
             ],
             scene: 'slow shutter speed on movement, fast flash freezing jewelry, motion blur on fabric/hair only, dramatic editorial feeling, studio or outdoor with wind machine',
-            compat: { ring: 55, necklace: 80, earrings: 95, bracelet: 60, bangles: 65, anklet: 45, brooch: 35, pendant: 70, 'body-jewelry': 80 },
+            compat: { ring: 55, necklace: 80, earrings: 95, bracelet: 60, bangles: 65, anklet: 45, brooch: 35, pendant: 70, 'body-jewelry': 80, watch: 70 },
         },
         {
             id: 'cinematic-portrait',
@@ -317,7 +317,7 @@ const PromptStudio = {
                 'dramatic low-angle portrait of model wearing {piece}, city lights bokeh behind',
             ],
             scene: 'cinematic color grading (teal-orange or film noir), anamorphic lens bokeh, practical light sources visible, movie-still composition, 35mm film grain, atmospheric haze',
-            compat: { ring: 70, necklace: 90, earrings: 85, bracelet: 55, bangles: 50, anklet: 30, brooch: 45, pendant: 80, 'body-jewelry': 65 },
+            compat: { ring: 70, necklace: 90, earrings: 85, bracelet: 55, bangles: 50, anklet: 30, brooch: 45, pendant: 80, 'body-jewelry': 65, watch: 75 },
         },
         {
             id: 'mirror-reflection',
@@ -335,7 +335,7 @@ const PromptStudio = {
                 'model\u2019s hands wearing {piece} reflected in a round compact mirror on dark surface',
             ],
             scene: 'reflective surfaces central to composition, symmetry and doubles, clean minimalist framing, controlled studio lighting to manage reflections, ultra-sharp focus',
-            compat: { ring: 90, necklace: 60, earrings: 75, bracelet: 55, bangles: 50, anklet: 40, brooch: 45, pendant: 80, 'body-jewelry': 30 },
+            compat: { ring: 90, necklace: 60, earrings: 75, bracelet: 55, bangles: 50, anklet: 40, brooch: 45, pendant: 80, 'body-jewelry': 30, watch: 85 },
         },
         {
             id: 'texture-contrast',
@@ -354,7 +354,7 @@ const PromptStudio = {
                 '{piece} placed on oxidized copper plate, patina contrast with polished silver',
             ],
             scene: 'tactile texture dominates, silver jewelry as the refined element against raw material, tight crop to emphasize material contrast, side-raking light to reveal surface detail',
-            compat: { ring: 80, necklace: 65, earrings: 60, bracelet: 80, bangles: 85, anklet: 70, brooch: 70, pendant: 75, 'body-jewelry': 40 },
+            compat: { ring: 80, necklace: 65, earrings: 60, bracelet: 80, bangles: 85, anklet: 70, brooch: 70, pendant: 75, 'body-jewelry': 40, watch: 85 },
         },
         {
             id: 'celestial-mythic',
@@ -373,7 +373,7 @@ const PromptStudio = {
                 '{piece} resting on crescent moon prop with scattered stars, fantasy product shot',
             ],
             scene: 'ethereal glowing light, cosmic or mythological atmosphere, deep blues and silvers, starfield or moonlit ambiance, otherworldly editorial, fine art photography',
-            compat: { ring: 60, necklace: 95, earrings: 80, bracelet: 50, bangles: 55, anklet: 40, brooch: 70, pendant: 90, 'body-jewelry': 95 },
+            compat: { ring: 60, necklace: 95, earrings: 80, bracelet: 50, bangles: 55, anklet: 40, brooch: 70, pendant: 90, 'body-jewelry': 95, watch: 55 },
         },
         // ── NEW: Seasonal ──────────────────────
         {
@@ -393,7 +393,7 @@ const PromptStudio = {
                 '{piece} arranged with autumn leaves and warm cinnamon sticks, fall collection launch',
             ],
             scene: 'seasonal color palette and props, warm inviting atmosphere, gift-giving context, lifestyle storytelling, aspirational yet accessible, editorial product photography',
-            compat: { ring: 90, necklace: 90, earrings: 85, bracelet: 85, bangles: 75, anklet: 60, brooch: 70, pendant: 90, 'body-jewelry': 50 },
+            compat: { ring: 90, necklace: 90, earrings: 85, bracelet: 85, bangles: 75, anklet: 60, brooch: 70, pendant: 90, 'body-jewelry': 50, watch: 85 },
         },
         // ── NEW: Lifestyle ──────────────────────
         {
@@ -414,7 +414,7 @@ const PromptStudio = {
                 'model adjusting sunglasses on a Mediterranean balcony wearing {piece}, travel lifestyle',
             ],
             scene: 'real-world environment, natural unposed feeling, warm ambient light, lifestyle editorial, jewelry as part of a daily ritual, aspirational yet relatable, 50mm lens natural perspective',
-            compat: { ring: 95, necklace: 85, earrings: 80, bracelet: 95, bangles: 85, anklet: 50, brooch: 40, pendant: 75, 'body-jewelry': 35 },
+            compat: { ring: 95, necklace: 85, earrings: 80, bracelet: 95, bangles: 85, anklet: 50, brooch: 40, pendant: 75, 'body-jewelry': 35, watch: 95 },
         },
         // ── NEW: Nature/Botanical ──────────────────────
         {
@@ -435,7 +435,7 @@ const PromptStudio = {
                 '{piece} on a moss-covered stone in a shaded forest floor, fern fronds softly curving',
             ],
             scene: 'natural botanical elements as primary props, soft diffused natural sunlight, organic color palette (greens, creams, earth), editorial garden photography, shallow depth of field on jewelry',
-            compat: { ring: 90, necklace: 80, earrings: 85, bracelet: 80, bangles: 70, anklet: 65, brooch: 75, pendant: 90, 'body-jewelry': 40 },
+            compat: { ring: 90, necklace: 80, earrings: 85, bracelet: 80, bangles: 70, anklet: 65, brooch: 75, pendant: 90, 'body-jewelry': 40, watch: 75 },
         },
         // ── NEW: Heritage/Moroccan ──────────────────────
         {
@@ -456,7 +456,7 @@ const PromptStudio = {
                 'model wearing {piece} against a traditional blue Chefchaouen wall, vibrant contrast',
             ],
             scene: 'North African architectural elements, warm golden light, artisanal textures (zellige, carved plaster, brass, cedar), cultural heritage storytelling, editorial travel photography, unique brand identity',
-            compat: { ring: 85, necklace: 90, earrings: 80, bracelet: 85, bangles: 95, anklet: 80, brooch: 75, pendant: 85, 'body-jewelry': 70 },
+            compat: { ring: 85, necklace: 90, earrings: 80, bracelet: 85, bangles: 95, anklet: 80, brooch: 75, pendant: 85, 'body-jewelry': 70, watch: 70 },
         },
         // ── NEW: Minimalist ──────────────────────
         {
@@ -476,7 +476,7 @@ const PromptStudio = {
                 '{piece} on matte cream surface with a single dried blade of grass as the only prop',
             ],
             scene: 'vast negative space, single focal point, clean uncluttered composition, soft even studio lighting, art gallery or luxury e-commerce aesthetic, the piece speaks entirely for itself, 100mm lens',
-            compat: { ring: 95, necklace: 75, earrings: 90, bracelet: 80, bangles: 70, anklet: 65, brooch: 85, pendant: 90, 'body-jewelry': 30 },
+            compat: { ring: 95, necklace: 75, earrings: 90, bracelet: 80, bangles: 70, anklet: 65, brooch: 85, pendant: 90, 'body-jewelry': 30, watch: 90 },
         },
         // ── NEW: Expansions ──────────────────────
         {
@@ -495,7 +495,7 @@ const PromptStudio = {
                 'model walking away through desert heat haze, {piece} sparkling brightly on back/neck'
             ],
             scene: 'expansive desert landscape, intense direct sunlight, deep shadows, warm cinematic color grading, heat haze, luxury editorial travel photography',
-            compat: { ring: 60, necklace: 95, earrings: 85, bracelet: 70, bangles: 95, anklet: 50, brooch: 65, pendant: 80, 'body-jewelry': 85 },
+            compat: { ring: 60, necklace: 95, earrings: 85, bracelet: 70, bangles: 95, anklet: 50, brooch: 65, pendant: 80, 'body-jewelry': 85, watch: 65 },
         },
         {
             id: 'neon-cyberpunk',
@@ -513,7 +513,7 @@ const PromptStudio = {
                 '{piece} placed on metallic grate with purple underglow lighting'
             ],
             scene: 'cyberpunk aesthetic, vibrant neon pink and cyan lighting, deep dark shadows, gritty urban textures, highly reflective silver, modern streetwear fashion',
-            compat: { ring: 95, necklace: 85, earrings: 70, bracelet: 90, bangles: 60, anklet: 40, brooch: 50, pendant: 85, 'body-jewelry': 55 },
+            compat: { ring: 95, necklace: 85, earrings: 70, bracelet: 90, bangles: 60, anklet: 40, brooch: 50, pendant: 85, 'body-jewelry': 55, watch: 80 },
         },
         {
             id: 'vintage-nostalgia',
@@ -531,7 +531,7 @@ const PromptStudio = {
                 'polaroid-style frame around an image of {piece} resting on a vinyl record'
             ],
             scene: 'vintage 90s film photography, disposable camera look, harsh direct paparazzi flash, heavy film grain, slightly desaturated or sepia tones, candid unposed feeling',
-            compat: { ring: 90, necklace: 70, earrings: 85, bracelet: 75, bangles: 60, anklet: 50, brooch: 40, pendant: 60, 'body-jewelry': 45 },
+            compat: { ring: 90, necklace: 70, earrings: 85, bracelet: 75, bangles: 60, anklet: 50, brooch: 40, pendant: 60, 'body-jewelry': 45, watch: 80 },
         },
         {
             id: 'zero-gravity',
@@ -549,7 +549,7 @@ const PromptStudio = {
                 '{piece} falling through the air alongside floating rose petals'
             ],
             scene: 'zero gravity suspension, ultra-fast shutter speed freezing motion, floating particles or liquids, dynamic composition, pure black or dark background, high-end 3D render feel',
-            compat: { ring: 80, necklace: 60, earrings: 95, bracelet: 50, bangles: 65, anklet: 40, brooch: 75, pendant: 95, 'body-jewelry': 30 },
+            compat: { ring: 80, necklace: 60, earrings: 95, bracelet: 50, bangles: 65, anklet: 40, brooch: 75, pendant: 95, 'body-jewelry': 30, watch: 75 },
         },
         {
             id: 'surface-lean',
@@ -567,7 +567,7 @@ const PromptStudio = {
                 'model leaning into camera, wrist elegantly bent, {piece} visible at the foreground, casual editorial confidence',
             ],
             scene: 'low editorial angle, surface as anchor, warm studio or ambient window light, model looking relaxed and confident, jewelry in sharp focus at the foreground plane',
-            compat: { ring: 98, necklace: 60, earrings: 65, bracelet: 95, bangles: 90, anklet: 30, brooch: 50, pendant: 55, 'body-jewelry': 40 },
+            compat: { ring: 98, necklace: 60, earrings: 65, bracelet: 95, bangles: 90, anklet: 30, brooch: 50, pendant: 55, 'body-jewelry': 40, watch: 90 },
         },
         {
             id: 'hair-drama',
@@ -585,7 +585,7 @@ const PromptStudio = {
                 'close-up of hands gathering hair at nape, {piece} displayed at every finger, golden hour backlight',
             ],
             scene: 'editorial fashion photography, hair in natural motion, backlighting to create rim-light halo on hair and jewelry, skin warm and glowing, creative finger placement',
-            compat: { ring: 98, necklace: 50, earrings: 98, bracelet: 85, bangles: 80, anklet: 20, brooch: 30, pendant: 45, 'body-jewelry': 40 },
+            compat: { ring: 98, necklace: 50, earrings: 98, bracelet: 85, bangles: 80, anklet: 20, brooch: 30, pendant: 45, 'body-jewelry': 40, watch: 40 },
         },
         {
             id: 'masculine-editorial',
@@ -604,7 +604,7 @@ const PromptStudio = {
                 'man standing in archway, arm raised against the doorframe, {piece} bracelet sliding down wrist',
             ],
             scene: 'masculine editorial, strong confident mood, tailored or relaxed clothing, directional dramatic lighting, deep shadows and highlights, silver against dark clothing for maximum contrast',
-            compat: { ring: 95, necklace: 90, earrings: 50, bracelet: 95, bangles: 60, anklet: 30, brooch: 55, pendant: 85, 'body-jewelry': 50 },
+            compat: { ring: 95, necklace: 90, earrings: 50, bracelet: 95, bangles: 60, anklet: 30, brooch: 55, pendant: 85, 'body-jewelry': 50, watch: 95 },
         },
         {
             id: 'royal-opulence',
@@ -622,7 +622,7 @@ const PromptStudio = {
                 '{piece} sitting on a polished mahogany table next to a sealed wax letter'
             ],
             scene: 'extreme opulence and wealth, rich deep colors (crimson, gold, royal blue), antique textures, palatial setting, dramatic chiaroscuro lighting, maximalist luxury',
-            compat: { ring: 85, necklace: 95, earrings: 90, bracelet: 80, bangles: 75, anklet: 30, brooch: 90, pendant: 85, 'body-jewelry': 40 },
+            compat: { ring: 85, necklace: 95, earrings: 90, bracelet: 80, bangles: 75, anklet: 30, brooch: 90, pendant: 85, 'body-jewelry': 40, watch: 80 },
         },
         // ── v3.0: From Reference Library ──────────────────────
         {
@@ -642,7 +642,7 @@ const PromptStudio = {
                 'editorial portrait among wild flowers, {piece} catching the afternoon sun, raw unretouched skin',
             ],
             scene: 'real outdoor location, natural available light only, wind-blown hair, earthy tones, Altai/Sahara/steppe editorial energy, no studio polish, raw beauty, Hasselblad 85mm shallow depth of field',
-            compat: { ring: 60, necklace: 90, earrings: 85, bracelet: 80, bangles: 75, anklet: 70, brooch: 50, pendant: 85, 'body-jewelry': 65 },
+            compat: { ring: 60, necklace: 90, earrings: 85, bracelet: 80, bangles: 75, anklet: 70, brooch: 50, pendant: 85, 'body-jewelry': 65, watch: 70 },
         },
         {
             id: 'veiled-mystery',
@@ -661,7 +661,7 @@ const PromptStudio = {
                 'dramatic crop — one eye, one {piece} earring, fabric creating geometry across the frame',
             ],
             scene: 'strong studio or natural window light, fabric creates texture contrast with jewelry, high visual drama, cultural editorial aesthetic, dark muted or deep teal background, serene cinematic composition',
-            compat: { ring: 80, necklace: 60, earrings: 98, bracelet: 40, bangles: 35, anklet: 20, brooch: 55, pendant: 75, 'body-jewelry': 45 },
+            compat: { ring: 80, necklace: 60, earrings: 98, bracelet: 40, bangles: 35, anklet: 20, brooch: 55, pendant: 75, 'body-jewelry': 45, watch: 45 },
         },
         {
             id: 'avant-garde-couture',
@@ -680,7 +680,7 @@ const PromptStudio = {
                 'model in oversized avant-garde hat with dramatic brim, {piece} at neckline, fashion week editorial energy',
             ],
             scene: 'extreme high fashion, sculptural accessories dominate the look but jewelry remains the focal fine detail, luxury editorial photography, soft directional studio light, porcelain smooth skin, cinema 4D rendering aesthetic',
-            compat: { ring: 55, necklace: 70, earrings: 98, bracelet: 45, bangles: 40, anklet: 20, brooch: 90, pendant: 85, 'body-jewelry': 50 },
+            compat: { ring: 55, necklace: 70, earrings: 98, bracelet: 45, bangles: 40, anklet: 20, brooch: 90, pendant: 85, 'body-jewelry': 50, watch: 50 },
         },
         {
             id: 'cinematic-color-story',
@@ -699,7 +699,7 @@ const PromptStudio = {
                 'deep navy editorial — model in midnight blue, {piece} as silver luminance against the dark monochromatic field',
             ],
             scene: 'single dominant color rules the entire frame — clothing, backdrop, and props all share the same palette; jewelry provides the metallic contrast; color grading reinforces the palette; soft directional studio or window light; ghosting/double exposure technique optional for atmosphere',
-            compat: { ring: 80, necklace: 90, earrings: 85, bracelet: 80, bangles: 75, anklet: 50, brooch: 75, pendant: 90, 'body-jewelry': 60 },
+            compat: { ring: 80, necklace: 90, earrings: 85, bracelet: 80, bangles: 75, anklet: 50, brooch: 75, pendant: 90, 'body-jewelry': 60, watch: 75 },
         },
         {
             id: 'surreal-scale',
@@ -718,7 +718,7 @@ const PromptStudio = {
                 'model dwarfed by colossal architectural columns, {piece} catching the only shaft of light through the massive space',
             ],
             scene: 'surreal scale contrast between human and environment, photo-realistic CGI quality, bold geometric environments, Mediterranean or luxury coastal light, hyper-polished surfaces, impossible yet believable luxury world',
-            compat: { ring: 50, necklace: 90, earrings: 85, bracelet: 55, bangles: 50, anklet: 30, brooch: 60, pendant: 85, 'body-jewelry': 70 },
+            compat: { ring: 50, necklace: 90, earrings: 85, bracelet: 55, bangles: 50, anklet: 30, brooch: 60, pendant: 85, 'body-jewelry': 70, watch: 60 },
         },
         {
             id: 'ghost-double-exposure',
@@ -736,7 +736,7 @@ const PromptStudio = {
                 'model turning mid-motion, leaving a soft directional ghost trail behind, {piece} stays in perfect focus',
             ],
             scene: 'long exposure or double-exposure blend technique, warm soft background tones (amber/sepia/muted gradient), one sharp anchor figure and one soft ghost 30-50% opacity, cinematic color grading, editorial luxury campaign mood, no text or watermarks',
-            compat: { ring: 55, necklace: 85, earrings: 90, bracelet: 60, bangles: 55, anklet: 30, brooch: 40, pendant: 80, 'body-jewelry': 60 },
+            compat: { ring: 55, necklace: 85, earrings: 90, bracelet: 60, bangles: 55, anklet: 30, brooch: 40, pendant: 80, 'body-jewelry': 60, watch: 55 },
         },
         {
             id: 'outdoor-masculine',
@@ -755,7 +755,7 @@ const PromptStudio = {
                 'editorial close-up of man\'s hand resting on log in forest, {piece} in sharp foreground focus, pine forest soft behind',
             ],
             scene: 'authentic outdoor location, real available light, masculine editorial energy, natural textures (wood, stone, fabric, rain), muted earthy palette, no glamour — rugged honest photography, Hasselblad 85mm portrait rendering',
-            compat: { ring: 90, necklace: 80, earrings: 30, bracelet: 98, bangles: 60, anklet: 20, brooch: 40, pendant: 75, 'body-jewelry': 55 },
+            compat: { ring: 90, necklace: 80, earrings: 30, bracelet: 98, bangles: 60, anklet: 20, brooch: 40, pendant: 75, 'body-jewelry': 55, watch: 95 },
         },
         {
             id: 'harsh-sun-beauty',
@@ -774,7 +774,7 @@ const PromptStudio = {
                 'model with sun behind her creating deep face shadow, {piece} picking up rim-light from behind, silhouette editorial beauty',
             ],
             scene: 'harsh direct sunlight, no fill or diffusion, deep contrasty shadows, real skin texture fully visible, golden or bleached color palette, raw editorial beauty photography, no beauty retouching, high-end Vogue editorial quality within imperfection',
-            compat: { ring: 70, necklace: 90, earrings: 95, bracelet: 80, bangles: 75, anklet: 60, brooch: 50, pendant: 85, 'body-jewelry': 65 },
+            compat: { ring: 70, necklace: 90, earrings: 95, bracelet: 80, bangles: 75, anklet: 60, brooch: 50, pendant: 85, 'body-jewelry': 65, watch: 75 },
         },
         {
             id: 'product-page-clean',
@@ -792,7 +792,7 @@ const PromptStudio = {
                 '{piece} floating weightlessly against pristine white backdrop, single soft shadow grounding the piece, high-end e-commerce product shot',
             ],
             scene: 'solid pure white or very light gray (#f5f5f5) seamless background, perfectly even soft studio lighting from multiple diffused sources, absolutely no props or context objects, product floating or with minimal shadow, clean commercial catalogue photography, neutral color accuracy, sharp edge-to-edge detail, e-commerce product page aesthetic',
-            compat: { ring: 98, necklace: 98, earrings: 98, bracelet: 98, bangles: 98, anklet: 98, brooch: 98, pendant: 98, 'body-jewelry': 90 },
+            compat: { ring: 98, necklace: 98, earrings: 98, bracelet: 98, bangles: 98, anklet: 98, brooch: 98, pendant: 98, 'body-jewelry': 90, watch: 98 },
         },
         {
             id: 'textured-prop',
@@ -810,7 +810,7 @@ const PromptStudio = {
                 '{piece} nestled among dried lavender stems and seed pods on a linen surface, organic luxury staging',
             ],
             scene: 'tactile material props, natural fiber textures, color contrast between metal and organic materials, warm editorial product photography, no human model, no distractions beyond the prop, luxury still-life composition',
-            compat: { ring: 90, necklace: 85, earrings: 95, bracelet: 90, bangles: 85, anklet: 70, brooch: 80, pendant: 85, 'body-jewelry': 60 },
+            compat: { ring: 90, necklace: 85, earrings: 95, bracelet: 90, bangles: 85, anklet: 70, brooch: 80, pendant: 85, 'body-jewelry': 60, watch: 85 },
         },
         {
             id: 'mouth-lips-editorial',
@@ -828,7 +828,7 @@ const PromptStudio = {
                 'lower face close-up, {piece} resting on the cupids bow of the lips, natural lip texture, high-fashion beauty shot',
             ],
             scene: 'extreme mouth/lips close-up, visible skin texture (pores, freckles, natural glow), dewy or glossy skin finish, shallow depth of field, editorial beauty photography, provocative but tasteful, high-end jewelry campaign aesthetic',
-            compat: { ring: 30, necklace: 95, earrings: 80, bracelet: 20, bangles: 15, anklet: 10, brooch: 40, pendant: 98, 'body-jewelry': 60 },
+            compat: { ring: 30, necklace: 95, earrings: 80, bracelet: 20, bangles: 15, anklet: 10, brooch: 40, pendant: 98, 'body-jewelry': 60, watch: 20 },
         },
         {
             id: 'dark-moody-editorial',
@@ -846,7 +846,7 @@ const PromptStudio = {
                 'model neck and ear in pools of shadow and light, {piece} earring as single point of brilliance, dramatic fine art portrait',
             ],
             scene: 'low-key lighting, deep shadows, single light source creating dramatic fall-off, dark background near black, chiaroscuro oil-painting quality, jewelry as the brightest element in frame, fine art editorial photography, Rembrandt or loop lighting pattern',
-            compat: { ring: 85, necklace: 90, earrings: 98, bracelet: 80, bangles: 75, anklet: 30, brooch: 70, pendant: 88, 'body-jewelry': 55 },
+            compat: { ring: 85, necklace: 90, earrings: 98, bracelet: 80, bangles: 75, anklet: 30, brooch: 70, pendant: 88, 'body-jewelry': 55, watch: 80 },
         },
         // ── v3.3: From Sheet 15 Reference Analysis ──────────────────────
         {
@@ -866,7 +866,7 @@ const PromptStudio = {
                 'model standing at crosswalk at night, car headlight trails streaking behind, {piece} illuminated by streetlight',
             ],
             scene: 'long-exposure motion blur on environment ONLY, subject frozen and sharp, urban location, cool teal-grey cinematic color grading, isolation-in-the-crowd narrative, jewelry as the sharpest element in frame, editorial campaign photography',
-            compat: { ring: 75, necklace: 90, earrings: 85, bracelet: 70, bangles: 60, anklet: 30, brooch: 50, pendant: 85, 'body-jewelry': 55 },
+            compat: { ring: 75, necklace: 90, earrings: 85, bracelet: 70, bangles: 60, anklet: 30, brooch: 50, pendant: 85, 'body-jewelry': 55, watch: 70 },
         },
         {
             id: 'micro-surreal',
@@ -885,7 +885,7 @@ const PromptStudio = {
                 'small snail leaving a glistening trail across {piece} surface, moisture droplets catching light on silver',
             ],
             scene: 'extreme macro photography, 2:1 magnification or higher, hyper-detailed skin/metal texture, tiny living creature as scale reference, warm soft light, shallow razor-thin depth of field, surreal yet photorealistic, National Geographic meets luxury advertising',
-            compat: { ring: 95, necklace: 40, earrings: 70, bracelet: 60, bangles: 50, anklet: 45, brooch: 90, pendant: 65, 'body-jewelry': 25 },
+            compat: { ring: 95, necklace: 40, earrings: 70, bracelet: 60, bangles: 50, anklet: 45, brooch: 90, pendant: 65, 'body-jewelry': 25, watch: 60 },
         },
         {
             id: 'vehicle-lifestyle',
@@ -904,7 +904,7 @@ const PromptStudio = {
                 'fingers gripping motorcycle handlebar wearing {piece}, chrome reflections, urban street behind in bokeh',
             ],
             scene: 'vehicle as luxury lifestyle prop, vintage or premium car interiors and exteriors, warm golden or amber light, chrome reflections complementing silver jewelry, shallow depth of field, aspirational road-trip narrative, lifestyle editorial photography',
-            compat: { ring: 98, necklace: 65, earrings: 40, bracelet: 95, bangles: 85, anklet: 25, brooch: 30, pendant: 55, 'body-jewelry': 30 },
+            compat: { ring: 98, necklace: 65, earrings: 40, bracelet: 95, bangles: 85, anklet: 25, brooch: 30, pendant: 55, 'body-jewelry': 30, watch: 95 },
         },
         // ── v3.4: From Sheets 8–10 Reference Analysis ──────────────────────
         {
@@ -924,7 +924,7 @@ const PromptStudio = {
                 'model in wind-blown scarf and coat, {piece} exposed at the collar opening, storm clouds behind, dramatic atmosphere',
             ],
             scene: 'real weather conditions (rain, snow, fog, mist), moody atmospheric light, desaturated or muted palette, wet surfaces creating natural reflections, weather as creative element not obstacle, editorial campaign photography, raw and authentic',
-            compat: { ring: 70, necklace: 90, earrings: 85, bracelet: 65, bangles: 55, anklet: 25, brooch: 60, pendant: 85, 'body-jewelry': 40 },
+            compat: { ring: 70, necklace: 90, earrings: 85, bracelet: 65, bangles: 55, anklet: 25, brooch: 60, pendant: 85, 'body-jewelry': 40, watch: 70 },
         },
         {
             id: 'prop-power-play',
@@ -943,7 +943,7 @@ const PromptStudio = {
                 'hand wearing {piece} gripping a crystal ball, reflections and distortions visible inside the sphere',
             ],
             scene: 'symbolic power objects as compositional partners, reflective or glass surfaces, strategic conceptual mood, dramatic studio spotlight, luxury meets intellect narrative, high-end campaign photography',
-            compat: { ring: 95, necklace: 55, earrings: 45, bracelet: 70, bangles: 50, anklet: 20, brooch: 90, pendant: 75, 'body-jewelry': 30 },
+            compat: { ring: 95, necklace: 55, earrings: 45, bracelet: 70, bangles: 50, anklet: 20, brooch: 90, pendant: 75, 'body-jewelry': 30, watch: 85 },
         },
         {
             id: 'skin-canvas',
@@ -962,7 +962,7 @@ const PromptStudio = {
                 'extreme macro of freckled skin with {piece} resting on collarbone, individual pores and freckles visible, raw beauty aesthetic',
             ],
             scene: 'skin as artistic canvas, natural textures (botanical, clay, gold leaf, freckles) applied to or celebrated on the face and body, extreme close-up, jewelry as the metallic punctuation mark, fine art beauty photography, no heavy makeup — the skin texture IS the art',
-            compat: { ring: 40, necklace: 70, earrings: 95, bracelet: 30, bangles: 25, anklet: 15, brooch: 55, pendant: 80, 'body-jewelry': 65 },
+            compat: { ring: 40, necklace: 70, earrings: 95, bracelet: 30, bangles: 25, anklet: 15, brooch: 55, pendant: 80, 'body-jewelry': 65, watch: 30 },
         },
         {
             id: 'reaching-gesture',
@@ -981,7 +981,7 @@ const PromptStudio = {
                 'model extending both hands toward camera wearing {piece} on multiple fingers, dynamic foreshortening, editorial intensity',
             ],
             scene: 'dramatic hand-toward-camera gesture, extreme foreshortening, jewelry in sharp foreground plane, face or body in soft background bokeh, vivid single-color background (red, orange, teal), low-angle dramatic perspective, editorial campaign energy',
-            compat: { ring: 98, necklace: 30, earrings: 35, bracelet: 95, bangles: 90, anklet: 15, brooch: 20, pendant: 25, 'body-jewelry': 30 },
+            compat: { ring: 98, necklace: 30, earrings: 35, bracelet: 95, bangles: 90, anklet: 15, brooch: 20, pendant: 25, 'body-jewelry': 30, watch: 90 },
         },
         // ── v3.5: From Sheets 16–19 Reference Analysis ──────────────────────
         {
@@ -1001,7 +1001,7 @@ const PromptStudio = {
                 'model in statement coat, arms crossed confidently, {piece} prominently displayed, solid emerald green background, full-body editorial',
             ],
             scene: 'full-body editorial portrait, solid vibrant single-color backdrop (red, blue, orange, emerald), power stance and authority, Richard Avedon minimalist studio aesthetic, clean negative space, Vogue cover quality, strong directional studio lighting, jewelry as the exclamation mark on the silhouette',
-            compat: { ring: 50, necklace: 90, earrings: 85, bracelet: 60, bangles: 55, anklet: 30, brooch: 95, pendant: 80, 'body-jewelry': 70 },
+            compat: { ring: 50, necklace: 90, earrings: 85, bracelet: 60, bangles: 55, anklet: 30, brooch: 95, pendant: 80, 'body-jewelry': 70, watch: 70 },
         },
         {
             id: 'stacked-maximalist',
@@ -1020,7 +1020,7 @@ const PromptStudio = {
                 'model hands resting on dark velvet, {piece} on multiple fingers, several bracelets and bangles stacked, warm golden spotlight, opulent editorial',
             ],
             scene: 'extreme jewelry stacking and layering, maximum piece density on body, every finger and wrist adorned, warm intimate studio lighting against dark backdrop, luxury editorial photography, jewelry-as-armor aesthetic, opulent and unapologetic',
-            compat: { ring: 98, necklace: 75, earrings: 80, bracelet: 98, bangles: 98, anklet: 40, brooch: 30, pendant: 60, 'body-jewelry': 50 },
+            compat: { ring: 98, necklace: 75, earrings: 80, bracelet: 98, bangles: 98, anklet: 40, brooch: 30, pendant: 60, 'body-jewelry': 50, watch: 60 },
         },
         {
             id: 'sculptural-headpiece',
@@ -1039,7 +1039,7 @@ const PromptStudio = {
                 'model with towering sculptural wire-frame crown, {piece} pendant hanging at center of exposed neck, dramatic overhead lighting',
             ],
             scene: 'sculptural architectural headpiece or fashion hat as primary visual element, model face partially shadowed or framed by the headpiece, jewelry as the metallic accent complementing the structural fashion, fine-art beauty photography, minimal background, fashion-as-art editorial',
-            compat: { ring: 25, necklace: 75, earrings: 95, bracelet: 30, bangles: 20, anklet: 10, brooch: 85, pendant: 70, 'body-jewelry': 40 },
+            compat: { ring: 25, necklace: 75, earrings: 95, bracelet: 30, bangles: 20, anklet: 10, brooch: 85, pendant: 70, 'body-jewelry': 40, watch: 25 },
         },
         // ── v3.6: From Sheets 2, 4, 7, 20 Reference Analysis ──────────────────────
         {
@@ -1059,7 +1059,7 @@ const PromptStudio = {
                 'model standing beside horse in stable doorway, {piece} at neckline, hay dust particles catching golden backlight',
             ],
             scene: 'equestrian luxury lifestyle, warm earthy tones (leather, amber, saddle brown), horse as powerful living prop, raw tactile textures (leather, fur, brass), fashion editorial meets equestrian sport, shallow depth of field on jewelry, golden warm directional light',
-            compat: { ring: 90, necklace: 85, earrings: 75, bracelet: 95, bangles: 80, anklet: 30, brooch: 65, pendant: 80, 'body-jewelry': 40 },
+            compat: { ring: 90, necklace: 85, earrings: 75, bracelet: 95, bangles: 80, anklet: 30, brooch: 65, pendant: 80, 'body-jewelry': 40, watch: 90 },
         },
         {
             id: 'pop-color-portrait',
@@ -1078,7 +1078,7 @@ const PromptStudio = {
                 'close-up of model face with matching bold lipstick and {piece}, complementary vivid background, pop color harmony, maximum saturation',
             ],
             scene: 'bold saturated pop colors (pink, magenta, lime, electric blue), oversized fashion accessories as compositional elements, clean studio backdrop in complementary vivid color, contemporary Gen-Z fashion editorial, visible tattoos and individual expression encouraged, high saturation color grading',
-            compat: { ring: 90, necklace: 80, earrings: 98, bracelet: 75, bangles: 65, anklet: 40, brooch: 50, pendant: 70, 'body-jewelry': 55 },
+            compat: { ring: 90, necklace: 80, earrings: 98, bracelet: 75, bangles: 65, anklet: 40, brooch: 50, pendant: 70, 'body-jewelry': 55, watch: 70 },
         },
         {
             id: 'urban-glass-power',
@@ -1097,7 +1097,7 @@ const PromptStudio = {
                 'three-quarter portrait of model against floor-to-ceiling windows, {piece} at ear and neck, city grid reflected in glass, contemporary fashion editorial',
             ],
             scene: 'modern glass and steel urban architecture, reflective glass surfaces, city skyline as backdrop, contemporary power-fashion editorial, structured clothing (blazers, tailored outfits), natural city light or golden hour from between buildings, architectural leading lines, confident powerful mood',
-            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 90, bangles: 70, anklet: 25, brooch: 60, pendant: 75, 'body-jewelry': 45 },
+            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 90, bangles: 70, anklet: 25, brooch: 60, pendant: 75, 'body-jewelry': 45, watch: 85 },
         },
         // ── NEW: Artisan at Work ──────────────────────
         {
@@ -1117,7 +1117,7 @@ const PromptStudio = {
                 'two hands presenting just-completed {piece} against rough leather apron, pride-of-craft moment, natural window light',
             ],
             scene: 'intimate workshop setting, warm tungsten/natural window light, worn wooden workbench, artisan tools (hammers, pliers, files, torch), leather apron, metal filings and raw materials visible, documentary/editorial photography, authentic provenance storytelling',
-            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 90, bangles: 95, anklet: 70, brooch: 85, pendant: 85, 'body-jewelry': 60 },
+            compat: { ring: 90, necklace: 85, earrings: 80, bracelet: 90, bangles: 95, anklet: 70, brooch: 85, pendant: 85, 'body-jewelry': 60, watch: 80 },
         },
         // ── NEW: Bridal / Trousseau ──────────────────────
         {
@@ -1137,7 +1137,7 @@ const PromptStudio = {
                 'mother\'s hands fastening {piece} on daughter\'s neck, emotional bridal preparation moment, soft backlight',
             ],
             scene: 'Moroccan bridal setting, white and gold fabrics, henna-decorated hands, ornate mirrors, rose petals, orange blossom, traditional kaftan details, warm golden light, emotional family moments, high-end wedding editorial photography',
-            compat: { ring: 80, necklace: 95, earrings: 95, bracelet: 90, bangles: 95, anklet: 75, brooch: 70, pendant: 90, 'body-jewelry': 55 },
+            compat: { ring: 80, necklace: 95, earrings: 95, bracelet: 90, bangles: 95, anklet: 75, brooch: 70, pendant: 90, 'body-jewelry': 55, watch: 55 },
         },
         // ── NEW: Souk / Market Editorial ──────────────────────
         {
@@ -1157,7 +1157,7 @@ const PromptStudio = {
                 'close-up of {piece} on aged wooden market counter, brass teapots and ceramic tagines blurred in background',
             ],
             scene: 'Moroccan souk/market environment, vibrant spice colors (saffron, paprika, cumin), brass and copper vessels, woven baskets, hanging textiles and lanterns, narrow alleyways, dappled market light through cloth canopies, editorial travel photography meets product styling',
-            compat: { ring: 85, necklace: 90, earrings: 80, bracelet: 85, bangles: 90, anklet: 80, brooch: 75, pendant: 85, 'body-jewelry': 65 },
+            compat: { ring: 85, necklace: 90, earrings: 80, bracelet: 85, bangles: 90, anklet: 80, brooch: 75, pendant: 85, 'body-jewelry': 65, watch: 70 },
         },
         // ── NEW: Heirloom / Generational ──────────────────────
         {
@@ -1177,7 +1177,7 @@ const PromptStudio = {
                 'hands carefully wrapping {piece} in traditional fabric for gifting, intergenerational ceremony, intimate close-up',
             ],
             scene: 'intimate family setting, warm nostalgic light, generational hands (weathered and young), antique jewelry boxes, vintage photographs, traditional fabrics, emotional storytelling, documentary-editorial hybrid, "handed down through craft" narrative voice',
-            compat: { ring: 90, necklace: 95, earrings: 80, bracelet: 85, bangles: 95, anklet: 60, brooch: 80, pendant: 90, 'body-jewelry': 40 },
+            compat: { ring: 90, necklace: 95, earrings: 80, bracelet: 85, bangles: 95, anklet: 60, brooch: 80, pendant: 90, 'body-jewelry': 40, watch: 85 },
         },
         // ── NEW V2: Futuristic Chrome Editorial ──────────────────────
         {
@@ -1197,7 +1197,7 @@ const PromptStudio = {
                 'model standing inside glass sculpture installation, {piece} catching architectural light, clean futuristic editorial',
             ],
             scene: 'futuristic chrome and glass environment, sculptural metallic surfaces, reflective panels and curved chrome shapes, space-age fashion (visors, metallic suits, structured bodysuits), high-concept avant-garde styling, cold metallic color palette (silver, chrome, ice blue), clean geometric architecture, sci-fi editorial photography',
-            compat: { ring: 90, necklace: 85, earrings: 90, bracelet: 80, bangles: 65, anklet: 30, brooch: 70, pendant: 80, 'body-jewelry': 60 },
+            compat: { ring: 90, necklace: 85, earrings: 90, bracelet: 80, bangles: 65, anklet: 30, brooch: 70, pendant: 80, 'body-jewelry': 60, watch: 80 },
         },
         // ── NEW V2: Submerged Beauty ──────────────────────
         {
@@ -1217,7 +1217,7 @@ const PromptStudio = {
                 'extreme close-up of model eye and cheek at water surface level, {piece} ring on hand resting at waterline, ethereal liquid boundary',
             ],
             scene: 'clear still water as primary element, split-level waterline photography, face or body partially submerged, underwater caustic light patterns, water surface reflections and refractions, soft diffused light through liquid, minimal styling — water is the set, serene and ethereal atmosphere, high-end beauty editorial',
-            compat: { ring: 80, necklace: 90, earrings: 95, bracelet: 70, bangles: 50, anklet: 40, brooch: 35, pendant: 85, 'body-jewelry': 55 },
+            compat: { ring: 80, necklace: 90, earrings: 95, bracelet: 70, bangles: 50, anklet: 40, brooch: 35, pendant: 85, 'body-jewelry': 55, watch: 65 },
         },
         // ── NEW V2: Surreal Material Fusion ──────────────────────
         {
@@ -1237,7 +1237,7 @@ const PromptStudio = {
                 'model neck and collarbone with petrified wood texture merging into skin, {piece} pendant resting at the transition point, surreal beauty',
             ],
             scene: 'surreal material-body fusion, skin transforming into stone (marble, onyx, agate), organic growth on skin (coral, crystal, moss, lichen), sci-art conceptual beauty photography, macro detail of texture boundaries, vivid organic color palettes, editorial art photography with CGI-quality material blending, body-as-landscape concept',
-            compat: { ring: 85, necklace: 70, earrings: 90, bracelet: 65, bangles: 50, anklet: 30, brooch: 85, pendant: 75, 'body-jewelry': 60 },
+            compat: { ring: 85, necklace: 70, earrings: 90, bracelet: 65, bangles: 50, anklet: 30, brooch: 85, pendant: 75, 'body-jewelry': 60, watch: 55 },
         },
         // ── NEW V2: Luxury Leather Editorial ──────────────────────
         {
@@ -1257,7 +1257,7 @@ const PromptStudio = {
                 'three-quarter portrait of model in vintage leather moto jacket, {piece} earring and bracelet prominent, warm editorial tones',
             ],
             scene: 'luxury leather fashion as primary wardrobe (jackets, coats, blazers, moto jackets), rich leather textures (matte, patent, vintage), metallic hardware (zippers, buckles, studs) complementing silver jewelry, bold lip and strong styling, warm-to-cool editorial tones, specular highlights on leather surfaces, contemporary luxury fashion photography',
-            compat: { ring: 85, necklace: 90, earrings: 95, bracelet: 80, bangles: 60, anklet: 25, brooch: 75, pendant: 85, 'body-jewelry': 45 },
+            compat: { ring: 85, necklace: 90, earrings: 95, bracelet: 80, bangles: 60, anklet: 25, brooch: 75, pendant: 85, 'body-jewelry': 45, watch: 90 },
         },
         // ── NEW V2: Monochrome Jewelry Ad ──────────────────────
         {
@@ -1277,7 +1277,7 @@ const PromptStudio = {
                 'monochrome portrait of model looking directly at camera, {piece} as the only reflective element in frame, editorial ad photography',
             ],
             scene: 'high-contrast black-and-white photography, luxury jewelry brand campaign aesthetic, clean minimal composition, jewelry as the singular focal point in monochrome, model as backdrop for the piece, ad and campaign framing with generous negative space, premium print-ready quality, no environmental distractions',
-            compat: { ring: 95, necklace: 90, earrings: 95, bracelet: 75, bangles: 55, anklet: 25, brooch: 70, pendant: 85, 'body-jewelry': 40 },
+            compat: { ring: 95, necklace: 90, earrings: 95, bracelet: 75, bangles: 55, anklet: 25, brooch: 70, pendant: 85, 'body-jewelry': 40, watch: 85 },
         },
 
     ],
