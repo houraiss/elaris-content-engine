@@ -29,3 +29,4 @@ The application is structured into several core views:
 
 - **2026-07-18**: Created `PROJECT_STATE.md` to serve as the global context file for all future AI agents. Updated `.agents/AGENTS.md` to mandate reading this file at startup.
 - **2026-07-18**: Added 5 new Watch archetypes with a dedicated `WATCH` badge. Expanded `prompt-studio.js` with new watch-specific camera angles and lighting moods. Updated `guideDB` and `archetypeAngleBoost` to fully integrate watch logic, and added `.ps-watch-badge` styling to `styles.css`.
+- **2026-07-18**: Fixed watch archetypes pipeline to ensure dynamic parameters (Brand identity, Model details) are injected into the prompt, and linked lighting options to the dynamic recommendations.

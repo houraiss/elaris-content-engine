@@ -3534,6 +3534,9 @@ const PromptStudio = {
             // v4.0: V2 Reference Sheet archetypes (human)
             'futuristic-chrome', 'submerged-beauty', 'surreal-material-fusion',
             'luxury-leather-editorial', 'monochrome-jewelry-ad',
+            // WATCH EXCLUSIVE
+            'watch-classic-executive', 'watch-trendy-streetwear', 'watch-catchy-editorial',
+            'watch-lifestyle-travel', 'watch-haute-horlogerie'
         ];
         const isHuman = humanArchetypes.includes(archetype.id);
         // v3.1: "No Model" gender mode — treat as product-only regardless of archetype
@@ -4120,6 +4123,12 @@ const PromptStudio = {
             'bridal-trousseau': { lighting: ['golden-hour-light','warm','soft'] },
             'souk-editorial': { lighting: ['natural','warm','dappled'] },
             'heirloom-generational': { lighting: ['warm','natural','window-light'] },
+            // WATCH EXCLUSIVE
+            'watch-classic-executive': { lighting: ['studio','warm','sapphire-crystal-bounce'] },
+            'watch-trendy-streetwear': { lighting: ['natural','neon-glow','metallic-case-contrast'] },
+            'watch-catchy-editorial': { lighting: ['dramatic','studio','color-gel-backlit'] },
+            'watch-lifestyle-travel': { lighting: ['golden-hour','natural','warm'] },
+            'watch-haute-horlogerie': { lighting: ['sapphire-crystal-bounce','studio','lume-glow-dark'] },
         };
     },
 
