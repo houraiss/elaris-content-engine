@@ -1299,8 +1299,30 @@ code {
     line-height: 1.4;
     z-index: 1;
 }
-/* Offset icon slightly when v3 badge is present so badge doesn't overlap it */
-.ps-arch-v3 .ps-arch-icon { margin-top: 6px; }
+
+/* WATCH exclusive badge */
+.ps-watch-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: linear-gradient(135deg, #0f172a, #334155);
+    color: #e2e8f0;
+    border: 1px solid #475569;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 2px 5px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    pointer-events: none;
+    line-height: 1.4;
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Offset icon slightly when v3 or watch badge is present so badge doesn't overlap it */
+.ps-arch-v3 .ps-arch-icon,
+.ps-arch-watch .ps-arch-icon { margin-top: 6px; }
 
 .ps-arch-icon {
     width: 48px; height: 48px;

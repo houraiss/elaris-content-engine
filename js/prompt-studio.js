@@ -1279,6 +1279,102 @@ const PromptStudio = {
             scene: 'high-contrast black-and-white photography, luxury jewelry brand campaign aesthetic, clean minimal composition, jewelry as the singular focal point in monochrome, model as backdrop for the piece, ad and campaign framing with generous negative space, premium print-ready quality, no environmental distractions',
             compat: { ring: 95, necklace: 90, earrings: 95, bracelet: 75, bangles: 55, anklet: 25, brooch: 70, pendant: 85, 'body-jewelry': 40, watch: 85 },
         },
+        // ── NEW: Watch Category Archetypes ──────────────────────
+        {
+            id: 'watch-classic-executive',
+            name: 'Classic & Executive',
+            icon: '👔',
+            tagline: 'Timeless Power Statement',
+            bestFor: 'Best for: Dress Watches, Heritage Timepieces — executive lifestyle, boardroom elegance',
+            desc: 'Refined boardroom styling, tailored suits, cufflinks, and understated luxury settings that highlight classic dress watches.',
+            color: '#1e293b',
+            subjects: [
+                'close-up of model wrist resting on dark mahogany desk, wearing {piece} alongside subtle cufflinks, crisp white shirt cuff, executive lighting',
+                '{piece} peeking out from beneath a bespoke charcoal suit jacket sleeve, hand adjusting tie, sharp editorial focus',
+                'model hand holding a premium leather portfolio, {piece} prominently displayed on wrist, high-end corporate lifestyle',
+                'macro shot of {piece} dial catching warm boardroom lighting, sharp tailoring in the background out of focus',
+                'model checking {piece} while holding a crystal rocks glass, subtle low-key lighting, classic executive power stance',
+                'top-down view of model hands typing on a sleek laptop, {piece} catching window light, sophisticated professional setting',
+            ],
+            scene: 'executive boardroom, tailored charcoal or navy suits, crisp white dress shirts, subtle cufflinks, dark mahogany wood, premium leather accessories, low-key refined lighting, sophisticated and authoritative atmosphere, classic luxury lifestyle',
+            compat: { ring: 30, necklace: 20, earrings: 20, bracelet: 60, bangles: 40, anklet: 10, brooch: 40, pendant: 20, 'body-jewelry': 10, watch: 95 },
+        },
+        {
+            id: 'watch-trendy-streetwear',
+            name: 'Trendy & Streetwear',
+            icon: '🛹',
+            tagline: 'Urban Hype & Edge',
+            bestFor: 'Best for: Sports Watches, Chronographs, Steel Models — modern urban fashion, hype culture',
+            desc: 'High-end streetwear aesthetics, oversized silhouettes, bold colors, and dynamic urban environments that make sports watches pop.',
+            color: '#f97316',
+            subjects: [
+                'model wrist resting on a skateboard edge, wearing {piece}, urban concrete background, high contrast daylight',
+                '{piece} styled with an oversized vintage graphic tee and stacked silver bracelets, candid street photography',
+                'close-up of model hand adjusting sunglasses, {piece} catching harsh sunlight, modern streetwear editorial',
+                'dynamic shot of model leaning against a neon-lit car at night, {piece} illuminated by streetlights, hypebeast aesthetic',
+                'model hand holding a matcha latte, {piece} prominent on wrist, trendy café setting, lifestyle editorial',
+                'macro of {piece} paired with a bold tattooed arm, raw urban texture, sharp high-fashion streetwear contrast',
+            ],
+            scene: 'modern urban environment, concrete textures, neon streetlights, streetwear fashion (oversized tees, hoodies, sneakers), harsh high-contrast daylight or moody night street lighting, dynamic candid energy, hype culture lifestyle',
+            compat: { ring: 60, necklace: 50, earrings: 50, bracelet: 70, bangles: 50, anklet: 30, brooch: 30, pendant: 40, 'body-jewelry': 40, watch: 95 },
+        },
+        {
+            id: 'watch-catchy-editorial',
+            name: 'Catchy & Bold Editorial',
+            icon: '📸',
+            tagline: 'Avant-Garde Timekeeping',
+            bestFor: 'Best for: Avant-Garde Watches, High-Jewelry Watches — high-fashion campaigns, artistic styling',
+            desc: 'Striking, unconventional editorial compositions, extreme color contrasts, and avant-garde styling that turns the watch into high art.',
+            color: '#e11d48',
+            subjects: [
+                'extreme macro of model eye peering through the sapphire crystal of {piece}, distorted surreal reflection, avant-garde beauty',
+                'model wearing {piece} over a tight vivid latex glove, sharp editorial lighting, stark background contrast',
+                '{piece} submerged in clear viscous liquid with floating geometric shapes, conceptual product photography',
+                'model striking a dramatic face-framing pose, {piece} prominent near cheekbone, bold colorful makeup, high-fashion editorial',
+                'surreal composition where {piece} is wrapped in metallic chrome ribbons, pure studio lighting, art editorial',
+                'close-up of model biting a sleek metallic object, {piece} visible on wrist, provocative and catchy fashion campaign',
+            ],
+            scene: 'high-fashion studio setting, stark vivid color backdrops (crimson, electric blue), unconventional styling (latex, metallic paints, extreme makeup), conceptual surrealism, hard dramatic lighting, provocative and avant-garde energy, artistic editorial photography',
+            compat: { ring: 70, necklace: 60, earrings: 70, bracelet: 75, bangles: 60, anklet: 20, brooch: 60, pendant: 50, 'body-jewelry': 50, watch: 95 },
+        },
+        {
+            id: 'watch-lifestyle-travel',
+            name: 'Lifestyle & Travel',
+            icon: '✈️',
+            tagline: 'The Globetrotter\'s Companion',
+            bestFor: 'Best for: GMT Watches, Field Watches, Dive Watches — travel, exploration, resort lifestyle',
+            desc: 'Aspirational travel aesthetics, luxury resorts, passport stamps, aircraft windows, and exotic locations that frame the watch as a travel essential.',
+            color: '#0ea5e9',
+            subjects: [
+                'model wrist wearing {piece} resting against an airplane window at cruising altitude, golden hour clouds below',
+                '{piece} next to a stamped passport and boarding pass on a marble airport lounge table, luxury travel lifestyle',
+                'model hand holding a cocktail by a crystal-clear infinity pool, {piece} glistening in the tropical sun, resort aesthetic',
+                'close-up of {piece} on a tanned wrist steering a classic convertible, blurred coastal road in the background',
+                'macro shot of {piece} resting on a vintage leather travel trunk, soft diffused natural light, timeless exploration',
+                'model checking {piece} while standing on a balcony overlooking a historic European city, lifestyle travel photography',
+            ],
+            scene: 'luxury travel environments, airplane windows, airport lounges, infinity pools, coastal roads, vintage luggage, passports, warm aspirational natural lighting, golden hour, jet-setter lifestyle, high-end resort aesthetics',
+            compat: { ring: 40, necklace: 30, earrings: 30, bracelet: 60, bangles: 50, anklet: 40, brooch: 20, pendant: 30, 'body-jewelry': 20, watch: 95 },
+        },
+        {
+            id: 'watch-haute-horlogerie',
+            name: 'Haute Horlogerie',
+            icon: '⚙️',
+            tagline: 'The Art of the Caliber',
+            bestFor: 'Best for: Tourbillons, Skeletons, High-Complication Watches — pure craftsmanship, macro detail',
+            desc: 'Extreme focus on mechanical mastery, exposed movements, microscopic finishing details, and the pure art of watchmaking.',
+            color: '#b45309',
+            subjects: [
+                'extreme macro of {piece} exposing the tourbillon cage, individual polished screws visible, dramatic focused lighting',
+                'close-up of {piece} resting on watchmaker blueprints, loupe in the background, pure craftsmanship narrative',
+                'macro shot of the sweeping seconds hand of {piece} capturing motion blur against a sharp dial, dark moody aesthetic',
+                'side profile of {piece} highlighting the brushed and polished case finishing, stark metallic contrast lighting',
+                '{piece} suspended in a dark void, a single beam of light illuminating the complex skeletonized dial, museum quality',
+                'extreme close-up of {piece} showcasing the guilloché dial pattern and applied indices, razor-sharp focus',
+            ],
+            scene: 'pure macro product environment, deep dark voids, watchmaker tools, architectural blueprints, extreme sharp focus on mechanical details (gears, bridges, screws), dramatic directional lighting, museum-quality presentation, absolute technical perfection',
+            compat: { ring: 30, necklace: 20, earrings: 20, bracelet: 40, bangles: 30, anklet: 10, brooch: 30, pendant: 20, 'body-jewelry': 10, watch: 95 },
+        },
 
     ],
 
@@ -1338,6 +1434,10 @@ const PromptStudio = {
         { id: 'chrome-wrap',           label: 'Chrome Wrap Light (360° Reflection)' },
         { id: 'submerged-diffused',    label: 'Submerged Diffused (Underwater Caustics)' },
         { id: 'leather-highlight',     label: 'Leather Highlight (Specular Contrast)' },
+        // WATCH EXCLUSIVE: New lighting
+        { id: 'sapphire-crystal-bounce', label: 'Sapphire Crystal Bounce (Anti-Reflective)' },
+        { id: 'lume-glow-dark',          label: 'Luminescent Glow (Low Light)' },
+        { id: 'metallic-case-contrast',  label: 'Metallic Case Contrast (Steel/Gold)' },
     ],
     // Legacy aliases so old saved state keys still map — read-only, not rendered
     get moods() { return this.lightingMoods; },
@@ -1410,6 +1510,11 @@ const PromptStudio = {
             { id: 'pov-ring-reach',        label: 'POV Ring Reach (Hand Toward Viewer)' },
             { id: 'grip-close-up',         label: 'Grip Close-Up (Object in Hand)' },
             { id: 'playing-card-mirror',   label: 'Playing Card Mirror (Reflected Symmetry)' },
+            // ── WATCH EXCLUSIVE: New angles ──────────────────────
+            { id: 'watch-wrist-roll',      label: 'Wrist Roll (Dynamic Movement)' },
+            { id: 'watch-dial-macro',      label: 'Dial & Complication Macro' },
+            { id: 'watch-crown-detail',    label: 'Crown & Case Profile' },
+            { id: 'watch-steering-wheel',  label: 'On Steering Wheel (POV)' },
         ];
     },
 
@@ -1477,6 +1582,14 @@ const PromptStudio = {
                 'through-glass', 'low-angle', 'tilt-shift', 'over-shoulder', 'side-profile',
                 'candid', 'dutch', 'foreground-blur', 'from-behind', 'worms-eye',
                 'silhouette', 'chin-up',
+            ],
+            // Watch: specific focus on wrist angles, macros, and lifestyle POVs
+            'watch': [
+                'watch-wrist-roll', 'watch-dial-macro', 'watch-crown-detail', 'watch-steering-wheel',
+                'top-down-hand', 'macro', 'extreme-macro', 'knuckle-level', 'eye-level',
+                'flat-lay', 'glance-down', '45-degree', 'golden-hour', 'through-glass',
+                'candid', 'dutch', 'side-profile', 'foreground-blur', 'overhead',
+                'tilt-shift', 'low-angle', 'from-behind', 'worms-eye', 'silhouette', 'chin-up',
             ],
         };
         const order = rankings[category] || rankings['ring'];
@@ -1565,6 +1678,12 @@ const PromptStudio = {
             'surreal-material-fusion':    ['macro', 'extreme-macro', 'extreme-close-crop'],
             'luxury-leather-editorial':   ['eye-level', '45-degree', 'side-profile'],
             'monochrome-jewelry-ad':      ['eye-level', '45-degree', 'macro'],
+            // WATCH EXCLUSIVE
+            'watch-classic-executive':    ['watch-wrist-roll', 'watch-dial-macro', 'watch-crown-detail'],
+            'watch-trendy-streetwear':    ['watch-wrist-roll', 'top-down-hand', 'candid'],
+            'watch-catchy-editorial':     ['extreme-macro', 'watch-dial-macro', 'watch-wrist-roll'],
+            'watch-lifestyle-travel':     ['watch-steering-wheel', 'candid', 'watch-wrist-roll'],
+            'watch-haute-horlogerie':     ['extreme-macro', 'watch-dial-macro', 'watch-crown-detail'],
         };
 
         // Collect boosted angle IDs from currently selected archetypes
@@ -1960,12 +2079,17 @@ const PromptStudio = {
             'futuristic-chrome', 'submerged-beauty', 'surreal-material-fusion', 'luxury-leather-editorial', 'monochrome-jewelry-ad',
         ]);
 
+        const WATCH_ARCHETYPES = new Set([
+            'watch-classic-executive', 'watch-trendy-streetwear', 'watch-catchy-editorial', 'watch-lifestyle-travel', 'watch-haute-horlogerie'
+        ]);
+
         grid.innerHTML = sorted.map(a => {
             // Use the SAME score for display as used for sorting
             const score = this._computeScore(a, this.state);
             const isSelected = this.state.selectedArchetypes.includes(a.id);
             const scoreColor = score >= 85 ? '#4ade80' : score >= 70 ? '#fbbf24' : score >= 50 ? '#f97316' : '#f87171';
             const isV3 = V3_ARCHETYPES.has(a.id);
+            const isWatchArch = WATCH_ARCHETYPES.has(a.id);
             
             // Dynamic translation for archetypes based on ID prefix
             const tPrefix = a.id === 'body-intimate' ? 'body' :
@@ -1984,8 +2108,8 @@ const PromptStudio = {
             const bestForVal = a.bestFor.replace('Best for:', '').trim();
 
             return `
-                <div class="ps-arch-card ${isSelected ? 'active' : ''} ${isV3 ? 'ps-arch-v3' : ''}" data-arch="${a.id}" style="position:relative">
-                    ${isV3 ? `<span class="ps-v3-badge">v3.0</span>` : ''}
+                <div class="ps-arch-card ${isSelected ? 'active' : ''} ${isV3 ? 'ps-arch-v3' : ''} ${isWatchArch ? 'ps-arch-watch' : ''}" data-arch="${a.id}" style="position:relative">
+                    ${isWatchArch ? `<span class="ps-watch-badge">WATCH</span>` : (isV3 ? `<span class="ps-v3-badge">v3.0</span>` : '')}
                     <div class="ps-arch-icon" style="--arch-color:${a.color}">${a.icon}</div>
                     <div class="ps-arch-info">
                         <div class="ps-arch-name">${name}</div>
@@ -2089,6 +2213,12 @@ const PromptStudio = {
             'surreal-material-fusion': { angle:['macro','extreme-macro','extreme-close-crop'], lighting:['natural','soft','studio'], camera:['macro-180','macro-100','phase-one-iq4'], tips:['Macro or Extreme Macro reveals the texture boundary between skin and material.','180mm Macro at 2:1 shows individual mineral grain and skin pore detail.','Natural or Soft lighting preserves the organic quality of the fusion.','Enable No Model for pure material-fusion abstract close-ups.'] },
             'luxury-leather-editorial': { angle:['eye-level','45-degree','side-profile'], lighting:['studio','dramatic','warm'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Studio or Dramatic lighting creates rich specular highlights on leather.','Hasselblad 85mm renders leather texture with exceptional tonal depth.','45-degree Three-Quarter shows both the leather garment and jewelry simultaneously.','Bold lip color and strong brows complete the luxury leather aesthetic.'] },
             'monochrome-jewelry-ad': { angle:['eye-level','45-degree','macro'], lighting:['studio','soft-box','dramatic'], camera:['phase-one-iq4','hasselblad-85','canon-135-l'], tips:['Studio or Soft Box lighting gives clean, controlled highlights for campaign work.','Phase One IQ4 provides maximum detail for print-ready ad photography.','Set Color Palette to Monochrome or Noir for authentic B&W rendering.','Keep composition minimal — generous negative space, jewelry as sole focus.'] },
+            // WATCH EXCLUSIVE
+            'watch-classic-executive': { angle:['watch-wrist-roll','watch-dial-macro','45-degree'], lighting:['studio','warm','sapphire-crystal-bounce'], camera:['hasselblad-85','phase-one-iq4','sony-35-gm'], tips:['Wrist Roll captures the dynamic way light hits the watch case.','Sapphire Crystal Bounce lighting ensures the dial is visible without harsh glare.','Hasselblad 85mm gives the boardroom setting a medium-format luxury feel.','Pair with tailored suits and subtle cufflinks for maximum impact.'] },
+            'watch-trendy-streetwear': { angle:['watch-wrist-roll','candid','top-down-hand'], lighting:['natural','neon-glow','metallic-case-contrast'], camera:['sony-35-gm','leica-50','hasselblad-85'], tips:['Candid and Top-Down angles capture the urban streetwear energy perfectly.','Metallic Case Contrast lighting makes steel sports watches pop.','Sony 35mm f/1.4 GM gives a wider field for urban environment context.','Pair with oversized clothing, tattoos, or modern streetwear props.'] },
+            'watch-catchy-editorial': { angle:['extreme-macro','watch-dial-macro','watch-wrist-roll'], lighting:['dramatic','studio','color-gel-backlit'], camera:['phase-one-iq4','macro-100','canon-135-l'], tips:['Use extreme macro for provocative avant-garde compositions.','Color Gel Backlit adds bold, striking editorial colors.','Phase One IQ4 captures extraordinary detail and stark contrasts.','Bold makeup or unconventional styling elements are highly recommended.'] },
+            'watch-lifestyle-travel': { angle:['watch-steering-wheel','candid','watch-wrist-roll'], lighting:['golden-hour','natural','warm'], camera:['leica-50','hasselblad-85','sony-35-gm'], tips:['On Steering Wheel is the quintessential travel and automotive lifestyle shot.','Golden Hour lighting provides aspirational jet-setter warmth.','Leica 50mm Summilux gives a classic documentary feel to travel scenes.','Include passports, vintage luggage, or luxury resort backgrounds.'] },
+            'watch-haute-horlogerie': { angle:['watch-dial-macro','extreme-macro','watch-crown-detail'], lighting:['sapphire-crystal-bounce','studio','lume-glow-dark'], camera:['macro-180','phase-one-iq4','macro-100'], tips:['Extreme macro with a 180mm lens reveals individual screws and finishing.','Luminescent Glow (Low Light) highlights the dial in dark conditions.','Sapphire Crystal Bounce lighting eliminates reflections for pure mechanical visibility.','Enable No Model — the movement itself is the primary subject.'] },
         };
 
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
