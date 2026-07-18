@@ -1,5 +1,19 @@
 # Elaris Content Engine — Project Rules
 
+## 0. Project State (CRITICAL)
+**ALWAYS START YOUR TASK BY READING `.agents/PROJECT_STATE.md`.**
+This file contains the current global context, history, and state of the project. Do not rely on previous conversation histories. 
+When you make significant progress or architectural changes in a task, you MUST update `.agents/PROJECT_STATE.md` with an entry in its Update Log so that future AI sessions have the full picture.
+
+## 0.1 End of Task Git Workflow (CRITICAL)
+**ALWAYS COMMIT AND PUSH YOUR CHANGES AT THE END OF EVERY TASK.**
+Before wrapping up any conversation where you have modified, added, or deleted files, you MUST:
+1. Run `git add .`
+2. Run `git commit -m "Your descriptive commit message"`
+3. Run `git push`
+Do not ask the user for permission to commit unless the user explicitly requested you not to. This ensures no work is lost and future AIs can see the full history.
+
+
 ## New Archetype Integration — Standard Workflow
 
 Apply this checklist every time a new archetype is added to the project. Complete the steps in order; do not mark an archetype "done" until all four are finished.
