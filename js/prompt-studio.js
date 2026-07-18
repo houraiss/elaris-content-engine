@@ -2002,6 +2002,9 @@ const PromptStudio = {
             'mouth-lips-editorial', 'dark-moody-editorial',
             // v3.6: Sheets 2, 4, 7, 20 archetypes (human)
             'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
+            // WATCH EXCLUSIVE
+            'watch-classic-executive', 'watch-trendy-streetwear', 'watch-catchy-editorial',
+            'watch-lifestyle-travel', 'watch-haute-horlogerie'
         ]);
         const cat     = state.product === 'watch' ? 'watch' : (state.category || 'ring');
         const isHuman = HUMAN.has(archetype.id);
@@ -3062,6 +3065,12 @@ const PromptStudio = {
             'surreal-material-fusion':    ['natural', 'soft', 'studio'],
             'luxury-leather-editorial':   ['studio', 'dramatic', 'leather-highlight'],
             'monochrome-jewelry-ad':      ['studio', 'soft', 'dramatic'],
+            // WATCH EXCLUSIVE
+            'watch-classic-executive':    ['studio', 'warm', 'sapphire-crystal-bounce'],
+            'watch-trendy-streetwear':    ['natural', 'neon-glow', 'metallic-case-contrast'],
+            'watch-catchy-editorial':     ['dramatic', 'studio', 'color-gel-backlit'],
+            'watch-lifestyle-travel':     ['golden-hour', 'natural', 'warm'],
+            'watch-haute-horlogerie':     ['sapphire-crystal-bounce', 'studio', 'lume-glow-dark'],
         };
 
         // Collect boosted lighting IDs from currently selected archetypes
@@ -3295,6 +3304,7 @@ const PromptStudio = {
             'anklet':   'PLACEMENT: anklet around the ankle, slender and proportional to ankle width',
             'pendant':  'PLACEMENT: pendant necklace at front of chest, pendant at correct scale, never on back',
             'brooch':   'PLACEMENT: brooch on lapel or upper chest of clothing, visible from front',
+            'watch':    'PLACEMENT: luxury watch fitted on a wrist at correct anatomical size, case width proportional to wrist, never floating or oversized',
         };
         return rules[category] || '';
     },
@@ -3322,6 +3332,7 @@ const PromptStudio = {
             'anklet':   'anklet on wrist, anklet not on ankle, anklet floating',
             'pendant':  'pendant on back, pendant not visible from front, pendant hanging behind neck',
             'brooch':   'brooch floating off clothing, brooch not on lapel',
+            'watch':    'watch too large for wrist, watch not on wrist, floating watch, watch covering entire hand, oversized case, strap hanging loose',
         };
 
         const placementNeg = isHuman ? (placement[category] || '') : '';  // product shots intentionally have no finger
@@ -3715,7 +3726,7 @@ const PromptStudio = {
         // ── Hallmark brand injection — only when enabled ──────────────────────
         let hallmarkDesc = '';
         if (this.state.hallmarkEnabled) {
-            const category = this.state.category || 'general';
+            const category = this.state.product === 'watch' ? 'watch' : (this.state.category || 'general');
             const hallmarkMap = {
                 'ring':      'tiny "ELARIS" engraved on the inner band, subtle 925 hallmark stamp visible at the edge',
                 'necklace':  'small four-pointed star emblem on the chain clasp, delicate "ELARIS" tag on the chain end link',
@@ -3725,13 +3736,14 @@ const PromptStudio = {
                 'brooch':    '"ELARIS" hallmark on the pin clasp mechanism, brand signature subtly visible',
                 'anklet':    'small "ELARIS" brand tag on the anklet chain near clasp',
                 'bangle':    '"ELARIS" engraved on the inner surface of the bangle, 925 hallmark near opening',
+                'watch':     '"ELARIS" brand logo engraved on the watch dial and crown, subtle hallmark on the clasp',
                 'general':   'subtle brand hallmark reading "ELARIS" engraved on a discreet area of the jewelry piece, small star emblem stamp',
             };
             hallmarkDesc = hallmarkMap[category] || hallmarkMap['general'];
         }
 
         // ── Category-aware negative prompts (placement + scale + anatomy) ──────────────
-        const category = this.state.category || 'ring';
+        const category = this.state.product === 'watch' ? 'watch' : (this.state.category || 'ring');
         const negativePrompt = this._buildCategoryNegatives(category, isHuman);
         const placementRule  = this._buildPlacementInstruction(category);
 
@@ -3747,7 +3759,7 @@ const PromptStudio = {
                 brandTouchDesc = 'model wearing a small "Elaris" four-pointed star pin at the lapel — a discreet luxury pin worn as a brand signature, enamel-and-metal two-tone finish naturally contrasting the garment, pin size proportional to real luxury brand pins (small and refined), positioned naturally on the clothing as an authentic styling detail';
             } else if (isHumanActive && this.state.brandTouch === 'wordmark') {
                 // Luxury tri-layer embroidery technique
-                const _wPlacement = this._getBrandPlacement(this.state.category);
+                const _wPlacement = this._getBrandPlacement(category);
                 brandTouchDesc = `a small "ELARIS" embroidered wordmark on the garment in capitalized tight-kerned serif lettering with minimal letter spacing, letters nearly touching like a real luxury clothing label — fine single-thread stitching ${_wPlacement}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, styled as an authentic luxury clothing label integrated into the garment, reads as a genuine brand signature not a graphic overlay, NOT widely spaced, NOT spread apart letters`;
             } else if (this.state.brandTouch === 'logo-embedded') {
                 // v3.6: Sophisticated logo composited into the image like Dior/Chanel campaigns
