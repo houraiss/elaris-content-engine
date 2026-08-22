@@ -31,3 +31,18 @@ The application is structured into several core views:
 - **2026-07-18**: Added 5 new Watch archetypes with a dedicated `WATCH` badge. Expanded `prompt-studio.js` with new watch-specific camera angles and lighting moods. Updated `guideDB` and `archetypeAngleBoost` to fully integrate watch logic, and added `.ps-watch-badge` styling to `styles.css`.
 - **2026-07-18**: Fixed watch archetypes pipeline to ensure dynamic parameters (Brand identity, Model details) are injected into the prompt, and linked lighting options to the dynamic recommendations.
 - **2026-07-18**: Fixed Watch category fallbacks so that placement rules, negative prompts, and hallmark instructions correctly refer to watches instead of silver rings. Updated score/ranking logic so Watch archetypes properly rank at the top when the Watch category is selected. Also linked watch archetypes to the UI lighting chips recommender.
+- **2026-08-22**: Added **Jewelry Set** as a new 10th category (`'jewelry-set'`). Full implementation includes:
+  - 4 new SET archetypes: `set-editorial-display`, `set-worn-collection`, `set-gift-presentation`, `set-detail-showcase`, each with 6 unique subjects, a rich scene, and fully calibrated compat scores.
+  - Amber/rose-gold `.ps-set-badge` ("SET") displayed on archetype cards; `ps-arch-set` class added.
+  - Sub-piece chip selector (`_renderSetComposition`, `_toggleSetPiece`) that appears when Jewelry Set is selected, letting the user choose Ring/Necklace/Earrings/Bracelet/Bangle.
+  - Dynamic `_autoDescribe` that reads `state.setComposition` to list all pieces in the generated description.
+  - `_buildPlacementInstruction` and `_buildCategoryNegatives` entries for `jewelry-set`.
+  - Smart Guide (`guideDB`) entries for all 4 new archetypes.
+  - `_getAnglesForCategory` and `_getLightingForCategory` rankings for `jewelry-set`.
+  - `archetypeAngleBoost` and `archetypeLightingBoost` entries for 4 new archetypes.
+  - `hallmarkMap` entry (engraved on ring band, necklace clasp, earring posts).
+  - `set-worn-collection` added to `humanArchetypes` (uses model anatomy safety rules).
+  - Category label normalized to "Jewelry Set" in the dropdown.
+  - `catLabels` updated with `'jewelry-set': 'matching jewelry set'`.
+  - Service worker cache bumped to `elaris-v34`.
+  - All 70 existing archetype `compat` objects updated with `'jewelry-set': N` scores.

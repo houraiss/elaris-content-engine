@@ -2470,3 +2470,47 @@ code {
 @media (max-width: 480px) {
     .ms-archetype-grid { grid-template-columns: 1fr !important; gap: 6px; }
 }
+
+/* -- Jewelry Set Archetypes ----------------------------------------------- */
+
+/* JEWELRY SET exclusive badge */
+.ps-set-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: linear-gradient(135deg, #b45309, #d97706);
+    color: #fff;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 2px 5px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    pointer-events: none;
+    line-height: 1.4;
+    z-index: 1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+.ps-arch-set .ps-arch-icon { margin-top: 6px; }
+
+/* Set Composition chip selector */
+.ps-set-composition-row { animation: fadeInDown 0.22s ease; padding: 10px 0 4px; }
+.ps-set-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.ps-set-chip {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    letter-spacing: 0.03em; user-select: none;
+}
+.ps-set-chip:hover { border-color: #d97706; color: #d97706; }
+.ps-set-chip.active {
+    background: linear-gradient(135deg, #b45309, #d97706);
+    border-color: transparent; color: #fff;
+    box-shadow: 0 2px 8px rgba(180,83,9,0.35);
+}
+.ps-label-hint { font-size: 10px; font-weight: 400; color: var(--text-muted); margin-left: 6px; opacity: 0.75; }
