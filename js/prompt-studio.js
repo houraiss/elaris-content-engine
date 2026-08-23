@@ -1769,56 +1769,12 @@ const PromptStudio = {
             'watch-trendy-streetwear':    ['watch-wrist-roll', 'top-down-hand', 'candid'],
             'watch-catchy-editorial':     ['extreme-macro', 'watch-dial-macro', 'watch-wrist-roll'],
             'watch-lifestyle-travel':     ['watch-steering-wheel', 'candid', 'watch-wrist-roll'],
-            // ── SET archetypes ──────────────────────
-            'set-editorial-display': {
-                label: 'Set Display — Optimal Guide',
-                angle: ['flat-lay', 'overhead', '45-degree', 'eye-level'],
-                lighting: ['studio', 'editorial', 'soft', 'window-light'],
-                camera: ['phase-one-iq4', 'macro-100', 'hasselblad-85'],
-                tips: [
-                    'Arrange pieces in a triangular or arc composition — ring as anchor, necklace arched above, earrings flanking',
-                    'Use dark navy velvet or pale marble as surface to provide contrast with silver',
-                    'Place tweezers, brand card, or a single dried rose as minimal styling prop',
-                    'Ensure all three pieces are equally sharp — use f/8 or focus stack if needed',
-                ],
-            },
-            'set-worn-collection': {
-                label: 'Set Worn — Optimal Guide',
-                angle: ['eye-level', '45-degree', 'glance-down', 'chin-up', 'from-behind'],
-                lighting: ['editorial', 'golden-hour', 'studio', 'warm'],
-                camera: ['hasselblad-85', 'canon-135-l', 'leica-50'],
-                tips: [
-                    'Frame at 3/4 crop (head to chest) so ring, necklace, AND earrings are all visible in one shot',
-                    'Pose the model with hand raised (touching chin or ear) so ring and earring are simultaneously prominent',
-                    'Black or jewel-tone clothing ensures maximum silver contrast across all pieces',
-                    'Ensure necklace hangs naturally at décolletage — use a seamstress pin from behind if needed',
-                ],
-            },
-            'set-gift-presentation': {
-                label: 'Gift Set — Optimal Guide',
-                angle: ['flat-lay', 'overhead', '45-degree', 'eye-level'],
-                lighting: ['soft', 'warm', 'golden-hour', 'window-light'],
-                camera: ['phase-one-iq4', 'hasselblad-85', 'macro-100'],
-                tips: [
-                    'Use a luxury jewelry box with individual compartments — one for ring, one for necklace, one for earrings',
-                    'Scatter rose petals, ribbon, or a brand card around the box for seasonal gifting context',
-                    'Warm soft window light from one side creates a romantic, aspirational gift atmosphere',
-                    'Shoot both open-box and pre-wrapped versions to cover e-commerce and social media needs',
-                ],
-            },
-            'set-detail-showcase': {
-                label: 'Set Details — Optimal Guide',
-                angle: ['macro', 'extreme-macro', 'flat-lay', '45-degree'],
-                lighting: ['studio', 'editorial', 'chrome-bounce', 'soft'],
-                camera: ['macro-100', 'macro-180', 'phase-one-iq4'],
-                tips: [
-                    'Focus on one piece sharply while the other two are softly visible — depth of field tells the collection story',
-                    'Arrange all three pieces in the same frame even in macro mode so the set reads as unified',
-                    'Use a ring light or small LED panel for 360° even metal surface rendering',
-                    'Pay attention to stone alignment — ensure each stone in the set is showing its best facet toward the lens',
-                ],
-            },
             'watch-haute-horlogerie':     ['extreme-macro', 'watch-dial-macro', 'watch-crown-detail'],
+            // SET archetypes
+            'set-editorial-display':      ['flat-lay', 'overhead', '45-degree', 'eye-level'],
+            'set-worn-collection':        ['eye-level', '45-degree', 'glance-down', 'chin-up', 'from-behind'],
+            'set-gift-presentation':      ['flat-lay', 'overhead', '45-degree', 'eye-level'],
+            'set-detail-showcase':        ['macro', 'extreme-macro', 'flat-lay', '45-degree'],
         };
 
         // Collect boosted angle IDs from currently selected archetypes
@@ -2140,9 +2096,9 @@ const PromptStudio = {
             'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
             // WATCH EXCLUSIVE
             'watch-classic-executive', 'watch-trendy-streetwear', 'watch-catchy-editorial',
-            'watch-lifestyle-travel', 'watch-haute-horlogerie'
+            'watch-lifestyle-travel', 'watch-haute-horlogerie',
             // SET archetypes with models
-            'set-worn-collection'
+            'set-worn-collection',
         ]);
         const cat     = state.product === 'watch' ? 'watch' : (state.category || 'ring');
         const isHuman = HUMAN.has(archetype.id);
@@ -2365,6 +2321,11 @@ const PromptStudio = {
             'watch-catchy-editorial': { angle:['extreme-macro','watch-dial-macro','watch-wrist-roll'], lighting:['dramatic','studio','color-gel-backlit'], camera:['phase-one-iq4','macro-100','canon-135-l'], tips:['Use extreme macro for provocative avant-garde compositions.','Color Gel Backlit adds bold, striking editorial colors.','Phase One IQ4 captures extraordinary detail and stark contrasts.','Bold makeup or unconventional styling elements are highly recommended.'] },
             'watch-lifestyle-travel': { angle:['watch-steering-wheel','candid','watch-wrist-roll'], lighting:['golden-hour','natural','warm'], camera:['leica-50','hasselblad-85','sony-35-gm'], tips:['On Steering Wheel is the quintessential travel and automotive lifestyle shot.','Golden Hour lighting provides aspirational jet-setter warmth.','Leica 50mm Summilux gives a classic documentary feel to travel scenes.','Include passports, vintage luggage, or luxury resort backgrounds.'] },
             'watch-haute-horlogerie': { angle:['watch-dial-macro','extreme-macro','watch-crown-detail'], lighting:['sapphire-crystal-bounce','studio','lume-glow-dark'], camera:['macro-180','phase-one-iq4','macro-100'], tips:['Extreme macro with a 180mm lens reveals individual screws and finishing.','Luminescent Glow (Low Light) highlights the dial in dark conditions.','Sapphire Crystal Bounce lighting eliminates reflections for pure mechanical visibility.','Enable No Model — the movement itself is the primary subject.'] },
+            // ── SET EXCLUSIVE ──────────────────────
+            'set-editorial-display': { angle:['flat-lay','overhead','45-degree','eye-level'], lighting:['studio','editorial','soft','window'], camera:['phase-one-iq4','macro-100','hasselblad-85'], tips:['Arrange pieces in a triangular or arc composition — ring as anchor, necklace arched above, earrings flanking.','Use dark navy velvet or pale marble as surface to provide contrast with silver.','Ensure all three pieces are equally sharp — use f/8 or focus stack if needed.'] },
+            'set-worn-collection': { angle:['eye-level','45-degree','glance-down','chin-up'], lighting:['editorial','golden-hour-light','studio','warm'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Frame at 3/4 crop (head to chest) so ring, necklace, AND earrings are all visible in one shot.','Pose the model with hand raised (touching chin or ear) so ring and earring are simultaneously prominent.','Black or jewel-tone clothing ensures maximum silver contrast across all pieces.'] },
+            'set-gift-presentation': { angle:['flat-lay','overhead','45-degree','eye-level'], lighting:['soft','warm','golden-hour-light','window'], camera:['phase-one-iq4','hasselblad-85','macro-100'], tips:['Use a luxury jewelry box with individual compartments — one for ring, one for necklace, one for earrings.','Scatter rose petals, ribbon, or a brand card around the box for seasonal gifting context.','Warm soft window light from one side creates a romantic, aspirational gift atmosphere.'] },
+            'set-detail-showcase': { angle:['macro','extreme-macro','flat-lay','45-degree'], lighting:['studio','editorial','soft'], camera:['macro-100','macro-180','phase-one-iq4'], tips:['Focus on one piece sharply while the other two are softly visible — depth of field tells the collection story.','Arrange all three pieces in the same frame even in macro mode so the set reads as unified.','Pay attention to stone alignment — ensure each stone in the set is showing its best facet toward the lens.'] },
         };
 
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
@@ -2453,9 +2414,10 @@ const PromptStudio = {
                             <select class="form-select" id="ps-category">
                                 ${this.categories.map(c => {
                                     const rawLabel = c.charAt(0).toUpperCase() + c.slice(1).replace(/-/g, ' ');
-                                    const labels = { 'jewelry-set': 'Jewelry Set', 'body-jewelry': 'Body Jewelry', 'bangles': 'Bangles', 'anklet': 'Anklet', 'brooch': 'Brooch', 'pendant': 'Pendant' };
+                                    const labels = { 'jewelry-set': 'Jewelry Set (Set)', 'body-jewelry': 'Body Jewelry', 'bangles': 'Bangles', 'anklet': 'Anklet', 'brooch': 'Brooch', 'pendant': 'Pendant' };
                                     const label = labels[c] || rawLabel;
-                                    return `<option value="${c}" ${c === this.state.category ? 'selected' : ''}>${label}</option>`;
+                                    const i18nKey = `ps_cat_${c.replace(/-/g, '_')}`;
+                                    return `<option value="${c}" data-i18n="${i18nKey}" ${c === this.state.category ? 'selected' : ''}>${label}</option>`;
                                 }).join('')}
                             </select>
                         </div>
@@ -2812,29 +2774,15 @@ const PromptStudio = {
         });
         q('#ps-category').addEventListener('change', e => {
             this.state.category = e.target.value;
-            if (e.target.value !== 'jewelry-set') {
-                // keep setComposition intact for when user comes back to jewelry-set
-            } else {
+            const isSet = e.target.value === 'jewelry-set' || e.target.value === 'set';
+            if (isSet) {
                 this.state.setComposition = this.state.setComposition || ['ring', 'necklace', 'earrings'];
             }
             // Show/hide set composition row
             const setRow = q('#ps-set-composition-group');
-            if (setRow) setRow.style.display = e.target.value === 'jewelry-set' ? '' : 'none';
-            // If jewelry-set, inject the row if it doesn't exist yet
-            if (e.target.value === 'jewelry-set') {
-                const catGroup = q('#ps-category-group');
-                if (catGroup && !q('#ps-set-composition-group')) {
-                    catGroup.insertAdjacentHTML('afterend', this._renderSetComposition());
-                }
-            }
+            if (setRow) setRow.style.display = isSet ? '' : 'none';
             this._renderArchetypeGrid();
-            // Also refresh angle chips - category affects best-angle recommendations
-            const _ag = q('#ps-angle');
-            if (_ag) _ag.innerHTML = this._buildAngleChips();
-            const _ctx = q('#ps-angle-context');
-            if (_ctx) _ctx.textContent = '-- best for ' + this.state.category;
-            // v3.6: Also refresh lighting chips - category affects best-lighting recommendations
-            this._refreshLighting();
+            this._autoDescribe();
         });
         q('#ps-material').addEventListener('change', e => { this.state.material = e.target.value; });
         q('#ps-stone').addEventListener('change', e => { this.state.stone = e.target.value; });
@@ -3522,13 +3470,13 @@ const PromptStudio = {
     // ── Set Composition Selector (shown only when category = jewelry-set) ──────
     _renderSetComposition() {
         const comp = this.state.setComposition || ['ring', 'necklace', 'earrings'];
-        if (this.state.category !== 'jewelry-set') return '';
+        const isSet = this.state.category === 'jewelry-set' || this.state.category === 'set';
         const pieces = [
-            { id: 'ring',     label: 'Ring',     always: false },
-            { id: 'necklace', label: 'Necklace', always: false },
-            { id: 'earrings', label: 'Earrings', always: false },
-            { id: 'bracelet', label: 'Bracelet', always: false },
-            { id: 'bangle',   label: 'Bangle',   always: false },
+            { id: 'ring',     label: '💍 Ring' },
+            { id: 'necklace', label: '📿 Necklace' },
+            { id: 'earrings', label: '✨ Earrings' },
+            { id: 'bracelet', label: '💫 Bracelet' },
+            { id: 'bangle',   label: '⭕ Bangle' },
         ];
         const chips = pieces.map(p => {
             const active = comp.includes(p.id);
@@ -3538,10 +3486,10 @@ const PromptStudio = {
                 onclick="PromptStudio._toggleSetPiece('${p.id}')"
                 title="Include ${p.label} in the set">${p.label}</button>`;
         }).join('');
-        return `<div class="ps-form-group ps-set-composition-row" id="ps-set-composition-group">
-            <label class="ps-label">
+        return `<div class="form-group ps-set-composition-row" id="ps-set-composition-group" style="${isSet ? '' : 'display:none;'}">
+            <label class="form-label">
                 <span>✦</span> Set Includes
-                <span class="ps-label-hint">Choose which pieces are in this set</span>
+                <span class="ps-label-hint">Choose which pieces are in this set/pack</span>
             </label>
             <div class="ps-set-chips">${chips}</div>
         </div>`;
@@ -3552,14 +3500,23 @@ const PromptStudio = {
         const comp = [...(this.state.setComposition || ['ring', 'necklace', 'earrings'])];
         const idx = comp.indexOf(pieceId);
         if (idx >= 0) {
-            if (comp.length === 1) return; // always keep at least 1 piece
+            if (comp.length === 1) {
+                if (window.Elaris && window.Elaris.toast) window.Elaris.toast('At least one piece must remain in the set', 'info');
+                return;
+            }
             comp.splice(idx, 1);
         } else {
             comp.push(pieceId);
         }
         this.state.setComposition = comp;
-        this._saveState();
-        this._render();
+        const group = this.container ? this.container.querySelector('#ps-set-composition-group') : document.getElementById('ps-set-composition-group');
+        if (group) {
+            group.querySelectorAll('.ps-set-chip').forEach(btn => {
+                const p = btn.dataset.piece;
+                btn.classList.toggle('active', comp.includes(p));
+            });
+        }
+        this._autoDescribe();
     },
 
     _buildPrompt(archetype) {

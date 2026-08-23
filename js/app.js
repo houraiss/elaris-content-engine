@@ -20,6 +20,13 @@ const Elaris = {
 
     // ── Router ───────────────────────────────────────────────────
     navigate(page) {
+        // Alias route handling for set / jewelry-set
+        if (page === 'set' || page === 'jewelry-set' || page === 'jewelryset') {
+            if (window.PromptStudio && window.PromptStudio.state) {
+                window.PromptStudio.state.category = 'jewelry-set';
+            }
+            page = 'promptstudio';
+        }
         if (this.currentPage === page) return;
         this.currentPage = page;
 
@@ -30,7 +37,7 @@ const Elaris = {
         window.location.hash = page;
         const titles = {
             promptstudio: 'Prompt Studio', motionstudio: 'Motion Studio', captions: 'Captions',
-            trends: 'Trends', watermark: 'Watermark Studio', batch: 'Batch Mode',
+            generate: 'Generate AI Assets', trends: 'Trends', watermark: 'Watermark Studio', batch: 'Batch Mode',
         };
         document.title = `${titles[page] || page} — Elaris Content Engine`;
 
@@ -89,6 +96,7 @@ window.render_captions = function(container) {
                         <label class="form-label" data-i18n="cap_prod_type">Product Type</label>
                         <select class="form-select" id="cs-product">
                             <option value="general">General Jewelry</option>
+                            <option value="set" data-i18n="cap_prod_set">Jewelry Set (Pack)</option>
                             <option value="ring">Ring</option>
                             <option value="necklace">Necklace</option>
                             <option value="bracelet">Bracelet</option>

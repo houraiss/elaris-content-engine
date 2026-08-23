@@ -70,6 +70,16 @@ const ElarisCaption = {
             'Light catches silver, silver catches eyes. 925 sterling, handcrafted.',
             'Earrings that whisper luxury. 925 sterling silver from our Agadir atelier.',
         ],
+        set: [
+            'A harmoniously matched 925 sterling silver jewelry set — crafted for unified elegance from neck to fingertips.',
+            'The complete collection in pure 925 silver: matching ring, necklace, and earrings handcrafted in Morocco.',
+            'Coordinated perfection in 925 sterling silver — every piece in this set complements the next with timeless grace.',
+        ],
+        'jewelry-set': [
+            'A harmoniously matched 925 sterling silver jewelry set — crafted for unified elegance from neck to fingertips.',
+            'The complete collection in pure 925 silver: matching ring, necklace, and earrings handcrafted in Morocco.',
+            'Coordinated perfection in 925 sterling silver — every piece in this set complements the next with timeless grace.',
+        ],
         general: [
             'Handcrafted in 925 sterling silver — where Moroccan heritage meets modern design.',
             'Every detail tells a story of craft. 925 sterling silver, made in Morocco.',
@@ -104,6 +114,8 @@ const ElarisCaption = {
             necklace: ['#silvernecklace', '#necklacelovers', '#pendantnecklace', '#layeringnecklace', '#chainnecklace'],
             bracelet: ['#silverbracelet', '#braceletlovers', '#cuffbracelet', '#chainbracelet', '#wristcandy'],
             earrings: ['#silverearrings', '#earringsoftheday', '#hoopearrings', '#studearrings', '#earringlovers'],
+            set: ['#jewelryset', '#matchingset', '#silverjewelryset', '#jewelrycollection', '#bridaljewelryset', '#fullset'],
+            'jewelry-set': ['#jewelryset', '#matchingset', '#silverjewelryset', '#jewelrycollection', '#bridaljewelryset', '#fullset'],
             general: ['#silverjewelry', '#jewelrydesign', '#handcraftedjewelry', '#artisanjewelry', '#luxuryjewelry'],
         },
         reach: [

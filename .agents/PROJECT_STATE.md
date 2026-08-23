@@ -46,3 +46,5 @@ The application is structured into several core views:
   - `catLabels` updated with `'jewelry-set': 'matching jewelry set'`.
   - Service worker cache bumped to `elaris-v34`.
   - All 70 existing archetype `compat` objects updated with `'jewelry-set': N` scores.
+- **2026-08-23**: Fixed "Coming Soon" error on Prompt Studio load caused by a missing comma in the `HUMAN` set in `prompt-studio.js`. Cleaned corrupted object structures in `archetypeAngleBoost` and correctly wired `guideDB` Smart Guide entries for all SET archetypes. Added `set` and `jewelry-set` support to Caption Studio (`captions.js` descriptions and hashtags, `app.js` product type dropdown), added i18n keys for EN, FR, and AR, added router alias handling so `#set` and `#jewelry-set` route directly to Prompt Studio with category pre-selected, cache-busted script versions in `index.html`, and bumped service worker cache to `elaris-v35`.
+
