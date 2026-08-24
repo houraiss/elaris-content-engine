@@ -2041,14 +2041,18 @@ const PromptStudio = {
                 const savedProfiles = JSON.parse(saved);
                 savedProfiles.forEach(p => {
                     if (BUILT_IN_IDS.includes(p.id)) {
+                        // Preserve any user edits (reference image, etc.)
                         savedBuiltIns[p.id] = p;
                     } else {
+                        // User-created custom profile — keep it
                         customProfiles.push(p);
                     }
                 });
             }
         } catch (e) { console.error('Failed to load profiles', e); }
 
+        // Merge: built-ins first (with any user edits), then custom profiles
+        // This guarantees Lina, Sara, Amir & Tariq always appear on any device
         const mergedBuiltIns = BUILT_IN.map(p => savedBuiltIns[p.id] || p);
         this.state.profiles = [...mergedBuiltIns, ...customProfiles];
         this._saveProfiles();
@@ -2069,102 +2073,16 @@ const PromptStudio = {
     init(container) {
         this.container = container;
         this._sortMode = 'recommended';
-        this._currentModalCat = 'all';
         this._loadProfiles();
         this._render();
-        this._renderPresetsBar();
-        this._renderArchetypeCarousel();
+        this._renderArchetypeGrid();
         this._bind();
-    },
-
-    // ── Saved 1-Tap Presets ──────────────────────
-    _loadPresets() {
-        const defaultPresets = [
-            { id: 'p-morocco-ring', name: '👑 Moroccan Silver Ring', product: 'silver', category: 'ring', material: '800-silver', stone: 'turquoise', format: 'square', lightingMood: 'golden-hour', selectedArchetypes: ['heritage-moroccan', 'body-intimate'] },
-            { id: 'p-pearl-drop', name: '✨ Minimalist Pearl Drop', product: 'silver', category: 'earrings', material: 'high-polish', stone: 'pearl', format: 'portrait', lightingMood: 'soft', selectedArchetypes: ['minimalist-space', 'macro-detail'] },
-            { id: 'p-emerald-set', name: '💎 Royal Emerald Set', product: 'silver', category: 'jewelry-set', setComposition: ['ring', 'necklace', 'earrings'], material: 'sterling-silver', stone: 'emerald', format: 'portrait', lightingMood: 'dramatic', selectedArchetypes: ['set-worn-collection', 'royal-opulence'] },
-            { id: 'p-exec-watch', name: '⌚ Executive Chrono', product: 'watch', category: 'ring', material: 'sterling-silver', stone: 'none', format: 'story', lightingMood: 'studio', selectedArchetypes: ['watch-classic-executive', 'watch-catchy-editorial'] },
-        ];
-        try {
-            const saved = localStorage.getItem('elaris_saved_presets');
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-            }
-        } catch(e) {}
-        return defaultPresets;
-    },
-    _savePresets(presets) {
-        try {
-            localStorage.setItem('elaris_saved_presets', JSON.stringify(presets));
-        } catch(e) {}
-    },
-    _renderPresetsBar() {
-        const track = this.container ? this.container.querySelector('#ps-presets-track') : document.getElementById('ps-presets-track');
-        if (!track) return;
-        const presets = this._loadPresets();
-        track.innerHTML = `
-            ${presets.map(p => `
-                <div class="ps-preset-pill" onclick="PromptStudio._applyPreset('${p.id}')">
-                    <span>${p.name}</span>
-                    <span class="ps-preset-del" onclick="PromptStudio._deletePreset('${p.id}', event)" title="Delete preset">✕</span>
-                </div>
-            `).join('')}
-            <button class="ps-preset-add-btn" onclick="PromptStudio._saveCurrentPreset()">+ Save Current</button>
-        `;
-    },
-    _applyPreset(id) {
-        const presets = this._loadPresets();
-        const p = presets.find(x => x.id === id);
-        if (!p) return;
-        this.state.product = p.product || 'silver';
-        this.state.category = p.category || 'ring';
-        if (p.setComposition) this.state.setComposition = [...p.setComposition];
-        this.state.material = p.material || 'sterling-silver';
-        this.state.stone = p.stone || 'diamond';
-        this.state.format = p.format || 'square';
-        if (p.lightingMood) this.state.lightingMood = p.lightingMood;
-        if (p.selectedArchetypes && p.selectedArchetypes.length > 0) {
-            this.state.selectedArchetypes = [...p.selectedArchetypes];
-        }
-        this._render();
-        this._renderPresetsBar();
-        this._renderArchetypeCarousel();
-        this._bind();
-        if (window.Elaris) window.Elaris.toast(`Loaded preset: ${p.name} ✦`, 'info');
-    },
-    _saveCurrentPreset() {
-        const name = prompt('Enter a name for this 1-tap preset:', `${(this.state.category || 'Jewelry').toUpperCase()} - ${this.state.stone}`);
-        if (!name || !name.trim()) return;
-        const presets = this._loadPresets();
-        const id = 'preset-' + Date.now();
-        presets.push({
-            id,
-            name: name.trim(),
-            product: this.state.product,
-            category: this.state.category,
-            setComposition: this.state.setComposition,
-            material: this.state.material,
-            stone: this.state.stone,
-            format: this.state.format,
-            lightingMood: this.state.lightingMood,
-            selectedArchetypes: [...this.state.selectedArchetypes]
-        });
-        this._savePresets(presets);
-        this._renderPresetsBar();
-        if (window.Elaris) window.Elaris.toast('Preset saved to 1-tap bar! ✨', 'success');
-    },
-    _deletePreset(id, event) {
-        if (event) event.stopPropagation();
-        let presets = this._loadPresets();
-        presets = presets.filter(p => p.id !== id);
-        this._savePresets(presets);
-        this._renderPresetsBar();
-        if (window.Elaris) window.Elaris.toast('Preset removed', 'info');
     },
 
     // ── Compute a single consistent score for sort + display ──────────────────────
+    // This guarantees that badge rank = visual rank. Score is always 0-100.
     _computeScore(archetype, state) {
+        // All archetypes that require a human subject
         const HUMAN = new Set([
             'body-intimate', 'editorial-model', 'collection-showcase', 'bw-dramatic',
             'motion-blur', 'cinematic-portrait', 'lifestyle-moment', 'heritage-moroccan',
@@ -2174,30 +2092,38 @@ const PromptStudio = {
             'cinematic-color-story', 'ghost-double-exposure', 'outdoor-masculine',
             'harsh-sun-beauty', 'desert-mirage', 'vintage-nostalgia',
             'mouth-lips-editorial', 'dark-moody-editorial',
+            // v3.6: Sheets 2, 4, 7, 20 archetypes (human)
             'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
+            // WATCH EXCLUSIVE
             'watch-classic-executive', 'watch-trendy-streetwear', 'watch-catchy-editorial',
             'watch-lifestyle-travel', 'watch-haute-horlogerie',
+            // SET archetypes with models
             'set-worn-collection',
         ]);
         const cat     = state.product === 'watch' ? 'watch' : (state.category || 'ring');
         const isHuman = HUMAN.has(archetype.id);
 
+        // Base score from category compatibility table
         let score = (archetype.compat && archetype.compat[cat]) || 50;
 
+        // No Model mode: strongly re-rank to product/surreal archetypes
         if (state.modelGender === 'none') {
             if (isHuman)  score -= 28;
             else          score += 18;
         }
 
+        // Consistency mode adjustments
         if (state.consistencyOn && state.modelGender !== 'none') {
             if (isHuman)  score += 18;
             else          score -= 8;
         }
 
+        // No reference images: product archetypes are equally valid
         if (!state.consistencyOn && state.jewelryCount === 0 && !isHuman) {
             score += 5;
         }
 
+        // Gender-specific archetype adjustments
         if (state.modelGender === 'male') {
             if (archetype.id === 'masculine-editorial') score += 15;
             if (archetype.id === 'outdoor-masculine')   score += 12;
@@ -2213,296 +2139,110 @@ const PromptStudio = {
         return Math.max(0, Math.min(100, Math.round(score)));
     },
 
-    // ── Top 10 Recommended Archetypes Carousel ──────────────────────
-    _renderArchetypeCarousel() {
-        const track = this.container ? this.container.querySelector('#ps-top-carousel-track') : document.getElementById('ps-top-carousel-track');
-        if (!track) return;
-
-        const catNameSpan = this.container ? this.container.querySelector('#ps-match-cat-name') : document.getElementById('ps-match-cat-name');
-        if (catNameSpan) {
-            const catLabels = { 'jewelry-set': 'Jewelry Set', 'body-jewelry': 'Body Jewelry', 'bangles': 'Bangles' };
-            catNameSpan.textContent = this.state.product === 'watch' ? 'Watch' : (catLabels[this.state.category] || this.state.category);
-        }
+    // ── Render Archetype Grid (dynamic, re-sortable) ──────────────────────
+    _renderArchetypeGrid() {
+        const grid = this.container.querySelector('#ps-archetypes');
+        if (!grid) return;
 
         let sorted = [...this.archetypes];
-        sorted.sort((a, b) => {
-            const scoreA = this._computeScore(a, this.state);
-            const scoreB = this._computeScore(b, this.state);
-            if (scoreB !== scoreA) return scoreB - scoreA;
-            return a.name.localeCompare(b.name);
-        });
 
-        const top10 = sorted.slice(0, 10);
-
-        if (this.state.selectedArchetypes.length === 0 && top10.length > 0) {
-            this.state.selectedArchetypes = [top10[0].id];
-        }
-
-        const cardsHtml = top10.map(a => {
-            const score = this._computeScore(a, this.state);
-            const isSelected = this.state.selectedArchetypes.includes(a.id);
-            const radius = 17;
-            const circumference = 2 * Math.PI * radius;
-            const offset = circumference - (score / 100) * circumference;
-
-            return `
-                <div class="ps-carousel-card ${isSelected ? 'active' : ''}" data-arch="${a.id}" onclick="PromptStudio._toggleArchetype('${a.id}')">
-                    <div class="ps-card-top-row">
-                        <span class="ps-card-badge">V3.0</span>
-                        <span class="ps-card-icon" style="background:${a.color}30;border:1px solid ${a.color}60">${a.icon}</span>
-                    </div>
-                    <div class="ps-card-name">${a.name}</div>
-                    <div class="ps-card-tagline">${a.tagline}</div>
-                    <div class="ps-score-gauge">
-                        <svg viewBox="0 0 44 44">
-                            <defs>
-                                <linearGradient id="goldGrad-${a.id}" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#f59e0b" />
-                                    <stop offset="100%" stop-color="#fbbf24" />
-                                </linearGradient>
-                            </defs>
-                            <circle class="ps-score-gauge-bg" cx="22" cy="22" r="${radius}" />
-                            <circle class="ps-score-gauge-fill" cx="22" cy="22" r="${radius}"
-                                    stroke="url(#goldGrad-${a.id})"
-                                    stroke-dasharray="${circumference}"
-                                    stroke-dashoffset="${offset}" />
-                        </svg>
-                        <span class="ps-score-gauge-text">${score}%</span>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        const viewAllCard = `
-            <div class="ps-carousel-card ps-carousel-view-all" onclick="PromptStudio.openAllArchetypesModal()">
-                <div style="font-size:28px;margin-bottom:8px">💎</div>
-                <div style="font-weight:700;font-size:13px;color:var(--accent)">View All (70+)</div>
-                <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Editorial, Macro, Sets, Surreal, Watches &amp; more</div>
-                <span style="font-size:18px;color:var(--accent);margin-top:12px">→</span>
-            </div>
-        `;
-
-        track.innerHTML = cardsHtml + viewAllCard;
-    },
-
-    _toggleArchetype(id) {
-        const idx = this.state.selectedArchetypes.indexOf(id);
-        if (idx >= 0) {
-            if (this.state.selectedArchetypes.length > 1) {
-                this.state.selectedArchetypes.splice(idx, 1);
-            }
+        if (this._sortMode === 'recommended') {
+            sorted.sort((a, b) => {
+                const scoreA = this._computeScore(a, this.state);
+                const scoreB = this._computeScore(b, this.state);
+                // Stable tiebreaker: alphabetical by name
+                if (scoreB !== scoreA) return scoreB - scoreA;
+                return a.name.localeCompare(b.name);
+            });
         } else {
-            this.state.selectedArchetypes.push(id);
+            sorted.sort((a, b) => a.name.localeCompare(b.name));
         }
-        this._renderArchetypeCarousel();
-        this._refreshModalCards();
-        const guideEl = this.container ? this.container.querySelector('#ps-smart-guide-slot') : document.getElementById('ps-smart-guide-slot');
-        if (guideEl) guideEl.outerHTML = `<div id="ps-smart-guide-slot">${this._buildSmartGuide()}</div>`;
-        this._refreshAngles();
-        this._refreshLighting();
-    },
 
-    // ── All Archetypes Categorized Modal ──────────────────────
-    openAllArchetypesModal() {
-        const modal = document.getElementById('ps-all-archetypes-modal');
-        if (!modal) return;
-        this._currentModalCat = this._currentModalCat || 'all';
-        this._renderModalCategoryTabs();
-        this._renderModalGrid();
-        modal.classList.add('open');
-    },
-    closeAllArchetypesModal() {
-        const modal = document.getElementById('ps-all-archetypes-modal');
-        if (modal) modal.classList.remove('open');
-    },
-    _renderModalCategoryTabs() {
-        const tabsContainer = document.getElementById('ps-modal-cat-tabs');
-        if (!tabsContainer) return;
-        const cats = [
-            { id: 'all', label: 'All (70+)' },
-            { id: 'editorial', label: 'Editorial & Fashion' },
-            { id: 'macro', label: 'Macro & Close-Up' },
-            { id: 'set', label: 'Jewelry Sets' },
-            { id: 'surreal', label: 'Surreal & Artistic' },
-            { id: 'lifestyle', label: 'Lifestyle & Travel' },
-            { id: 'heritage', label: 'Heritage & Moroccan' },
-            { id: 'minimalist', label: 'Minimalist & Clean' },
-            { id: 'watches', label: 'Watches' }
-        ];
-        tabsContainer.innerHTML = cats.map(c => `
-            <button class="ps-cat-tab ${this._currentModalCat === c.id ? 'active' : ''}" onclick="PromptStudio._selectModalCat('${c.id}')">${c.label}</button>
-        `).join('');
-    },
-    _selectModalCat(catId) {
-        this._currentModalCat = catId;
-        this._renderModalCategoryTabs();
-        this._renderModalGrid();
-    },
-    _getArchetypeCategory(arch) {
-        if (arch.id.startsWith('watch-')) return 'watches';
-        if (arch.id.startsWith('set-')) return 'set';
-        const macro = ['macro-detail', 'micro-surreal', 'mouth-lips-editorial', 'skin-canvas', 'body-intimate', 'texture-contrast', 'wet-element', 'surreal-material-fusion'];
-        if (macro.includes(arch.id)) return 'macro';
-        const heritage = ['heritage-moroccan', 'artisan-at-work', 'bridal-trousseau', 'souk-editorial', 'heirloom-generational'];
-        if (heritage.includes(arch.id)) return 'heritage';
-        const surreal = ['surreal-animal', 'surreal-scale', 'ghost-double-exposure', 'zero-gravity', 'neon-cyberpunk', 'celestial-mythic', 'gradient-product', 'shadow-play'];
-        if (surreal.includes(arch.id)) return 'surreal';
-        const lifestyle = ['lifestyle-moment', 'vehicle-lifestyle', 'frozen-subject', 'outdoor-masculine', 'vintage-nostalgia', 'weather-drama', 'reaching-gesture', 'hair-drama', 'motion-blur'];
-        if (lifestyle.includes(arch.id)) return 'lifestyle';
-        const editorial = ['editorial-model', 'bw-dramatic', 'cinematic-portrait', 'avant-garde-couture', 'cinematic-color-story', 'power-stance', 'stacked-maximalist', 'sculptural-headpiece', 'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power', 'luxury-leather-editorial', 'monochrome-jewelry-ad', 'masculine-editorial', 'royal-opulence', 'veiled-mystery', 'dark-moody-editorial'];
-        if (editorial.includes(arch.id)) return 'editorial';
-        return 'minimalist';
-    },
-    _renderModalGrid() {
-        const grid = document.getElementById('ps-modal-archetype-grid');
-        if (!grid) return;
-        const searchVal = (document.getElementById('ps-modal-search')?.value || '').toLowerCase().trim();
-        let list = [...this.archetypes];
-        if (this._currentModalCat && this._currentModalCat !== 'all') {
-            list = list.filter(a => this._getArchetypeCategory(a) === this._currentModalCat);
-        }
-        if (searchVal) {
-            list = list.filter(a => a.name.toLowerCase().includes(searchVal) || (a.tagline && a.tagline.toLowerCase().includes(searchVal)) || (a.bestFor && a.bestFor.toLowerCase().includes(searchVal)));
-        }
-        list.sort((a, b) => this._computeScore(b, this.state) - this._computeScore(a, this.state));
+        // v3.0 archetype IDs — shown with a NEW badge
+        const V3_ARCHETYPES = new Set([
+            'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture', 'cinematic-color-story',
+            'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty', 'product-page-clean', 'textured-prop', 'mouth-lips-editorial', 'dark-moody-editorial',
+            // v3.3: Sheet 15 archetypes
+            'frozen-subject', 'micro-surreal', 'vehicle-lifestyle',
+            // v3.4: Sheets 8–10 archetypes
+            'weather-drama', 'prop-power-play', 'skin-canvas', 'reaching-gesture',
+            // v3.5: Sheets 16–19 archetypes
+            'power-stance', 'stacked-maximalist', 'sculptural-headpiece',
+            // v3.6: Sheets 2, 4, 7, 20 archetypes
+            'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
+            // v3.7: Brand-grounded archetypes
+            'artisan-at-work', 'bridal-trousseau', 'souk-editorial', 'heirloom-generational',
+            // v4.0: V2 Reference Sheet archetypes
+            'futuristic-chrome', 'submerged-beauty', 'surreal-material-fusion', 'luxury-leather-editorial', 'monochrome-jewelry-ad',
+        ]);
 
-        grid.innerHTML = list.map(a => {
+        const WATCH_ARCHETYPES = new Set([
+            'watch-classic-executive', 'watch-trendy-streetwear', 'watch-catchy-editorial', 'watch-lifestyle-travel', 'watch-haute-horlogerie',
+        ]);
+        const SET_ARCHETYPES = new Set([
+            'set-editorial-display', 'set-worn-collection', 'set-gift-presentation', 'set-detail-showcase'
+        ]);
+
+
+        grid.innerHTML = sorted.map(a => {
+            // Use the SAME score for display as used for sorting
             const score = this._computeScore(a, this.state);
             const isSelected = this.state.selectedArchetypes.includes(a.id);
-            const scoreColor = score >= 85 ? '#4ade80' : score >= 70 ? '#fbbf24' : '#f87171';
+            const scoreColor = score >= 85 ? '#4ade80' : score >= 70 ? '#fbbf24' : score >= 50 ? '#f97316' : '#f87171';
+            const isV3 = V3_ARCHETYPES.has(a.id);
+            const isWatchArch = WATCH_ARCHETYPES.has(a.id);
+            const isSetArch   = SET_ARCHETYPES.has(a.id);
+
+            // Dynamic translation for archetypes based on ID prefix
+            const tPrefix = a.id === 'body-intimate' ? 'body' :
+                            a.id === 'object-pairing' ? 'obj' :
+                            a.id === 'macro-detail' ? 'macro' :
+                            a.id === 'editorial-abstract' ? 'edit' :
+                            a.id === 'lifestyle-ritual' ? 'life' :
+                            a.id === 'nature-botanical' ? 'nat' :
+                            a.id === 'heritage-moroccan' ? 'her' :
+                            a.id === 'minimalist-space' ? 'min' :
+                            null;
+
+            const name = tPrefix && window.I18n ? window.I18n.t(`ps_arch_${tPrefix}_title`) : a.name;
+            const tagline = tPrefix && window.I18n ? window.I18n.t(`ps_arch_${tPrefix}_tag`) : a.tagline;
+            const bestForText = window.I18n ? window.I18n.t('ps_best_for') : 'Best for:';
+            const bestForVal = a.bestFor.replace('Best for:', '').trim();
+
             return `
-                <div class="ps-arch-card ${isSelected ? 'active' : ''}" data-arch="${a.id}" onclick="PromptStudio._toggleArchetype('${a.id}')" style="position:relative">
-                    <span class="ps-v3-badge" style="font-size:9px">V3.0</span>
+                <div class="ps-arch-card ${isSelected ? 'active' : ''} ${isV3 ? 'ps-arch-v3' : ''} ${isWatchArch ? 'ps-arch-watch' : ''} ${isSetArch ? 'ps-arch-set' : ''}" data-arch="${a.id}" style="position:relative">
+                    ${isSetArch ? `<span class="ps-set-badge">SET</span>` : (isWatchArch ? `<span class="ps-watch-badge">WATCH</span>` : (isV3 ? `<span class="ps-v3-badge">v3.0</span>` : ''))}
                     <div class="ps-arch-icon" style="--arch-color:${a.color}">${a.icon}</div>
                     <div class="ps-arch-info">
-                        <div class="ps-arch-name">${a.name}</div>
-                        <div class="ps-arch-tag">${a.tagline}</div>
-                        <div class="ps-arch-bestfor">${a.bestFor}</div>
+                        <div class="ps-arch-name">${name}</div>
+                        <div class="ps-arch-tag">${tagline}</div>
+                        <div class="ps-arch-bestfor">${bestForText} ${bestForVal}</div>
                     </div>
-                    <div class="ps-arch-score" style="color:${scoreColor}">${score}%</div>
+                    <div class="ps-arch-score" style="color:${scoreColor}" title="Compatibility with ${this.state.category || 'ring'}">${score}</div>
                 </div>
             `;
         }).join('');
-    },
-    _refreshModalCards() {
-        const grid = document.getElementById('ps-modal-archetype-grid');
-        if (!grid) return;
-        grid.querySelectorAll('.ps-arch-card').forEach(c => {
-            const id = c.dataset.arch;
-            c.classList.toggle('active', this.state.selectedArchetypes.includes(id));
-        });
-    },
-    filterModalArchetypes() {
-        this._renderModalGrid();
+
+        // Update count
+        const countEl = this.container.querySelector('#ps-arch-count');
+        if (countEl) countEl.textContent = `${this.state.selectedArchetypes.length} selected`;
     },
 
-    // ── Expert Studio Accordion Drawer ──────────────────────
-    toggleExpertAccordion() {
-        const body = document.getElementById('ps-expert-body');
-        const chevron = document.getElementById('ps-expert-chevron');
-        if (!body) return;
-        const isHidden = body.style.display === 'none';
-        body.style.display = isHidden ? 'block' : 'none';
-        if (chevron) chevron.textContent = isHidden ? '▲' : '▼';
-    },
-
-    // ── Generate & Copy Prompts ──────────────────────
-    generatePrompts() {
-        this._autoDescribe();
-        if (this.state.selectedArchetypes.length === 0) {
-            let sorted = [...this.archetypes].sort((a, b) => this._computeScore(b, this.state) - this._computeScore(a, this.state));
-            this.state.selectedArchetypes = [sorted[0].id];
-        }
-        const prompts = [];
-        for (const archId of this.state.selectedArchetypes) {
-            const arch = this.archetypes.find(a => a.id === archId);
-            if (!arch) continue;
-            const text = this._buildPrompt(arch);
-            prompts.push({ archetype: arch.name, icon: arch.icon, text, archId: arch.id, id: Date.now() + Math.random() });
-        }
-
-        if (prompts.length === 0) return;
-
-        this._activePrompt = prompts[0];
-        this._currentPrompts = prompts;
-
-        // Automatic 1-Tap Clipboard Copy
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(prompts[0].text).then(() => {
-                if (window.Elaris) {
-                    window.Elaris.toast('✦ Prompt Copied — Ready for Gemini!', 'success');
-                }
-            }).catch(() => {});
-        }
-
-        // Add to history
-        for (const p of prompts) {
-            this.state.history.unshift({ ...p, timestamp: new Date().toLocaleTimeString() });
-        }
-        this._renderHistory();
-
-        // Render output glass card
-        const outputArea = document.getElementById('ps-output-area');
-        if (outputArea) {
-            outputArea.style.display = 'block';
-            const nameEl = document.getElementById('ps-output-archetype-name');
-            if (nameEl) nameEl.textContent = `${prompts[0].icon} ${prompts[0].archetype} (${prompts.length > 1 ? `1 of ${prompts.length}` : 'Active'})`;
-
-            const bodyEl = document.getElementById('ps-prompt-active-text');
-            if (bodyEl) {
-                let highlighted = prompts[0].text
-                    .replace(/(\b\d+k\b|\bRAW photo\b|\b85mm\b|\b100mm\b|\bHasselblad\b|\bLeica\b|\bPhase One\b|\bf\/\d+(\.\d+)?\b)/gi, '<span class="ps-prompt-keyword">$1</span>')
-                    .replace(/(Aspect ratio \d+:\d+|Negative prompt:[^.]+)/gi, '<span class="ps-prompt-keyword-cyan">$1</span>');
-                bodyEl.innerHTML = highlighted;
-            }
-
-            outputArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    },
-    _generate() { this.generatePrompts(); },
-    copyActivePrompt() {
-        if (!this._activePrompt) return;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(this._activePrompt.text).then(() => {
-                if (window.Elaris) window.Elaris.toast('Prompt copied to clipboard! 📋', 'success');
-            });
-        }
-    },
-    regenerateActive() {
-        if (!this._activePrompt) return;
-        this.generatePrompts();
-    },
-    scrollToHistory() {
-        const hist = document.getElementById('ps-history');
-        if (hist) {
-            hist.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            if (window.Elaris) window.Elaris.toast('Viewing Prompt History 📜', 'info');
-        }
-    },
-    _renderHistory() {
-        const hist = document.getElementById('ps-history');
-        if (!hist) return;
-        if (!this.state.history || this.state.history.length === 0) {
-            hist.innerHTML = '<p class="text-sm text-muted" style="text-align:center;padding:20px">No prompts generated yet</p>';
-            return;
-        }
-        hist.innerHTML = this.state.history.slice(0, 20).map(item => `
-            <div class="ps-history-item" style="padding:10px;margin-bottom:8px;background:var(--glass-bg-subtle);border:1px solid var(--glass-border);border-radius:var(--radius-sm);font-size:12px">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-                    <span style="font-weight:600;color:var(--accent)">${item.icon || '✨'} ${item.archetype}</span>
-                    <span style="font-size:10px;color:var(--text-muted)">${item.timestamp || ''}</span>
+    // ── v3.1: Smart Guide — all 49 archetypes ──────────────────────────────────
+    _buildSmartGuide() {
+        const selected = this.state.selectedArchetypes || [];
+        if (selected.length === 0) {
+            return `
+            <div style="margin-top:12px;border:1px dashed rgba(255,255,255,0.1);border-radius:12px;padding:16px;background:var(--surface);opacity:0.6">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                    <span style="font-size:16px">🧭</span>
+                    <span style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted)">Smart Guide</span>
                 </div>
-                <div style="font-size:11px;color:var(--text-secondary);max-height:48px;overflow:hidden;text-overflow:ellipsis;line-height:1.3;margin-bottom:6px">
-                    ${item.text}
-                </div>
-                <button class="btn btn-sm btn-outline" style="width:100%;font-size:11px;padding:3px" onclick="navigator.clipboard.writeText(${JSON.stringify(item.text)}).then(() => { if(window.Elaris) Elaris.toast('Prompt copied! 📋', 'success'); })">📋 Copy Prompt</button>
-            </div>
-        `).join('');
-    },
+                <p style="font-size:12px;color:var(--text-muted);line-height:1.5;margin:0">Select one or more archetypes above to get personalised recommendations for the best camera angles, lighting &amp; mood, and lens profiles.</p>
+            </div>`;
+        }
 
-    // ── Smart Guide Calibration Database ──────────────────────
-    _getGuideDB() {
-        return {
+        const guideDB = {
             'body-intimate': { angle:['macro','extreme-macro','eye-level'], lighting:['soft-box','natural','ring-light'], camera:['macro-100','macro-180','hasselblad-85'], tips:['Use Macro or Extreme Macro angles for the most impactful jewelry close-ups.','Pair with 100mm f/2.8 Macro or 180mm Macro lens for extraordinary gem detail.','Keep styling minimal — skin is the canvas here.'] },
             'object-pairing': { angle:['flat-lay','overhead','45-degree'], lighting:['natural','soft-box','studio'], camera:['leica-50','sony-35-gm','hasselblad-85'], tips:['Flat Lay (Top-Down) is the signature angle — keeps the composition graphic.','Leica 50mm Summilux gives a natural unforced perspective that feels documentary.','Pair objects with complementary textures — botanical, stone, fabric.'] },
             'editorial-model': { angle:['eye-level','45-degree','chin-up','low-angle'], lighting:['studio','dramatic','soft-box'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['The 45° angle or Chin Up give the strongest editorial energy.','Hasselblad 85mm creates that medium-format luxury look that fashion magazines use.','Dramatic or Studio lighting gives the sharpest editorial contrast.'] },
@@ -2530,6 +2270,7 @@ const PromptStudio = {
             'hair-drama': { angle:['from-behind','side-profile','foreground-blur'], lighting:['rim-light','natural','golden-hour-light'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['From Behind or Side Profile angles showcase hair movement and earring placement best.','Rim light or Golden Hour makes hair textures glow and creates a halo effect.','NOTE: Hijabi toggle will override hair drama — keep it off for this archetype.'] },
             'masculine-editorial': { angle:['eye-level','45-degree','low-angle'], lighting:['studio','dramatic','natural'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Set Model Gender to Male — this archetype is designed for masculine editorial.','Low Angle adds authority and power to the masculine editorial look.','Hasselblad 85mm renders masculine skin tones with exceptional depth.'] },
             'royal-opulence': { angle:['eye-level','low-angle','45-degree'], lighting:['dramatic','rim-light','studio'], camera:['canon-135-l','phase-one-iq4','hasselblad-85'], tips:['Eye Level with Low Angle combined gives a regal, authoritative presence.','Phase One IQ4 captures the richness of opulent materials with extraordinary fidelity.','Jewel Tones or Deep Ocean Color Palette reinforces the opulence atmosphere.'] },
+            // v3.0 archetypes
             'raw-field-editorial': { angle:['eye-level','wind-blown','candid'], lighting:['natural','harsh-sun','golden-hour-light'], camera:['hasselblad-85','leica-50','sony-35-gm'], tips:['Wind-Blown angle drives wind and motion in the prompt — set it for full raw field energy.','Sony 35mm f/1.4 GM gives the wider field inclusion that this archetype needs.','Pair with Harsh Sun or Natural lighting — NO studio light.','Caftan or minimal styling works best; avoid formal outfits.'] },
             'veiled-mystery': { angle:['extreme-close-crop','fabric-reveal','eye-level'], lighting:['natural','soft-box','window'], camera:['hasselblad-85','macro-100','canon-135-l'], tips:['Extreme Close Crop is the signature angle — eyes fill the frame.','Fabric Reveal creates the dramatic pull-aside composition.','Enable Hijabi with "Niqab" or "Sheer Veil" for maximum synergy.','Keep lighting Natural or soft — harsh studio light kills the mystery.'] },
             'avant-garde-couture': { angle:['eye-level','45-degree','low-angle','chin-up'], lighting:['studio','dramatic','soft-box'], camera:['phase-one-iq4','hasselblad-85','canon-135-l'], tips:['Phase One IQ4 or Hasselblad 85mm gives the medium-format luxury depth this archetype deserves.','AI-Choice styling lets the engine pick couture-appropriate outfits automatically.','Low Angle adds grandeur to sculptural headwear.'] },
@@ -2546,56 +2287,59 @@ const PromptStudio = {
             'mouth-lips-editorial': { angle:['mouth-bite','extreme-close-crop','macro','neck-close-up'], lighting:['dramatic','chiaroscuro','natural','soft'], camera:['canon-135-l','hasselblad-85','macro-100'], tips:['Canon 135mm L creates beautiful compression for face close-ups.','Dramatic or Chiaroscuro lighting adds editorial depth.','Use Extreme Close Crop or the new Mouth Bite angle for maximum impact.','Ultra Realism recommended -- skin pores, lip texture, and freckles sell the shot.'] },
             'dark-moody-editorial': { angle:['side-profile','eye-level','45-degree','silhouette'], lighting:['dramatic','chiaroscuro','mystical','split-light'], camera:['canon-135-l','leica-50','hasselblad-85'], tips:['Chiaroscuro or Split Lighting is essential for the dark moody aesthetic.','Side Profile or Silhouette angles maximise the shadow drama.','Keep the jewelry as the brightest element -- it should emerge from darkness.','Dark backgrounds (near black) prevent the shadow mood from being diluted.'] },
             'product-page-clean': { angle:['eye-level','flat-lay','45-degree'], lighting:['studio','soft-box','natural'], camera:['phase-one-iq4','hasselblad-85','macro-100'], tips:['Enable No Model -- this archetype is pure product isolation, no human.','Phase One IQ4 gives maximum detail for e-commerce hero shots.','Use solid white or light gray background -- NO props, NO context objects.','Soft Box or even Studio lighting from multiple angles eliminates harsh shadows.'] },
+            // v3.3: Sheet 15 archetypes
             'frozen-subject': { angle:['frozen-in-crowd','eye-level','side-profile'], lighting:['dramatic','natural','overcast'], camera:['canon-135-l','leica-50','sony-35-gm'], tips:['Frozen in Crowd is the signature angle — subject sharp, world blurred.','Canon 135mm f/2L compresses the crowd beautifully into smooth motion blur.','Transit Streak or Overcast lighting sells the urban isolation mood.','Keep model expression Serene or Thoughtful — stillness is the story.'] },
             'micro-surreal': { angle:['macro-with-creature','extreme-macro','macro'], lighting:['natural','soft','warm'], camera:['macro-180','macro-100','phase-one-iq4'], tips:['180mm f/3.5 Macro at 2:1 magnification reveals individual insect anatomy.','Enable No Model — this is pure jewelry + micro-fauna, no human.','Natural or Warm lighting keeps the insect and jewelry looking organic.','Pair with Ring or Brooch for best compatibility — small pieces at macro scale.'] },
             'vehicle-lifestyle': { angle:['vehicle-frame','knuckle-level','candid'], lighting:['golden-hour-light','warm','natural'], camera:['leica-50','hasselblad-85','sony-35-gm'], tips:['Vehicle Frame angle uses car window rails and door edges as leading lines.','Golden Hour or Warm lighting creates the best chrome reflections on silver.','Leica 50mm Summilux gives a natural perspective that feels like real road-trip photography.','Pair with Rings or Bracelets — hand-on-wheel and window-grip compositions need wrist/finger jewelry.'] },
+            // v3.4: Sheets 8–10 archetypes
             'weather-drama': { angle:['eye-level','side-profile','candid'], lighting:['overcast','natural','dramatic'], camera:['leica-50','sony-35-gm','hasselblad-85'], tips:['Weather IS the creative director — rain, fog, snow, mist as the backdrop.','Rain Diffused lighting creates soft, reflective light on all wet surfaces.','Leica 50mm Summilux gives documentary authenticity in bad weather.','Pair with Necklace or Earrings — they catch the moody ambient light best.'] },
             'prop-power-play': { angle:['45-degree','eye-level','macro'], lighting:['studio','dramatic','chiaroscuro'], camera:['phase-one-iq4','canon-135-l','hasselblad-85'], tips:['Use reflective or glass props (chess sets, crystal balls, vintage watches) for visual depth.','Studio lighting gives precise control over reflections on glass/metallic props.','Enable No Model for pure product-on-prop conceptual shots.','Phase One IQ4 captures extraordinary prop texture and detail.'] },
             'skin-canvas': { angle:['face-flora-frame','extreme-close-crop','macro'], lighting:['natural','soft','warm'], camera:['macro-100','hasselblad-85','canon-135-l'], tips:['Face Flora Frame is the signature angle — botanicals or textures ON the face.','Natural or Soft lighting preserves the authenticity of skin texture as art.','Enable Ultra Realism — pores, freckles, and natural skin detail sell this look.','Earrings and Nose Rings pair best — small pieces as metallic accents on the skin canvas.'] },
             'reaching-gesture': { angle:['hands-toward-camera','low-angle','foreground-blur'], lighting:['dramatic','color-gel-backlit','studio'], camera:['canon-135-l','sony-35-gm','hasselblad-85'], tips:['Hands Toward Camera is the signature — dramatic foreshortening with jewelry in sharp foreground.','Use a vivid single-color background (red, orange, teal) for maximum drama.','Canon 135mm f/2L creates beautiful depth compression between hand and face.','Pair with Rings or Bracelets — hand-forward compositions demand finger and wrist jewelry.'] },
+            // v3.5: Sheets 16–19 archetypes
             'power-stance': { angle:['full-body-power','eye-level','low-angle'], lighting:['solid-color-backdrop','studio','dramatic'], camera:['hasselblad-85','canon-135-l','sony-35-gm'], tips:['Full Body Power is the signature — full-length editorial with clean negative space.','Solid Color Backdrop lighting (red, blue, emerald) creates maximum visual impact.','Hasselblad 85mm medium format captures the full silhouette with editorial depth.','Pair with Necklaces or Brooches — large visible pieces that punctuate the full-body silhouette.'] },
             'stacked-maximalist': { angle:['macro','knuckle-level','45-degree'], lighting:['warm','studio','dramatic'], camera:['phase-one-iq4','macro-100','canon-135-l'], tips:['Macro or Knuckle-Level reveals every stacked piece in sharp detail.','Warm or Studio lighting creates the best reflections across multiple metal pieces.','Phase One IQ4 captures the individual facets of every stacked ring and bracelet.','This archetype is about MAXIMUM density — stack rings on every finger and bracelets wrist-to-elbow.'] },
             'sculptural-headpiece': { angle:['hood-peek','eye-level','chin-up'], lighting:['dramatic','natural','studio'], camera:['hasselblad-85','canon-135-l','sony-35-gm'], tips:['Hood Peek angle creates mystery — one eye visible through fabric or headpiece structure.','Dramatic lighting sculpts the headpiece architecture with shadow and highlight.','Hasselblad 85mm captures the full headpiece structure with beautiful tonal gradation.','Pair with Earrings or Brooches — visible pieces that complement the sculptural headwear.'] },
+            // v3.6: Sheets 2, 4, 7, 20 archetypes
             'equestrian-luxury': { angle:['eye-level','grip-close-up','side-profile'], lighting:['golden-hour-light','warm','natural'], camera:['hasselblad-85','leica-50','canon-135-l'], tips:['Eye Level captures the intimate bond between model and horse.','Golden Hour or Warm lighting creates the best leather and fur tonal warmth.','Hasselblad 85mm renders the equestrian textures (leather, brass, fur) with rich depth.','Pair with Rings or Bracelets — hand-on-bridle compositions showcase wrist and finger jewelry.'] },
             'pop-color-portrait': { angle:['eye-level','45-degree','pov-ring-reach'], lighting:['studio','neon-glow','dramatic'], camera:['sony-35-gm','hasselblad-85','canon-135-l'], tips:['Use bold saturated backdrops (magenta, lime, electric blue) for maximum pop energy.','Studio or Neon Glow lighting maintains vivid color saturation on accessories.','Sony 35mm f/1.4 GM includes enough environmental color for the pop aesthetic.','Pair with Earrings — oversized sunglasses frame earrings perfectly in this archetype.'] },
             'urban-glass-power': { angle:['low-angle','eye-level','pov-ring-reach'], lighting:['natural','editorial','backlit'], camera:['sony-35-gm','hasselblad-85','leica-50'], tips:['Low Angle against glass skyscrapers adds urban authority and scale.','Natural city light or golden hour between buildings creates architectural drama.','Sony 35mm f/1.4 GM captures the glass architecture and city skyline context.','Pair with structured clothing (blazers, tailored outfits) for maximum power editorial energy.'] },
+            // v3.7: Brand-grounded archetypes
             'artisan-at-work': { angle:['macro','knuckle-level','45-degree'], lighting:['warm','natural','window-light'], camera:['macro-100','leica-50','hasselblad-85'], tips:['Macro or Knuckle Level captures the intimate hand-on-bench perspective.','Warm tungsten or Window Light recreates the authentic workshop atmosphere.','Leica 50mm Summilux gives the honest documentary rendering perfect for craft storytelling.','Enable "No Model" for pure hands + tools compositions — no face needed.'] },
             'bridal-trousseau': { angle:['eye-level','45-degree','from-behind'], lighting:['golden-hour-light','warm','soft'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Eye Level or 45° captures the bridal preparation moment with maximum intimacy.','Golden Hour or Warm lighting creates the romantic ceremonial atmosphere.','Hasselblad 85mm medium format renders skin tones and henna detail beautifully.','Pair with Necklaces, Earrings, or Bangles for the most authentic bridal sets.'] },
             'souk-editorial': { angle:['eye-level','45-degree','candid'], lighting:['natural','warm','dappled'], camera:['leica-50','sony-35-gm','hasselblad-85'], tips:['Eye Level or Candid gives the most authentic market documentary feel.','Natural dappled light through souk cloth canopies is the signature atmosphere.','Sony 35mm f/1.4 GM includes enough market context and environmental color.','Pair spices, brass, and woven baskets as props — they create the cultural texture.'] },
             'heirloom-generational': { angle:['macro','eye-level','45-degree'], lighting:['warm','natural','window-light'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Macro captures the hand-to-hand transfer moment with emotional detail.','Warm or Window Light creates the nostalgic, intimate family atmosphere.','Canon 135mm f/2L compresses the generational depth beautifully — two faces, one frame.','Keep expressions to Serene or Thoughtful — matches the heirloom narrative voice.'] },
+            // v4.0: V2 Reference Sheet archetypes
             'futuristic-chrome': { angle:['eye-level','low-angle','45-degree'], lighting:['studio','chrome-bounce','dramatic'], camera:['phase-one-iq4','hasselblad-85','anamorphic-40'], tips:['Studio or Chrome Bounce lighting creates 360-degree reflections on metallic surfaces.','Phase One IQ4 captures chrome detail with extraordinary tonal range.','Anamorphic lens adds cinematic horizontal flares on reflective chrome.','Pair with Earrings or Rings — small metallic pieces that harmonize with the chrome environment.'] },
             'submerged-beauty': { angle:['eye-level','extreme-close-crop','macro'], lighting:['natural','soft','rim-light'], camera:['hasselblad-85','macro-100','canon-135-l'], tips:['Eye Level at the waterline creates the signature split-level composition.','Natural or Soft lighting avoids harsh reflections on the water surface.','Hasselblad 85mm captures the tonal subtlety of light through water.','Pair with Earrings or Necklaces — above-waterline pieces catch the most light.'] },
             'surreal-material-fusion': { angle:['macro','extreme-macro','extreme-close-crop'], lighting:['natural','soft','studio'], camera:['macro-180','macro-100','phase-one-iq4'], tips:['Macro or Extreme Macro reveals the texture boundary between skin and material.','180mm Macro at 2:1 shows individual mineral grain and skin pore detail.','Natural or Soft lighting preserves the organic quality of the fusion.','Enable No Model for pure material-fusion abstract close-ups.'] },
             'luxury-leather-editorial': { angle:['eye-level','45-degree','side-profile'], lighting:['studio','dramatic','warm'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Studio or Dramatic lighting creates rich specular highlights on leather.','Hasselblad 85mm renders leather texture with exceptional tonal depth.','45-degree Three-Quarter shows both the leather garment and jewelry simultaneously.','Bold lip color and strong brows complete the luxury leather aesthetic.'] },
             'monochrome-jewelry-ad': { angle:['eye-level','45-degree','macro'], lighting:['studio','soft-box','dramatic'], camera:['phase-one-iq4','hasselblad-85','canon-135-l'], tips:['Studio or Soft Box lighting gives clean, controlled highlights for campaign work.','Phase One IQ4 provides maximum detail for print-ready ad photography.','Set Color Palette to Monochrome or Noir for authentic B&W rendering.','Keep composition minimal — generous negative space, jewelry as sole focus.'] },
+            // WATCH EXCLUSIVE
             'watch-classic-executive': { angle:['watch-wrist-roll','watch-dial-macro','45-degree'], lighting:['studio','warm','sapphire-crystal-bounce'], camera:['hasselblad-85','phase-one-iq4','sony-35-gm'], tips:['Wrist Roll captures the dynamic way light hits the watch case.','Sapphire Crystal Bounce lighting ensures the dial is visible without harsh glare.','Hasselblad 85mm gives the boardroom setting a medium-format luxury feel.','Pair with tailored suits and subtle cufflinks for maximum impact.'] },
             'watch-trendy-streetwear': { angle:['watch-wrist-roll','candid','top-down-hand'], lighting:['natural','neon-glow','metallic-case-contrast'], camera:['sony-35-gm','leica-50','hasselblad-85'], tips:['Candid and Top-Down angles capture the urban streetwear energy perfectly.','Metallic Case Contrast lighting makes steel sports watches pop.','Sony 35mm f/1.4 GM gives a wider field for urban environment context.','Pair with oversized clothing, tattoos, or modern streetwear props.'] },
             'watch-catchy-editorial': { angle:['extreme-macro','watch-dial-macro','watch-wrist-roll'], lighting:['dramatic','studio','color-gel-backlit'], camera:['phase-one-iq4','macro-100','canon-135-l'], tips:['Use extreme macro for provocative avant-garde compositions.','Color Gel Backlit adds bold, striking editorial colors.','Phase One IQ4 captures extraordinary detail and stark contrasts.','Bold makeup or unconventional styling elements are highly recommended.'] },
             'watch-lifestyle-travel': { angle:['watch-steering-wheel','candid','watch-wrist-roll'], lighting:['golden-hour','natural','warm'], camera:['leica-50','hasselblad-85','sony-35-gm'], tips:['On Steering Wheel is the quintessential travel and automotive lifestyle shot.','Golden Hour lighting provides aspirational jet-setter warmth.','Leica 50mm Summilux gives a classic documentary feel to travel scenes.','Include passports, vintage luggage, or luxury resort backgrounds.'] },
             'watch-haute-horlogerie': { angle:['watch-dial-macro','extreme-macro','watch-crown-detail'], lighting:['sapphire-crystal-bounce','studio','lume-glow-dark'], camera:['macro-180','phase-one-iq4','macro-100'], tips:['Extreme macro with a 180mm lens reveals individual screws and finishing.','Luminescent Glow (Low Light) highlights the dial in dark conditions.','Sapphire Crystal Bounce lighting eliminates reflections for pure mechanical visibility.','Enable No Model — the movement itself is the primary subject.'] },
+            // ── SET EXCLUSIVE ──────────────────────
             'set-editorial-display': { angle:['flat-lay','overhead','45-degree','eye-level'], lighting:['studio','editorial','soft','window'], camera:['phase-one-iq4','macro-100','hasselblad-85'], tips:['Arrange pieces in a triangular or arc composition — ring as anchor, necklace arched above, earrings flanking.','Use dark navy velvet or pale marble as surface to provide contrast with silver.','Ensure all three pieces are equally sharp — use f/8 or focus stack if needed.'] },
             'set-worn-collection': { angle:['eye-level','45-degree','glance-down','chin-up'], lighting:['editorial','golden-hour-light','studio','warm'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['Frame at 3/4 crop (head to chest) so ring, necklace, AND earrings are all visible in one shot.','Pose the model with hand raised (touching chin or ear) so ring and earring are simultaneously prominent.','Black or jewel-tone clothing ensures maximum silver contrast across all pieces.'] },
             'set-gift-presentation': { angle:['flat-lay','overhead','45-degree','eye-level'], lighting:['soft','warm','golden-hour-light','window'], camera:['phase-one-iq4','hasselblad-85','macro-100'], tips:['Use a luxury jewelry box with individual compartments — one for ring, one for necklace, one for earrings.','Scatter rose petals, ribbon, or a brand card around the box for seasonal gifting context.','Warm soft window light from one side creates a romantic, aspirational gift atmosphere.'] },
             'set-detail-showcase': { angle:['macro','extreme-macro','flat-lay','45-degree'], lighting:['studio','editorial','soft'], camera:['macro-100','macro-180','phase-one-iq4'], tips:['Focus on one piece sharply while the other two are softly visible — depth of field tells the collection story.','Arrange all three pieces in the same frame even in macro mode so the set reads as unified.','Pay attention to stone alignment — ensure each stone in the set is showing its best facet toward the lens.'] },
         };
-    },
 
-    // ── Smart Guide ──────────────────────
-    _buildSmartGuide() {
-        const selected = this.state.selectedArchetypes || [];
-        if (selected.length === 0) {
+        const guides = selected.map(id => guideDB[id]).filter(Boolean);
+
+        if (guides.length === 0) {
             return `
-            <div style="margin-top:14px;border:1px dashed rgba(255,255,255,0.12);border-radius:var(--radius-lg);padding:14px;background:var(--glass-bg-subtle)">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <div style="margin-top:12px;border:1px solid rgba(168,85,247,0.2);border-radius:12px;padding:16px;background:rgba(124,58,237,0.05)">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
                     <span style="font-size:16px">🧭</span>
-                    <span style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent)">Smart Guide</span>
+                    <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#a855f7">Smart Guide</span>
                 </div>
-                <p style="font-size:11px;color:var(--text-muted);line-height:1.4;margin:0">Tap any archetype in the carousel or modal to get recommended camera angles and lighting profiles.</p>
+                <p style="font-size:12px;color:var(--text-muted);line-height:1.5;margin:0">✨ Great selection! Hit Generate Prompts to create your editorial prompts.</p>
             </div>`;
         }
-
-        const guideDB = this._getGuideDB();
-        const guides = selected.map(id => guideDB[id]).filter(Boolean);
 
         const rank = (arr) => {
             const freq = {};
@@ -2605,7 +2349,7 @@ const PromptStudio = {
         const bestAngles   = rank(guides.flatMap(g => g.angle   || [])).slice(0, 3);
         const bestLighting = rank(guides.flatMap(g => g.lighting || [])).slice(0, 3);
         const bestCameras  = rank(guides.flatMap(g => g.camera  || [])).slice(0, 2);
-        const allTips      = [...new Set(guides.flatMap(g => g.tips || []))].slice(0, 3);
+        const allTips      = [...new Set(guides.flatMap(g => g.tips || []))].slice(0, 4);
 
         const anglesAll   = this.angles;
         const angleLabel  = id => (anglesAll.find(a => a.id === id) || {}).label || id;
@@ -2614,256 +2358,382 @@ const PromptStudio = {
         const lightLabel  = id => lightingLabels[id] || id;
 
         return `
-        <div style="margin-top:14px;border:1px solid rgba(245,158,11,0.25);border-radius:var(--radius-lg);padding:14px;background:rgba(245,158,11,0.04);backdrop-filter:var(--glass-blur)">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="margin-top:12px;border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:16px;background:rgba(124,58,237,0.06)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
                 <div style="display:flex;align-items:center;gap:8px">
                     <span style="font-size:16px">🧭</span>
-                    <span style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent)">Smart Guide Profile</span>
+                    <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#a855f7">Smart Guide</span>
                 </div>
-                <span style="font-size:10px;color:var(--text-muted)">Calibrated for ${selected.length} archetype(s)</span>
+                <span style="font-size:10px;color:var(--text-muted);opacity:0.7">Based on your archetype selection</span>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
-                <div style="background:rgba(255,255,255,0.03);border-radius:var(--radius-sm);padding:8px">
-                    <div style="font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;margin-bottom:4px">📐 Best Angle</div>
-                    ${bestAngles.length > 0 ? `<div style="font-size:11px;color:var(--text-primary);font-weight:600">⭐ ${angleLabel(bestAngles[0])}</div>` : '<div style="font-size:11px;color:var(--text-muted)">Auto</div>'}
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+                <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px">
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;margin-bottom:6px">📐 Best Angles</div>
+                    ${bestAngles.map((id, i) => `<div style="font-size:11px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:4px">${i === 0 ? '<span style="color:#fbbf24">⭐</span>' : '<span style="opacity:0.4">·</span>'} ${angleLabel(id)}</div>`).join('')}
                 </div>
-                <div style="background:rgba(255,255,255,0.03);border-radius:var(--radius-sm);padding:8px">
-                    <div style="font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#34d399;margin-bottom:4px">💡 Best Lighting</div>
-                    ${bestLighting.length > 0 ? `<div style="font-size:11px;color:var(--text-primary);font-weight:600">⭐ ${lightLabel(bestLighting[0])}</div>` : '<div style="font-size:11px;color:var(--text-muted)">Auto</div>'}
+                <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px">
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#34d399;margin-bottom:6px">💡 Best Lighting</div>
+                    ${bestLighting.map((id, i) => `<div style="font-size:11px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:4px">${i === 0 ? '<span style="color:#fbbf24">⭐</span>' : '<span style="opacity:0.4">·</span>'} ${lightLabel(id)}</div>`).join('')}
                 </div>
-                <div style="background:rgba(255,255,255,0.03);border-radius:var(--radius-sm);padding:8px">
-                    <div style="font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f472b6;margin-bottom:4px">📷 Best Lens</div>
-                    ${bestCameras.length > 0 ? `<div style="font-size:11px;color:var(--text-primary);font-weight:600">⭐ ${cameraLabel(bestCameras[0])}</div>` : '<div style="font-size:11px;color:var(--text-muted)">85mm f/1.4</div>'}
+                <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px">
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f472b6;margin-bottom:6px">📷 Best Camera</div>
+                    ${bestCameras.map((id, i) => `<div style="font-size:11px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:4px">${i === 0 ? '<span style="color:#fbbf24">⭐</span>' : '<span style="opacity:0.4">·</span>'} ${cameraLabel(id)}</div>`).join('')}
                 </div>
             </div>
             ${allTips.length > 0 ? `
-            <div style="border-top:1px solid rgba(255,255,255,0.05);padding-top:8px">
-                <div style="font-size:11px;color:var(--text-secondary);line-height:1.4">📌 <strong style="color:var(--accent)">Tip:</strong> ${allTips[0]}</div>
+            <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:10px">
+                <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#fb923c;margin-bottom:8px">📌 Pro Tips</div>
+                ${allTips.map(tip => `<div style="font-size:11px;color:var(--text-muted);margin-bottom:5px;line-height:1.5;display:flex;gap:6px"><span style="color:#fb923c;flex-shrink:0;margin-top:1px">→</span><span>${tip}</span></div>`).join('')}
             </div>` : ''}
         </div>`;
     },
 
-    // ── Main Layout Render ──────────────────────
+
+    // ── Render ──────────────────────
     _render() {
         this.container.innerHTML = `
             <div class="page-header">
-                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-                    <div>
-                        <h1 class="page-title" data-i18n="ps_title">Prompt Studio</h1>
-                        <p class="page-subtitle" data-i18n="ps_subtitle">iOS 26 Liquid Frosted Glass Engine — 1-Tap Copy for Gemini</p>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:6px">
-                        <span class="ps-card-badge" style="background:var(--gold-gradient-soft);border:1px solid var(--accent);color:var(--accent)">⚡ Quick Studio</span>
-                        <span class="ps-card-badge" style="background:rgba(255,255,255,0.06);border:1px solid var(--glass-border)">V3.0 Release</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══ 1. Saved 1-Tap Presets Bar ═══ -->
-            <div class="ps-presets-row">
-                <span class="ps-presets-label">⚡ Presets:</span>
-                <div class="ps-presets-track" id="ps-presets-track"></div>
+                <h1 class="page-title" data-i18n="ps_title">Prompt Studio</h1>
+                <p class="page-subtitle" data-i18n="ps_subtitle">Generate editorial prompts - paste into Gemini, Midjourney, or any AI tool</p>
             </div>
 
             <div class="ps-layout">
-                <!-- LEFT: Piece Specs + Action Button + Expert Drawer -->
+                <!-- LEFT: Piece Description -->
                 <div class="ps-left">
-                    <div class="glass-widget">
-                        <div class="card-header" style="margin-bottom:12px">
-                            <span class="card-title" style="display:flex;align-items:center;gap:6px">
-                                <span>✨</span> Piece Specifications
-                            </span>
-                        </div>
-                        
+                    <div class="card">
+                        <div class="card-header"><span class="card-title" data-i18n="ps_describe_piece">Describe Your Piece</span></div>
                         <div class="form-group">
-                            <label class="form-label" data-i18n="ps_product">Product Type</label>
+                            <label class="form-label" data-i18n="ps_product">Product</label>
                             <select class="form-select" id="ps-product">
-                                <option value="silver" ${this.state.product === 'silver' ? 'selected' : ''}>💎 Fine Silver &amp; Jewelry</option>
-                                <option value="watch" ${this.state.product === 'watch' ? 'selected' : ''}>⌚ Luxury Watch</option>
+                                <option value="silver" data-i18n="ps_product_silver" ${this.state.product === 'silver' ? 'selected' : ''}>Silver</option>
+                                <option value="watch" data-i18n="ps_product_watch" ${this.state.product === 'watch' ? 'selected' : ''}>Watch</option>
                             </select>
                         </div>
-
                         <div class="form-group" id="ps-category-group" style="${this.state.product === 'watch' ? 'display:none' : ''}">
-                            <label class="form-label" data-i18n="ps_category">Jewelry Category</label>
+                            <label class="form-label" data-i18n="ps_category">Category</label>
                             <select class="form-select" id="ps-category">
                                 ${this.categories.map(c => {
                                     const rawLabel = c.charAt(0).toUpperCase() + c.slice(1).replace(/-/g, ' ');
                                     const labels = { 'jewelry-set': 'Jewelry Set (Set)', 'body-jewelry': 'Body Jewelry', 'bangles': 'Bangles', 'anklet': 'Anklet', 'brooch': 'Brooch', 'pendant': 'Pendant' };
                                     const label = labels[c] || rawLabel;
-                                    return `<option value="${c}" ${c === this.state.category ? 'selected' : ''}>${label}</option>`;
+                                    const i18nKey = `ps_cat_${c.replace(/-/g, '_')}`;
+                                    return `<option value="${c}" data-i18n="${i18nKey}" ${c === this.state.category ? 'selected' : ''}>${label}</option>`;
                                 }).join('')}
                             </select>
                         </div>
-
                         ${this._renderSetComposition()}
-
                         <div class="form-group" id="ps-material-group" style="${this.state.product === 'watch' ? 'display:none' : ''}">
-                            <label class="form-label" data-i18n="ps_material">Precious Metal</label>
+                            <label class="form-label" data-i18n="ps_material">Material</label>
                             <select class="form-select" id="ps-material">
-                                ${this.materials.map(m => `<option value="${m.id}" ${m.id === this.state.material ? 'selected' : ''}>${m.label}</option>`).join('')}
+                                ${this.materials.map(m => `<option value="${m.id}" data-i18n="ps_mat_${m.id.replace(/-/g, '_')}" ${m.id === this.state.material ? 'selected' : ''}>${m.label}</option>`).join('')}
                             </select>
                         </div>
-
                         <div class="form-group">
-                            <label class="form-label" data-i18n="ps_stones">Gemstones &amp; Accents</label>
+                            <label class="form-label" data-i18n="ps_stones">Stones</label>
                             <select class="form-select" id="ps-stone">
-                                ${this.stones.map(s => `<option value="${s.id}" ${s.id === this.state.stone ? 'selected' : ''}>${s.label}</option>`).join('')}
+                                ${this.stones.map(s => `<option value="${s.id}" data-i18n="ps_stone_${s.id.replace(/-/g, '_')}" ${s.id === this.state.stone ? 'selected' : ''}>${s.label}</option>`).join('')}
                             </select>
                         </div>
 
-                        <!-- Aspect Ratio Quick Switcher -->
-                        <div class="form-group" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--glass-border)">
-                            <label class="form-label">🖼️ Aspect Ratio</label>
-                            <div class="ps-aspect-bar" id="ps-aspect-bar">
-                                <div class="ps-aspect-chip ${this.state.format === 'square' ? 'active' : ''}" data-val="square">
-                                    <span>1:1</span> <span style="opacity:0.6;font-size:10px">Square</span>
-                                </div>
-                                <div class="ps-aspect-chip ${this.state.format === 'portrait' ? 'active' : ''}" data-val="portrait">
-                                    <span>4:5</span> <span style="opacity:0.6;font-size:10px">Feed</span>
-                                </div>
-                                <div class="ps-aspect-chip ${this.state.format === 'story' ? 'active' : ''}" data-val="story">
-                                    <span>9:16</span> <span style="opacity:0.6;font-size:10px">Story/Reel</span>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
 
-                        <!-- Big Gold 1-Tap Action Button -->
-                        <div style="margin-top:16px">
-                            <button class="btn-generate-gold" id="ps-generate-main" onclick="PromptStudio.generatePrompts()">
-                                <span style="font-size:18px">⚡</span>
-                                <span>Generate &amp; Copy Prompt</span>
-                            </button>
+                    <div class="card">
+                        <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
+                            <span class="card-title">Brand Identity</span>
+                            <label class="wm-toggle-label">
+                                <input type="checkbox" id="ps-brand-identity-toggle" ${this.state.brandIdentityEnabled ? 'checked' : ''}>
+                                <span class="wm-toggle-switch"></span>
+                            </label>
+                        </div>
+                        <div id="ps-brand-identity-body" style="${this.state.brandIdentityEnabled ? '' : 'display:none'}">
+                            <div class="form-group">
+                                <p class="text-sm text-muted" style="line-height:1.4;margin-bottom:8px">Add Elaris signature to your images — choose how the brand appears in each shot.</p>
+                                <div class="ps-chip-group" id="ps-brand-touch">
+                                    <button class="ps-chip ${this.state.brandTouch === 'logomark' ? 'active' : ''}" data-val="logomark" title="Small four-pointed star brooch on lapel">⭐ Logomark</button>
+                                    <button class="ps-chip ${this.state.brandTouch === 'wordmark' ? 'active' : ''}" data-val="wordmark" title="ELARIS wordmark embroidered on clothing">ELARIS Wordmark</button>
+                                    <button class="ps-chip ${this.state.brandTouch === 'logo-embedded' ? 'active' : ''}" data-val="logo-embedded" title="ELARIS logo composited into the image like a luxury fashion campaign">🖼️ Logo Embedded</button>
+                                </div>
+                                <p class="text-sm text-muted" style="line-height:1.4;margin-top:6px;margin-bottom:0">
+                                    ${this.state.brandTouch === 'logomark' ? '⭐ Four-pointed star pin brooch on lapel — Elaris signature.' : this.state.brandTouch === 'wordmark' ? '"ELARIS" embroidered on visible garment area — brand always present.' : this.state.brandTouch === 'logo-embedded' ? '🖼️ Sophisticated "ELARIS" logo rendered within the image — AI chooses placement & sizing for each shot, like a luxury fashion campaign.' : 'Select a brand identity option above.'}
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- ═══ 2. Expert Studio Accordion Drawer ═══ -->
-                    <div class="ps-accordion-container" id="ps-expert-accordion">
-                        <button class="ps-accordion-header" id="ps-expert-toggle" onclick="PromptStudio.toggleExpertAccordion()">
-                            <div style="display:flex;align-items:center;gap:8px">
-                                <span style="font-size:16px">⚙️</span>
-                                <span>Customize &amp; Fine-Tune Shot</span>
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Model &amp; Human Elements</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Model Gender</label>
+                            <div id="ps-gender-select" class="ps-chip-group" style="margin-bottom:0">
+                                <button class="ps-chip ${this.state.modelGender === 'female' ? 'active' : ''}" data-val="female">♀ Female</button>
+                                <button class="ps-chip ${this.state.modelGender === 'male' ? 'active' : ''}" data-val="male">♂ Male</button>
+                                <button class="ps-chip ${this.state.modelGender === 'none' ? 'active' : ''}" data-val="none" title="Product / surreal shots — no human model in scene">⊖ No Model</button>
                             </div>
-                            <span class="ps-accordion-icon" id="ps-expert-chevron">▼</span>
-                        </button>
-                        <div class="ps-accordion-body" id="ps-expert-body" style="display:none">
-                            <div class="form-group">
-                                <label class="form-label">📐 Camera Angle</label>
-                                <div class="ps-chip-group" id="ps-angle" style="flex-wrap:wrap">
-                                    ${this._buildAngleChips()}
-                                </div>
-                            </div>
+                            ${this.state.modelGender === 'none' ? `<p class="text-sm text-muted" style="margin-top:6px;margin-bottom:0;line-height:1.4">Product-only or surreal mode — all human elements are suppressed from prompts.</p>` : ''}
+                        </div>
 
-                            <div class="form-group">
-                                <label class="form-label">💡 Lighting &amp; Mood</label>
-                                <div class="ps-chip-group" id="ps-lighting-mood" style="flex-wrap:wrap">
-                                    ${this._buildLightingChips()}
-                                </div>
+                        <!-- Skin Tone selector (hidden for no-model) -->
+                        <div class="form-group" style="padding-top:10px;border-top:1px dashed var(--border);${this.state.modelGender === 'none' ? 'display:none' : ''}">
+                            <label class="form-label" style="margin-bottom:2px">🎨 Skin Tone</label>
+                            <p class="text-sm text-muted" style="line-height:1.4;max-width:220px;margin:0;margin-bottom:6px">Choose the model's skin tone or let it vary automatically.</p>
+                            <div class="ps-chip-group" id="ps-ethnicity" style="flex-wrap:wrap">
+                                <button class="ps-chip ${this.state.modelEthnicity === 'diverse' ? 'active' : ''}" data-val="diverse" title="Random diverse skin tones each generation">🎲 Diverse</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'fair' ? 'active' : ''}" data-val="fair" title="Fair ivory skin with cool undertones">🌾 Light / Fair</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'olive' ? 'active' : ''}" data-val="olive" title="Olive Mediterranean complexion">☀️ Olive</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'warm' ? 'active' : ''}" data-val="warm" title="Warm golden sun-kissed skin">🌅 Warm / Tan</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'caramel' ? 'active' : ''}" data-val="caramel" title="Caramel medium complexion">🍯 Caramel</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'deep' ? 'active' : ''}" data-val="deep" title="Deep rich brown skin">🌰 Deep / Rich</button>
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label class="form-label">📷 Lens Preset Override</label>
-                                <div class="ps-chip-group" id="ps-camera-profile" style="flex-wrap:wrap">
-                                    ${this.cameraProfiles.map(c => `<button class="ps-chip ${c.id === this.state.cameraProfile ? 'active' : ''}" data-val="${c.id}">${c.label}</button>`).join('')}
+                        <!-- Hijabi Toggle (hidden for male / no-model) -->
+                        <div class="form-group" style="padding-top:10px;border-top:1px dashed var(--border);${this.state.modelGender === 'female' ? '' : 'display:none'}">
+                            <div style="display:flex;align-items:center;justify-content:space-between">
+                                <div>
+                                    <label class="form-label" style="margin-bottom:2px">🧕 Hijabi Model</label>
+                                    <p class="text-sm text-muted" style="line-height:1.4;max-width:220px;margin:0">Model wears a hijab, headscarf, or veil — for cultural, artistic, or identity representation.</p>
                                 </div>
+                                <label class="wm-toggle-label">
+                                    <input type="checkbox" id="ps-hijabi-toggle" ${this.state.hijabi ? 'checked' : ''}>
+                                    <span class="wm-toggle-switch"></span>
+                                </label>
                             </div>
-
-                            <!-- Model & Hijabi Studio -->
-                            <div class="form-group" style="padding-top:10px;border-top:1px dashed var(--glass-border)">
-                                <label class="form-label">👤 Model Gender</label>
-                                <div id="ps-gender-select" class="ps-chip-group">
-                                    <button class="ps-chip ${this.state.modelGender === 'female' ? 'active' : ''}" data-val="female">♀ Female</button>
-                                    <button class="ps-chip ${this.state.modelGender === 'male' ? 'active' : ''}" data-val="male">♂ Male</button>
-                                    <button class="ps-chip ${this.state.modelGender === 'none' ? 'active' : ''}" data-val="none">⊖ No Model</button>
+                            ${this.state.hijabi ? `
+                            <div style="margin-top:10px">
+                                <label class="form-label" style="font-size:11px;opacity:0.8">Hijab Style</label>
+                                <div class="ps-chip-group" id="ps-hijab-style" style="flex-wrap:wrap">
+                                    <button class="ps-chip ${this.state.hijabStyle === 'classic' ? 'active' : ''}" data-val="classic" title="Traditional draped hijab covering hair and neck">Classic</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'draped' ? 'active' : ''}" data-val="draped" title="Loose elegant fabric draped around head and shoulders">Draped Silk</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'turban' ? 'active' : ''}" data-val="turban" title="Fashion-forward wrapped turban style">Turban</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'niqab' ? 'active' : ''}" data-val="niqab" title="Face veil with eyes exposed — editorial and artistic">Niqab ✦</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'modern' ? 'active' : ''}" data-val="modern" title="Contemporary minimal hijab with face and neck framing">Modern</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'sheer-veil' ? 'active' : ''}" data-val="sheer-veil" title="Sheer translucent fabric — artistic/editorial styling">Sheer Veil</button>
                                 </div>
+                            </div>` : ''}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="ps_jewelry_shots">Jewelry Shots</label>
+                            <div class="ps-chip-group" id="ps-jewelry-count">
+                                ${[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => `<button class="ps-chip ${this.state.jewelryCount === n ? 'active' : ''}" data-val="${n}">${n === 0 ? (window.I18n ? window.I18n.t('ps_none') : 'None') : n}</button>`).join('')}
                             </div>
-
-                            <div class="form-group" style="${this.state.modelGender === 'female' ? '' : 'display:none'}">
-                                <div style="display:flex;align-items:center;justify-content:space-between">
-                                    <label class="form-label" style="margin:0">🧕 Hijabi Model</label>
-                                    <label class="wm-toggle-label">
-                                        <input type="checkbox" id="ps-hijabi-toggle" ${this.state.hijabi ? 'checked' : ''}>
-                                        <span class="wm-toggle-switch"></span>
-                                    </label>
+                        </div>
+                        <div class="form-group" style="padding-top:12px;border-top:1px solid var(--border);${this.state.modelGender === 'none' ? 'display:none' : ''}">
+                            <div style="display:flex;align-items:center;justify-content:space-between">
+                                <div>
+                                    <label class="form-label" style="margin-bottom:2px" data-i18n="ps_consistency_toggle">Model Consistency</label>
+                                    <p class="text-sm text-muted" style="line-height:1.4;max-width:240px" data-i18n="ps_consistency_desc">Lock a virtual model across all your shots.</p>
                                 </div>
-                                ${this.state.hijabi ? `
-                                <div class="ps-chip-group" id="ps-hijab-style" style="flex-wrap:wrap;margin-top:8px">
-                                    <button class="ps-chip ${this.state.hijabStyle === 'classic' ? 'active' : ''}" data-val="classic">Classic</button>
-                                    <button class="ps-chip ${this.state.hijabStyle === 'draped' ? 'active' : ''}" data-val="draped">Draped Silk</button>
-                                    <button class="ps-chip ${this.state.hijabStyle === 'turban' ? 'active' : ''}" data-val="turban">Turban</button>
-                                    <button class="ps-chip ${this.state.hijabStyle === 'niqab' ? 'active' : ''}" data-val="niqab">Niqab ✦</button>
-                                    <button class="ps-chip ${this.state.hijabStyle === 'modern' ? 'active' : ''}" data-val="modern">Modern</button>
-                                    <button class="ps-chip ${this.state.hijabStyle === 'sheer-veil' ? 'active' : ''}" data-val="sheer-veil">Sheer Veil</button>
-                                </div>` : ''}
+                                <label class="wm-toggle-label">
+                                    <input type="checkbox" id="ps-consistency-toggle" ${this.state.consistencyOn ? 'checked' : ''}>
+                                    <span class="wm-toggle-switch"></span>
+                                </label>
                             </div>
-
-                            <div class="form-group" style="padding-top:10px;border-top:1px dashed var(--glass-border)">
-                                <div style="display:flex;align-items:center;justify-content:space-between">
-                                    <label class="form-label" style="margin:0">⭐ Brand Signature</label>
-                                    <label class="wm-toggle-label">
-                                        <input type="checkbox" id="ps-brand-identity-toggle" ${this.state.brandIdentityEnabled ? 'checked' : ''}>
-                                        <span class="wm-toggle-switch"></span>
-                                    </label>
-                                </div>
-                                <div id="ps-brand-identity-body" style="${this.state.brandIdentityEnabled ? 'margin-top:8px' : 'display:none'}">
-                                    <div class="ps-chip-group" id="ps-brand-touch">
-                                        <button class="ps-chip ${this.state.brandTouch === 'logomark' ? 'active' : ''}" data-val="logomark">⭐ Logomark</button>
-                                        <button class="ps-chip ${this.state.brandTouch === 'wordmark' ? 'active' : ''}" data-val="wordmark">Wordmark</button>
-                                        <button class="ps-chip ${this.state.brandTouch === 'logo-embedded' ? 'active' : ''}" data-val="logo-embedded">🖼️ Logo Embedded</button>
+                        </div>
+                        ${this.state.consistencyOn ? `
+                        <div class="form-group" style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)">
+                            <label class="form-label" style="margin-bottom:6px">Model Image Reference</label>
+                            <div class="ps-chip-group" id="ps-model-image-ref" style="margin-bottom:4px">
+                                <button class="ps-chip ${this.state.modelImageAttached ? 'active' : ''}" data-val="true" style="font-size:11px">
+                                    📎 Image attached
+                                </button>
+                                <button class="ps-chip ${!this.state.modelImageAttached ? 'active' : ''}" data-val="false" style="font-size:11px">
+                                    📝 Text only
+                                </button>
+                            </div>
+                            <p class="text-sm text-muted" style="line-height:1.4;margin-bottom:0">
+                                ${this.state.modelImageAttached
+                                    ? 'Prompt will reference the model photo by image slot number.'
+                                    : 'Prompt will use the model descriptor text only — no image slot needed.'}
+                            </p>
+                        </div>
+                        <div class="form-group" style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                                <label class="form-label" style="margin:0" data-i18n="ps_model_profile">Model Profile</label>
+                                <button class="btn btn-sm btn-secondary" id="ps-new-profile" data-i18n="ps_new_profile">+ New</button>
+                            </div>
+                            <div id="ps-new-profile-form" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
+                                <input type="text" id="ps-new-profile-name" placeholder="Model name" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--primary);margin-bottom:8px;padding:4px 0;outline:none">
+                                <textarea id="ps-new-profile-desc" rows="2" placeholder="Physical descriptor..." style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px;font-size:12px;outline:none"></textarea>
+                                <button class="btn btn-sm btn-primary" id="ps-save-profile" style="width:100%;margin-top:8px" data-i18n="ps_save_profile">Save Profile</button>
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:8px" id="ps-profile-list">
+                                ${this._getFilteredProfiles().map(p => `
+                                    <div class="profile-card ${this.state.activeProfileId === p.id ? 'active' : ''}" data-id="${p.id}" style="border:1px solid ${this.state.activeProfileId === p.id ? p.color : 'var(--border)'};border-radius:8px;padding:10px;cursor:pointer;background:${this.state.activeProfileId === p.id ? p.color+'15' : 'transparent'};transition:all 0.2s">
+                                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+                                            <div style="width:32px;height:32px;border-radius:50%;background:${p.referenceImage ? 'transparent' : p.color+'30'};border:1px solid ${p.color};display:flex;align-items:center;justify-content:center;color:${p.color};position:relative;overflow:hidden">
+                                                ${p.referenceImage ? `<img src="${p.referenceImage}" style="width:100%;height:100%;object-fit:cover">` : p.name.charAt(0)}
+                                                <label title="Upload reference image" style="position:absolute;bottom:-4px;right:-4px;background:var(--surface);border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;border:1px solid var(--border)" onclick="event.stopPropagation()">
+                                                    📂<input type="file" accept="image/*" class="ps-upload-ref" data-id="${p.id}" style="display:none">
+                                                </label>
+                                            </div>
+                                            <div style="flex:1">
+                                                <div style="font-size:13px;font-weight:500;color:var(--text)">${p.name}</div>
+                                                ${p.referenceImage ? `<div style="font-size:10px;color:var(--success)">✓ Ref. image</div>` : ''}
+                                            </div>
+                                        </div>
+                                        <div style="font-size:11px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.descriptor}</div>
                                     </div>
-                                </div>
+                                `).join('')}
                             </div>
+                        </div>
+                        ` : ''}
+                    </div>
 
-                            <div class="form-group" style="padding-top:10px;border-top:1px dashed var(--glass-border)">
-                                <label class="form-label">🎭 Photo Realism Level</label>
-                                <div class="ps-chip-group" id="ps-realism-level">
-                                    <button class="ps-chip ${this.state.realismLevel === 'standard' ? 'active' : ''}" data-val="standard">Standard</button>
-                                    <button class="ps-chip ${this.state.realismLevel === 'high' ? 'active' : ''}" data-val="high">High</button>
-                                    <button class="ps-chip ${this.state.realismLevel === 'ultra' ? 'active' : ''}" data-val="ultra">⚡ Ultra</button>
-                                </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Modifiers</span></div>
+                        <div class="form-group">
+                            <label class="form-label">📐 Camera Angle</label>
+                            <div class="ps-chip-group" id="ps-angle" style="flex-wrap:wrap">
+                                ${this._getAnglesForCategory(this.state.category).map((a, i) => `<button class="ps-chip ${a.id === this.state.angle ? 'active' : ''}" data-val="${a.id}" title="${i < 3 ? 'Recommended for ' + (this.state.category || 'ring') : a.label}" style="${i === 0 ? 'border-color:var(--accent);' : i < 3 ? 'border-color:var(--accent);opacity:0.85;' : ''}">${i === 0 ? '⭐ ' : ''}${a.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">💡 Lighting &amp; Mood</label>
+                            <div class="ps-chip-group" id="ps-lighting-mood" style="flex-wrap:wrap">
+                                ${this._buildLightingChips()}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">📷 Lens / Camera Preset <span class="text-sm text-muted">(overrides angle lens)</span></label>
+                            <div class="ps-chip-group" id="ps-camera-profile" style="flex-wrap:wrap">
+                                ${this.cameraProfiles.map(c => `<button class="ps-chip ${c.id === this.state.cameraProfile ? 'active' : ''}" data-val="${c.id}" title="${c.desc || 'Let the selected angle determine the camera'}">${c.label}</button>`).join('')}
+                            </div>
+                            <p class="text-sm text-muted" style="line-height:1.4;margin-top:6px;margin-bottom:0">
+                                ${(this.cameraProfiles.find(c => c.id === this.state.cameraProfile) || {}).desc || 'Camera choice driven by the selected angle above.'}
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="ps_format">🖼️ Format</label>
+                            <div class="ps-chip-group" id="ps-format">
+                                ${this.formats.map(f => `<button class="ps-chip ${f.id === this.state.format ? 'active' : ''}" data-val="${f.id}" data-i18n="ps_fmt_${f.id.replace(/-/g, '_')}">${f.label}</button>`).join('')}
                             </div>
                         </div>
                     </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title" data-i18n="ps_adv_controls">Advanced Controls</span></div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="ps_surface">Surface / Backdrop</label>
+                            <div class="ps-chip-group" id="ps-surface">
+                                ${this.surfaces.map(s => `<button class="ps-chip ${s.id === this.state.surface ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="ps_palette">Color Palette</label>
+                            <div class="ps-chip-group" id="ps-palette">
+                                ${this.palettes.map(p => `<button class="ps-chip ${p.id === this.state.palette ? 'active' : ''}" data-val="${p.id}">${p.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group" style="${this.state.modelGender === 'none' ? 'display:none' : ''}">
+                            <label class="form-label"><span data-i18n="ps_styling">Model Styling</span> <span class="text-sm text-muted">(human archetypes)</span></label>
+                            <div class="ps-chip-group" id="ps-styling">
+                                ${this.stylings.map(s => `<button class="ps-chip ${s.id === this.state.styling ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
+                            </div>
+                        </div>
+
+                        <!-- ── Scene Realism Controls ─────────────────── -->
+                        <div class="form-group" style="margin-top:8px;padding-top:10px;border-top:1px solid var(--border)">
+                            <label class="form-label" style="font-size:11px;letter-spacing:0.06em;opacity:0.7;text-transform:uppercase;font-weight:700">🎭 Scene Realism</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">📷 Photo Realism Level</label>
+                            <p class="text-sm text-muted" style="line-height:1.3;margin-bottom:6px">Inject photographic realism cues into AI-generated images. Higher = more authentic grain, imperfections, and camera artifacts.</p>
+                            <div class="ps-chip-group" id="ps-realism-level">
+                                <button class="ps-chip ${this.state.realismLevel === 'standard' ? 'active' : ''}" data-val="standard">Standard</button>
+                                <button class="ps-chip ${this.state.realismLevel === 'high' ? 'active' : ''}" data-val="high">High</button>
+                                <button class="ps-chip ${this.state.realismLevel === 'ultra' ? 'active' : ''}" data-val="ultra">⚡ Ultra</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Skin Texture</label>
+                            <div class="ps-chip-group" id="ps-skin-texture">
+                                ${this.skinTextures.map(s => `<button class="ps-chip ${s.id === this.state.skinTexture ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Expression Lines / Wrinkles</label>
+                            <div class="ps-chip-group" id="ps-wrinkles">
+                                ${this.wrinkleLevels.map(w => `<button class="ps-chip ${w.id === this.state.wrinkles ? 'active' : ''}" data-val="${w.id}">${w.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group" style="${this.state.modelGender === 'none' ? 'display:none' : ''}">
+                            <label class="form-label">Body Hair <span class="text-sm text-muted">(human archetypes)</span></label>
+                            <div class="ps-chip-group" id="ps-body-hair">
+                                ${this.bodyHairLevels.map(b => `<button class="ps-chip ${b.id === this.state.bodyHair ? 'active' : ''}" data-val="${b.id}">${b.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Skin Detail</label>
+                            <div class="ps-chip-group" id="ps-skin-detail">
+                                ${this.skinDetails.map(d => `<button class="ps-chip ${d.id === this.state.skinDetail ? 'active' : ''}" data-val="${d.id}">${d.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group" style="${this.state.modelGender === 'none' ? 'display:none' : ''}">
+                            <label class="form-label">Facial Expression <span class="text-sm text-muted">(human archetypes)</span></label>
+                            <div class="ps-chip-group" id="ps-facial-expression">
+                                ${this.facialExpressions.map(f => `<button class="ps-chip ${f.id === this.state.facialExpression ? 'active' : ''}" data-val="${f.id}">${f.label}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top:6px;padding-top:12px;border-top:1px solid var(--border)">
+                            <div style="display:flex;align-items:center;justify-content:space-between">
+                                <div>
+                                    <label class="form-label" style="margin-bottom:2px" data-i18n="ps_hallmark_title">Hallmark Injection 🏷️</label>
+                                    <p class="text-sm text-muted" style="line-height:1.4;max-width:240px" data-i18n="ps_hallmark_desc">Adds "ELARIS" engraving instructions to prompts. May produce inaccurate logos — use Watermark Studio for exact branding.</p>
+                                </div>
+                                <label class="wm-toggle-label">
+                                    <input type="checkbox" id="ps-hallmark-toggle" ${this.state.hallmarkEnabled ? 'checked' : ''}>
+                                    <span class="wm-toggle-switch"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div><!-- /ps-left -->
 
-                <!-- CENTER: Top 10 Carousel + Prompt Output Card -->
+
+                <!-- CENTER: Archetype Selector + Output -->
                 <div class="ps-center">
-                    <div class="ps-carousel-container">
-                        <div class="ps-carousel-header">
-                            <div>
-                                <div class="ps-carousel-title">✦ Top Recommended Archetypes</div>
-                                <div class="ps-carousel-subtitle">Curated &amp; calibrated for your piece (<span id="ps-match-cat-name">Ring</span>)</div>
+
+                    <div class="card">
+                        <div class="card-header" style="flex-wrap:wrap;gap:8px">
+                            <span class="card-title" data-i18n="ps_arch_title">Select Archetypes</span>
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <div class="ps-chip-group ps-sort-group" id="ps-sort-mode" style="gap:4px">
+                                    <button class="ps-chip active" data-val="recommended" style="font-size:11px;padding:4px 10px" data-i18n="ps_sort_rec">+ Recommended</button>
+                                    <button class="ps-chip" data-val="alpha" style="font-size:11px;padding:4px 10px" data-i18n="ps_sort_az">A–Z</button>
+                                </div>
+                                <span class="text-sm text-muted" id="ps-arch-count">0 <span data-i18n="ps_selected">selected</span></span>
                             </div>
-                            <button class="ps-view-all-btn" onclick="PromptStudio.openAllArchetypesModal()">
-                                <span>View All (70+)</span> <span>→</span>
-                            </button>
                         </div>
-                        <div class="ps-carousel-track" id="ps-top-carousel-track"></div>
+                        <div class="ps-archetype-grid" id="ps-archetypes"></div>
                     </div>
 
-                    <!-- Smart Guide Live Slot -->
+                    <div style="display:flex;gap:10px;margin-top:12px">
+                        <button class="btn btn-primary btn-lg" id="ps-generate" style="flex:1" data-i18n="ps_generate">
+                            ✨ Generate Prompts
+                        </button>
+                    </div>
+
+                    <!-- ── v3.0: Smart Guide Panel ───────────────────────────── -->
                     <div id="ps-smart-guide-slot">${this._buildSmartGuide()}</div>
 
-                    <!-- Prompt Output Glass Card -->
                     <div id="ps-output-area" style="display:none">
-                        <div class="ps-prompt-glass-card">
-                            <div class="ps-prompt-glass-header">
-                                <div style="display:flex;align-items:center;gap:8px">
-                                    <span style="font-size:16px">✨</span>
-                                    <span style="font-weight:700;font-size:13px;color:var(--accent)" id="ps-output-archetype-name">Generated Prompt</span>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:6px">
-                                    <button class="btn btn-sm btn-outline" id="ps-regen-active" onclick="PromptStudio.regenerateActive()">↺ New</button>
-                                    <button class="btn btn-sm btn-primary" id="ps-copy-active" onclick="PromptStudio.copyActivePrompt()">📋 Copy</button>
-                                </div>
+                        <div class="card" style="margin-top:16px">
+                            <div class="card-header">
+                                <span class="card-title">Generated Prompts</span>
+                                <button class="btn btn-sm btn-secondary" id="ps-copy-all">📋 Copy All</button>
                             </div>
-                            <div class="ps-prompt-glass-body" id="ps-prompt-active-text"></div>
+                            <div id="ps-prompts-list"></div>
                         </div>
                     </div>
-                </div><!-- /ps-center -->
+                </div>
 
-                <!-- RIGHT: Prompt History -->
+                <!-- RIGHT: History -->
                 <div class="ps-right">
-                    <div class="glass-widget">
+                    <div class="card">
                         <div class="card-header">
                             <span class="card-title" data-i18n="ps_history">Prompt History</span>
                             <button class="btn btn-sm btn-secondary" id="ps-clear-history" data-i18n="ps_clear">Clear</button>
@@ -2872,7 +2742,17 @@ const PromptStudio = {
                             <p class="text-sm text-muted" style="text-align:center;padding:20px">No prompts generated yet</p>
                         </div>
                     </div>
-                </div><!-- /ps-right -->
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title" data-i18n="ps_quick_tips">Quick Tips</span></div>
+                        <div class="ps-tips">
+                            <div class="ps-tip">💡 Select multiple archetypes for batch prompt generation</div>
+                            <div class="ps-tip">✏️ Be specific in your piece description for best results</div>
+                            <div class="ps-tip">📋 Copy prompts directly into Gemini, Midjourney, or Leonardo</div>
+                            <div class="ps-tip">🔄 Re-generate for fresh variations of the same concept</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
         if (window.I18n) window.I18n.applyLanguage();
@@ -2880,50 +2760,61 @@ const PromptStudio = {
 
     // ── Event Binding ──────────────────────
     _bind() {
-        const q = id => this.container ? this.container.querySelector(id) : document.querySelector(id);
-        
-        q('#ps-product')?.addEventListener('change', e => {
+        // Selects
+        const q = id => this.container.querySelector(id);
+        // Product selector — toggle Category + Material visibility
+        q('#ps-product').addEventListener('change', e => {
             this.state.product = e.target.value;
             const isWatch = e.target.value === 'watch';
             const catGroup = q('#ps-category-group');
             const matGroup = q('#ps-material-group');
             if (catGroup) catGroup.style.display = isWatch ? 'none' : '';
             if (matGroup) matGroup.style.display = isWatch ? 'none' : '';
-            this._renderArchetypeCarousel();
+            this._renderArchetypeGrid();
         });
-
-        q('#ps-category')?.addEventListener('change', e => {
+        q('#ps-category').addEventListener('change', e => {
             this.state.category = e.target.value;
             const isSet = e.target.value === 'jewelry-set' || e.target.value === 'set';
             if (isSet) {
                 this.state.setComposition = this.state.setComposition || ['ring', 'necklace', 'earrings'];
             }
+            // Show/hide set composition row
             const setRow = q('#ps-set-composition-group');
             if (setRow) setRow.style.display = isSet ? '' : 'none';
-            this._renderArchetypeCarousel();
+            this._renderArchetypeGrid();
             this._autoDescribe();
         });
+        q('#ps-material').addEventListener('change', e => { this.state.material = e.target.value; });
+        q('#ps-stone').addEventListener('change', e => { this.state.stone = e.target.value; });
 
-        q('#ps-material')?.addEventListener('change', e => { this.state.material = e.target.value; });
-        q('#ps-stone')?.addEventListener('change', e => { this.state.stone = e.target.value; });
-
-        // Aspect ratio bar chips
-        const aspectBar = q('#ps-aspect-bar');
-        if (aspectBar) {
-            aspectBar.addEventListener('click', e => {
-                const chip = e.target.closest('.ps-aspect-chip');
+        // Auto-describe
+        // Sort mode
+        const sortGroup = q('#ps-sort-mode');
+        if (sortGroup) {
+            sortGroup.addEventListener('click', e => {
+                const chip = e.target.closest('.ps-chip');
                 if (!chip) return;
-                aspectBar.querySelectorAll('.ps-aspect-chip').forEach(c => c.classList.remove('active'));
+                sortGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
                 chip.classList.add('active');
-                this.state.format = chip.dataset.val;
+                this._sortMode = chip.dataset.val;
+                this._renderArchetypeGrid();
             });
         }
 
-        // Chip groups in expert drawer
+        // Chip groups — v3.1: unified lightingMood replaces separate mood+lighting
         this._bindChipGroup('ps-lighting-mood', 'lightingMood');
+        this._bindChipGroup('ps-format', 'format');
         this._bindChipGroup('ps-angle', 'angle');
-        this._bindChipGroup('ps-camera-profile', 'cameraProfile');
+        this._bindChipGroup('ps-surface', 'surface');
+        this._bindChipGroup('ps-palette', 'palette');
+        this._bindChipGroup('ps-styling', 'styling');
         this._bindChipGroup('ps-realism-level', 'realismLevel');
+        this._bindChipGroup('ps-ethnicity', 'modelEthnicity');
+        this._bindChipGroup('ps-skin-texture', 'skinTexture');
+        this._bindChipGroup('ps-wrinkles', 'wrinkles');
+        this._bindChipGroup('ps-body-hair', 'bodyHair');
+        this._bindChipGroup('ps-skin-detail', 'skinDetail');
+        this._bindChipGroup('ps-facial-expression', 'facialExpression');
 
         // Gender selector
         const genderGroup = q('#ps-gender-select');
@@ -2934,22 +2825,27 @@ const PromptStudio = {
                 genderGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
                 chip.classList.add('active');
                 this.state.modelGender = chip.dataset.val;
+                const filtered = this._getFilteredProfiles();
+                if (filtered.length > 0) this.state.activeProfileId = filtered[0].id;
                 this._render();
-                this._renderPresetsBar();
-                this._renderArchetypeCarousel();
+                this._renderArchetypeGrid();
                 this._bind();
             });
         }
 
-        // Hijabi toggle
+        // Hallmark toggle
+        q('#ps-hallmark-toggle')?.addEventListener('change', e => {
+            this.state.hallmarkEnabled = e.target.checked;
+        });
+
+        // v3.0: Hijabi toggle
         q('#ps-hijabi-toggle')?.addEventListener('change', e => {
             this.state.hijabi = e.target.checked;
             this._render();
-            this._renderPresetsBar();
-            this._renderArchetypeCarousel();
+            this._renderArchetypeGrid();
             this._bind();
         });
-
+        // Hijab style chips (visible only when hijabi is on)
         const hijabStyleGroup = q('#ps-hijab-style');
         if (hijabStyleGroup) {
             hijabStyleGroup.addEventListener('click', e => {
@@ -2961,18 +2857,55 @@ const PromptStudio = {
             });
         }
 
-        // Brand Identity toggle
+        // Model Consistency Events
+        const jcGroup = q('#ps-jewelry-count');
+        if (jcGroup) {
+            jcGroup.addEventListener('click', e => {
+                const chip = e.target.closest('.ps-chip');
+                if (!chip) return;
+                jcGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                this.state.jewelryCount = parseInt(chip.dataset.val);
+            });
+        }
+
+        const consToggle = q('#ps-consistency-toggle');
+        if (consToggle) {
+            consToggle.addEventListener('change', e => {
+                this.state.consistencyOn = e.target.checked;
+                this._render(); // Re-render to show/hide profile panel
+                this._renderArchetypeGrid();
+                this._bind();   // Re-bind events since DOM rebuilt
+            });
+        }
+
+        // Model image reference: "📎 Image attached" / "📝 Text only"
+        const mirGroup = q('#ps-model-image-ref');
+        if (mirGroup) {
+            mirGroup.addEventListener('click', e => {
+                const chip = e.target.closest('.ps-chip');
+                if (!chip) return;
+                mirGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                this.state.modelImageAttached = chip.dataset.val === 'true';
+                this._render();
+                this._renderArchetypeGrid(); // must follow _render() to repopulate grid
+                this._bind();
+            });
+        }
+
+        // v3.6: Brand Identity toggle
         q('#ps-brand-identity-toggle')?.addEventListener('change', e => {
             this.state.brandIdentityEnabled = e.target.checked;
             if (e.target.checked && this.state.brandTouch === 'none') {
-                this.state.brandTouch = 'logomark';
+                this.state.brandTouch = 'logomark'; // default to logomark when enabling
             }
             this._render();
-            this._renderPresetsBar();
-            this._renderArchetypeCarousel();
+            this._renderArchetypeGrid();
             this._bind();
         });
 
+        // Brand Touch chips — needs _render() to update the hint text
         const btGroup = q('#ps-brand-touch');
         if (btGroup) {
             btGroup.addEventListener('click', e => {
@@ -2981,22 +2914,136 @@ const PromptStudio = {
                 btGroup.querySelectorAll('.ps-chip').forEach(c => c.classList.remove('active'));
                 chip.classList.add('active');
                 this.state.brandTouch = chip.dataset.val;
+                this._render();
+                this._renderArchetypeGrid();
+                this._bind();
             });
         }
 
-        // Clear history
-        q('#ps-clear-history')?.addEventListener('click', () => {
-            this.state.history = [];
-            const h = q('#ps-history');
-            if (h) h.innerHTML = '<p class="text-sm text-muted" style="text-align:center;padding:20px">No prompts generated yet</p>';
-            if (window.Elaris) window.Elaris.toast('History cleared', 'info');
+        const newProfBtn = q('#ps-new-profile');
+        if (newProfBtn) {
+            newProfBtn.addEventListener('click', () => {
+                const form = q('#ps-new-profile-form');
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+
+        const saveProfBtn = q('#ps-save-profile');
+        if (saveProfBtn) {
+            saveProfBtn.addEventListener('click', () => {
+                const nameInput = q('#ps-new-profile-name');
+                const descInput = q('#ps-new-profile-desc');
+                const name = nameInput.value.trim();
+                const desc = descInput.value.trim();
+                if (!name) return;
+                const id = name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+                this.state.profiles.push({
+                    id, name, descriptor: desc, referenceImage: null, color: '#c9a96e'
+                });
+                this.state.activeProfileId = id;
+                this._saveProfiles();
+                this._render();
+                this._renderArchetypeGrid();
+                this._bind();
+                Elaris.toast('Profile saved', 'success');
+            });
+        }
+
+        const profileList = q('#ps-profile-list');
+        if (profileList) {
+            profileList.addEventListener('click', e => {
+                // Handle image upload label click
+                if (e.target.closest('label') || e.target.type === 'file') return;
+                
+                const card = e.target.closest('.profile-card');
+                if (!card) return;
+                this.state.activeProfileId = card.dataset.id;
+                this._render();
+                this._renderArchetypeGrid();
+                this._bind();
+            });
+
+            profileList.querySelectorAll('.ps-upload-ref').forEach(input => {
+                input.addEventListener('change', e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const id = e.target.dataset.id;
+                    const reader = new FileReader();
+                    reader.onload = ev => {
+                        const prof = this.state.profiles.find(p => p.id === id);
+                        if (prof) {
+                            prof.referenceImage = ev.target.result;
+                            this._saveProfiles();
+                            this._render();
+                            this._renderArchetypeGrid();
+                            this._bind();
+                            Elaris.toast('Reference image saved', 'success');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        }
+
+        // Archetype selection (multi-select)
+        q('#ps-archetypes').addEventListener('click', e => {
+            const card = e.target.closest('.ps-arch-card');
+            if (!card) return;
+            const id = card.dataset.arch;
+            const idx = this.state.selectedArchetypes.indexOf(id);
+            if (idx >= 0) {
+                this.state.selectedArchetypes.splice(idx, 1);
+                card.classList.remove('active');
+            } else {
+                this.state.selectedArchetypes.push(id);
+                card.classList.add('active');
+            }
+            const selStr = window.I18n ? window.I18n.t('ps_selected') : 'selected';
+            q('#ps-arch-count').innerHTML = `${this.state.selectedArchetypes.length} <span data-i18n="ps_selected">${selStr}</span>`;
+            // v3.0: Refresh Smart Guide live
+            const guideEl = q('#ps-smart-guide-slot');
+            if (guideEl) guideEl.outerHTML = `<div id="ps-smart-guide-slot">${this._buildSmartGuide()}</div>`;
+            // v3.1: Refresh angle chips live to reflect archetype-aware ranking
+            const angleGroup = q('#ps-angle');
+            if (angleGroup) angleGroup.innerHTML = this._buildAngleChips();
+            // v3.6: Refresh lighting chips live to reflect archetype-aware ranking
+            this._refreshLighting();
         });
+
+        // Generate
+        q('#ps-generate').addEventListener('click', () => this._generate());
+
+        // Copy all
+        q('#ps-copy-all').addEventListener('click', () => this._copyAll());
+
+        // Clear history
+        q('#ps-clear-history').addEventListener('click', () => {
+            this.state.history = [];
+            q('#ps-history').innerHTML = '<p class="text-sm text-muted" style="text-align:center;padding:20px">No prompts generated yet</p>';
+            Elaris.toast('History cleared', 'info');
+        });
+
+        // v3.0: Camera System profile selector
+        this._bindChipGroup('ps-camera-profile', 'cameraProfile');
+
+        // Ensure angle chips render with 5 stars on fresh page load
+        this._refreshAngles();
+        // v3.6: Ensure lighting chips render with stars on fresh page load
+        this._refreshLighting();
     },
 
-    // Refresh angle chips without full re-render
+    // Refresh angle chips and context label without full re-render
     _refreshAngles() {
-        const ag = this.container ? this.container.querySelector('#ps-angle') : document.getElementById('ps-angle');
+        const q = id => this.container.querySelector(id);
+        const ag = q('#ps-angle');
         if (ag) ag.innerHTML = this._buildAngleChips();
+        const ctx = q('#ps-angle-context');
+        if (ctx) {
+            const hasSel = (this.state.selectedArchetypes || []).length > 0;
+            ctx.textContent = hasSel
+                ? '-- boosted for selected archetype'
+                : '-- best for ' + (this.state.category || 'ring');
+        }
     },
 
     // ── v3.6: Dynamic Lighting Chips with per-category + per-archetype sorting ──────
