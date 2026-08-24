@@ -18,6 +18,29 @@ const Elaris = {
         setTimeout(() => el.remove(), 3500);
     },
 
+    // ── More Tools Bottom Sheet Drawer (Mobile) ───────────────────
+    toggleMoreTools(open) {
+        const backdrop = document.getElementById('more-tools-backdrop');
+        if (!backdrop) return;
+        const shouldOpen = typeof open === 'boolean' ? open : !backdrop.classList.contains('open');
+        backdrop.classList.toggle('open', shouldOpen);
+    },
+
+    // ── Theme Toggle ──────────────────────────────────────────────
+    toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('elaris-theme', next);
+        const icon = document.getElementById('theme-icon');
+        const label = document.getElementById('theme-label');
+        const dockIcon = document.getElementById('dock-theme-icon');
+        if (icon) icon.textContent = next === 'dark' ? '🌙' : '☀️';
+        if (label) label.textContent = next === 'dark' ? 'Dark' : 'Light';
+        if (dockIcon) dockIcon.textContent = next === 'dark' ? '🌙' : '☀️';
+        this.toast(`Switched to ${next} mode`, 'info');
+    },
+
     // ── Router ───────────────────────────────────────────────────
     navigate(page) {
         // Alias route handling for set / jewelry-set
@@ -33,6 +56,12 @@ const Elaris = {
         document.querySelectorAll('.nav-item').forEach(item => {
             item.classList.toggle('active', item.dataset.page === page);
         });
+
+        // Update mobile dock buttons if present
+        document.querySelectorAll('.dock-tab-btn').forEach(btn => btn.classList.remove('active'));
+        if (page === 'promptstudio') {
+            document.getElementById('dock-btn-studio')?.classList.add('active');
+        }
 
         window.location.hash = page;
         const titles = {
