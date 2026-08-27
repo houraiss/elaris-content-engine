@@ -67,8 +67,17 @@ const PromptStudioBeta = {
     _loadSavedHistory() {
         try {
             const raw = localStorage.getItem('elaris_psb_history');
-            if (raw) this.state.history = JSON.parse(raw);
-        } catch (e) { this.state.history = []; }
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                // Filter out any stale/corrupt items missing required fields
+                this.state.history = Array.isArray(parsed)
+                    ? parsed.filter(item => item && typeof item.prompt === 'string' && item.prompt.length > 0)
+                    : [];
+            }
+        } catch (e) {
+            this.state.history = [];
+            try { localStorage.removeItem('elaris_psb_history'); } catch (_) {}
+        }
     },
 
     _saveHistory() {
@@ -973,13 +982,16 @@ const PromptStudioBeta = {
                         <div class="psb-history-list" id="psb-history-list">
                             ${this.state.history.length === 0
                                 ? `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:16px;">No recent prompts yet. Tap Generate!</div>`
-                                : this.state.history.map(item => `
-                                    <div class="psb-history-item" data-prompt="${encodeURIComponent(item.prompt)}">
-                                        <div class="psb-history-arch">${item.archetype} • <span style="color:var(--psb-text-3);">${item.timestamp}</span></div>
-                                        <div class="psb-history-preview">${item.prompt.substring(0, 120)}…</div>
+                                : this.state.history.map(item => {
+                                    const safePrompt = (item && item.prompt) ? item.prompt : '';
+                                    const safeArch   = (item && item.archetype) ? item.archetype : 'Unknown';
+                                    const safeTime   = (item && item.timestamp) ? item.timestamp : '';
+                                    return `<div class="psb-history-item" data-prompt="${encodeURIComponent(safePrompt)}">
+                                        <div class="psb-history-arch">${safeArch}${safeTime ? ` • <span style="color:var(--psb-text-3);">${safeTime}</span>` : ''}</div>
+                                        <div class="psb-history-preview">${safePrompt.substring(0, 120)}${safePrompt.length > 120 ? '…' : ''}</div>
                                         <button type="button" class="psb-history-copy">Copy</button>
-                                    </div>
-                                `).join('')}
+                                    </div>`;
+                                }).join('')}
                         </div>
                     </section>
 
@@ -1109,13 +1121,17 @@ const PromptStudioBeta = {
             histEl.innerHTML = '<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:16px;">No recent prompts yet. Tap Generate!</div>';
             return;
         }
-        histEl.innerHTML = this.state.history.map(item => `
-            <div class="psb-history-item" data-prompt="${encodeURIComponent(item.prompt)}">
-                <div class="psb-history-arch">${item.archetype} • <span style="color:var(--psb-text-3);">${item.timestamp}</span></div>
-                <div class="psb-history-preview">${item.prompt.substring(0, 120)}…</div>
+        histEl.innerHTML = this.state.history.map(item => {
+            const safePrompt = (item && item.prompt) ? item.prompt : '';
+            const safeArch   = (item && item.archetype) ? item.archetype : 'Unknown';
+            const safeTime   = (item && item.timestamp) ? item.timestamp : '';
+            return `
+            <div class="psb-history-item" data-prompt="${encodeURIComponent(safePrompt)}">
+                <div class="psb-history-arch">${safeArch}${safeTime ? ` • <span style="color:var(--psb-text-3);">${safeTime}</span>` : ''}</div>
+                <div class="psb-history-preview">${safePrompt.substring(0, 120)}${safePrompt.length > 120 ? '…' : ''}</div>
                 <button type="button" class="psb-history-copy">Copy</button>
-            </div>
-        `).join('');
+            </div>`;
+        }).join('');
         // Re-bind history copy
         this._bindHistoryCopy();
     },
