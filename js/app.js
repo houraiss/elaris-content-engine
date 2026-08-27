@@ -36,7 +36,7 @@ const Elaris = {
 
         window.location.hash = page;
         const titles = {
-            promptstudio: 'Prompt Studio', motionstudio: 'Motion Studio', captions: 'Captions',
+            promptstudio: 'Prompt Studio', promptstudiobeta: 'Prompt Studio Beta', motionstudio: 'Motion Studio', captions: 'Captions',
             generate: 'Generate AI Assets', trends: 'Trends', watermark: 'Watermark Studio', batch: 'Batch Mode',
         };
         document.title = `${titles[page] || page} — Elaris Content Engine`;
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Route from hash
     const hash = window.location.hash.slice(1);
-    const valid = ['promptstudio', 'motionstudio', 'generate', 'captions', 'trends', 'batch', 'watermark'];
+    const valid = ['promptstudio', 'promptstudiobeta', 'motionstudio', 'generate', 'captions', 'trends', 'batch', 'watermark'];
     Elaris.navigate(valid.includes(hash) ? hash : 'promptstudio');
 
     // ── Mobile Menu ──────────────────────────────────────────
