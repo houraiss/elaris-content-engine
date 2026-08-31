@@ -1,15 +1,15 @@
 /**
- * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v2.
+ * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v4.
  *
- * Changes in v2:
- *  - Added Jewelry Style multi-select chips (Styling & Scene tab)
- *  - Added Variation Count (generate 1–5 prompt variations)
- *  - Added Prompt Quality Level (Standard / Detailed / Ultra)
- *  - Fixed expert drawer tab switching (was broken by flex-direction:column)
- *  - Fixed history copy button (always visible on touch, not only on hover)
- *  - Fixed modal search (debounced to preserve mobile keyboard focus)
- *  - Fixed mobile dock button navigation
- *  - Full responsive layout and light/dark mode support via CSS v2
+ * Changes in v4:
+ *  - Fixed Styling & Brand tabs blank (missing </div> for Camera tab)
+ *  - Removed Design Details textarea (unused)
+ *  - Fixed archetype category filters (archetypes lack .category field — inferred from ID)
+ *  - Dynamic score badge colors (green >85, gold 75–85, silver <75)
+ *  - V3 / WATCH / SET badges on carousel and modal cards
+ *  - Fixed Expert dock scroll jump (scroll toggle not drawer)
+ *  - Removed corrupted duplicate code block
+ *  - All prior v2 features preserved
  */
 
 const PromptStudioBeta = {
@@ -89,6 +89,55 @@ const PromptStudioBeta = {
         } catch (e) {}
     },
 
+    // ── Category Inference ────────────────────────────────────────
+    // Archetypes in prompt-studio.js lack a .category field.
+    // We infer it from the archetype ID using the same classification as the main studio.
+    _HUMAN_IDS: new Set([
+        'body-intimate', 'editorial-model', 'bw-dramatic', 'collection-showcase', 'motion-blur',
+        'cinematic-portrait', 'celestial-mythic', 'masculine-editorial', 'surface-lean', 'hair-drama',
+        'lifestyle-moment', 'heritage-moroccan', 'architectural-context', 'wet-element',
+        'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture', 'cinematic-color-story',
+        'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty',
+        'mouth-lips-editorial', 'dark-moody-editorial',
+        'desert-mirage', 'neon-cyberpunk', 'vintage-nostalgia',
+        'frozen-subject', 'vehicle-lifestyle',
+        'weather-drama', 'prop-power-play', 'skin-canvas', 'reaching-gesture',
+        'power-stance', 'stacked-maximalist', 'sculptural-headpiece',
+        'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
+        'artisan-at-work', 'bridal-trousseau', 'souk-editorial', 'heirloom-generational',
+        'futuristic-chrome', 'submerged-beauty', 'surreal-material-fusion',
+        'luxury-leather-editorial', 'monochrome-jewelry-ad',
+    ]),
+
+    _ORGANIC_IDS: new Set([
+        'object-pairing', 'nature-botanical', 'wet-element', 'surreal-animal',
+        'texture-contrast', 'seasonal-holiday',
+    ]),
+
+    _MOOD_IDS: new Set([
+        'shadow-play', 'heritage-moroccan', 'bw-dramatic', 'celestial-mythic',
+        'dark-moody-editorial', 'cinematic-color-story', 'ghost-double-exposure',
+        'desert-mirage', 'neon-cyberpunk', 'vintage-nostalgia',
+    ]),
+
+    _inferCategory(arch) {
+        const id = (arch.id || '').toLowerCase();
+        // Explicit category if archetype already has one
+        if (arch.category) return arch.category.toLowerCase();
+        // Watch archetypes
+        if (id.startsWith('watch-') || id.includes('horology')) return 'watch';
+        // Set archetypes
+        if (id.startsWith('set-')) return 'set';
+        // Mood/artistic (check before human since some overlap)
+        if (this._MOOD_IDS.has(id)) return 'mood';
+        // Organic/nature
+        if (this._ORGANIC_IDS.has(id)) return 'organic';
+        // Human/model
+        if (this._HUMAN_IDS.has(id)) return 'human';
+        // Product fallback (gradient-, product-, flat-lay, mirror-, minimalist-, etc.)
+        return 'product';
+    },
+
     // ── Data Sources (with safety fallbacks) ────────────────────
     _getArchetypes() {
         if (window.PromptStudio && Array.isArray(window.PromptStudio.archetypes) && window.PromptStudio.archetypes.length > 0) {
@@ -103,7 +152,7 @@ const PromptStudioBeta = {
             { id: 'shadow-play',         name: 'Dramatic Shadow Play',      category: 'mood',    tag: 'V3.0', tagline: 'Harsh directional light casting bold geometric shadows',       icon: '🌑', desc: 'Chiaroscuro high-contrast lighting with graphic silhouette interplay' },
             { id: 'nature-botanical',    name: 'Botanical Harmony',         category: 'organic', tag: 'V3.0', tagline: 'Entwined with exotic flora and botanical textures',            icon: '🌿', desc: 'Jewelry resting naturally among dew-covered exotic leaves' },
             { id: 'heritage-moroccan',   name: 'Moroccan Heritage',         category: 'mood',    tag: 'V3.0', tagline: 'Handcrafted Berber aesthetic with warm terracotta',            icon: '🏺', desc: 'Warm artisanal atmosphere with zellige tiles and carved silver' },
-            { id: 'watch-macro-horology',name: 'Horology Micro Engineering',category: 'watches', tag: 'V3.0', tagline: 'Macro precision of guilloche dials and tourbillon',            icon: '⌚', desc: 'Ultra-sharp focus on sapphire crystal, chamfered bevels, and movement' },
+            { id: 'watch-macro-horology',name: 'Horology Micro Engineering',category: 'watch',   tag: 'V3.0', tagline: 'Macro precision of guilloche dials and tourbillon',            icon: '⌚', desc: 'Ultra-sharp focus on sapphire crystal, chamfered bevels, and movement' },
             { id: 'masculine-editorial', name: 'Masculine Editorial',        category: 'human',   tag: 'V3.0', tagline: 'Bold, structured luxury jewelry for men',                     icon: '👔', desc: 'Clean jawline, textured wool blazer, and bold silver statement rings' },
         ];
     },
@@ -502,11 +551,16 @@ const PromptStudioBeta = {
     // ── Filter Archetypes Helper ─────────────────────────────────
     _filterArchetypes(all, category, search) {
         let filtered = all.filter(a => {
-            const archCat = (a.category || '').toLowerCase();
-            const matchesCat = category === 'all' ||
-                archCat === category.toLowerCase() ||
-                (category === 'sets'    && (archCat === 'set'   || archCat === 'sets'))    ||
-                (category === 'watches' && (archCat === 'watch' || archCat === 'watches'));
+            const archCat = this._inferCategory(a);
+            const catLower = category.toLowerCase();
+            const matchesCat = catLower === 'all' ||
+                archCat === catLower ||
+                (catLower === 'sets'    && (archCat === 'set'   || archCat === 'sets'))    ||
+                (catLower === 'watches' && (archCat === 'watch' || archCat === 'watches')) ||
+                (catLower === 'human'   && archCat === 'human') ||
+                (catLower === 'product' && archCat === 'product') ||
+                (catLower === 'organic' && archCat === 'organic') ||
+                (catLower === 'mood'    && archCat === 'mood');
             const matchesSearch = !search ||
                 (a.name    && a.name.toLowerCase().includes(search))    ||
                 (a.tagline && a.tagline.toLowerCase().includes(search)) ||
@@ -528,8 +582,14 @@ const PromptStudioBeta = {
             const isActive = card.dataset.id === this.state.archetypeId;
             card.classList.toggle('active', isActive);
             const badge = card.querySelector('.psb-arch-score-badge');
-            const found  = top10.find(({ arch }) => arch.id === card.dataset.id);
-            if (badge && found) badge.textContent = `${found.score}% Match`;
+            const ring  = card.querySelector('.psb-ring-fill');
+            const found = top10.find(({ arch }) => arch.id === card.dataset.id);
+            if (found) {
+                const sc = found.score;
+                const color = sc >= 85 ? '#34d399' : sc >= 75 ? '#fbbf24' : '#94a3b8';
+                if (badge) { badge.textContent = `${sc}% Match`; badge.style.color = color; }
+                if (ring)  ring.style.stroke = color;
+            }
         });
         // Scroll carousel track horizontally to active card — no page scroll
         const track      = this.container.querySelector('#psb-carousel-track');
@@ -663,11 +723,6 @@ const PromptStudioBeta = {
                             </select>
                         </div>
 
-                        <!-- Custom Description -->
-                        <div class="psb-form-group">
-                            <label class="psb-label">Design Details</label>
-                            <textarea class="psb-textarea" id="psb-desc-input" placeholder="e.g. geometric Moroccan filigree, diamond pavé halo, textured organic band...">${this.state.pieceDesc}</textarea>
-                        </div>
 
                         <!-- Set Composition (jewelry-set only) -->
                         <div class="psb-form-group" id="psb-set-group" style="display:${isSet ? 'block' : 'none'};">
@@ -743,18 +798,29 @@ const PromptStudioBeta = {
                                     const circumference = 2 * Math.PI * 22;
                                     const offset = circumference - (score / 100) * circumference;
                                     const isActive = arch.id === this.state.archetypeId;
+                                    const scoreColor = score >= 85 ? '#34d399' : score >= 75 ? '#fbbf24' : '#94a3b8';
+                                    const ringColor  = scoreColor;
+                                    const inferredCat = this._inferCategory(arch);
+                                    const badgeHTML = inferredCat === 'watch'
+                                        ? '<span class="psb-arch-type-badge psb-badge-watch">WATCH</span>'
+                                        : (inferredCat === 'set'
+                                            ? '<span class="psb-arch-type-badge psb-badge-set">SET</span>'
+                                            : (arch.tag
+                                                ? `<span class="psb-arch-type-badge psb-badge-v3">${arch.tag}</span>`
+                                                : ''));
                                     return `
                                         <div class="psb-arch-card ${isActive ? 'active' : ''}" data-id="${arch.id}">
+                                            ${badgeHTML}
                                             <div class="psb-score-ring-wrap">
                                                 <svg class="psb-score-ring" viewBox="0 0 52 52">
                                                     <circle class="psb-ring-bg"   cx="26" cy="26" r="22"></circle>
-                                                    <circle class="psb-ring-fill" cx="26" cy="26" r="22" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"></circle>
+                                                    <circle class="psb-ring-fill" cx="26" cy="26" r="22" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" style="stroke:${ringColor}"></circle>
                                                 </svg>
                                                 <span class="psb-arch-emoji">${arch.icon || '💎'}</span>
                                             </div>
                                             <div class="psb-arch-card-name" title="${arch.name}">${arch.name}</div>
                                             <div class="psb-arch-card-tag">${arch.tagline || arch.desc || ''}</div>
-                                            <div class="psb-arch-score-badge">${score}% Match</div>
+                                            <div class="psb-arch-score-badge" style="color:${scoreColor}">${score}% Match</div>
                                         </div>
                                     `;
                                 }).join('')}
@@ -942,6 +1008,7 @@ const PromptStudioBeta = {
                                             </optgroup>
                                         </select>
                                     </div>
+                                </div>
 
                                 <!-- ─── Tab 3: Styling & Scene ─── -->
                                 <div class="psb-mod-content ${this.state.activeModTab === 'styling' ? 'active' : ''}" id="psb-modtab-styling">
@@ -1236,6 +1303,15 @@ const PromptStudioBeta = {
                             ${filtered.map(arch => {
                                 const score    = this._calculateArchetypeScore(arch);
                                 const isActive = arch.id === this.state.archetypeId;
+                                const scoreColor = score >= 85 ? '#34d399' : score >= 75 ? '#fbbf24' : '#94a3b8';
+                                const inferredCat = this._inferCategory(arch);
+                                const catBadge = inferredCat === 'watch'
+                                    ? '<span style="font-size:8px;font-weight:800;color:#38bdf8;background:rgba(56,189,248,0.15);padding:1px 5px;border-radius:8px;">WATCH</span>'
+                                    : (inferredCat === 'set'
+                                        ? '<span style="font-size:8px;font-weight:800;color:#fb923c;background:rgba(251,146,60,0.15);padding:1px 5px;border-radius:8px;">SET</span>'
+                                        : (arch.tag
+                                            ? `<span style="font-size:8px;font-weight:800;color:#a78bfa;background:rgba(167,139,250,0.15);padding:1px 5px;border-radius:8px;">${arch.tag}</span>`
+                                            : ''));
                                 return `
                                     <div class="psb-modal-card ${isActive ? 'active' : ''}" data-id="${arch.id}">
                                         <div style="font-size:26px;line-height:1;flex-shrink:0;">${arch.icon || '💎'}</div>
@@ -1243,8 +1319,8 @@ const PromptStudioBeta = {
                                             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;gap:6px;">
                                                 <div style="font-size:12.5px;font-weight:700;color:var(--psb-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${arch.name}</div>
                                                 <div style="display:flex;gap:4px;align-items:center;flex-shrink:0;">
-                                                    ${arch.tag ? `<span style="font-size:8.5px;font-weight:800;color:#a78bfa;background:rgba(167,139,250,0.15);padding:1px 5px;border-radius:8px;">${arch.tag}</span>` : ''}
-                                                    <span style="font-size:9.5px;font-weight:800;color:#fbbf24;background:rgba(245,166,35,0.15);padding:2px 6px;border-radius:10px;">${score}%</span>
+                                                    ${catBadge}
+                                                    <span style="font-size:9.5px;font-weight:800;color:${scoreColor};background:${score >= 85 ? 'rgba(52,211,153,0.15)' : score >= 75 ? 'rgba(245,166,35,0.15)' : 'rgba(148,163,184,0.15)'};padding:2px 6px;border-radius:10px;">${score}%</span>
                                                 </div>
                                             </div>
                                             <div style="font-size:10.5px;color:var(--psb-text-3);font-style:italic;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${arch.tagline || arch.desc || ''}</div>
@@ -1345,9 +1421,7 @@ const PromptStudioBeta = {
         const stoneSel = q('#psb-stone-select');
         if (stoneSel) stoneSel.addEventListener('change', (e) => { this.state.stone = e.target.value; });
 
-        // Description
-        const descIn = q('#psb-desc-input');
-        if (descIn) descIn.addEventListener('input', (e) => { this.state.pieceDesc = e.target.value; });
+        // Description input removed (Design Details section removed in v4)
 
         // Set composition chips
         this.container.querySelectorAll('.psb-set-chip').forEach(chip => {
@@ -1734,9 +1808,18 @@ const PromptStudioBeta = {
             return;
         }
 
-            gridEl.innerHTML = filtered.map(arch => {
+        gridEl.innerHTML = filtered.map(arch => {
             const score    = this._calculateArchetypeScore(arch);
             const isActive = arch.id === this.state.archetypeId;
+            const scoreColor = score >= 85 ? '#34d399' : score >= 75 ? '#fbbf24' : '#94a3b8';
+            const inferredCat = this._inferCategory(arch);
+            const catBadge = inferredCat === 'watch'
+                ? '<span style="font-size:8px;font-weight:800;color:#38bdf8;background:rgba(56,189,248,0.15);padding:1px 5px;border-radius:8px;">WATCH</span>'
+                : (inferredCat === 'set'
+                    ? '<span style="font-size:8px;font-weight:800;color:#fb923c;background:rgba(251,146,60,0.15);padding:1px 5px;border-radius:8px;">SET</span>'
+                    : (arch.tag
+                        ? `<span style="font-size:8px;font-weight:800;color:#a78bfa;background:rgba(167,139,250,0.15);padding:1px 5px;border-radius:8px;">${arch.tag}</span>`
+                        : ''));
             return `
                 <div class="psb-modal-card ${isActive ? 'active' : ''}" data-id="${arch.id}">
                     <div style="font-size:26px;line-height:1;flex-shrink:0;">${arch.icon || '💎'}</div>
@@ -1744,8 +1827,8 @@ const PromptStudioBeta = {
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;gap:6px;">
                             <div style="font-size:12.5px;font-weight:700;color:var(--psb-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${arch.name}</div>
                             <div style="display:flex;gap:4px;align-items:center;flex-shrink:0;">
-                                ${arch.tag ? `<span style="font-size:8.5px;font-weight:800;color:#a78bfa;background:rgba(167,139,250,0.15);padding:1px 5px;border-radius:8px;">${arch.tag}</span>` : ''}
-                                <span style="font-size:9.5px;font-weight:800;color:#fbbf24;background:rgba(245,166,35,0.15);padding:2px 6px;border-radius:10px;">${score}%</span>
+                                ${catBadge}
+                                <span style="font-size:9.5px;font-weight:800;color:${scoreColor};background:${score >= 85 ? 'rgba(52,211,153,0.15)' : score >= 75 ? 'rgba(245,166,35,0.15)' : 'rgba(148,163,184,0.15)'};padding:2px 6px;border-radius:10px;">${score}%</span>
                             </div>
                         </div>
                         <div style="font-size:10.5px;color:var(--psb-text-3);font-style:italic;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${arch.tagline || arch.desc || ''}</div>
