@@ -2328,6 +2328,9 @@ const PromptStudio = {
             'set-detail-showcase': { angle:['macro','extreme-macro','flat-lay','45-degree'], lighting:['studio','editorial','soft'], camera:['macro-100','macro-180','phase-one-iq4'], tips:['Focus on one piece sharply while the other two are softly visible — depth of field tells the collection story.','Arrange all three pieces in the same frame even in macro mode so the set reads as unified.','Pay attention to stone alignment — ensure each stone in the set is showing its best facet toward the lens.'] },
         };
 
+        // Cache the full guideDB for external access (Studio Beta page uses this)
+        this.guideDB = guideDB;
+
         const guides = selected.map(id => guideDB[id]).filter(Boolean);
 
         if (guides.length === 0) {
@@ -4252,6 +4255,10 @@ const PromptStudio = {
     },
 
     _getGuideDB() {
+        // Return the full cached guideDB (set by renderSmartGuide) when available —
+        // it includes angle, camera, and tips in addition to lighting.
+        if (this.guideDB && Object.keys(this.guideDB).length > 10) return this.guideDB;
+        // Partial fallback (lighting only) for cases where renderSmartGuide hasn't run yet
         return {
             'body-intimate': { lighting: ['soft-box','natural','ring-light'] },
             'object-pairing': { lighting: ['natural','soft-box','studio'] },

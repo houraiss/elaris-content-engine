@@ -229,25 +229,63 @@ const PromptStudioBeta = {
     },
 
     // ── Scoring Algorithm for Top 10 Archetypes ──────────────────
+    // Uses each archetype's actual `compat` data (30–95 range per piece type)
+    // instead of generic keyword matching. Adds small contextual bonuses.
     _calculateArchetypeScore(arch) {
-        let score = 75;
         const cat = this.state.category;
-        const archCat = (arch.category || '').toLowerCase();
-        const archId = arch.id.toLowerCase();
+        const archId = (arch.id || '').toLowerCase();
 
-        if (cat === 'ring'        && (archId.includes('intimate') || archId.includes('macro') || archId.includes('gradient'))) score += 18;
-        if (cat === 'necklace'    && (archId.includes('editorial') || archId.includes('cinematic') || archId.includes('veiled'))) score += 17;
-        if (cat === 'earrings'    && (archId.includes('hair') || archId.includes('intimate') || archId.includes('editorial'))) score += 16;
-        if (cat === 'jewelry-set' && (archId.includes('collection') || archId.includes('flat-lay') || archId.includes('royal'))) score += 22;
-        if (cat === 'watch'       && (archId.includes('watch') || archId.includes('horology') || archId.includes('masculine'))) score += 24;
+        // ── 1. Base score from compat data (the real numbers) ──
+        let score = 50; // default if no compat data
+        if (arch.compat) {
+            // Map category IDs to compat keys
+            const compatKey = {
+                'ring': 'ring',
+                'necklace': 'necklace',
+                'pendant': 'pendant',
+                'bracelet': 'bracelet',
+                'earrings': 'earrings',
+                'bangle': 'bangles',
+                'bangles': 'bangles',
+                'anklet': 'anklet',
+                'brooch': 'brooch',
+                'body-jewelry': 'body-jewelry',
+                'jewelry-set': 'jewelry-set',
+                'watch': 'watch',
+            }[cat] || cat;
 
-        if (this.state.modelGender === 'male' && (archId.includes('masculine') || archId.includes('outdoor-masculine'))) score += 20;
-        if (this.state.modelGender === 'none' && (archCat === 'product' || archCat === 'organic')) score += 15;
-        if (this.state.stone !== 'none' && (archId.includes('macro') || archId.includes('gradient') || archId.includes('wet'))) score += 8;
-        if (this.state.hijabi && (archId.includes('veiled') || archId.includes('heritage') || archId.includes('cinematic'))) score += 14;
-        if (this.state.archetypeId === arch.id) score += 5;
+            if (arch.compat[compatKey] !== undefined) {
+                score = arch.compat[compatKey];
+            } else if (arch.compat[cat] !== undefined) {
+                score = arch.compat[cat];
+            } else {
+                // No compat entry for this piece type — infer from archetype category
+                const inferredCat = this._inferCategory(arch);
+                if (inferredCat === 'watch' && cat !== 'watch') score = 30;
+                else if (inferredCat === 'set' && cat !== 'jewelry-set') score = 35;
+                else if (cat === 'watch' && inferredCat !== 'watch') score = 25;
+                else score = 45;
+            }
+        }
 
-        return Math.min(99, Math.max(70, score));
+        // ── 2. Contextual bonuses (small, additive) ──
+        // Gender synergy
+        if (this.state.modelGender === 'male' && (archId.includes('masculine') || archId.includes('outdoor-masculine'))) score += 5;
+        if (this.state.modelGender === 'none') {
+            const inferredCat = this._inferCategory(arch);
+            if (inferredCat === 'product' || inferredCat === 'organic') score += 3;
+        }
+
+        // Stone synergy — macro/detail archetypes benefit from gemstones
+        if (this.state.stone !== 'none' && (archId.includes('macro') || archId.includes('gradient') || archId.includes('detail'))) score += 3;
+
+        // Hijab synergy
+        if (this.state.hijabi && (archId.includes('veiled') || archId.includes('heritage') || archId.includes('bridal'))) score += 4;
+
+        // Currently selected archetype gets a tiny boost for UI stability
+        if (this.state.archetypeId === arch.id) score += 2;
+
+        return Math.min(99, Math.max(25, Math.round(score)));
     },
 
     _getTop10Archetypes() {
@@ -259,11 +297,22 @@ const PromptStudioBeta = {
 
     // ── Smart Guide Database ────────────────────────────────────
     _getGuideData(archId) {
-        // 1. Use window.PromptStudio.guideDB first — covers all 70+ archetypes
-        if (window.PromptStudio && window.PromptStudio.guideDB && window.PromptStudio.guideDB[archId]) {
-            return window.PromptStudio.guideDB[archId];
+        // 1. Try window.PromptStudio._getGuideDB() — returns full data (angle+lighting+camera+tips)
+        //    once renderSmartGuide has run; returns lighting-only before that.
+        if (window.PromptStudio && typeof window.PromptStudio._getGuideDB === 'function') {
+            const db = window.PromptStudio._getGuideDB();
+            const entry = db[archId];
+            // Only use if it has the full data (not just lighting)
+            if (entry && entry.tips && entry.tips.length > 0 && entry.angle) {
+                return entry;
+            }
         }
-        // 2. Built-in detailed fallbacks for most common archetypes
+        // 2. Also try the cached guideDB property (set after renderSmartGuide runs)
+        if (window.PromptStudio && window.PromptStudio.guideDB && window.PromptStudio.guideDB[archId]) {
+            const entry = window.PromptStudio.guideDB[archId];
+            if (entry && entry.tips && entry.tips.length > 0) return entry;
+        }
+        // 3. Built-in detailed fallbacks for most common archetypes
         const fallbacks = {
             'body-intimate': {
                 angle: ['macro', 'extreme-macro', 'eye-level'],
@@ -338,33 +387,33 @@ const PromptStudioBeta = {
         };
         if (fallbacks[archId]) return fallbacks[archId];
 
-        // 3. Smart category-based fallback — uses archetype's own data for contextual tips
+        // 4. Smart category-based fallback — uses _inferCategory() since arch.category is often empty
         const arch = this._getArchetypes().find(a => a.id === archId);
-        const cat  = arch ? (arch.category || '').toLowerCase() : '';
+        const cat  = arch ? this._inferCategory(arch) : 'product';
         const id   = archId.toLowerCase();
         const name = arch ? arch.name : archId;
 
-        if (cat === 'human' || id.includes('model') || id.includes('editorial') || id.includes('portrait') || id.includes('veiled') || id.includes('feminine') || id.includes('masculine')) {
+        if (cat === 'human') {
             return { angle: ['eye-level','45-degree','chin-up'], lighting: ['editorial','studio','dramatic'], camera: ['hasselblad-85','canon-135-l','leica-50'],
-                tips: [`${name} calls for strong editorial energy — place the model front and center.`, 'Hasselblad 85mm delivers medium-format luxury depth and creamy, flattering skin tones.', 'Try Dramatic or Studio lighting for the crispest gem-to-skin contrast.'] };
+                tips: [`${name} calls for strong editorial energy — model front and center with intentional posing.`, 'Hasselblad 85mm delivers medium-format luxury depth and flattering skin tones.', 'Try Dramatic or Studio lighting for the crispest gem-to-skin contrast.'] };
         }
-        if (cat === 'product' || id.includes('product') || id.includes('gradient') || id.includes('float') || id.includes('hover') || id.includes('studio')) {
+        if (cat === 'product') {
             return { angle: ['45-degree','flat-lay','overhead'], lighting: ['studio','soft-box','editorial'], camera: ['phase-one-iq4','hasselblad-85','macro-100'],
-                tips: [`${name} excels in clean product-focused compositions with no model distractions.`, 'Phase One IQ4 150MP captures microscopic surface textures and gem facets with extraordinary clarity.', 'Pair with a Color Palette and Surface Material for a cohesive, branded look.'] };
+                tips: [`${name} excels in clean product-focused compositions — no model distractions.`, 'Phase One IQ4 150MP captures microscopic surface textures and gem facets with extraordinary clarity.', 'Pair with a Color Palette and Surface Material for a cohesive, branded look.'] };
         }
-        if (cat === 'organic' || id.includes('botanical') || id.includes('nature') || id.includes('wet') || id.includes('floral') || id.includes('earth') || id.includes('water')) {
+        if (cat === 'organic') {
             return { angle: ['macro','eye-level','knuckle-level'], lighting: ['natural','dappled','soft-box'], camera: ['macro-100','hasselblad-85','sony-35-gm'],
                 tips: [`${name} thrives with organic textures — dew, petals, or natural stone as the canvas.`, 'Macro 100mm f/2.8 reveals the tension and luminosity of water droplets and leaf surfaces.', 'Use Natural Daylight or Dappled Sunlight for the most authentic botanical atmosphere.'] };
         }
-        if (cat === 'mood' || id.includes('shadow') || id.includes('dramatic') || id.includes('cinematic') || id.includes('moroccan') || id.includes('heritage') || id.includes('berber')) {
+        if (cat === 'mood') {
             return { angle: ['flat-lay','low-angle','side-profile'], lighting: ['dramatic','chiaroscuro','candlelight'], camera: ['leica-50','sony-35-gm','anamorphic-40'],
                 tips: [`${name} is built for atmosphere — lean into contrast, shadow, and texture.`, 'Anamorphic 40mm adds subtle cinematic flares that enhance the moody editorial quality.', 'Set Model to None for pure silhouette and shadow art compositions.'] };
         }
-        if (cat === 'set' || cat === 'sets' || id.includes('collection') || id.includes('-set') || id.includes('suite')) {
+        if (cat === 'set') {
             return { angle: ['flat-lay','overhead','from-behind'], lighting: ['studio','editorial','soft-box'], camera: ['hasselblad-85','phase-one-iq4','canon-135-l'],
-                tips: [`${name} showcases coordinated jewelry suites — arrange pieces with intentional spacing.`, 'Flat Lay Top-Down gives the clearest overview of the full set composition.', 'Use Hasselblad 85mm to maintain equal focal clarity across all pieces simultaneously.'] };
+                tips: [`${name} showcases a coordinated jewelry suite — arrange pieces with intentional spacing.`, 'Flat Lay Top-Down gives the clearest overview of the full set composition.', 'Use Hasselblad 85mm to maintain equal focal clarity across all pieces simultaneously.'] };
         }
-        if (cat === 'watch' || cat === 'watches' || id.includes('watch') || id.includes('horology') || id.includes('timepiece')) {
+        if (cat === 'watch') {
             return { angle: ['45-degree','macro','extreme-macro'], lighting: ['studio','editorial','directional'], camera: ['macro-100','phase-one-iq4','hasselblad-85'],
                 tips: [`${name} demands precision — focus on the dial, indices, and movement with razor sharpness.`, 'Macro 100mm reveals guilloche patterns, applied indices, and sapphire crystal reflections.', 'Directional or Studio lighting creates the classic horological product photography look.'] };
         }
@@ -374,7 +423,7 @@ const PromptStudioBeta = {
             lighting: ['studio', 'editorial'],
             camera: ['hasselblad-85', 'macro-100'],
             tips: [
-                'Calibrated for optimal jewelry clarity and cinematic lighting balance.',
+                `${name} — calibrated for optimal jewelry clarity and cinematic lighting balance.`,
                 'Use 85mm or 100mm Macro lens for premium shallow depth of field.',
                 'Adjust Color Palette and Surface to match the creative vision.',
             ]
