@@ -1,4 +1,4 @@
-/**
+﻿/**
  * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v4.
  *
  * Changes in v4:
@@ -225,6 +225,240 @@ const PromptStudioBeta = {
             { id: 'celestial',     label: '✦ Celestial' },
             { id: 'sculptural',    label: '🗿 Sculptural' },
             { id: 'nature-inspired',label: '🍃 Nature-Inspired' },
+        ];
+    },
+
+    // ── Complete Modifier Data Sources (Synced with Master PromptStudio) ────
+    _getAngles() {
+        if (window.PromptStudio && typeof window.PromptStudio.angles !== 'undefined' && Array.isArray(window.PromptStudio.angles) && window.PromptStudio.angles.length > 0) {
+            return window.PromptStudio.angles;
+        }
+        return [
+            // Classic & Portrait
+            { id: 'eye-level', label: 'Eye Level', group: 'Classic & Portrait' },
+            { id: '45-degree', label: '45° Three-Quarter', group: 'Classic & Portrait' },
+            { id: 'side-profile', label: 'Side Profile', group: 'Classic & Portrait' },
+            { id: 'glance-down', label: 'Glance Down', group: 'Classic & Portrait' },
+            { id: 'overhead', label: "Overhead / Bird's Eye", group: 'Classic & Portrait' },
+            { id: 'low-angle', label: 'Low Angle (Hero)', group: 'Classic & Portrait' },
+            { id: 'dutch', label: 'Dutch Angle', group: 'Classic & Portrait' },
+            { id: 'over-shoulder', label: 'Over the Shoulder', group: 'Classic & Portrait' },
+            { id: 'from-behind', label: 'From Behind (Nape)', group: 'Classic & Portrait' },
+            // Macro & Product
+            { id: 'macro', label: 'Macro Close-Up', group: 'Macro & Product' },
+            { id: 'extreme-macro', label: 'Extreme Macro (Gem Facets)', group: 'Macro & Product' },
+            { id: 'flat-lay', label: 'Flat Lay (Top-Down)', group: 'Macro & Product' },
+            { id: 'knuckle-level', label: 'Knuckle Level (Table-Height)', group: 'Macro & Product' },
+            // Cinematic & Trending
+            { id: 'worms-eye', label: "Worm's Eye (Looking Up)", group: 'Cinematic & Atmospheric' },
+            { id: 'silhouette', label: 'Silhouette (Backlit)', group: 'Cinematic & Atmospheric' },
+            { id: 'golden-hour', label: 'Golden Hour (Rim Light)', group: 'Cinematic & Atmospheric' },
+            { id: 'through-glass', label: 'Through Glass / Crystal', group: 'Cinematic & Atmospheric' },
+            { id: 'candid', label: 'Candid / Stolen Moment', group: 'Cinematic & Atmospheric' },
+            { id: 'tilt-shift', label: 'Tilt-Shift (Selective Plane)', group: 'Cinematic & Atmospheric' },
+            // Editorial & High Fashion
+            { id: 'top-down-hand', label: 'Top-Down Hand (Aerial Wrist)', group: 'Editorial & High Fashion' },
+            { id: 'chin-up', label: 'Chin Up (Looking Down Lens)', group: 'Editorial & High Fashion' },
+            { id: 'foreground-blur', label: 'Foreground Blur (Bokeh Frame)', group: 'Editorial & High Fashion' },
+            { id: 'wind-blown', label: 'Wind-Blown (Field Motion)', group: 'Editorial & High Fashion' },
+            { id: 'extreme-close-crop', label: 'Extreme Close Crop (Eyes Fill Frame)', group: 'Editorial & High Fashion' },
+            { id: 'fabric-reveal', label: 'Fabric Reveal (Veil Pull)', group: 'Editorial & High Fashion' },
+            { id: 'three-quarter-above', label: 'Three-Quarter Above (Diagonal Down)', group: 'Editorial & High Fashion' },
+            // Artistic & Tactile Close-ups
+            { id: 'mouth-bite', label: 'Mouth Bite (Lips & Jewelry)', group: 'Artistic & Tactile' },
+            { id: 'neck-close-up', label: 'Neck Close-Up (Collarbone)', group: 'Artistic & Tactile' },
+            { id: 'hand-on-face', label: 'Hand on Face (Touch Frame)', group: 'Artistic & Tactile' },
+            { id: 'wrist-cross', label: 'Crossed Wrists (Stacked)', group: 'Artistic & Tactile' },
+            { id: 'mirror-angle', label: 'Mirror Reflection Angle', group: 'Artistic & Tactile' },
+            { id: 'upward-gaze', label: 'Upward Gaze (Sculptural Neck)', group: 'Artistic & Tactile' },
+            // Environmental & Dynamic
+            { id: 'frozen-in-crowd', label: 'Frozen in Crowd (Motion Blur)', group: 'Environmental & Dynamic' },
+            { id: 'vehicle-frame', label: 'Vehicle Frame (Window/Door)', group: 'Environmental & Dynamic' },
+            { id: 'profile-accessory', label: 'Profile + Accessory Stack', group: 'Environmental & Dynamic' },
+            { id: 'macro-with-creature', label: 'Macro with Micro-Fauna', group: 'Environmental & Dynamic' },
+            { id: 'through-windshield', label: 'Through Windshield (Car Interior)', group: 'Environmental & Dynamic' },
+            { id: 'hands-toward-camera', label: 'Hands Toward Camera (Reaching)', group: 'Environmental & Dynamic' },
+            { id: 'face-flora-frame', label: 'Face Flora Frame (Botanical Mask)', group: 'Environmental & Dynamic' },
+            { id: 'watch-on-eye', label: 'Watch on Eye (Product Viewfinder)', group: 'Environmental & Dynamic' },
+            { id: 'full-body-power', label: 'Full Body Power Stance', group: 'Environmental & Dynamic' },
+            { id: 'hood-peek', label: 'Hood Peek (Fabric Slit)', group: 'Environmental & Dynamic' },
+            // POV & Reflected
+            { id: 'pov-ring-reach', label: 'POV Ring Reach (Toward Viewer)', group: 'POV & Power' },
+            { id: 'grip-close-up', label: 'Grip Close-Up (Object in Hand)', group: 'POV & Power' },
+            { id: 'playing-card-mirror', label: 'Playing Card Mirror (Symmetry)', group: 'POV & Power' },
+            // Watch Exclusive
+            { id: 'watch-wrist-roll', label: 'Wrist Roll (Dynamic Movement)', group: 'Watch Exclusive' },
+            { id: 'watch-dial-macro', label: 'Dial & Complication Macro', group: 'Watch Exclusive' },
+            { id: 'watch-crown-detail', label: 'Crown & Case Profile', group: 'Watch Exclusive' },
+            { id: 'watch-steering-wheel', label: 'On Steering Wheel (POV Drive)', group: 'Watch Exclusive' },
+        ];
+    },
+
+    _getLightingMoods() {
+        if (window.PromptStudio && Array.isArray(window.PromptStudio.lightingMoods) && window.PromptStudio.lightingMoods.length > 0) {
+            return window.PromptStudio.lightingMoods;
+        }
+        return [
+            // Natural
+            { id: 'natural', label: 'Natural Daylight (Window)', category: 'natural' },
+            { id: 'golden-hour', label: 'Golden Hour Sunlight', category: 'natural' },
+            { id: 'dappled', label: 'Dappled Sunlight (Flora)', category: 'natural' },
+            { id: 'harsh-sun', label: 'Harsh Sun High-Noon', category: 'natural' },
+            { id: 'overcast', label: 'Soft Overcast Diffused', category: 'natural' },
+            { id: 'window-light', label: 'Window Light (Side Fill)', category: 'natural' },
+            { id: 'blue-hour', label: 'Blue Hour (Twilight)', category: 'natural' },
+            { id: 'candlelight', label: 'Candlelight Warm Ambient', category: 'natural' },
+            // Studio
+            { id: 'editorial', label: 'Editorial & Sharp Studio', category: 'studio' },
+            { id: 'studio', label: 'Clean High-Key Studio', category: 'studio' },
+            { id: 'soft', label: 'Soft & Romantic Softbox', category: 'studio' },
+            { id: 'warm', label: 'Warm & Inviting Studio', category: 'studio' },
+            { id: 'cool', label: 'Cool & Modern Platinum', category: 'studio' },
+            { id: 'backlit', label: 'Backlit / Rim Light', category: 'studio' },
+            { id: 'split-light', label: 'Split Lighting (50/50)', category: 'studio' },
+            { id: 'hard-flash', label: 'Hard Flash / Paparazzi', category: 'studio' },
+            { id: 'solid-color-backdrop', label: 'Solid Color Backdrop (Power)', category: 'studio' },
+            { id: 'crimson-studio', label: 'Crimson Studio (Red Backdrop)', category: 'studio' },
+            // Cinematic & Dramatic
+            { id: 'dramatic', label: 'Dramatic Shadows', category: 'cinematic' },
+            { id: 'chiaroscuro', label: 'Chiaroscuro (Rembrandt)', category: 'cinematic' },
+            { id: 'surreal', label: 'Surreal & Dreamy', category: 'cinematic' },
+            { id: 'mystical', label: 'Mystical & Dark', category: 'cinematic' },
+            { id: 'candid', label: 'Candid & Lifestyle', category: 'cinematic' },
+            { id: 'avant-garde', label: 'Avant-Garde Fashion', category: 'cinematic' },
+            { id: 'neon-glow', label: 'Neon Glow Color Gel', category: 'cinematic' },
+            { id: 'neon-tube-glow', label: 'Neon Tube Glow (Club/Bar)', category: 'cinematic' },
+            { id: 'neon-bar-warm', label: 'Neon Bar Warm (Amber Tubes)', category: 'cinematic' },
+            // Atmospheric
+            { id: 'shimmer-particle', label: 'Shimmer Particles (Skin Glow)', category: 'atmospheric' },
+            { id: 'transit-streak', label: 'Transit Streak (Motion Light)', category: 'atmospheric' },
+            { id: 'rain-diffused', label: 'Rain Diffused (Wet Atmosphere)', category: 'atmospheric' },
+            { id: 'color-gel-backlit', label: 'Color Gel Backlit (Vivid Rim)', category: 'atmospheric' },
+            { id: 'bronzed-beauty', label: 'Bronzed Beauty (Skin Glow)', category: 'atmospheric' },
+            // Reflective & Horology
+            { id: 'chrome-bounce', label: 'Chrome Bounce (Reflective Metal)', category: 'special' },
+            { id: 'chrome-wrap', label: 'Chrome Wrap Light (360° Reflection)', category: 'special' },
+            { id: 'submerged-diffused', label: 'Submerged Diffused (Underwater)', category: 'special' },
+            { id: 'leather-highlight', label: 'Leather Highlight (Specular)', category: 'special' },
+            { id: 'sapphire-crystal-bounce', label: 'Sapphire Crystal Bounce (Anti-Glare)', category: 'special' },
+            { id: 'lume-glow-dark', label: 'Luminescent Glow (Low Light)', category: 'special' },
+            { id: 'metallic-case-contrast', label: 'Metallic Case Contrast (Steel/Gold)', category: 'special' },
+        ];
+    },
+
+    _getCameraProfiles() {
+        if (window.PromptStudio && Array.isArray(window.PromptStudio.cameraProfiles) && window.PromptStudio.cameraProfiles.length > 0) {
+            return window.PromptStudio.cameraProfiles;
+        }
+        return [
+            { id: 'auto', label: 'Auto (Angle Driven)', desc: 'Camera choice driven by optimal archetype angle' },
+            { id: 'hasselblad-85', label: '✦ Hasselblad 85mm Medium Format', desc: 'Exceptional tonal gradation, film-like depth, creamy skin tones' },
+            { id: 'leica-50', label: 'Leica 50mm Summilux', desc: 'Classic reportage rendering, natural unforced perspective' },
+            { id: 'sony-35-gm', label: 'Sony 35mm f/1.4 GM', desc: 'Slightly wider environment inclusion, modern sharp rendering' },
+            { id: 'canon-135-l', label: 'Canon 135mm f/2L', desc: 'Telephoto compression, buttery bokeh, subject pop' },
+            { id: 'macro-100', label: '100mm f/2.8 Macro', desc: 'Razor-thin depth of field, individual stone settings and metal grain' },
+            { id: 'macro-180', label: '180mm f/3.5 Super Macro', desc: '2:1 extreme magnification, hallmark stamps, micro gem facets' },
+            { id: 'anamorphic-40', label: 'Anamorphic 40mm', desc: 'Horizontal blue flares, cinematic oval bokeh, widescreen feel' },
+            { id: 'phase-one-iq4', label: 'Phase One IQ4 150MP', desc: 'Extraordinary color depth and resolution, luxury catalog perfection' },
+        ];
+    },
+
+    _getSurfaces() {
+        if (window.PromptStudio && Array.isArray(window.PromptStudio.surfaces) && window.PromptStudio.surfaces.length > 0) {
+            return window.PromptStudio.surfaces;
+        }
+        return [
+            { id: 'none', label: 'Default (Archetype Setting)' },
+            { id: 'marble', label: 'Polished Carrara Marble' },
+            { id: 'velvet', label: 'Midnight Crushed Velvet' },
+            { id: 'sand', label: 'Fine Sahara Sand' },
+            { id: 'concrete', label: 'Raw Architectural Concrete' },
+            { id: 'water', label: 'Water Surface & Caustic Reflections' },
+            { id: 'silk', label: 'Draped Pure Mulberry Silk' },
+            { id: 'skin', label: 'Bare Warm Skin Canvas' },
+            { id: 'stone-wall', label: 'Weathered Natural Stone Wall' },
+            { id: 'wood', label: 'Raw Untreated Wood Grain' },
+            { id: 'terracotta', label: 'Traditional Terracotta / Zellige' },
+            { id: 'mirrored-glass', label: 'Sharp Mirrored Glass' },
+            { id: 'satin', label: 'Smooth Lustrous Satin Fabric' },
+        ];
+    },
+
+    _getPalettes() {
+        if (window.PromptStudio && Array.isArray(window.PromptStudio.palettes) && window.PromptStudio.palettes.length > 0) {
+            return window.PromptStudio.palettes;
+        }
+        return [
+            { id: 'auto', label: 'Auto / Scene Matched' },
+            { id: 'ai-choice', label: 'AI Chooses ✦ (Campaign Grading)' },
+            { id: 'neutral', label: 'Neutral Beige & Warm Cream' },
+            { id: 'warm-earth', label: 'Warm Earth (Amber & Terracotta)' },
+            { id: 'cool-steel', label: 'Cool Steel & Platinum Blue' },
+            { id: 'monochrome', label: 'Monochrome Black & Silver' },
+            { id: 'jewel-tones', label: 'Rich Royal Jewel Tones' },
+            { id: 'deep-ocean', label: 'Deep Ocean Navy & Emerald' },
+            { id: 'blush-rose', label: 'Soft Blush & Dusty Rose' },
+            { id: 'noir', label: 'Cinematic High-Contrast Film Noir' },
+        ];
+    },
+
+    _getStylings() {
+        if (window.PromptStudio && Array.isArray(window.PromptStudio.stylings) && window.PromptStudio.stylings.length > 0) {
+            return window.PromptStudio.stylings;
+        }
+        return [
+            { id: 'auto', label: 'Auto / Scene Matched' },
+            { id: 'ai-choice', label: 'AI Chooses ✦ (Editorial Campaign)' },
+            { id: 'minimal', label: 'Minimal / Nude Skin Canvas' },
+            { id: 'black-dress', label: 'Elegant Black Dress / Tuxedo' },
+            { id: 'silk-cami', label: 'Fitted Silk Camisole / Silk Shirt' },
+            { id: 'blazer', label: 'Tailored Power Suit / Wool Blazer' },
+            { id: 'caftan', label: 'Traditional Moroccan Caftan' },
+            { id: 'white-shirt', label: 'Crisp White Button-Down Shirt' },
+            { id: 'evening-gown', label: 'Floor-Length Red Carpet Gown' },
+            { id: 'streetwear', label: 'Elevated Luxury Streetwear' },
+        ];
+    },
+
+    _getHijabStyles() {
+        return [
+            { id: 'classic', label: 'Classic Draped' },
+            { id: 'draped', label: 'Draped Silk' },
+            { id: 'turban', label: 'Fashion Turban' },
+            { id: 'niqab', label: 'Niqab ✦' },
+            { id: 'modern', label: 'Modern Minimal' },
+            { id: 'sheer-veil', label: 'Sheer Veil' },
+        ];
+    },
+
+    _getBrandTouches() {
+        return [
+            { id: 'logomark', label: '⭐ Four-Pointed Star Brooch (Lapel Pin)' },
+            { id: 'wordmark', label: 'ELARIS Wordmark Embroidered on Garment' },
+            { id: 'logo-embedded', label: '🖼️ Logo Embedded (Luxury Campaign Composited)' },
+        ];
+    },
+
+    _getEthnicities() {
+        return [
+            { id: 'diverse', label: 'Diverse / Global Appeal (Randomized)' },
+            { id: 'fair', label: 'Light / Fair Ivory Skin' },
+            { id: 'olive', label: 'Mediterranean Olive Skin' },
+            { id: 'warm', label: 'Warm / Sun-Kissed Golden Tan' },
+            { id: 'caramel', label: 'Caramel Bronze Complexion' },
+            { id: 'deep', label: 'Deep / Rich Espresso Brown' },
+        ];
+    },
+
+    _getFacialExpressions() {
+        return [
+            { id: 'none', label: 'Neutral / Editorial Poised' },
+            { id: 'serene', label: 'Serene & Peaceful' },
+            { id: 'smile', label: 'Subtle Confident Smile' },
+            { id: 'joy', label: 'Radiant Joy / Soft Laugh' },
+            { id: 'intense', label: 'Intense & Piercing Editorial Gaze' },
+            { id: 'sultry', label: 'Sultry & Dramatic' },
+            { id: 'thoughtful', label: 'Thoughtful & Contemplative' },
         ];
     },
 
@@ -649,6 +883,25 @@ const PromptStudioBeta = {
         }
     },
 
+    // ── Human-Readable Modifier Label Resolvers ────────────────
+    _getLabelForAngle(id) {
+        if (!id) return '45° Three-Quarter';
+        const found = this._getAngles().find(a => a.id === id);
+        return found ? found.label : id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    },
+
+    _getLabelForLighting(id) {
+        if (!id) return 'Studio Lighting';
+        const found = this._getLightingMoods().find(m => m.id === id);
+        return found ? found.label : id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    },
+
+    _getLabelForCamera(id) {
+        if (!id || id === 'auto') return 'Auto Lens (Angle Driven)';
+        const found = this._getCameraProfiles().find(c => c.id === id);
+        return found ? found.label.replace(/^✦\s*/, '') : id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    },
+
     // ── Partial: Update Smart Guide panel only (no re-render) ────
     _updateSmartGuide() {
         const guidePanel = this.container.querySelector('.psb-right-col');
@@ -669,9 +922,9 @@ const PromptStudioBeta = {
 
         const stats = guidePanel.querySelectorAll('.psb-guide-stat-value');
         if (stats[0]) stats[0].textContent = `${activeScore}%`;
-        if (stats[1]) stats[1].textContent = (guideData.angle   && guideData.angle[0])   ? guideData.angle[0].replace(/-/g,' ').toUpperCase()   : '45° THREE-QUARTER';
-        if (stats[2]) stats[2].textContent = (guideData.lighting && guideData.lighting[0]) ? guideData.lighting[0].replace(/-/g,' ').toUpperCase() : 'STUDIO EDITORIAL';
-        if (stats[3]) stats[3].textContent = (guideData.camera  && guideData.camera[0])  ? guideData.camera[0].replace(/-/g,' ').toUpperCase()  : 'HASSELBLAD 85MM';
+        if (stats[1]) stats[1].textContent = this._getLabelForAngle(guideData.angle && guideData.angle[0]);
+        if (stats[2]) stats[2].textContent = this._getLabelForLighting(guideData.lighting && guideData.lighting[0]);
+        if (stats[3]) stats[3].textContent = this._getLabelForCamera(guideData.camera && guideData.camera[0]);
 
         const tipsList = guidePanel.querySelector('.psb-guide-tips-list');
         if (tipsList) {
@@ -714,15 +967,25 @@ const PromptStudioBeta = {
     _render() {
         if (!this.container) return;
 
-        const categories  = this._getCategories();
-        const materials   = this._getMaterials();
-        const stones      = this._getStones();
-        const jewelryStyles = this._getJewelryStyles();
-        const top10       = this._getTop10Archetypes();
-        const activeArch  = this._getArchetypes().find(a => a.id === this.state.archetypeId) || top10[0].arch;
-        const guideData   = this._getGuideData(activeArch.id);
-        const activeScore = this._calculateArchetypeScore(activeArch);
-        const isSet       = this.state.category === 'jewelry-set';
+        const categories        = this._getCategories();
+        const materials         = this._getMaterials();
+        const stones            = this._getStones();
+        const jewelryStyles     = this._getJewelryStyles();
+        const angles            = this._getAngles();
+        const lightingMoods     = this._getLightingMoods();
+        const cameraProfiles    = this._getCameraProfiles();
+        const surfaces          = this._getSurfaces();
+        const palettes          = this._getPalettes();
+        const stylings          = this._getStylings();
+        const hijabStyles       = this._getHijabStyles();
+        const brandTouches      = this._getBrandTouches();
+        const ethnicities       = this._getEthnicities();
+        const facialExpressions = this._getFacialExpressions();
+        const top10             = this._getTop10Archetypes();
+        const activeArch        = this._getArchetypes().find(a => a.id === this.state.archetypeId) || top10[0].arch;
+        const guideData         = this._getGuideData(activeArch.id);
+        const activeScore       = this._calculateArchetypeScore(activeArch);
+        const isSet             = this.state.category === 'jewelry-set';
 
         this.container.innerHTML = `
             <div class="psb-root">
@@ -907,25 +1170,18 @@ const PromptStudioBeta = {
                                         <div class="psb-form-group">
                                             <label class="psb-label">Complexion &amp; Skin Tone</label>
                                             <select class="psb-select" id="psb-ethnicity-select">
-                                                <option value="diverse"  ${this.state.modelEthnicity === 'diverse'  ? 'selected' : ''}>Diverse / Global Appeal</option>
-                                                <option value="fair"     ${this.state.modelEthnicity === 'fair'     ? 'selected' : ''}>Fair Ivory Complexion</option>
-                                                <option value="olive"    ${this.state.modelEthnicity === 'olive'    ? 'selected' : ''}>Mediterranean Olive Skin</option>
-                                                <option value="golden"   ${this.state.modelEthnicity === 'golden'   ? 'selected' : ''}>Warm Golden Tone</option>
-                                                <option value="caramel"  ${this.state.modelEthnicity === 'caramel'  ? 'selected' : ''}>Caramel Bronze Skin</option>
-                                                <option value="deep"     ${this.state.modelEthnicity === 'deep'     ? 'selected' : ''}>Deep Rich Espresso</option>
+                                                ${ethnicities.map(e => `
+                                                    <option value="${e.id}" ${this.state.modelEthnicity === e.id ? 'selected' : ''}>${e.label}</option>
+                                                `).join('')}
                                             </select>
                                         </div>
 
                                         <div class="psb-form-group">
                                             <label class="psb-label">Facial Expression</label>
                                             <select class="psb-select" id="psb-expr-select">
-                                                <option value="none"        ${this.state.facialExpression === 'none'        ? 'selected' : ''}>Natural / Neutral Editorial</option>
-                                                <option value="serene"      ${this.state.facialExpression === 'serene'      ? 'selected' : ''}>Serene &amp; Peaceful</option>
-                                                <option value="smile"       ${this.state.facialExpression === 'smile'       ? 'selected' : ''}>Subtle Confident Smile</option>
-                                                <option value="joy"         ${this.state.facialExpression === 'joy'         ? 'selected' : ''}>Radiant Joy</option>
-                                                <option value="intense"     ${this.state.facialExpression === 'intense'     ? 'selected' : ''}>Intense &amp; Piercing Gaze</option>
-                                                <option value="sultry"      ${this.state.facialExpression === 'sultry'      ? 'selected' : ''}>Sultry &amp; Dramatic</option>
-                                                <option value="thoughtful"  ${this.state.facialExpression === 'thoughtful'  ? 'selected' : ''}>Thoughtful &amp; Contemplative</option>
+                                                ${facialExpressions.map(ex => `
+                                                    <option value="${ex.id}" ${this.state.facialExpression === ex.id ? 'selected' : ''}>${ex.label}</option>
+                                                `).join('')}
                                             </select>
                                         </div>
 
@@ -945,9 +1201,9 @@ const PromptStudioBeta = {
                                             <div class="psb-form-group">
                                                 <label class="psb-label">Hijab Wrap Style</label>
                                                 <div class="psb-chips">
-                                                    ${['classic', 'draped', 'turban', 'modern', 'hood'].map(st => `
-                                                        <button type="button" class="psb-chip psb-hijabstyle-chip ${this.state.hijabStyle === st ? 'active' : ''}" data-style="${st}">
-                                                            ${st.charAt(0).toUpperCase() + st.slice(1)}
+                                                    ${hijabStyles.map(st => `
+                                                        <button type="button" class="psb-chip psb-hijabstyle-chip ${this.state.hijabStyle === st.id ? 'active' : ''}" data-style="${st.id}">
+                                                            ${st.label}
                                                         </button>
                                                     `).join('')}
                                                 </div>
@@ -970,43 +1226,29 @@ const PromptStudioBeta = {
                                         </div>
                                         <select class="psb-select" id="psb-lighting-select">
                                             <optgroup label="🌤 Natural Light" data-lf="natural" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'natural' ? 'style="display:none"' : ''}>
-                                                <option value="natural"           ${this.state.lightingMood === 'natural'           ? 'selected' : ''}>Natural Daylight (Window)</option>
-                                                <option value="golden-hour-light" ${this.state.lightingMood === 'golden-hour-light' ? 'selected' : ''}>Golden Hour Sunlight</option>
-                                                <option value="dappled"           ${this.state.lightingMood === 'dappled'           ? 'selected' : ''}>Dappled Sunlight through Flora</option>
-                                                <option value="harsh-sun"         ${this.state.lightingMood === 'harsh-sun'         ? 'selected' : ''}>Harsh High-Noon Sun</option>
-                                                <option value="overcast"          ${this.state.lightingMood === 'overcast'          ? 'selected' : ''}>Soft Overcast Cloud Diffusion</option>
+                                                ${lightingMoods.filter(m => m.category === 'natural').map(m => `
+                                                    <option value="${m.id}" ${this.state.lightingMood === m.id ? 'selected' : ''}>${m.label}</option>
+                                                `).join('')}
                                             </optgroup>
                                             <optgroup label="🎥 Studio Lighting" data-lf="studio" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'studio' ? 'style="display:none"' : ''}>
-                                                <option value="editorial"         ${this.state.lightingMood === 'editorial'         ? 'selected' : ''}>Editorial Commercial Studio</option>
-                                                <option value="studio"            ${this.state.lightingMood === 'studio'            ? 'selected' : ''}>Clean High-Key Studio</option>
-                                                <option value="soft-box"          ${this.state.lightingMood === 'soft-box'          ? 'selected' : ''}>Diffused Softbox Studio</option>
-                                                <option value="ring-light"        ${this.state.lightingMood === 'ring-light'        ? 'selected' : ''}>Ring Light (Symmetrical Catchlights)</option>
-                                                <option value="rim-light"         ${this.state.lightingMood === 'rim-light'         ? 'selected' : ''}>Rim Light / Edge Separation</option>
-                                                <option value="split-light"       ${this.state.lightingMood === 'split-light'       ? 'selected' : ''}>Split Lighting (Half-Shadow)</option>
-                                                <option value="directional"       ${this.state.lightingMood === 'directional'       ? 'selected' : ''}>Directional Hard Light</option>
-                                                <option value="strobe-flash"      ${this.state.lightingMood === 'strobe-flash'      ? 'selected' : ''}>Strobe High-Speed Flash</option>
-                                                <option value="butterfly-beauty"  ${this.state.lightingMood === 'butterfly-beauty'  ? 'selected' : ''}>Butterfly / Clamshell Beauty Light</option>
+                                                ${lightingMoods.filter(m => m.category === 'studio').map(m => `
+                                                    <option value="${m.id}" ${this.state.lightingMood === m.id ? 'selected' : ''}>${m.label}</option>
+                                                `).join('')}
                                             </optgroup>
                                             <optgroup label="🌑 Cinematic &amp; Dramatic" data-lf="cinematic" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'cinematic' ? 'style="display:none"' : ''}>
-                                                <option value="dramatic"     ${this.state.lightingMood === 'dramatic'     ? 'selected' : ''}>Dramatic Chiaroscuro</option>
-                                                <option value="chiaroscuro"  ${this.state.lightingMood === 'chiaroscuro'  ? 'selected' : ''}>Deep Renaissance Shadow</option>
-                                                <option value="moody-film"   ${this.state.lightingMood === 'moody-film'   ? 'selected' : ''}>Moody 35mm Film Light</option>
-                                                <option value="candlelight"  ${this.state.lightingMood === 'candlelight'  ? 'selected' : ''}>Warm Candlelight Glow</option>
-                                                <option value="backlit"      ${this.state.lightingMood === 'backlit'      ? 'selected' : ''}>Backlit Silhouette Halo</option>
-                                                <option value="neon-glow"    ${this.state.lightingMood === 'neon-glow'    ? 'selected' : ''}>Neon Color Gel Wash</option>
-                                                <option value="rembrandt"    ${this.state.lightingMood === 'rembrandt'    ? 'selected' : ''}>Rembrandt Portrait Triangle</option>
+                                                ${lightingMoods.filter(m => m.category === 'cinematic').map(m => `
+                                                    <option value="${m.id}" ${this.state.lightingMood === m.id ? 'selected' : ''}>${m.label}</option>
+                                                `).join('')}
                                             </optgroup>
                                             <optgroup label="🌫 Atmospheric" data-lf="atmospheric" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'atmospheric' ? 'style="display:none"' : ''}>
-                                                <option value="blue-hour"  ${this.state.lightingMood === 'blue-hour'  ? 'selected' : ''}>Blue Hour Twilight</option>
-                                                <option value="fog-mist"   ${this.state.lightingMood === 'fog-mist'   ? 'selected' : ''}>Fog &amp; Mist Diffusion</option>
-                                                <option value="rain-wet"   ${this.state.lightingMood === 'rain-wet'   ? 'selected' : ''}>Rain-Wet Street Reflections</option>
-                                                <option value="moonlight"  ${this.state.lightingMood === 'moonlight'  ? 'selected' : ''}>Starlight Moonlight Glow</option>
-                                                <option value="ember-fire" ${this.state.lightingMood === 'ember-fire' ? 'selected' : ''}>Firelight Ember Warmth</option>
+                                                ${lightingMoods.filter(m => m.category === 'atmospheric').map(m => `
+                                                    <option value="${m.id}" ${this.state.lightingMood === m.id ? 'selected' : ''}>${m.label}</option>
+                                                `).join('')}
                                             </optgroup>
-                                            <optgroup label="✨ Special Effects" data-lf="special" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'special' ? 'style="display:none"' : ''}>
-                                                <option value="uv-blacklight" ${this.state.lightingMood === 'uv-blacklight' ? 'selected' : ''}>UV Blacklight Neon</option>
-                                                <option value="prism-rainbow" ${this.state.lightingMood === 'prism-rainbow' ? 'selected' : ''}>Prism Rainbow Refraction</option>
-                                                <option value="laser-art"     ${this.state.lightingMood === 'laser-art'     ? 'selected' : ''}>Laser Projection Art</option>
+                                            <optgroup label="✨ Special &amp; Reflective" data-lf="special" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'special' ? 'style="display:none"' : ''}>
+                                                ${lightingMoods.filter(m => m.category === 'special').map(m => `
+                                                    <option value="${m.id}" ${this.state.lightingMood === m.id ? 'selected' : ''}>${m.label}</option>
+                                                `).join('')}
                                             </optgroup>
                                         </select>
                                     </div>
@@ -1014,47 +1256,26 @@ const PromptStudioBeta = {
                                     <div class="psb-form-group">
                                         <label class="psb-label">Camera Lens Profile</label>
                                         <select class="psb-select" id="psb-camera-select">
-                                            <option value="auto"          ${this.state.cameraProfile === 'auto'          ? 'selected' : ''}>❆ Auto AI Choice (Calibrated to Archetype)</option>
-                                            <option value="hasselblad-85" ${this.state.cameraProfile === 'hasselblad-85' ? 'selected' : ''}>Hasselblad 85mm Medium Format</option>
-                                            <option value="macro-100"     ${this.state.cameraProfile === 'macro-100'     ? 'selected' : ''}>100mm f/2.8 Macro (Extreme Gem Detail)</option>
-                                            <option value="macro-180"     ${this.state.cameraProfile === 'macro-180'     ? 'selected' : ''}>180mm f/3.5 Super Macro (1:1 Scale)</option>
-                                            <option value="canon-135-l"   ${this.state.cameraProfile === 'canon-135-l'   ? 'selected' : ''}>Canon 135mm f/2L (Telephoto Compression)</option>
-                                            <option value="leica-50"      ${this.state.cameraProfile === 'leica-50'      ? 'selected' : ''}>Leica 50mm f/1.4 Summilux (Documentary)</option>
-                                            <option value="sony-35-gm"    ${this.state.cameraProfile === 'sony-35-gm'    ? 'selected' : ''}>Sony 35mm f/1.4 GM (Environmental)</option>
-                                            <option value="anamorphic-40" ${this.state.cameraProfile === 'anamorphic-40' ? 'selected' : ''}>Anamorphic 40mm (Cinematic Flares)</option>
-                                            <option value="phase-one-iq4" ${this.state.cameraProfile === 'phase-one-iq4' ? 'selected' : ''}>Phase One IQ4 150MP (Micro Detail)</option>
+                                            ${cameraProfiles.map(c => `
+                                                <option value="${c.id}" ${this.state.cameraProfile === c.id ? 'selected' : ''}>${c.label}</option>
+                                            `).join('')}
                                         </select>
                                     </div>
 
                                     <div class="psb-form-group">
                                         <label class="psb-label">Camera Shot Angle</label>
                                         <select class="psb-select" id="psb-angle-select">
-                                            <optgroup label="👤 Portrait &amp; Editorial">
-                                                <option value="45-degree"     ${this.state.angle === '45-degree'     ? 'selected' : ''}>45° Three-Quarter View</option>
-                                                <option value="eye-level"     ${this.state.angle === 'eye-level'     ? 'selected' : ''}>Direct Eye Level Portrait</option>
-                                                <option value="chin-up"       ${this.state.angle === 'chin-up'       ? 'selected' : ''}>Chin-Up High Fashion</option>
-                                                <option value="from-behind"   ${this.state.angle === 'from-behind'   ? 'selected' : ''}>From Behind (Nape &amp; Neck)</option>
-                                                <option value="over-shoulder" ${this.state.angle === 'over-shoulder' ? 'selected' : ''}>Over the Shoulder Glance</option>
-                                                <option value="candid"        ${this.state.angle === 'candid'        ? 'selected' : ''}>Candid Documentary</option>
-                                                <option value="wind-blown"    ${this.state.angle === 'wind-blown'    ? 'selected' : ''}>Wind-Blown Dynamic Motion</option>
-                                            </optgroup>
-                                            <optgroup label="🔬 Macro &amp; Detail">
-                                                <option value="macro"          ${this.state.angle === 'macro'          ? 'selected' : ''}>Macro Close-Up Crop</option>
-                                                <option value="extreme-macro"  ${this.state.angle === 'extreme-macro'  ? 'selected' : ''}>Extreme Facet Micro-Macro</option>
-                                                <option value="knuckle-level"  ${this.state.angle === 'knuckle-level'  ? 'selected' : ''}>Knuckle Level Surface Glance</option>
-                                                <option value="wrist-level"    ${this.state.angle === 'wrist-level'    ? 'selected' : ''}>Wrist Level Intimate View</option>
-                                                <option value="tabletop-below" ${this.state.angle === 'tabletop-below' ? 'selected' : ''}>Tabletop Below-Glass Upward</option>
-                                            </optgroup>
-                                            <optgroup label="📐 Product &amp; Flat">
-                                                <option value="flat-lay"       ${this.state.angle === 'flat-lay'       ? 'selected' : ''}>Flat Lay (Top-Down 90°)</option>
-                                                <option value="overhead"       ${this.state.angle === 'overhead'       ? 'selected' : ''}>Overhead Bird's Eye</option>
-                                                <option value="low-angle"      ${this.state.angle === 'low-angle'      ? 'selected' : ''}>Low Angle Heroic View</option>
-                                                <option value="side-profile"   ${this.state.angle === 'side-profile'   ? 'selected' : ''}>Side Profile Silhouette</option>
-                                                <option value="dutch-tilt"     ${this.state.angle === 'dutch-tilt'     ? 'selected' : ''}>Dutch Tilt Diagonal</option>
-                                                <option value="behind-glass"   ${this.state.angle === 'behind-glass'   ? 'selected' : ''}>Behind-Glass Refraction</option>
-                                                <option value="tilt-shift"     ${this.state.angle === 'tilt-shift'     ? 'selected' : ''}>Tilt-Shift Miniature Effect</option>
-                                                <option value="orthographic"   ${this.state.angle === 'orthographic'   ? 'selected' : ''}>Orthographic Overhead (True Top)</option>
-                                            </optgroup>
+                                            ${['Classic & Portrait', 'Macro & Product', 'Cinematic & Atmospheric', 'Editorial & High Fashion', 'Artistic & Tactile', 'Environmental & Dynamic', 'POV & Power', 'Watch Exclusive'].map(groupName => {
+                                                const groupAngles = angles.filter(a => (a.group || 'Classic & Portrait') === groupName);
+                                                if (!groupAngles.length) return '';
+                                                return `
+                                                    <optgroup label="${groupName}">
+                                                        ${groupAngles.map(a => `
+                                                            <option value="${a.id}" ${this.state.angle === a.id ? 'selected' : ''}>${a.label}</option>
+                                                        `).join('')}
+                                                    </optgroup>
+                                                `;
+                                            }).join('')}
                                         </select>
                                     </div>
                                 </div>
@@ -1077,51 +1298,27 @@ const PromptStudioBeta = {
                                     <div class="psb-form-group">
                                         <label class="psb-label">Wardrobe &amp; Outfit</label>
                                         <select class="psb-select" id="psb-styling-select">
-                                            <option value="none"                ${this.state.styling === 'none'                ? 'selected' : ''}>No Outfit Specifics (Minimal)</option>
-                                            <option value="black-turtleneck"    ${this.state.styling === 'black-turtleneck'    ? 'selected' : ''}>Sleek Black Turtleneck</option>
-                                            <option value="white-silk"          ${this.state.styling === 'white-silk'          ? 'selected' : ''}>White Silk Button-Down</option>
-                                            <option value="slip-dress"          ${this.state.styling === 'slip-dress'          ? 'selected' : ''}>Silk Satin Slip Dress</option>
-                                            <option value="tailored-blazer"     ${this.state.styling === 'tailored-blazer'     ? 'selected' : ''}>Oversized Tailored Wool Blazer</option>
-                                            <option value="traditional-caftan"  ${this.state.styling === 'traditional-caftan'  ? 'selected' : ''}>Traditional Hand-Embroidered Caftan</option>
-                                            <option value="berber-djellaba"     ${this.state.styling === 'berber-djellaba'     ? 'selected' : ''}>Artisanal Berber Djellaba</option>
-                                            <option value="velvet-evening"      ${this.state.styling === 'velvet-evening'      ? 'selected' : ''}>Deep Velvet Evening Gown</option>
-                                            <option value="linen-resort"        ${this.state.styling === 'linen-resort'        ? 'selected' : ''}>Relaxed Resort Linen</option>
-                                            <option value="structured-suit"     ${this.state.styling === 'structured-suit'     ? 'selected' : ''}>Structured Power Suit</option>
-                                            <option value="off-shoulder"        ${this.state.styling === 'off-shoulder'        ? 'selected' : ''}>Off-Shoulder Lace Top</option>
-                                            <option value="streetwear"          ${this.state.styling === 'streetwear'          ? 'selected' : ''}>Luxury Streetwear</option>
+                                            ${stylings.map(st => `
+                                                <option value="${st.id}" ${this.state.styling === st.id ? 'selected' : ''}>${st.label}</option>
+                                            `).join('')}
                                         </select>
                                     </div>
 
                                     <div class="psb-form-group">
                                         <label class="psb-label">Color Palette Harmony</label>
                                         <select class="psb-select" id="psb-palette-select">
-                                            <option value="auto"        ${this.state.palette === 'auto'        ? 'selected' : ''}>✦ Auto Color Grading</option>
-                                            <option value="neutral"     ${this.state.palette === 'neutral'     ? 'selected' : ''}>Neutral Beige &amp; Warm Cream</option>
-                                            <option value="warm-earth"  ${this.state.palette === 'warm-earth'  ? 'selected' : ''}>Warm Terracotta &amp; Ochre Earth</option>
-                                            <option value="cool-steel"  ${this.state.palette === 'cool-steel'  ? 'selected' : ''}>Cool Steel &amp; Platinum Blue</option>
-                                            <option value="monochrome"  ${this.state.palette === 'monochrome'  ? 'selected' : ''}>Monochrome Black &amp; Silver</option>
-                                            <option value="jewel-tones" ${this.state.palette === 'jewel-tones' ? 'selected' : ''}>Rich Royal Jewel Tones</option>
-                                            <option value="deep-ocean"  ${this.state.palette === 'deep-ocean'  ? 'selected' : ''}>Deep Ocean Navy &amp; Emerald</option>
-                                            <option value="blush-rose"  ${this.state.palette === 'blush-rose'  ? 'selected' : ''}>Blush Rose &amp; Soft Champagne</option>
-                                            <option value="noir"        ${this.state.palette === 'noir'        ? 'selected' : ''}>Cinematic High-Contrast Noir</option>
+                                            ${palettes.map(pal => `
+                                                <option value="${pal.id}" ${this.state.palette === pal.id ? 'selected' : ''}>${pal.label}</option>
+                                            `).join('')}
                                         </select>
                                     </div>
 
                                     <div class="psb-form-group">
                                         <label class="psb-label">Surface &amp; Backdrop Material</label>
                                         <select class="psb-select" id="psb-surface-select">
-                                            <option value="none"                ${this.state.surface === 'none'                ? 'selected' : ''}>✦ Seamless Studio Void</option>
-                                            <option value="carrara-marble"      ${this.state.surface === 'carrara-marble'      ? 'selected' : ''}>Polished Carrara Marble</option>
-                                            <option value="raw-concrete"        ${this.state.surface === 'raw-concrete'        ? 'selected' : ''}>Raw Architectural Concrete</option>
-                                            <option value="terracotta-zellige"  ${this.state.surface === 'terracotta-zellige'  ? 'selected' : ''}>Handcrafted Terracotta Zellige</option>
-                                            <option value="crushed-velvet"      ${this.state.surface === 'crushed-velvet'      ? 'selected' : ''}>Deep Midnight Crushed Velvet</option>
-                                            <option value="dune-sand"           ${this.state.surface === 'dune-sand'           ? 'selected' : ''}>Fine Sahara Dune Sand</option>
-                                            <option value="water-ripple"        ${this.state.surface === 'water-ripple'        ? 'selected' : ''}>Liquid Glass &amp; Water Ripple</option>
-                                            <option value="pure-silk"           ${this.state.surface === 'pure-silk'           ? 'selected' : ''}>Draped Pure Mulberry Silk</option>
-                                            <option value="dark-walnut"         ${this.state.surface === 'dark-walnut'         ? 'selected' : ''}>Solid Dark Walnut Wood</option>
-                                            <option value="mirrored-glass"      ${this.state.surface === 'mirrored-glass'      ? 'selected' : ''}>Infinitely Mirrored Glass</option>
-                                            <option value="organic-stone"       ${this.state.surface === 'organic-stone'       ? 'selected' : ''}>Rough Natural Stone</option>
-                                            <option value="aged-parchment"      ${this.state.surface === 'aged-parchment'      ? 'selected' : ''}>Aged Parchment Paper</option>
+                                            ${surfaces.map(s => `
+                                                <option value="${s.id}" ${this.state.surface === s.id ? 'selected' : ''}>${s.label}</option>
+                                            `).join('')}
                                         </select>
                                     </div>
                                 </div>
@@ -1155,11 +1352,9 @@ const PromptStudioBeta = {
                                         <div class="psb-form-group">
                                             <label class="psb-label">Brand Touch Type</label>
                                             <select class="psb-select" id="psb-brandtouch-select">
-                                                <option value="star-pin"      ${this.state.brandTouch === 'star-pin'      ? 'selected' : ''}>Enamel Lapel Star Pin</option>
-                                                <option value="wordmark"      ${this.state.brandTouch === 'wordmark'      ? 'selected' : ''}>Embroidered Luxury Wordmark Label</option>
-                                                <option value="campaign-logo" ${this.state.brandTouch === 'campaign-logo' ? 'selected' : ''}>Dior/Chanel Style Embossed Campaign Logo</option>
-                                                <option value="packaging"     ${this.state.brandTouch === 'packaging'     ? 'selected' : ''}>Silk Packaging Ribbon with Gold Foil</option>
-                                                <option value="embossed-seal" ${this.state.brandTouch === 'embossed-seal' ? 'selected' : ''}>Embossed Wax Seal on Box Lid</option>
+                                                ${brandTouches.map(b => `
+                                                    <option value="${b.id}" ${this.state.brandTouch === b.id ? 'selected' : ''}>${b.label}</option>
+                                                `).join('')}
                                             </select>
                                         </div>
                                     ` : ''}
@@ -1230,16 +1425,19 @@ const PromptStudioBeta = {
                             </div>
                             <div class="psb-guide-stat">
                                 <span class="psb-guide-stat-label">Optimal Shot Angle</span>
-                                <span class="psb-guide-stat-value">${(guideData.angle && guideData.angle[0]) ? guideData.angle[0].replace(/-/g,' ').toUpperCase() : '45° THREE-QUARTER'}</span>
+                                <span class="psb-guide-stat-value">${this._getLabelForAngle(guideData.angle && guideData.angle[0])}</span>
                             </div>
                             <div class="psb-guide-stat">
                                 <span class="psb-guide-stat-label">Recommended Lighting</span>
-                                <span class="psb-guide-stat-value">${(guideData.lighting && guideData.lighting[0]) ? guideData.lighting[0].replace(/-/g,' ').toUpperCase() : 'STUDIO EDITORIAL'}</span>
+                                <span class="psb-guide-stat-value">${this._getLabelForLighting(guideData.lighting && guideData.lighting[0])}</span>
                             </div>
                             <div class="psb-guide-stat">
                                 <span class="psb-guide-stat-label">Optimal Lens Profile</span>
-                                <span class="psb-guide-stat-value">${(guideData.camera && guideData.camera[0]) ? guideData.camera[0].replace(/-/g,' ').toUpperCase() : 'HASSELBLAD 85MM'}</span>
+                                <span class="psb-guide-stat-value">${this._getLabelForCamera(guideData.camera && guideData.camera[0])}</span>
                             </div>
+                            <button type="button" class="psb-guide-apply-btn" id="psb-apply-guide-btn" title="Auto-select recommended Angle, Lighting, and Camera Lens Profile">
+                                ⚡ Apply Recommended Setup
+                            </button>
                         </div>
 
                         <div class="psb-guide-divider"></div>
@@ -1671,6 +1869,50 @@ const PromptStudioBeta = {
                     this.state.variationCount++;
                     this._updateCountUI();
                 }
+            });
+        }
+
+        // Smart Guide: 1-Tap Apply Recommended Setup
+        const applyGuideBtn = q('#psb-apply-guide-btn');
+        if (applyGuideBtn) {
+            applyGuideBtn.addEventListener('click', () => {
+                const archetypes = this._getArchetypes();
+                const activeArch = archetypes.find(a => a.id === this.state.archetypeId) || archetypes[0];
+                const guideData = this._getGuideData(activeArch.id);
+                
+                const recAngle = guideData.angle && guideData.angle[0];
+                const recLighting = guideData.lighting && guideData.lighting[0];
+                const recCamera = guideData.camera && guideData.camera[0];
+
+                if (recAngle) {
+                    this.state.angle = recAngle;
+                    const angleEl = this.container.querySelector('#psb-angle-select');
+                    if (angleEl) angleEl.value = recAngle;
+                }
+                if (recLighting) {
+                    this.state.lightingMood = recLighting;
+                    const lightEl = this.container.querySelector('#psb-lighting-select');
+                    if (lightEl) lightEl.value = recLighting;
+                }
+                if (recCamera) {
+                    this.state.cameraProfile = recCamera;
+                    const camEl = this.container.querySelector('#psb-camera-select');
+                    if (camEl) camEl.value = recCamera;
+                }
+
+                // Ensure expert drawer is open on the camera tab so the user sees the applied selection
+                if (!this.state.expertOpen) {
+                    this.state.expertOpen = true;
+                    this.state.activeModTab = 'camera';
+                    const drawer = this.container.querySelector('#psb-expert-drawer');
+                    const toggleBtn = this.container.querySelector('#psb-expert-toggle');
+                    if (drawer) drawer.classList.add('open');
+                    if (toggleBtn) toggleBtn.classList.add('active');
+                    this.container.querySelectorAll('.psb-mod-tab').forEach(t => t.classList.toggle('active', t.dataset.modtab === 'camera'));
+                    this.container.querySelectorAll('.psb-mod-content').forEach(c => c.classList.toggle('active', c.id === 'psb-modtab-camera'));
+                }
+
+                this._showToast(`⚡ Applied setup: ${this._getLabelForAngle(recAngle)} + ${this._getLabelForLighting(recLighting)}`);
             });
         }
 

@@ -2242,7 +2242,7 @@ const PromptStudio = {
             </div>`;
         }
 
-        const guideDB = {
+        const guideDB = PromptStudio.guideDB = {
             'body-intimate': { angle:['macro','extreme-macro','eye-level'], lighting:['soft-box','natural','ring-light'], camera:['macro-100','macro-180','hasselblad-85'], tips:['Use Macro or Extreme Macro angles for the most impactful jewelry close-ups.','Pair with 100mm f/2.8 Macro or 180mm Macro lens for extraordinary gem detail.','Keep styling minimal — skin is the canvas here.'] },
             'object-pairing': { angle:['flat-lay','overhead','45-degree'], lighting:['natural','soft-box','studio'], camera:['leica-50','sony-35-gm','hasselblad-85'], tips:['Flat Lay (Top-Down) is the signature angle — keeps the composition graphic.','Leica 50mm Summilux gives a natural unforced perspective that feels documentary.','Pair objects with complementary textures — botanical, stone, fabric.'] },
             'editorial-model': { angle:['eye-level','45-degree','chin-up','low-angle'], lighting:['studio','dramatic','soft-box'], camera:['hasselblad-85','canon-135-l','leica-50'], tips:['The 45° angle or Chin Up give the strongest editorial energy.','Hasselblad 85mm creates that medium-format luxury look that fashion magazines use.','Dramatic or Studio lighting gives the sharpest editorial contrast.'] },
@@ -4652,5 +4652,17 @@ const PromptStudio = {
 };
 
 window.PromptStudio = PromptStudio;
+
+// Pre-initialize guideDB immediately so all studios (including Studio Beta) have access to all 70+ archetype guides
+try {
+    if (!PromptStudio.guideDB && typeof PromptStudio._buildSmartGuide === 'function') {
+        const _saved = PromptStudio.state.selectedArchetypes;
+        PromptStudio.state.selectedArchetypes = ['body-intimate'];
+        PromptStudio._buildSmartGuide();
+        PromptStudio.state.selectedArchetypes = _saved;
+    }
+} catch (e) {
+    console.warn('[PromptStudio] guideDB pre-init:', e);
+}
 
 window.render_promptstudio = function(container) { PromptStudio.init(container); };
