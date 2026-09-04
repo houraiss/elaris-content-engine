@@ -6,7 +6,7 @@
  * This ensures the app works fully offline after the first visit.
  */
 
-const CACHE_NAME = 'elaris-v36';
+const CACHE_NAME = 'elaris-v37';
 
 // App shell — everything needed for the app to work offline
 const APP_SHELL = [
@@ -100,3 +100,4 @@ self.addEventListener('fetch', event => {
             .catch(() => caches.match(event.request))
     );
 });
+

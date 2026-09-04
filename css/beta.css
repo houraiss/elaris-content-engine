@@ -1154,6 +1154,49 @@
   font-style: italic;
 }
 
+/* ── Smart Guide Section Label ───────────────────────────────────── */
+.psb-guide-section-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #a78bfa;
+  margin: 10px 0 6px;
+  opacity: 0.85;
+}
+[data-theme="light"] .psb-guide-section-label { color: #7c3aed; }
+
+/* ── Smart Guide Best-For Tag ────────────────────────────────────── */
+.psb-guide-bestfor {
+  font-size: 10.5px;
+  color: #fbbf24;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 5px;
+  padding: 3px 0;
+}
+[data-theme="light"] .psb-guide-bestfor { color: #b45309; }
+
+/* ── Smart Guide V3 Badge ─────────────────────────────────────────── */
+.psb-guide-v3-badge {
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #a78bfa;
+  background: rgba(167,139,250,0.15);
+  border: 1px solid rgba(167,139,250,0.3);
+  padding: 1px 6px;
+  border-radius: 20px;
+  line-height: 1.6;
+}
+
+/* ── Smart Guide Apply Button (full-width block below stats) ──────── */
+.psb-guide-apply-btn {
+  width: 100%;
+  margin-top: 10px;
+  display: block;
+}
+
 /* ── Smart Guide Tips & Styling ─────────────────────────────────── */
 .psb-guide-tips-title {
   font-size: 10px;

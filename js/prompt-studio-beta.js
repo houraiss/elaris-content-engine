@@ -1,4 +1,4 @@
-﻿/**
+/**
  * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v4.
  *
  * Changes in v4:
@@ -118,6 +118,20 @@ const PromptStudioBeta = {
         'shadow-play', 'heritage-moroccan', 'bw-dramatic', 'celestial-mythic',
         'dark-moody-editorial', 'cinematic-color-story', 'ghost-double-exposure',
         'desert-mirage', 'neon-cyberpunk', 'vintage-nostalgia',
+    ]),
+
+    // ── V3.0 Archetype IDs (mirrors master prompt-studio.js V3_ARCHETYPES set) ────
+    _V3_IDS: new Set([
+        'raw-field-editorial', 'veiled-mystery', 'avant-garde-couture', 'cinematic-color-story',
+        'surreal-scale', 'ghost-double-exposure', 'outdoor-masculine', 'harsh-sun-beauty',
+        'product-page-clean', 'textured-prop', 'mouth-lips-editorial', 'dark-moody-editorial',
+        'frozen-subject', 'micro-surreal', 'vehicle-lifestyle',
+        'weather-drama', 'prop-power-play', 'skin-canvas', 'reaching-gesture',
+        'power-stance', 'stacked-maximalist', 'sculptural-headpiece',
+        'equestrian-luxury', 'pop-color-portrait', 'urban-glass-power',
+        'artisan-at-work', 'bridal-trousseau', 'souk-editorial', 'heirloom-generational',
+        'futuristic-chrome', 'submerged-beauty', 'surreal-material-fusion',
+        'luxury-leather-editorial', 'monochrome-jewelry-ad',
     ]),
 
     _inferCategory(arch) {
@@ -295,9 +309,8 @@ const PromptStudioBeta = {
     },
 
     _getLightingMoods() {
-        if (window.PromptStudio && Array.isArray(window.PromptStudio.lightingMoods) && window.PromptStudio.lightingMoods.length > 0) {
-            return window.PromptStudio.lightingMoods;
-        }
+        // Always use local categorized list — master lightingMoods lacks .category field
+        // which is required for the lighting filter chip UI to work correctly.
         return [
             // Natural
             { id: 'natural', label: 'Natural Daylight (Window)', category: 'natural' },
@@ -347,19 +360,23 @@ const PromptStudioBeta = {
     },
 
     _getCameraProfiles() {
-        if (window.PromptStudio && Array.isArray(window.PromptStudio.cameraProfiles) && window.PromptStudio.cameraProfiles.length > 0) {
-            return window.PromptStudio.cameraProfiles;
-        }
+        // Extended lens library — always use local list for consistent labeling
         return [
-            { id: 'auto', label: 'Auto (Angle Driven)', desc: 'Camera choice driven by optimal archetype angle' },
-            { id: 'hasselblad-85', label: '✦ Hasselblad 85mm Medium Format', desc: 'Exceptional tonal gradation, film-like depth, creamy skin tones' },
-            { id: 'leica-50', label: 'Leica 50mm Summilux', desc: 'Classic reportage rendering, natural unforced perspective' },
-            { id: 'sony-35-gm', label: 'Sony 35mm f/1.4 GM', desc: 'Slightly wider environment inclusion, modern sharp rendering' },
-            { id: 'canon-135-l', label: 'Canon 135mm f/2L', desc: 'Telephoto compression, buttery bokeh, subject pop' },
-            { id: 'macro-100', label: '100mm f/2.8 Macro', desc: 'Razor-thin depth of field, individual stone settings and metal grain' },
-            { id: 'macro-180', label: '180mm f/3.5 Super Macro', desc: '2:1 extreme magnification, hallmark stamps, micro gem facets' },
-            { id: 'anamorphic-40', label: 'Anamorphic 40mm', desc: 'Horizontal blue flares, cinematic oval bokeh, widescreen feel' },
-            { id: 'phase-one-iq4', label: 'Phase One IQ4 150MP', desc: 'Extraordinary color depth and resolution, luxury catalog perfection' },
+            { id: 'auto',            label: 'Auto (Angle Driven)',            desc: 'Camera choice driven by optimal archetype angle' },
+            { id: 'hasselblad-85',   label: '✦ Hasselblad 85mm Medium Format', desc: 'Exceptional tonal gradation, film-like depth, creamy skin tones' },
+            { id: 'leica-50',        label: 'Leica 50mm Summilux f/1.4',      desc: 'Classic reportage rendering, natural unforced perspective, timeless' },
+            { id: 'sony-35-gm',      label: 'Sony 35mm f/1.4 G-Master',       desc: 'Slightly wider environment inclusion, modern sharp rendering' },
+            { id: 'canon-135-l',     label: 'Canon 135mm f/2L',               desc: 'Telephoto compression, buttery bokeh, subject pop' },
+            { id: 'macro-100',       label: '100mm f/2.8 Macro',              desc: 'Razor-thin depth of field, individual stone settings and metal grain' },
+            { id: 'macro-180',       label: '180mm f/3.5 Super Macro',        desc: '2:1 extreme magnification, hallmark stamps, micro gem facets' },
+            { id: 'anamorphic-40',   label: 'Anamorphic 40mm',                desc: 'Horizontal blue flares, cinematic oval bokeh, widescreen feel' },
+            { id: 'phase-one-iq4',   label: 'Phase One IQ4 150MP',            desc: 'Extraordinary color depth and resolution, luxury catalog perfection' },
+            { id: 'nikon-z9-85',     label: 'Nikon Z9 85mm f/1.8 S',          desc: 'Ultra-fast mirrorless AF, clinical sharpness, exceptional skin rendering' },
+            { id: 'fuji-gfx-110',    label: 'Fujifilm GFX 100S 110mm',        desc: '102MP medium format, film-like analog color science, vast dynamic range' },
+            { id: 'zeiss-otus-55',   label: 'Zeiss Otus 55mm APO',            desc: 'Apochromatic zero chromatic aberration, scientific gem facet precision' },
+            { id: 'tilt-shift-90',   label: 'Tilt-Shift 90mm TS-E',           desc: 'Selective focus plane, miniature editorial effect, rising front movements' },
+            { id: 'sigma-85-art',    label: 'Sigma 85mm f/1.4 Art',           desc: 'Ultra-wide f/1.4 aperture, silky bokeh balls, portrait compression' },
+            { id: 'voigtlander-75',  label: 'Voigtländer 75mm f/1.5',         desc: 'Vintage optical character, warm bokeh, classic analog rendering' },
         ];
     },
 
@@ -665,6 +682,30 @@ const PromptStudioBeta = {
     },
 
     // ── Build Prompt Logic ──────────────────────────────────────
+    // ── Aspect Ratio ↔ Format ID mapping (master _buildPrompt uses format ID) ────
+    _AR_TO_FORMAT: { '1:1':'square','4:5':'portrait','9:16':'story','16:9':'landscape','2:3':'pinterest','3:4':'portrait-3-4','21:9':'landscape' },
+
+    // ── DOF recommendation based on guide data ─────────────────────────────────
+    _getGuideDOF(guideData) {
+        const cam = (guideData.camera && guideData.camera[0]) || '';
+        if (cam.includes('macro')) return 'Razor-Thin (f/2.8–f/5.6)';
+        if (cam === 'hasselblad-85' || cam === 'canon-135-l' || cam === 'sigma-85-art') return 'Shallow (f/1.4–f/2.8)';
+        if (cam === 'phase-one-iq4' || cam === 'fuji-gfx-110') return 'Medium (f/4–f/8)';
+        if (cam === 'anamorphic-40' || cam === 'sony-35-gm') return 'Environmental (f/2–f/4)';
+        return 'Moderate (f/2.8–f/5.6)';
+    },
+
+    // ── ISO recommendation based on archetype category ─────────────────────────
+    _getGuideISO(arch) {
+        const cat = this._inferCategory(arch);
+        if (cat === 'product') return 'ISO 50–100 (Tripod)';
+        if (cat === 'organic') return 'ISO 100–400';
+        if (cat === 'watch')   return 'ISO 50–200 (Tripod)';
+        if (cat === 'mood')    return 'ISO 400–1600';
+        if (cat === 'human')   return 'ISO 100–800';
+        return 'ISO 100–400';
+    },
+
     _buildSinglePrompt(arch) {
         // Prefer master compiler from global PromptStudio
         if (window.PromptStudio && typeof window.PromptStudio._buildPrompt === 'function') {
@@ -678,7 +719,9 @@ const PromptStudioBeta = {
                     ps.lightingMood        = this.state.lightingMood;
                     ps.cameraProfile       = this.state.cameraProfile;
                     ps.angle               = this.state.angle;
-                    ps.format              = this.state.format;
+                    // Fix: master _buildPrompt reads state.format (e.g. 'square') not state.aspectRatio ('1:1')
+                    // Convert the beta's aspectRatio chip value back to the format ID the master expects
+                    ps.format              = this._AR_TO_FORMAT[this.state.aspectRatio] || this.state.format || 'square';
                     ps.aspectRatio         = this.state.aspectRatio;
                     ps.surface             = this.state.surface;
                     ps.palette             = this.state.palette;
@@ -910,21 +953,36 @@ const PromptStudioBeta = {
         const activeArch  = archetypes.find(a => a.id === this.state.archetypeId) || archetypes[0];
         const guideData   = this._getGuideData(activeArch.id);
         const activeScore = this._calculateArchetypeScore(activeArch);
+        const scoreColor  = activeScore >= 85 ? '#34d399' : activeScore >= 70 ? '#fbbf24' : '#f87171';
 
-        const iconEl  = guidePanel.querySelector('.psb-guide-icon');
-        const titleEl = guidePanel.querySelector('.psb-guide-title');
-        const subEl   = guidePanel.querySelector('.psb-guide-sub');
-        const bodyEl  = guidePanel.querySelector('.psb-guide-body');
-        if (iconEl)  iconEl.textContent  = activeArch.icon || '💎';
-        if (titleEl) titleEl.textContent = activeArch.name;
-        if (subEl)   subEl.textContent   = activeArch.tagline || activeArch.category || '';
-        if (bodyEl)  bodyEl.textContent  = activeArch.desc || 'Optimized archetype for cinematic realism.';
+        const iconEl     = guidePanel.querySelector('.psb-guide-icon');
+        const titleEl    = guidePanel.querySelector('.psb-guide-title');
+        const subEl      = guidePanel.querySelector('.psb-guide-sub');
+        const bodyEl     = guidePanel.querySelector('.psb-guide-body');
+        const bestforEl  = guidePanel.querySelector('.psb-guide-bestfor');
+        if (iconEl)    iconEl.textContent   = activeArch.icon || '💎';
+        if (titleEl)   titleEl.textContent  = activeArch.name;
+        if (subEl)     subEl.textContent    = activeArch.tagline || '';
+        if (bodyEl)    bodyEl.textContent   = activeArch.desc || 'Optimized archetype for cinematic realism.';
+        if (bestforEl) bestforEl.textContent = activeArch.bestFor || '';
 
+        // V3 badge
+        const v3badge = guidePanel.querySelector('.psb-guide-v3-badge');
+        if (v3badge) v3badge.style.display = this._V3_IDS.has(activeArch.id) ? '' : 'none';
+
+        // All stat values — ordered as rendered in template
         const stats = guidePanel.querySelectorAll('.psb-guide-stat-value');
-        if (stats[0]) stats[0].textContent = `${activeScore}%`;
-        if (stats[1]) stats[1].textContent = this._getLabelForAngle(guideData.angle && guideData.angle[0]);
-        if (stats[2]) stats[2].textContent = this._getLabelForLighting(guideData.lighting && guideData.lighting[0]);
-        if (stats[3]) stats[3].textContent = this._getLabelForCamera(guideData.camera && guideData.camera[0]);
+        if (stats[0]) { stats[0].textContent = `${activeScore}%`;  stats[0].style.color = scoreColor; }
+        if (stats[1]) { stats[1].textContent = this._inferCategory(activeArch).replace(/\b\w/g, l => l.toUpperCase()); }
+        if (stats[2]) { stats[2].textContent = activeScore >= 85 ? 'Excellent ✦' : activeScore >= 70 ? 'Good' : 'Low'; stats[2].style.color = scoreColor; }
+        if (stats[3]) stats[3].textContent = this._getLabelForAngle(guideData.angle && guideData.angle[0]);
+        if (stats[4]) stats[4].textContent = guideData.angle && guideData.angle[1] ? this._getLabelForAngle(guideData.angle[1]) : '—';
+        if (stats[5]) stats[5].textContent = this._getLabelForLighting(guideData.lighting && guideData.lighting[0]);
+        if (stats[6]) stats[6].textContent = guideData.lighting && guideData.lighting[1] ? this._getLabelForLighting(guideData.lighting[1]) : '—';
+        if (stats[7]) stats[7].textContent = this._getLabelForCamera(guideData.camera && guideData.camera[0]);
+        if (stats[8]) stats[8].textContent = guideData.camera && guideData.camera[1] ? this._getLabelForCamera(guideData.camera[1]) : '—';
+        if (stats[9]) stats[9].textContent = this._getGuideDOF(guideData);
+        if (stats[10]) stats[10].textContent = this._getGuideISO(activeArch);
 
         const tipsList = guidePanel.querySelector('.psb-guide-tips-list');
         if (tipsList) {
@@ -1254,11 +1312,18 @@ const PromptStudioBeta = {
                                     </div>
 
                                     <div class="psb-form-group">
-                                        <label class="psb-label">Camera Lens Profile</label>
+                                        <label class="psb-label">Camera Lens Profile <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">⭐ = recommended for active archetype</span></label>
                                         <select class="psb-select" id="psb-camera-select">
-                                            ${cameraProfiles.map(c => `
-                                                <option value="${c.id}" ${this.state.cameraProfile === c.id ? 'selected' : ''}>${c.label}</option>
-                                            `).join('')}
+                                            ${(() => {
+                                                const recCam = (guideData.camera || [])[0];
+                                                const altCam = (guideData.camera || [])[1];
+                                                return cameraProfiles.map(c => {
+                                                    const isBest = c.id === recCam;
+                                                    const isAlt  = c.id === altCam;
+                                                    const prefix = isBest ? '⭐ ' : isAlt ? '✦ ' : '';
+                                                    return `<option value="${c.id}" ${this.state.cameraProfile === c.id ? 'selected' : ''}>${prefix}${c.label}</option>`;
+                                                }).join('');
+                                            })()}
                                         </select>
                                     </div>
 
@@ -1406,42 +1471,86 @@ const PromptStudioBeta = {
 
                         <div class="psb-section-title">🧭 Smart Guide Live</div>
 
+                        <!-- Archetype Header -->
                         <div class="psb-guide-top">
                             <div class="psb-guide-icon">${activeArch.icon || '💎'}</div>
-                            <div>
-                                <div class="psb-guide-title">${activeArch.name}</div>
-                                <div class="psb-guide-sub">${activeArch.tagline || activeArch.category || ''}</div>
+                            <div style="flex:1;min-width:0;">
+                                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                    <div class="psb-guide-title">${activeArch.name}</div>
+                                    ${this._V3_IDS.has(activeArch.id) ? '<span class="psb-guide-v3-badge">V3.0</span>' : ''}
+                                </div>
+                                <div class="psb-guide-sub">${activeArch.tagline || ''}</div>
                             </div>
                         </div>
 
+                        ${activeArch.bestFor ? `<div class="psb-guide-bestfor">${activeArch.bestFor}</div>` : ''}
                         <div class="psb-guide-body">${activeArch.desc || 'Optimized archetype for cinematic realism.'}</div>
 
                         <div class="psb-guide-divider"></div>
 
+                        <!-- Scene Intelligence -->
+                        <div class="psb-guide-section-label">◈ Scene Intelligence</div>
                         <div class="psb-guide-stat-row">
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Compatibility Match</span>
-                                <span class="psb-guide-stat-value" style="color:#fbbf24;">${activeScore}%</span>
+                                <span class="psb-guide-stat-label">Compatibility</span>
+                                <span class="psb-guide-stat-value" style="color:${activeScore >= 85 ? '#34d399' : activeScore >= 70 ? '#fbbf24' : '#f87171'}">${activeScore}%</span>
                             </div>
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Optimal Shot Angle</span>
-                                <span class="psb-guide-stat-value">${this._getLabelForAngle(guideData.angle && guideData.angle[0])}</span>
+                                <span class="psb-guide-stat-label">Category</span>
+                                <span class="psb-guide-stat-value">${this._inferCategory(activeArch).replace(/\b\w/g, l => l.toUpperCase())}</span>
                             </div>
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Recommended Lighting</span>
-                                <span class="psb-guide-stat-value">${this._getLabelForLighting(guideData.lighting && guideData.lighting[0])}</span>
+                                <span class="psb-guide-stat-label">Piece Synergy</span>
+                                <span class="psb-guide-stat-value" style="color:${activeScore >= 85 ? '#34d399' : activeScore >= 70 ? '#fbbf24' : '#f87171'}">${activeScore >= 85 ? 'Excellent ✦' : activeScore >= 70 ? 'Good' : 'Low'}</span>
                             </div>
-                            <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Optimal Lens Profile</span>
-                                <span class="psb-guide-stat-value">${this._getLabelForCamera(guideData.camera && guideData.camera[0])}</span>
-                            </div>
-                            <button type="button" class="psb-guide-apply-btn" id="psb-apply-guide-btn" title="Auto-select recommended Angle, Lighting, and Camera Lens Profile">
-                                ⚡ Apply Recommended Setup
-                            </button>
                         </div>
 
                         <div class="psb-guide-divider"></div>
 
+                        <!-- Optimal Setup -->
+                        <div class="psb-guide-section-label">◈ Optimal Setup</div>
+                        <div class="psb-guide-stat-row">
+                            <div class="psb-guide-stat">
+                                <span class="psb-guide-stat-label">Shot Angle #1</span>
+                                <span class="psb-guide-stat-value">${this._getLabelForAngle(guideData.angle && guideData.angle[0])}</span>
+                            </div>
+                            <div class="psb-guide-stat">
+                                <span class="psb-guide-stat-label">Shot Angle #2</span>
+                                <span class="psb-guide-stat-value">${guideData.angle && guideData.angle[1] ? this._getLabelForAngle(guideData.angle[1]) : '—'}</span>
+                            </div>
+                            <div class="psb-guide-stat">
+                                <span class="psb-guide-stat-label">Lighting #1</span>
+                                <span class="psb-guide-stat-value">${this._getLabelForLighting(guideData.lighting && guideData.lighting[0])}</span>
+                            </div>
+                            <div class="psb-guide-stat">
+                                <span class="psb-guide-stat-label">Lighting #2</span>
+                                <span class="psb-guide-stat-value">${guideData.lighting && guideData.lighting[1] ? this._getLabelForLighting(guideData.lighting[1]) : '—'}</span>
+                            </div>
+                            <div class="psb-guide-stat">
+                                <span class="psb-guide-stat-label">⭐ Lens Profile</span>
+                                <span class="psb-guide-stat-value">${this._getLabelForCamera(guideData.camera && guideData.camera[0])}</span>
+                            </div>
+                            <div class="psb-guide-stat">
+                                <span class="psb-guide-stat-label">Alt Lens</span>
+                                <span class="psb-guide-stat-value">${guideData.camera && guideData.camera[1] ? this._getLabelForCamera(guideData.camera[1]) : '—'}</span>
+                            </div>
+                            <div class="psb-guide-stat">
+                                <span class="psb-guide-stat-label">Depth of Field</span>
+                                <span class="psb-guide-stat-value">${this._getGuideDOF(guideData)}</span>
+                            </div>
+                            <div class="psb-guide-stat">
+                                <span class="psb-guide-stat-label">ISO Range</span>
+                                <span class="psb-guide-stat-value">${this._getGuideISO(activeArch)}</span>
+                            </div>
+                        </div>
+
+                        <button type="button" class="psb-guide-apply-btn" id="psb-apply-guide-btn" title="Auto-select recommended Angle, Lighting, and Camera Lens Profile">
+                            ⚡ Apply Recommended Setup
+                        </button>
+
+                        <div class="psb-guide-divider" style="margin-top:14px;"></div>
+
+                        <!-- Director Tips -->
                         <div class="psb-guide-tips-title">✦ Director Photography Tips</div>
                         <ul class="psb-guide-tips-list">
                             ${(guideData.tips || [
@@ -1561,16 +1670,18 @@ const PromptStudioBeta = {
                                             : ''));
                                 return `
                                     <div class="psb-modal-card ${isActive ? 'active' : ''}" data-id="${arch.id}">
-                                        <div style="font-size:26px;line-height:1;flex-shrink:0;">${arch.icon || '💎'}</div>
+                                        <div style="font-size:26px;line-height:1;flex-shrink:0;padding-top:2px;">${arch.icon || '💎'}</div>
                                         <div style="flex:1;min-width:0;">
-                                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;gap:6px;">
+                                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;gap:6px;">
                                                 <div style="font-size:12.5px;font-weight:700;color:var(--psb-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${arch.name}</div>
                                                 <div style="display:flex;gap:4px;align-items:center;flex-shrink:0;">
                                                     ${catBadge}
                                                     <span style="font-size:9.5px;font-weight:800;color:${scoreColor};background:${score >= 85 ? 'rgba(52,211,153,0.15)' : score >= 75 ? 'rgba(245,166,35,0.15)' : 'rgba(148,163,184,0.15)'};padding:2px 6px;border-radius:10px;">${score}%</span>
                                                 </div>
                                             </div>
-                                            <div style="font-size:10.5px;color:var(--psb-text-3);font-style:italic;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${arch.tagline || arch.desc || ''}</div>
+                                            <div style="font-size:10.5px;color:var(--psb-text-2);font-style:italic;line-height:1.3;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${arch.tagline || ''}</div>
+                                            ${arch.bestFor ? `<div style="font-size:9.5px;color:#fbbf24;font-weight:600;letter-spacing:0.01em;line-height:1.3;margin-bottom:3px;">${arch.bestFor}</div>` : ''}
+                                            <div style="font-size:10px;color:var(--psb-text-3);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${arch.desc || ''}</div>
                                         </div>
                                     </div>
                                 `;
@@ -1683,10 +1794,12 @@ const PromptStudioBeta = {
             });
         });
 
-        // Aspect ratio chips
+        // Aspect ratio chips — sync both state.aspectRatio AND state.format
+        // (master _buildPrompt reads state.format, not state.aspectRatio directly)
         this.container.querySelectorAll('.psb-aspect-chip').forEach(chip => {
             chip.addEventListener('click', () => {
                 this.state.aspectRatio = chip.dataset.ar;
+                this.state.format = this._AR_TO_FORMAT[chip.dataset.ar] || 'square';
                 this.container.querySelectorAll('.psb-aspect-chip').forEach(c => c.classList.remove('active'));
                 chip.classList.add('active');
             });
@@ -2113,16 +2226,18 @@ const PromptStudioBeta = {
                         : ''));
             return `
                 <div class="psb-modal-card ${isActive ? 'active' : ''}" data-id="${arch.id}">
-                    <div style="font-size:26px;line-height:1;flex-shrink:0;">${arch.icon || '💎'}</div>
+                    <div style="font-size:26px;line-height:1;flex-shrink:0;padding-top:2px;">${arch.icon || '💎'}</div>
                     <div style="flex:1;min-width:0;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;gap:6px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;gap:6px;">
                             <div style="font-size:12.5px;font-weight:700;color:var(--psb-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${arch.name}</div>
                             <div style="display:flex;gap:4px;align-items:center;flex-shrink:0;">
                                 ${catBadge}
                                 <span style="font-size:9.5px;font-weight:800;color:${scoreColor};background:${score >= 85 ? 'rgba(52,211,153,0.15)' : score >= 75 ? 'rgba(245,166,35,0.15)' : 'rgba(148,163,184,0.15)'};padding:2px 6px;border-radius:10px;">${score}%</span>
                             </div>
                         </div>
-                        <div style="font-size:10.5px;color:var(--psb-text-3);font-style:italic;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${arch.tagline || arch.desc || ''}</div>
+                        <div style="font-size:10.5px;color:var(--psb-text-2);font-style:italic;line-height:1.3;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${arch.tagline || ''}</div>
+                        ${arch.bestFor ? `<div style="font-size:9.5px;color:#fbbf24;font-weight:600;line-height:1.3;margin-bottom:3px;">${arch.bestFor}</div>` : ''}
+                        <div style="font-size:10px;color:var(--psb-text-3);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${arch.desc || ''}</div>
                     </div>
                 </div>
             `;

@@ -86,3 +86,13 @@ The application is structured into several core views:
   - **`sw.js`**: Bumped cache to `elaris-v36` to force all browsers to fetch fresh JS/CSS.
   - **`index.html`**: Bumped `beta.css?v=7`, `prompt-studio-beta.js?v=8`.
 
+- **2026-09-04**: **Studio Beta v9 — Bug Fixes + Smart Guide Expansion + Camera Expansion**:
+  - **Bug Fix — Aspect Ratio not reaching prompt**: Added `_AR_TO_FORMAT` map object. When aspect ratio chips clicked, now syncs both `state.aspectRatio` AND `state.format`. Also fixed `_buildSinglePrompt` to always convert via `_AR_TO_FORMAT[aspectRatio]` before passing to master `_buildPrompt()` (which reads `state.format`, not `state.aspectRatio`).
+  - **Bug Fix — Lighting Mood filter broken**: Removed master `window.PromptStudio.lightingMoods` fallback from `_getLightingMoods()`. Master data lacks `.category` field required by filter chips. Beta always uses local categorized list.
+  - **Camera Profiles expanded**: Added 6 new lenses: Nikon Z9 85mm f/1.8S, Fujifilm GFX 100S 110mm, Zeiss Otus 55mm APO, Tilt-Shift 90mm TS-E, Sigma 85mm f/1.4 Art, Voigtländer 75mm f/1.5. Camera dropdown now removes master data fallback too (consistent labeling).
+  - **Smart Guide Live expanded**: Added `_V3_IDS` set mirroring master studio. Smart Guide now shows: V3.0 badge on archetypes, "Best For" field, "Scene Intelligence" section (Compatibility, Category, Piece Synergy), "Optimal Setup" section (Angle #1 & #2, Lighting #1 & #2, ⭐ Lens, Alt Lens, Depth of Field, ISO Range). Added `_getGuideDOF()` and `_getGuideISO()` helpers.
+  - **Camera Lens dropdown**: ⭐ marks recommended lens, ✦ marks alt lens for the active archetype's guide data.
+  - **Archetype Modal cards**: Added `bestFor` (yellow tag) and `desc` (description excerpt) to both modal card render locations.
+  - **CSS additions** (`beta.css`): `.psb-guide-section-label`, `.psb-guide-bestfor`, `.psb-guide-v3-badge`, `.psb-guide-apply-btn` (full-width block).
+  - **`sw.js`**: Bumped cache to `elaris-v37`.
+
