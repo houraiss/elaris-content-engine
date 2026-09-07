@@ -714,7 +714,7 @@
   border-radius: 0 0 var(--psb-radius-md) var(--psb-radius-md);
   background: rgba(0,0,0,0.22);
   animation: psbFadeDown 0.26s var(--psb-spring);
-  overflow: hidden;
+  overflow: visible;
 }
 [data-theme="light"] .psb-expert-drawer {
   background: rgba(255,255,255,0.60);
@@ -772,10 +772,28 @@
   background: rgba(245,166,35,0.08);
 }
 
-/* Tab content panels */
+/* Tab content panels — scrollable so bottom options are always reachable */
 .psb-mod-content {
   padding: 16px;
   display: none;
+  max-height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245,166,35,0.35) transparent;
+}
+.psb-mod-content::-webkit-scrollbar {
+  width: 4px;
+}
+.psb-mod-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.psb-mod-content::-webkit-scrollbar-thumb {
+  background: rgba(245,166,35,0.35);
+  border-radius: 4px;
+}
+.psb-mod-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(245,166,35,0.60);
 }
 .psb-mod-content.active { display: block; }
 
