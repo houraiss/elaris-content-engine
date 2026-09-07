@@ -60,6 +60,10 @@ const PromptStudioBeta = {
         modalSortAZ: false,
         modalV3Only: false,
         lightingFilter: 'all',
+        // Model Consistency (shared with main studio)
+        consistencyOn: false,
+        activeProfileId: 'lina',
+        profiles: [],
         generatedPrompt: '',
         history: [],
     },
@@ -68,6 +72,7 @@ const PromptStudioBeta = {
     init(container) {
         this.container = container;
         this._loadSavedHistory();
+        this._loadProfiles();
         this._render();
         this._bindEvents();
         this._initMotionSpotlight();
@@ -79,7 +84,6 @@ const PromptStudioBeta = {
             const raw = localStorage.getItem('elaris_psb_history');
             if (raw) {
                 const parsed = JSON.parse(raw);
-                // Filter out any stale/corrupt items missing required fields
                 this.state.history = Array.isArray(parsed)
                     ? parsed.filter(item => item && typeof item.prompt === 'string' && item.prompt.length > 0)
                     : [];
@@ -88,6 +92,60 @@ const PromptStudioBeta = {
             this.state.history = [];
             try { localStorage.removeItem('elaris_psb_history'); } catch (_) {}
         }
+    },
+
+    // ── Model Profiles (shared with main PromptStudio via localStorage) ──────
+    _getBuiltInProfiles() {
+        return [
+            { id: 'lina',   name: 'Lina',   gender: 'female', color: '#c9a96e',
+              descriptor: 'Woman, 25 years old, olive Mediterranean skin tone, almond-shaped dark brown eyes, high cheekbones, sharp jawline, full lips, straight dark brown hair shoulder-length, slim graceful neck, elegant posture' },
+            { id: 'sara',   name: 'Sara',   gender: 'female', color: '#a67c52',
+              descriptor: 'Woman, 28 years old, warm golden-beige skin tone, deep hazel eyes, soft round face, defined brows, wavy chestnut hair past shoulders, delicate features, natural beauty, relaxed confident expression' },
+            { id: 'nour',   name: 'Nour',   gender: 'female', color: '#d4a574',
+              descriptor: 'Woman, 24 years old, light olive Amazigh skin tone, warm green-brown almond eyes, delicate refined features, straight dark hair with subtle natural highlights, slim graceful build, fresh natural Moroccan radiance, gentle confident expression' },
+            { id: 'malak',  name: 'Malak',  gender: 'female', color: '#c17f4a',
+              descriptor: 'Woman, 32 years old, warm golden-tan Moroccan skin tone, full expressive lips, deep dark soulful eyes, voluminous wavy dark brown hair past shoulders, defined cheekbones, mature confident Mediterranean beauty, powerful yet feminine presence' },
+            { id: 'rania',  name: 'Rania',  gender: 'female', color: '#8b6e4e',
+              descriptor: 'Woman, 27 years old, deep olive Moroccan skin tone, strong bone structure, high prominent cheekbones, kohled dark expressive eyes, long straight black hair, tall elegant build, powerful editorial presence, striking North African features' },
+            { id: 'amir',   name: 'Amir',   gender: 'male',   color: '#6e9fc9',
+              descriptor: 'Man, 30 years old, olive Moroccan skin tone, strong defined jawline, deep-set dark brown eyes, sharp angular features, well-groomed dark beard stubble, athletic build, broad shoulders, confident editorial posture' },
+            { id: 'tariq',  name: 'Tariq',  gender: 'male',   color: '#52a67c',
+              descriptor: 'Man, 27 years old, warm caramel skin tone, elegant refined features, almond-shaped dark eyes, clean-shaven, defined cheekbones, slim composed posture, sophisticated and understated expression' },
+            { id: 'younes', name: 'Younes', gender: 'male',   color: '#7ba7c9',
+              descriptor: 'Man, 28 years old, warm tawny Moroccan skin tone, sharp defined jawline, warm hazel eyes, dark medium-length styled hair, slim athletic build, modern confident Moroccan professional, relaxed editorial energy, lightly stubbled jaw' },
+            { id: 'mehdi',  name: 'Mehdi',  gender: 'male',   color: '#4a7c59',
+              descriptor: 'Man, 36 years old, deep bronze Moroccan skin tone, full dense dark beard, strong angular chiseled features, dark intense eyes, broad powerful build, commanding executive presence, sophisticated masculine gravitas' },
+            { id: 'karim',  name: 'Karim',  gender: 'male',   color: '#9b8ea6',
+              descriptor: 'Man, 23 years old, light olive Maghrebi skin tone, clean-shaven sharp angular face, youthful defined features, dark styled hair, lean energetic build, bright confident eyes, fresh contemporary Moroccan editorial energy' },
+        ];
+    },
+
+    _loadProfiles() {
+        const BUILT_IN = this._getBuiltInProfiles();
+        const BUILT_IN_IDS = BUILT_IN.map(p => p.id);
+        let customProfiles = [];
+        let savedBuiltIns  = {};
+        try {
+            // Share localStorage key with main PromptStudio so profiles are in sync
+            const saved = localStorage.getItem('elaris_model_profiles');
+            if (saved) {
+                const savedProfiles = JSON.parse(saved);
+                savedProfiles.forEach(p => {
+                    if (BUILT_IN_IDS.includes(p.id)) {
+                        savedBuiltIns[p.id] = p;
+                    } else {
+                        customProfiles.push(p);
+                    }
+                });
+            }
+        } catch (e) {}
+        const merged = BUILT_IN.map(p => savedBuiltIns[p.id] || p);
+        this.state.profiles = [...merged, ...customProfiles];
+    },
+
+    _getFilteredProfiles() {
+        const gender = this.state.modelGender || 'female';
+        return this.state.profiles.filter(p => (p.gender || 'female') === gender);
     },
 
     _saveHistory() {
@@ -855,8 +913,6 @@ const PromptStudioBeta = {
                     ps.lightingMood        = this.state.lightingMood;
                     ps.cameraProfile       = this.state.cameraProfile;
                     ps.angle               = this.state.angle;
-                    // Fix: master _buildPrompt reads state.format (e.g. 'square') not state.aspectRatio ('1:1')
-                    // Convert the beta's aspectRatio chip value back to the format ID the master expects
                     ps.format              = this._AR_TO_FORMAT[this.state.aspectRatio] || this.state.format || 'square';
                     ps.aspectRatio         = this.state.aspectRatio;
                     ps.surface             = this.state.surface;
@@ -877,6 +933,10 @@ const PromptStudioBeta = {
                     ps.hijabStyle          = this.state.hijabStyle;
                     ps.styling             = this.state.styling;
                     ps.setComposition      = this.state.setComposition;
+                    // Sync model consistency to master state
+                    ps.consistencyOn       = this.state.consistencyOn;
+                    ps.activeProfileId     = this.state.activeProfileId;
+                    ps.profiles            = this.state.profiles;
                 }
                 const prompt = window.PromptStudio._buildPrompt(arch);
                 if (prompt && prompt.length > 30) return prompt;
@@ -1063,6 +1123,14 @@ const PromptStudioBeta = {
         if (this.state.skinDetail)  parts.push('subtle veins and freckles');
         if (this.state.bodyHair)    parts.push('fine natural arm hair');
         if (this.state.wrinkles)    parts.push('natural micro-lines and expression lines');
+
+        // Model Consistency — inject profile descriptor for visual lock (fallback builder)
+        if (this.state.consistencyOn && this.state.modelGender !== 'none') {
+            const activeProf = this.state.profiles.find(p => p.id === this.state.activeProfileId);
+            if (activeProf) {
+                parts.push(`Model Details (sole appearance reference — match exactly): ${activeProf.descriptor}`);
+            }
+        }
 
         if (this.state.hallmarkEnabled)     parts.push('Discreet microscopic 925 hallmark laser-engraving on inner band');
         if (this.state.brandIdentityEnabled) parts.push(`Subtle luxury brand detail: ${this.state.brandTouch.replace(/-/g, ' ')}`);
@@ -1535,6 +1603,48 @@ const PromptStudioBeta = {
                                                 </div>
                                             </div>
                                         ` : ''}
+                                    ` : ''}
+
+                                    <!-- ─── Model Consistency ─── -->
+                                    <div class="psb-guide-divider" style="margin:14px 0 10px;"></div>
+                                    <div class="psb-toggle-row" style="align-items:flex-start;">
+                                        <div class="psb-toggle-label">
+                                            <span class="psb-toggle-title">🧠 Model Consistency</span>
+                                            <span class="psb-toggle-desc">Lock a virtual model profile across all your shots for consistent characters</span>
+                                        </div>
+                                        <label class="psb-switch">
+                                            <input type="checkbox" id="psb-consistency-toggle" ${this.state.consistencyOn ? 'checked' : ''}>
+                                            <span class="psb-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    ${this.state.consistencyOn ? `
+                                        <div style="margin-top:12px;">
+                                            <div style="font-size:10px;color:var(--psb-text-3);margin-bottom:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Model Profile</div>
+                                            <div class="psb-profile-list" id="psb-profile-list">
+                                                ${(() => {
+                                                    const profiles = this._getFilteredProfiles();
+                                                    if (!profiles.length) return `<div style="font-size:11px;color:var(--psb-text-3);padding:10px 0;">No profiles for this gender.</div>`;
+                                                    return profiles.map(p => {
+                                                        const isActive = p.id === this.state.activeProfileId;
+                                                        const initial = p.name[0].toUpperCase();
+                                                        return `
+                                                            <div class="psb-profile-card ${isActive ? 'active' : ''}" data-profile-id="${p.id}">
+                                                                <div class="psb-profile-avatar" style="background:${p.color}20;border:2px solid ${isActive ? p.color : 'transparent'};">
+                                                                    <span style="color:${p.color};font-weight:800;font-size:14px;">${initial}</span>
+                                                                    <span class="psb-profile-gender-dot" style="background:${p.gender === 'male' ? '#60a5fa' : '#f472b6'};"></span>
+                                                                </div>
+                                                                <div style="flex:1;min-width:0;">
+                                                                    <div style="font-size:12.5px;font-weight:700;color:var(--psb-text);margin-bottom:2px;">${p.name}</div>
+                                                                    <div style="font-size:10px;color:var(--psb-text-3);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.descriptor}</div>
+                                                                </div>
+                                                                ${isActive ? '<span style="font-size:14px;flex-shrink:0;">✓</span>' : ''}
+                                                            </div>
+                                                        `;
+                                                    }).join('');
+                                                })()}
+                                            </div>
+                                        </div>
                                     ` : ''}
                                 </div>
 
@@ -2187,6 +2297,33 @@ const PromptStudioBeta = {
         if (hijabiTog) hijabiTog.addEventListener('change', (e) => {
             this.state.hijabi = e.target.checked;
             this._render(); this._bindEvents();
+        });
+
+        // Model Consistency toggle
+        const consistencyTog = q('#psb-consistency-toggle');
+        if (consistencyTog) consistencyTog.addEventListener('change', (e) => {
+            this.state.consistencyOn = e.target.checked;
+            this._render(); this._bindEvents();
+        });
+
+        // Model Profile card selection
+        this.container.querySelectorAll('.psb-profile-card').forEach(card => {
+            card.addEventListener('click', () => {
+                this.state.activeProfileId = card.dataset.profileId;
+                this.container.querySelectorAll('.psb-profile-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                // Update gender dot and checkmark without full re-render
+                this.container.querySelectorAll('.psb-profile-card').forEach(c => {
+                    const check = c.querySelector('span[style*="font-size:14px"]');
+                    if (check) check.remove();
+                });
+                if (!card.querySelector('span[style*="font-size:14px"]')) {
+                    const chk = document.createElement('span');
+                    chk.style.cssText = 'font-size:14px;flex-shrink:0;';
+                    chk.textContent = '✓';
+                    card.appendChild(chk);
+                }
+            });
         });
 
         // Hijab style chips

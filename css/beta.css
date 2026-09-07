@@ -224,6 +224,75 @@
   transform: translateX(20px);
 }
 
+/* ── Model Consistency Profiles ─────────────────────────────────── */
+.psb-profile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.12) transparent;
+  padding-right: 2px;
+}
+.psb-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--psb-chip-bg);
+  border: 1.5px solid var(--psb-chip-border);
+  border-radius: var(--psb-radius-md);
+  cursor: pointer;
+  transition: all 0.2s var(--psb-spring);
+}
+.psb-profile-card:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.22);
+  transform: translateX(2px);
+}
+.psb-profile-card.active {
+  background: rgba(245,166,35,0.10);
+  border-color: rgba(245,166,35,0.50);
+  box-shadow: 0 0 12px rgba(245,166,35,0.18);
+}
+[data-theme="light"] .psb-profile-card {
+  background: rgba(0,0,0,0.035);
+  border-color: rgba(0,0,0,0.10);
+}
+[data-theme="light"] .psb-profile-card:hover {
+  background: rgba(0,0,0,0.06);
+}
+[data-theme="light"] .psb-profile-card.active {
+  background: rgba(245,166,35,0.08);
+  border-color: rgba(245,166,35,0.45);
+}
+.psb-profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+.psb-profile-gender-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--psb-bg);
+}
+.psb-guide-divider {
+  height: 1px;
+  background: var(--psb-chip-border);
+  border-radius: 1px;
+}
+
 /* ── 3-Column Desktop Layout ────────────────────────────────────── */
 .psb-layout {
   position: relative;
