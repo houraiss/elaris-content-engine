@@ -1,15 +1,13 @@
 /**
- * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v4.
+ * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v10.
  *
- * Changes in v4:
- *  - Fixed Styling & Brand tabs blank (missing </div> for Camera tab)
- *  - Removed Design Details textarea (unused)
- *  - Fixed archetype category filters (archetypes lack .category field — inferred from ID)
- *  - Dynamic score badge colors (green >85, gold 75–85, silver <75)
- *  - V3 / WATCH / SET badges on carousel and modal cards
- *  - Fixed Expert dock scroll jump (scroll toggle not drawer)
- *  - Removed corrupted duplicate code block
- *  - All prior v2 features preserved
+ * Changes in v10:
+ *  - Camera tab: Added Depth of Field select + ISO Range select (selectable, not just display)
+ *  - AI Chooses now default for Wardrobe & Outfit, Color Palette Harmony, Surface & Backdrop
+ *  - New Model modifier: Body Part Focus (wrist, neck, face, etc.)
+ *  - New Styling modifiers: Film Style, Environment / Background, Mood Intensity, Season & Time of Day
+ *  - All new params integrated into fallback prompt builder
+ *  - All prior v9 features preserved
  */
 
 const PromptStudioBeta = {
@@ -25,10 +23,11 @@ const PromptStudioBeta = {
         angle: '45-degree',
         format: 'square',
         aspectRatio: '1:1',
-        surface: 'none',
-        palette: 'auto',
+        // AI Chooses is now the default for max diversity across 100+ generations
+        surface: 'ai-choice',
+        palette: 'ai-choice',
+        styling: 'ai-choice',
         jewelryStyle: [],
-        styling: 'none',
         hallmarkEnabled: true,
         brandIdentityEnabled: false,
         brandTouch: 'logomark',
@@ -44,6 +43,14 @@ const PromptStudioBeta = {
         facialExpression: 'none',
         hijabi: false,
         hijabStyle: 'classic',
+        // New in v10
+        bodyFocus: 'auto',
+        dof: 'auto',
+        isoRange: 'auto',
+        filmStyle: 'auto',
+        environment: 'auto',
+        moodIntensity: 'balanced',
+        seasonTime: 'auto',
         setComposition: ['ring', 'necklace', 'earrings'],
         activeModTab: 'model',
         expertOpen: false,
@@ -382,9 +389,15 @@ const PromptStudioBeta = {
 
     _getSurfaces() {
         if (window.PromptStudio && Array.isArray(window.PromptStudio.surfaces) && window.PromptStudio.surfaces.length > 0) {
-            return window.PromptStudio.surfaces;
+            // Prepend AI Chooses if not already present
+            const base = window.PromptStudio.surfaces;
+            if (!base.find(s => s.id === 'ai-choice')) {
+                return [{ id: 'ai-choice', label: '✦ AI Chooses (Max Diversity)' }, ...base];
+            }
+            return base;
         }
         return [
+            { id: 'ai-choice', label: '✦ AI Chooses (Max Diversity)' },
             { id: 'none', label: 'Default (Archetype Setting)' },
             { id: 'marble', label: 'Polished Carrara Marble' },
             { id: 'velvet', label: 'Midnight Crushed Velvet' },
@@ -398,16 +411,24 @@ const PromptStudioBeta = {
             { id: 'terracotta', label: 'Traditional Terracotta / Zellige' },
             { id: 'mirrored-glass', label: 'Sharp Mirrored Glass' },
             { id: 'satin', label: 'Smooth Lustrous Satin Fabric' },
+            { id: 'linen', label: 'Textured Raw Linen / Burlap' },
+            { id: 'ice', label: 'Frozen Ice & Crystalline Surface' },
+            { id: 'petals', label: 'Rose & Jasmine Petals Scattered' },
+            { id: 'obsidian', label: 'Polished Black Obsidian Stone' },
         ];
     },
 
     _getPalettes() {
         if (window.PromptStudio && Array.isArray(window.PromptStudio.palettes) && window.PromptStudio.palettes.length > 0) {
-            return window.PromptStudio.palettes;
+            const base = window.PromptStudio.palettes;
+            if (!base.find(p => p.id === 'ai-choice')) {
+                return [{ id: 'ai-choice', label: '✦ AI Chooses (Max Diversity)' }, ...base];
+            }
+            return base;
         }
         return [
+            { id: 'ai-choice', label: '✦ AI Chooses (Max Diversity)' },
             { id: 'auto', label: 'Auto / Scene Matched' },
-            { id: 'ai-choice', label: 'AI Chooses ✦ (Campaign Grading)' },
             { id: 'neutral', label: 'Neutral Beige & Warm Cream' },
             { id: 'warm-earth', label: 'Warm Earth (Amber & Terracotta)' },
             { id: 'cool-steel', label: 'Cool Steel & Platinum Blue' },
@@ -416,16 +437,23 @@ const PromptStudioBeta = {
             { id: 'deep-ocean', label: 'Deep Ocean Navy & Emerald' },
             { id: 'blush-rose', label: 'Soft Blush & Dusty Rose' },
             { id: 'noir', label: 'Cinematic High-Contrast Film Noir' },
+            { id: 'desert-gold', label: 'Desert Gold & Sandy Copper' },
+            { id: 'forest-green', label: 'Forest Moss & Sage Green' },
+            { id: 'amethyst', label: 'Amethyst Purple & Lavender' },
         ];
     },
 
     _getStylings() {
         if (window.PromptStudio && Array.isArray(window.PromptStudio.stylings) && window.PromptStudio.stylings.length > 0) {
-            return window.PromptStudio.stylings;
+            const base = window.PromptStudio.stylings;
+            if (!base.find(s => s.id === 'ai-choice')) {
+                return [{ id: 'ai-choice', label: '✦ AI Chooses (Max Diversity)' }, ...base];
+            }
+            return base;
         }
         return [
+            { id: 'ai-choice', label: '✦ AI Chooses (Max Diversity)' },
             { id: 'auto', label: 'Auto / Scene Matched' },
-            { id: 'ai-choice', label: 'AI Chooses ✦ (Editorial Campaign)' },
             { id: 'minimal', label: 'Minimal / Nude Skin Canvas' },
             { id: 'black-dress', label: 'Elegant Black Dress / Tuxedo' },
             { id: 'silk-cami', label: 'Fitted Silk Camisole / Silk Shirt' },
@@ -434,6 +462,114 @@ const PromptStudioBeta = {
             { id: 'white-shirt', label: 'Crisp White Button-Down Shirt' },
             { id: 'evening-gown', label: 'Floor-Length Red Carpet Gown' },
             { id: 'streetwear', label: 'Elevated Luxury Streetwear' },
+            { id: 'linen-set', label: 'Relaxed Linen Co-ord Set' },
+            { id: 'leather-jacket', label: 'Leather Moto Jacket & Jeans' },
+            { id: 'abaya', label: 'Embellished Luxury Abaya' },
+            { id: 'bikini-resort', label: 'Resort Swimwear & Cover-Up' },
+        ];
+    },
+
+    // ── New v10 Data Getters ────────────────────────────────────
+    _getBodyFocusOptions() {
+        return [
+            { id: 'auto',         label: '✦ AI Chooses (Max Diversity)' },
+            { id: 'wrist-hand',   label: '✋ Wrist & Hand (Ring / Bracelet)' },
+            { id: 'neck-collar',  label: '🦢 Neck & Collarbone (Necklace)' },
+            { id: 'ear-face',     label: '👂 Ear & Side Profile (Earrings)' },
+            { id: 'finger-close', label: '💍 Finger Close-Up (Ring)' },
+            { id: 'full-body',    label: '🧍 Full Body Editorial Stance' },
+            { id: 'face-close',   label: '👁 Face Close-Up (Lash / Eye)' },
+            { id: 'torso',        label: '💫 Torso / Décolletage (Pendant)' },
+            { id: 'ankle-foot',   label: '🦵 Ankle & Foot (Anklet)' },
+            { id: 'silhouette',   label: '🌑 Full Silhouette (Atmosphere)' },
+        ];
+    },
+
+    _getDOFOptions() {
+        return [
+            { id: 'auto',           label: '✦ AI / Archetype Driven' },
+            { id: 'razor-thin',     label: 'Razor-Thin (f/1.4–f/2.8) — Dreamy Gem Isolation' },
+            { id: 'shallow',        label: 'Shallow (f/2.8–f/4) — Subject Pop' },
+            { id: 'moderate',       label: 'Moderate (f/4–f/5.6) — Balanced Detail' },
+            { id: 'deep',           label: 'Deep (f/8–f/11) — Environmental Context' },
+            { id: 'macro-extreme',  label: 'Macro Extreme (f/16–f/22) — Full Gem Facet Sharpness' },
+            { id: 'tilt-plane',     label: 'Tilt-Shift Plane — Selective Focus Line' },
+        ];
+    },
+
+    _getISOOptions() {
+        return [
+            { id: 'auto',        label: '✦ AI / Scene Driven' },
+            { id: 'iso-50',      label: 'ISO 50 — Studio Perfection (Noiseless)' },
+            { id: 'iso-100',     label: 'ISO 100 — Tripod Studio / Daylight' },
+            { id: 'iso-200',     label: 'ISO 200 — Bright Natural Light' },
+            { id: 'iso-400',     label: 'ISO 400 — Versatile Ambient' },
+            { id: 'iso-800',     label: 'ISO 800 — Soft Indoor / Shade' },
+            { id: 'iso-1600',    label: 'ISO 1600 — Atmospheric / Low Light' },
+            { id: 'iso-3200',    label: 'ISO 3200 — Cinematic Grain & Mood' },
+            { id: 'iso-6400',    label: 'ISO 6400+ — Raw Grain Aesthetic' },
+        ];
+    },
+
+    _getFilmStyleOptions() {
+        return [
+            { id: 'auto',           label: '✦ AI Chooses (Max Diversity)' },
+            { id: 'clean-digital',  label: 'Clean Digital — Modern Sharp Clarity' },
+            { id: 'analog-film',    label: 'Analog Film — Kodak Portra 400 Grain' },
+            { id: 'faded-vintage',  label: 'Faded Vintage — Desaturated 70s Tones' },
+            { id: 'teal-orange',    label: 'Teal & Orange — Cinematic Hollywood Grade' },
+            { id: 'high-contrast',  label: 'High Contrast — Ink-Black Shadows' },
+            { id: 'matte-lift',     label: 'Matte Lift — Lifted Blacks, Soft Tones' },
+            { id: 'bleach-bypass',  label: 'Bleach Bypass — Desaturated Silver Halide' },
+            { id: 'cross-process',  label: 'Cross-Process — Vivid Color Shift' },
+            { id: 'infrared',       label: 'Infrared — Ethereal White Foliage Glow' },
+        ];
+    },
+
+    _getEnvironmentOptions() {
+        return [
+            { id: 'auto',              label: '✦ AI Chooses (Max Diversity)' },
+            { id: 'studio-infinity',   label: '🎥 Studio Infinity Wall' },
+            { id: 'rooftop',           label: '🏙 Urban Rooftop (City Skyline)' },
+            { id: 'desert-dunes',      label: '🏜 Desert Dunes (Sahara / Arabia)' },
+            { id: 'moroccan-riad',     label: '🕌 Moroccan Riad & Zellige Tiles' },
+            { id: 'botanical-garden',  label: '🌿 Lush Botanical Garden' },
+            { id: 'marble-palace',     label: '🏛 Marble Palace Interior' },
+            { id: 'ocean-shore',       label: '🌊 Ocean Shore & Sea Foam' },
+            { id: 'dark-hotel-suite',  label: '🛋 Dark Luxury Hotel Suite' },
+            { id: 'forest-mist',       label: '🌲 Misty Forest Floor' },
+            { id: 'souq-market',       label: '🛍 Vibrant Souq / Night Market' },
+            { id: 'glass-greenhouse',  label: '🪴 Glass Greenhouse (Tropical)' },
+            { id: 'car-interior',      label: '🚗 Luxury Car Interior' },
+            { id: 'art-gallery',       label: '🖼 Minimalist Art Gallery' },
+        ];
+    },
+
+    _getMoodIntensityOptions() {
+        return [
+            { id: 'balanced',   label: 'Balanced — Natural Campaign Tone' },
+            { id: 'subtle',     label: 'Subtle — Soft & Understated Elegance' },
+            { id: 'dramatic',   label: 'Dramatic — High Contrast Tension' },
+            { id: 'cinematic',  label: 'Cinematic — Movie-Grade Atmosphere' },
+            { id: 'ethereal',   label: 'Ethereal — Dreamy Soft Light Haze' },
+            { id: 'raw',        label: 'Raw — Unfiltered Gritty Realism' },
+            { id: 'opulent',    label: 'Opulent — Over-the-Top Luxury Richness' },
+        ];
+    },
+
+    _getSeasonTimeOptions() {
+        return [
+            { id: 'auto',             label: '✦ AI Chooses (Max Diversity)' },
+            { id: 'golden-hour',      label: '🌅 Golden Hour (Warm Dusk)' },
+            { id: 'blue-hour',        label: '🌆 Blue Hour (Twilight)' },
+            { id: 'midday-sun',       label: '☀ High Noon (Harsh Sunlight)' },
+            { id: 'overcast-day',     label: '🌥 Overcast Day (Diffused)' },
+            { id: 'night-ambient',    label: '🌙 Night Ambient (Artificial Light)' },
+            { id: 'spring-bloom',     label: '🌸 Spring Bloom (Soft Pastels)' },
+            { id: 'summer-vivid',     label: '🌿 Summer Vivid (Saturated)' },
+            { id: 'autumn-warm',      label: '🍂 Autumn Warmth (Orange & Gold)' },
+            { id: 'winter-frost',     label: '❄ Winter Frost (Cool & Crisp)' },
+            { id: 'pre-dawn',         label: '🌃 Pre-Dawn (Dark Blue Stillness)' },
         ];
     },
 
@@ -792,8 +928,130 @@ const PromptStudioBeta = {
         parts.push(`Shot on ${lensMap[this.state.cameraProfile] || lensMap['auto']}, camera angle: ${this.state.angle.replace(/-/g, ' ')}`);
         parts.push(`Lighting: ${this.state.lightingMood.replace(/-/g, ' ')} lighting mood with sculpted specular highlights across silver contours and authentic light transmission`);
 
-        if (this.state.surface !== 'none')  parts.push(`Resting on an artisanal ${this.state.surface.replace(/-/g, ' ')} backdrop`);
-        if (this.state.palette !== 'auto')  parts.push(`Curated ${this.state.palette.replace(/-/g, ' ')} color harmony`);
+        // Surface — AI Chooses signals open creative freedom
+        if (this.state.surface === 'ai-choice') {
+            parts.push('surface and backdrop: AI-selected for maximum visual diversity and uniqueness');
+        } else if (this.state.surface && this.state.surface !== 'none') {
+            parts.push(`Resting on an artisanal ${this.state.surface.replace(/-/g, ' ')} backdrop`);
+        }
+
+        // Palette — AI Chooses
+        if (this.state.palette === 'ai-choice') {
+            parts.push('color grading: AI-selected unique campaign palette for maximum diversity');
+        } else if (this.state.palette && this.state.palette !== 'auto') {
+            parts.push(`Curated ${this.state.palette.replace(/-/g, ' ')} color harmony`);
+        }
+
+        // Styling — AI Chooses
+        if (this.state.styling === 'ai-choice' && this.state.modelGender !== 'none') {
+            parts.push('wardrobe and outfit: AI-selected unique editorial styling for maximum diversity');
+        }
+
+        // Body Part Focus (v10)
+        if (this.state.bodyFocus && this.state.bodyFocus !== 'auto') {
+            const focusMap = {
+                'wrist-hand': 'primary focus on wrist and hand', 'neck-collar': 'primary focus on neck and collarbone',
+                'ear-face': 'primary focus on ear and side profile', 'finger-close': 'extreme close-up on finger and ring',
+                'full-body': 'full body editorial composition', 'face-close': 'intimate face and eye close-up',
+                'torso': 'torso and décolletage as primary canvas', 'ankle-foot': 'ankle and foot in sharp focus',
+                'silhouette': 'atmospheric full-body silhouette composition',
+            };
+            parts.push(focusMap[this.state.bodyFocus] || this.state.bodyFocus.replace(/-/g, ' '));
+        }
+
+        // Environment (v10)
+        if (this.state.environment && this.state.environment !== 'auto') {
+            const envMap = {
+                'studio-infinity': 'photographed in a clean studio with seamless infinity wall background',
+                'rooftop': 'shot on an urban luxury rooftop with glittering city skyline behind',
+                'desert-dunes': 'set against sweeping golden Sahara desert dunes at dusk',
+                'moroccan-riad': 'interior of a traditional Moroccan riad with ornate zellige tilework',
+                'botanical-garden': 'surrounded by lush botanical garden tropical foliage',
+                'marble-palace': 'inside a grand marble palace with high ceilings and columns',
+                'ocean-shore': 'shot at the ocean shoreline with waves and sea foam',
+                'dark-hotel-suite': 'inside a moody dark luxury hotel suite with ambient candlelight',
+                'forest-mist': 'deep in a misty ancient forest with dappled light through canopy',
+                'souq-market': 'vibrant colorful souq or night market setting',
+                'glass-greenhouse': 'inside a tropical glass greenhouse with lush green plants',
+                'car-interior': 'inside a luxury sports car interior with leather and chrome',
+                'art-gallery': 'inside a minimalist white-walled art gallery space',
+            };
+            parts.push(envMap[this.state.environment] || `environment: ${this.state.environment.replace(/-/g, ' ')}`);
+        }
+
+        // Season & Time of Day (v10)
+        if (this.state.seasonTime && this.state.seasonTime !== 'auto') {
+            const stMap = {
+                'golden-hour': 'during golden hour with warm amber sunlight and long shadows',
+                'blue-hour': 'at blue hour twilight with cool indigo ambient glow',
+                'midday-sun': 'under harsh high-noon direct sunlight with sharp shadows',
+                'overcast-day': 'on an overcast day with diffused soft shadowless light',
+                'night-ambient': 'at night lit by artificial ambient and neon light sources',
+                'spring-bloom': 'in spring bloom with soft pastel floral atmosphere',
+                'summer-vivid': 'in peak summer with vivid saturated colors and warm haze',
+                'autumn-warm': 'in autumn warmth with rich amber gold and terracotta tones',
+                'winter-frost': 'in winter frost with crisp cool blue-white atmosphere',
+                'pre-dawn': 'in pre-dawn dark blue stillness before sunrise',
+            };
+            parts.push(stMap[this.state.seasonTime] || this.state.seasonTime.replace(/-/g, ' '));
+        }
+
+        // Mood Intensity (v10)
+        if (this.state.moodIntensity && this.state.moodIntensity !== 'balanced') {
+            const moodMap = {
+                'subtle': 'subtle understated elegance, quiet luxury, whispered sophistication',
+                'dramatic': 'dramatic high-contrast scene with intense emotional tension',
+                'cinematic': 'cinematic movie-grade atmosphere with masterful visual storytelling',
+                'ethereal': 'ethereal dreamy haze with soft light diffusion and otherworldly glow',
+                'raw': 'raw unfiltered gritty realism, authentic and unretouched energy',
+                'opulent': 'over-the-top opulent richness, extravagant maximalist luxury',
+            };
+            parts.push(moodMap[this.state.moodIntensity] || this.state.moodIntensity);
+        }
+
+        // DOF (v10)
+        if (this.state.dof && this.state.dof !== 'auto') {
+            const dofMap = {
+                'razor-thin': 'razor-thin depth of field f/1.4–f/2.8 with extreme background blur',
+                'shallow': 'shallow depth of field f/2.8–f/4 with creamy bokeh subject separation',
+                'moderate': 'moderate depth of field f/4–f/5.6 with balanced foreground and background detail',
+                'deep': 'deep depth of field f/8–f/11 with sharp environmental context throughout frame',
+                'macro-extreme': 'macro depth of field f/16–f/22 with maximum gem facet sharpness',
+                'tilt-plane': 'tilt-shift selective focus plane with miniature editorial effect',
+            };
+            parts.push(dofMap[this.state.dof] || this.state.dof.replace(/-/g, ' '));
+        }
+
+        // ISO (v10)
+        if (this.state.isoRange && this.state.isoRange !== 'auto') {
+            const isoMap = {
+                'iso-50': 'ISO 50 noiseless tripod studio perfection',
+                'iso-100': 'ISO 100 tripod daylight pristine clarity',
+                'iso-200': 'ISO 200 bright natural light clean render',
+                'iso-400': 'ISO 400 versatile ambient balanced exposure',
+                'iso-800': 'ISO 800 soft indoor warm ambient glow',
+                'iso-1600': 'ISO 1600 atmospheric low light subtle grain',
+                'iso-3200': 'ISO 3200 cinematic visible grain moody texture',
+                'iso-6400': 'ISO 6400 heavy grain raw aesthetic intentional noise',
+            };
+            parts.push(isoMap[this.state.isoRange] || this.state.isoRange);
+        }
+
+        // Film Style (v10)
+        if (this.state.filmStyle && this.state.filmStyle !== 'auto') {
+            const filmMap = {
+                'clean-digital': 'clean sharp modern digital rendering',
+                'analog-film': 'Kodak Portra 400 analog film grain, warm halation, gentle color shift',
+                'faded-vintage': 'faded vintage desaturated 1970s photography aesthetic',
+                'teal-orange': 'teal and orange Hollywood cinematic color grade',
+                'high-contrast': 'high contrast deep ink-black shadows and blown-out highlights',
+                'matte-lift': 'lifted blacks matte finish soft tone grade',
+                'bleach-bypass': 'bleach bypass desaturated silver halide reduced saturation',
+                'cross-process': 'cross-process vivid unexpected color shift',
+                'infrared': 'infrared photography ethereal white foliage luminous glow',
+            };
+            parts.push(filmMap[this.state.filmStyle] || this.state.filmStyle.replace(/-/g, ' '));
+        }
 
         if (this.state.promptQuality === 'ultra' || this.state.realismLevel === 'ultra') {
             parts.push('RAW DNG uncompressed photograph, natural filmic grain, microscopic skin pores, authentic sensor noise, chromatic aberration, non-retouched realism');
@@ -1224,6 +1482,16 @@ const PromptStudioBeta = {
                                         </div>
                                     </div>
 
+                                    <!-- New v10: Body Part Focus -->
+                                    <div class="psb-form-group">
+                                        <label class="psb-label">🎯 Body Part Focus <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">Which zone the shot emphasizes</span></label>
+                                        <select class="psb-select" id="psb-bodyfocus-select">
+                                            ${this._getBodyFocusOptions().map(b => `
+                                                <option value="${b.id}" ${this.state.bodyFocus === b.id ? 'selected' : ''}>${b.label}</option>
+                                            `).join('')}
+                                        </select>
+                                    </div>
+
                                     ${this.state.modelGender !== 'none' ? `
                                         <div class="psb-form-group">
                                             <label class="psb-label">Complexion &amp; Skin Tone</label>
@@ -1361,7 +1629,7 @@ const PromptStudioBeta = {
                                     </div>
 
                                     <div class="psb-form-group">
-                                        <label class="psb-label">Wardrobe &amp; Outfit</label>
+                                        <label class="psb-label">👗 Wardrobe &amp; Outfit <span style="font-size:9px;color:#34d399;font-weight:600;">✦ AI Chooses = max variety</span></label>
                                         <select class="psb-select" id="psb-styling-select">
                                             ${stylings.map(st => `
                                                 <option value="${st.id}" ${this.state.styling === st.id ? 'selected' : ''}>${st.label}</option>
@@ -1370,7 +1638,7 @@ const PromptStudioBeta = {
                                     </div>
 
                                     <div class="psb-form-group">
-                                        <label class="psb-label">Color Palette Harmony</label>
+                                        <label class="psb-label">🎨 Color Palette Harmony <span style="font-size:9px;color:#34d399;font-weight:600;">✦ AI Chooses = max variety</span></label>
                                         <select class="psb-select" id="psb-palette-select">
                                             ${palettes.map(pal => `
                                                 <option value="${pal.id}" ${this.state.palette === pal.id ? 'selected' : ''}>${pal.label}</option>
@@ -1379,10 +1647,50 @@ const PromptStudioBeta = {
                                     </div>
 
                                     <div class="psb-form-group">
-                                        <label class="psb-label">Surface &amp; Backdrop Material</label>
+                                        <label class="psb-label">🪨 Surface &amp; Backdrop Material <span style="font-size:9px;color:#34d399;font-weight:600;">✦ AI Chooses = max variety</span></label>
                                         <select class="psb-select" id="psb-surface-select">
                                             ${surfaces.map(s => `
                                                 <option value="${s.id}" ${this.state.surface === s.id ? 'selected' : ''}>${s.label}</option>
+                                            `).join('')}
+                                        </select>
+                                    </div>
+
+                                    <!-- New v10: Environment / Background -->
+                                    <div class="psb-form-group">
+                                        <label class="psb-label">🌍 Environment / Background <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">Location context beyond surface</span></label>
+                                        <select class="psb-select" id="psb-environment-select">
+                                            ${this._getEnvironmentOptions().map(e => `
+                                                <option value="${e.id}" ${this.state.environment === e.id ? 'selected' : ''}>${e.label}</option>
+                                            `).join('')}
+                                        </select>
+                                    </div>
+
+                                    <!-- New v10: Film Style -->
+                                    <div class="psb-form-group">
+                                        <label class="psb-label">🎞 Film Style &amp; Grade <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">Post-processing look &amp; color science</span></label>
+                                        <select class="psb-select" id="psb-filmstyle-select">
+                                            ${this._getFilmStyleOptions().map(f => `
+                                                <option value="${f.id}" ${this.state.filmStyle === f.id ? 'selected' : ''}>${f.label}</option>
+                                            `).join('')}
+                                        </select>
+                                    </div>
+
+                                    <!-- New v10: Mood Intensity -->
+                                    <div class="psb-form-group">
+                                        <label class="psb-label">⚡ Mood Intensity <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">Overall emotional register of the scene</span></label>
+                                        <select class="psb-select" id="psb-moodintensity-select">
+                                            ${this._getMoodIntensityOptions().map(m => `
+                                                <option value="${m.id}" ${this.state.moodIntensity === m.id ? 'selected' : ''}>${m.label}</option>
+                                            `).join('')}
+                                        </select>
+                                    </div>
+
+                                    <!-- New v10: Season & Time of Day -->
+                                    <div class="psb-form-group">
+                                        <label class="psb-label">🕐 Season &amp; Time of Day <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">Temporal atmosphere &amp; color temperature</span></label>
+                                        <select class="psb-select" id="psb-seasontime-select">
+                                            ${this._getSeasonTimeOptions().map(s => `
+                                                <option value="${s.id}" ${this.state.seasonTime === s.id ? 'selected' : ''}>${s.label}</option>
                                             `).join('')}
                                         </select>
                                     </div>
@@ -1902,6 +2210,18 @@ const PromptStudioBeta = {
         const angleSel = q('#psb-angle-select');
         if (angleSel) angleSel.addEventListener('change', (e) => { this.state.angle = e.target.value; });
 
+        // DOF (new v10)
+        const dofSel = q('#psb-dof-select');
+        if (dofSel) dofSel.addEventListener('change', (e) => { this.state.dof = e.target.value; });
+
+        // ISO Range (new v10)
+        const isoSel = q('#psb-iso-select');
+        if (isoSel) isoSel.addEventListener('change', (e) => { this.state.isoRange = e.target.value; });
+
+        // Body Focus (new v10)
+        const bodyFocusSel = q('#psb-bodyfocus-select');
+        if (bodyFocusSel) bodyFocusSel.addEventListener('change', (e) => { this.state.bodyFocus = e.target.value; });
+
         // Lighting filter chips
         this.container.querySelectorAll('.psb-lf-chip').forEach(chip => {
             chip.addEventListener('click', () => {
@@ -1941,6 +2261,22 @@ const PromptStudioBeta = {
         // Surface
         const surfSel = q('#psb-surface-select');
         if (surfSel) surfSel.addEventListener('change', (e) => { this.state.surface = e.target.value; });
+
+        // Environment (new v10)
+        const envSel = q('#psb-environment-select');
+        if (envSel) envSel.addEventListener('change', (e) => { this.state.environment = e.target.value; });
+
+        // Film Style (new v10)
+        const filmSel = q('#psb-filmstyle-select');
+        if (filmSel) filmSel.addEventListener('change', (e) => { this.state.filmStyle = e.target.value; });
+
+        // Mood Intensity (new v10)
+        const moodSel = q('#psb-moodintensity-select');
+        if (moodSel) moodSel.addEventListener('change', (e) => { this.state.moodIntensity = e.target.value; });
+
+        // Season & Time of Day (new v10)
+        const seasonSel = q('#psb-seasontime-select');
+        if (seasonSel) seasonSel.addEventListener('change', (e) => { this.state.seasonTime = e.target.value; });
 
         // Hallmark toggle
         const hmTog = q('#psb-hallmark-toggle');
