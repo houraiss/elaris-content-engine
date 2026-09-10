@@ -111,6 +111,11 @@ const PromptStudioBeta = {
     // ── i18n shorthand — English lives here at the call site ────
     _t(key, en) { return window.I18n ? window.I18n.t(key, en) : en; },
 
+    // Localised archetype name / tagline (key = psb_arch_<id>_name|_tag, EN fallback)
+    _archKey(arch) { return 'psb_arch_' + String(arch.id).replace(/-/g, '_'); },
+    _archName(arch) { return arch ? this._t(this._archKey(arch) + '_name', arch.name || arch.id) : ''; },
+    _archTag(arch)  { return arch ? this._t(this._archKey(arch) + '_tag', arch.tagline || '') : ''; },
+
     // ── History Persistence ─────────────────────────────────────
     _loadSavedHistory() {
         try {
@@ -1425,9 +1430,9 @@ const PromptStudioBeta = {
         const bodyEl     = guidePanel.querySelector('.psb-guide-body');
         const bestforEl  = guidePanel.querySelector('.psb-guide-bestfor');
         if (iconEl)    iconEl.textContent   = activeArch.icon || '💎';
-        if (titleEl)   titleEl.textContent  = activeArch.name;
-        if (subEl)     subEl.textContent    = activeArch.tagline || '';
-        if (bodyEl)    bodyEl.textContent   = activeArch.desc || 'Optimized archetype for cinematic realism.';
+        if (titleEl)   titleEl.textContent  = this._archName(activeArch);
+        if (subEl)     subEl.textContent    = this._archTag(activeArch);
+        if (bodyEl)    bodyEl.textContent   = activeArch.desc || this._t('psb_guide_fallback_desc', 'Optimized archetype for cinematic realism.');
         if (bestforEl) bestforEl.textContent = activeArch.bestFor || '';
 
         // V3 badge
@@ -1537,7 +1542,7 @@ const PromptStudioBeta = {
                         <div class="psb-form-group">
                             <label class="psb-label">${this._t('psb_category', 'Category')}</label>
                             <select class="psb-select" id="psb-category-select">
-                                ${categories.map(c => `<option value="${c.id}" ${c.id === this.state.category ? 'selected' : ''}>${c.label}</option>`).join('')}
+                                ${categories.map(c => `<option value="${c.id}" ${c.id === this.state.category ? 'selected' : ''}>${this._t('ps_cat_' + String(c.id).replace(/-/g, '_'), c.label)}</option>`).join('')}
                             </select>
                         </div>
 
@@ -1545,7 +1550,7 @@ const PromptStudioBeta = {
                         <div class="psb-form-group">
                             <label class="psb-label">${this._t('psb_precious_metal', 'Precious Metal')}</label>
                             <select class="psb-select" id="psb-material-select">
-                                ${materials.map(m => `<option value="${m.id}" ${m.id === this.state.material ? 'selected' : ''}>${m.label}</option>`).join('')}
+                                ${materials.map(m => `<option value="${m.id}" ${m.id === this.state.material ? 'selected' : ''}>${this._t('ps_mat_' + String(m.id).replace(/-/g, '_'), m.label)}</option>`).join('')}
                             </select>
                         </div>
 
@@ -1553,7 +1558,7 @@ const PromptStudioBeta = {
                         <div class="psb-form-group">
                             <label class="psb-label">${this._t('psb_center_gem', 'Center Gemstone')}</label>
                             <select class="psb-select" id="psb-stone-select">
-                                ${stones.map(s => `<option value="${s.id}" ${s.id === this.state.stone ? 'selected' : ''}>${s.label}</option>`).join('')}
+                                ${stones.map(s => `<option value="${s.id}" ${s.id === this.state.stone ? 'selected' : ''}>${this._t('ps_stone_' + String(s.id).replace(/-/g, '_'), s.label)}</option>`).join('')}
                             </select>
                         </div>
 
@@ -1652,8 +1657,8 @@ const PromptStudioBeta = {
                                                 </svg>
                                                 <span class="psb-arch-emoji">${arch.icon || '💎'}</span>
                                             </div>
-                                            <div class="psb-arch-card-name" title="${arch.name}">${arch.name}</div>
-                                            <div class="psb-arch-card-tag">${arch.tagline || arch.desc || ''}</div>
+                                            <div class="psb-arch-card-name" title="${this._archName(arch)}">${this._archName(arch)}</div>
+                                            <div class="psb-arch-card-tag">${this._archTag(arch) || arch.desc || ''}</div>
                                             <div class="psb-arch-score-badge" style="color:${scoreColor}">${score}% ${this._t('psb_match', 'Match')}</div>
                                         </div>
                                     `;
@@ -2036,10 +2041,10 @@ const PromptStudioBeta = {
                             <div class="psb-guide-icon">${activeArch.icon || '💎'}</div>
                             <div style="flex:1;min-width:0;">
                                 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                                    <div class="psb-guide-title">${activeArch.name}</div>
+                                    <div class="psb-guide-title">${this._archName(activeArch)}</div>
                                     ${this._V3_IDS.has(activeArch.id) ? '<span class="psb-guide-v3-badge">V3.0</span>' : ''}
                                 </div>
-                                <div class="psb-guide-sub">${activeArch.tagline || ''}</div>
+                                <div class="psb-guide-sub">${this._archTag(activeArch)}</div>
                             </div>
                         </div>
 
@@ -2317,13 +2322,13 @@ const PromptStudioBeta = {
                                         <div style="font-size:26px;line-height:1;flex-shrink:0;padding-top:2px;">${arch.icon || '💎'}</div>
                                         <div style="flex:1;min-width:0;">
                                             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;gap:6px;">
-                                                <div style="font-size:12.5px;font-weight:700;color:var(--psb-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${arch.name}</div>
+                                                <div style="font-size:12.5px;font-weight:700;color:var(--psb-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${this._archName(arch)}</div>
                                                 <div style="display:flex;gap:4px;align-items:center;flex-shrink:0;">
                                                     ${catBadge}
                                                     <span style="font-size:9.5px;font-weight:800;color:${scoreColor};background:${score >= 85 ? 'rgba(52,211,153,0.15)' : score >= 75 ? 'rgba(245,166,35,0.15)' : 'rgba(148,163,184,0.15)'};padding:2px 6px;border-radius:10px;">${score}%</span>
                                                 </div>
                                             </div>
-                                            <div style="font-size:10.5px;color:var(--psb-text-2);font-style:italic;line-height:1.3;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${arch.tagline || ''}</div>
+                                            <div style="font-size:10.5px;color:var(--psb-text-2);font-style:italic;line-height:1.3;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${this._archTag(arch)}</div>
                                             ${arch.bestFor ? `<div style="font-size:9.5px;color:#fbbf24;font-weight:600;letter-spacing:0.01em;line-height:1.3;margin-bottom:3px;">${arch.bestFor}</div>` : ''}
                                             <div style="font-size:10px;color:var(--psb-text-3);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${arch.desc || ''}</div>
                                         </div>
