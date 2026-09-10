@@ -262,8 +262,14 @@ window.render_trends = function(container) {
                             <div class="flex gap-2 mt-3" style="flex-wrap:wrap">
                                 ${t.tags.map(tag => `<span class="hashtag-pill">#${tag}</span>`).join('')}
                             </div>
+                            ${t.reference ? `
+                                <a href="${t.reference.url}" target="_blank" rel="noopener noreferrer" class="trend-ref-link mt-3">
+                                    <span>🔗 See this trend in the wild</span>
+                                    <span class="trend-ref-src">${t.reference.label} ↗</span>
+                                </a>
+                            ` : ''}
                             ${t.studio ? `
-                                <button class="btn btn-sm mt-3 use-trend-btn" data-trend-id="${t.id}" style="width:100%">
+                                <button class="btn btn-sm mt-2 use-trend-btn" data-trend-id="${t.id}" style="width:100%">
                                     🔥 Use in Studio Beta →
                                 </button>
                             ` : ''}

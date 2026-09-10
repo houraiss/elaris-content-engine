@@ -107,4 +107,10 @@ The application is structured into several core views:
   - **`js/app.js`**: Each Trends-page card with a `studio` block gets a "🔥 Use in Studio Beta →" button that stores the trend id in `localStorage` (`elaris_active_trend`) and routes to `#promptstudiobeta`; Studio Beta's `_loadTrends()` consumes that hand-off on entry (applies the trend, clears the key). Stale-data banner copy updated (no longer references "Antigravity"; notes the `studio` block must be preserved on refresh).
   - **`index.html`**: `beta.css?v=8`, `prompt-studio-beta.js?v=11` (both were still on the v8-era query strings). **`sw.js`**: cache `elaris-v37` → `elaris-v38`.
   - **`.gitignore`**: ignore `.claude/` (local preview-launch helper).
+- **2026-09-10**: **Trends v12 — per-trend reference links ("see it first")**:
+  - **`assets/trends.json`**: each trend gained a `reference` object `{ label, url }` pointing to the specific web article the trend was drawn from (Who What Wear, Forbes, GemFind, Photta, Squareshot ×2, Pixofix, Hootsuite, Honho, Marie Claire — all link-checked). `sources` array updated to match.
+  - **`js/app.js`**: Trends-page cards render a "🔗 See this trend in the wild" link (opens the reference in a new tab, `rel="noopener noreferrer"`) above the "Use in Studio Beta" button.
+  - **`js/prompt-studio-beta.js` → v12**: the Live Trends panel's active-trend box shows a "🔗 See it first — <source> ↗" link so the reference is reachable from inside the Studio before generating.
+  - **`css/styles.css`**: `.trend-ref-link` / `.trend-ref-src`. **`css/beta.css`**: `.psb-trend-ref`.
+  - **`index.html`**: `styles.css?v=20`, `beta.css?v=9`, `app.js?v=5`, `prompt-studio-beta.js?v=12`. **`sw.js`**: cache `elaris-v39` (app.js is in the SW app-shell, so the bump is required to ship the app.js change).
 

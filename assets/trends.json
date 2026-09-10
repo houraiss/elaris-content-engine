@@ -4,11 +4,13 @@
         "whowhatwear.com/fashion/luxury/luxury-jewellery-trends-2026",
         "marieclaire.com/fashion/jewelry-trends-2026",
         "forbes.com/sites/laiafarrangraves/2026/06/15/4-jewelry-defining-trends-in-2026",
-        "timothy-hogan.com/resources/future-of-jewelry-photography",
+        "photta.app/blog/jewelry-photography-ideas-2026",
         "squareshot.com/post/product-photography-trends",
         "gemfind.com/blogs/digital-marketing/jewelry-instagram-marketing",
-        "hootsuite.com/instagram-reels",
-        "pixofix.com/blog/top-fashion-photography-trends"
+        "blog.hootsuite.com/instagram-reels",
+        "pixofix.com/blog/top-fashion-photography-trends",
+        "honhojewelry.com/jewelry-trends-2026",
+        "timothy-hogan.com/resources/future-of-jewelry-photography"
     ],
     "trends": [
         {
@@ -19,6 +21,10 @@
             "suggestion": "Shoot your most organic pieces in extreme macro on raw stone so the irregular, hand-poured surface catches light like liquid metal. Let asymmetry be the hero.",
             "relevance": "high",
             "tags": ["organic", "molten", "sculptural", "freeform", "handcraft"],
+            "reference": {
+                "label": "Who What Wear — Luxury Jewellery Trends 2026",
+                "url": "https://www.whowhatwear.com/fashion/luxury/luxury-jewellery-trends-2026"
+            },
             "studio": {
                 "directive": "Free-form molten sculptural metal as the hero — twisted asymmetric bands, hand-formed uneven surfaces, organic wax-poured forms, liquid-silver highlights rolling across irregular contours",
                 "lightingMood": "dramatic",
@@ -38,6 +44,10 @@
             "suggestion": "Style 3–5 pieces together on one wrist or neckline with deliberate rhythm — mix proportions and textures. Show the curated stack, not the single piece.",
             "relevance": "high",
             "tags": ["stacking", "layering", "maximalist", "styling", "carousel"],
+            "reference": {
+                "label": "Forbes — 4 Defining Jewelry Trends in 2026",
+                "url": "https://www.forbes.com/sites/laiafarrangraves/2026/06/15/4-jewelry-defining-trends-in-2026-from-bold-florals-to-stacking/"
+            },
             "studio": {
                 "directive": "Intentional maximalist stack — multiple rings and bracelets layered with deliberate rhythm, mixed metal textures and proportions, a choker meeting a long chain, curated 'more is more' composition",
                 "lightingMood": "editorial",
@@ -55,6 +65,10 @@
             "suggestion": "Take 2:1 macro frames of your best detailing — hand-set stones, hallmark stamps, solder seams, Moroccan pattern engraving. One hero detail per post.",
             "relevance": "high",
             "tags": ["macro", "detail", "craftsmanship", "closeup", "texture"],
+            "reference": {
+                "label": "GemFind — Jewelry Instagram Marketing 2026",
+                "url": "https://gemfind.com/blogs/digital-marketing/jewelry-instagram-marketing"
+            },
             "studio": {
                 "directive": "Extreme macro on craftsmanship — visible hand-set stones, hammer marks, engraving burr, solder seams and metal grain, the detail itself as the subject, magnification revealing why the piece is worth its price",
                 "lightingMood": "chrome-bounce",
@@ -73,6 +87,10 @@
             "suggestion": "Use one hard key light at a steep angle. Let shadows fall deliberately. Reserve wraparound soft light only for pieces that need to show full 3D volume.",
             "relevance": "high",
             "tags": ["lighting", "directional", "contrast", "shadow", "dimensional"],
+            "reference": {
+                "label": "Photta — Jewellery Photography Ideas 2026 (harsh angular shadows)",
+                "url": "https://www.photta.app/blog/jewelry-photography-ideas-2026"
+            },
             "studio": {
                 "directive": "Single hard directional light source instead of broad soft fill — crisp defined shadow edges, strong specular hits on the metal, sculpted three-dimensional dimensionality, deliberate shadow shapes",
                 "lightingMood": "split-light",
@@ -89,6 +107,10 @@
             "suggestion": "Keep skin pores, keep linen creases, keep a slightly uneven shadow. Brief your retoucher to protect texture, not erase it.",
             "relevance": "high",
             "tags": ["authentic", "texture", "imperfection", "natural", "unretouched"],
+            "reference": {
+                "label": "Squareshot — Product Photography Trends 2026",
+                "url": "https://www.squareshot.com/post/product-photography-trends"
+            },
             "studio": {
                 "directive": "Honest unretouched realism — real fabric wrinkles, natural skin texture and pores kept, subtle lighting unevenness, soft real shadows, rough organic edges left intact, believable rather than flawless",
                 "lightingMood": "natural",
@@ -106,6 +128,10 @@
             "suggestion": "Build sets from oat linen, terracotta and sage. Shoot near a window on an overcast day. Save the bright colour for every third post.",
             "relevance": "medium",
             "tags": ["earthtone", "muted", "natural-light", "sage", "ochre"],
+            "reference": {
+                "label": "Squareshot — Product Photography Trends 2026 (warmer palettes)",
+                "url": "https://www.squareshot.com/post/product-photography-trends"
+            },
             "studio": {
                 "directive": "Muted earth palette — sage green, ochre, dusty rose, warm clay and oat tones, low overall saturation, colours that sit quietly under natural light and let the metal lead",
                 "lightingMood": "overcast",
@@ -124,6 +150,10 @@
             "suggestion": "For every two natural / macro posts, do one saturated colour-block hero. Match the backdrop to a stone in the piece for a deliberate pairing.",
             "relevance": "medium",
             "tags": ["colour", "bold", "backdrop", "feed-rhythm", "scroll-stopping"],
+            "reference": {
+                "label": "Pixofix — Fashion Photography Trends 2026 (bold colour palettes)",
+                "url": "https://www.pixofix.com/blog/top-fashion-photography-trends"
+            },
             "studio": {
                 "directive": "Bold saturated colour blocking — a single vivid seamless backdrop (electric emerald, ultramarine or tangerine), high-impact contrast against the metal, colour used to trigger emotion and stop the scroll",
                 "lightingMood": "solid-color-backdrop",
@@ -141,6 +171,10 @@
             "suggestion": "Film 60–90s of polishing, stone-setting or packaging in the workshop. Open on a motion shot where the light moves across the piece. Post vertical, 9:16.",
             "relevance": "high",
             "tags": ["reels", "video", "process", "behind-the-scenes", "9x16"],
+            "reference": {
+                "label": "Hootsuite — Instagram Reels for Business 2026",
+                "url": "https://blog.hootsuite.com/instagram-reels/"
+            },
             "studio": {
                 "directive": "Motion-first hero still pulled from a craft-process reel — mid-gesture hands polishing or setting a stone, sparkle catching the light in movement, shallow workshop depth behind, vertical 9:16 energy",
                 "lightingMood": "window-light",
@@ -157,6 +191,10 @@
             "suggestion": "Show engraved initials or dates, the piece against traditional textile, a workshop-to-hand carousel. Lead the caption with the story, not the spec.",
             "relevance": "high",
             "tags": ["heritage", "personalisation", "storytelling", "morocco", "provenance"],
+            "reference": {
+                "label": "Honho — Jewelry Trends 2026: Guide for Brands & Buyers",
+                "url": "https://www.honhojewelry.com/jewelry-trends-2026/"
+            },
             "studio": {
                 "directive": "Heritage and personal-meaning storytelling — Moroccan craft context, engraved initials or a date shown, worn against traditional textile, a piece that reads as a keepsake with provenance rather than just product",
                 "lightingMood": "candlelight",
@@ -175,6 +213,10 @@
             "suggestion": "Nest floral or wave-form pieces in fresh petals or on a rain-wet surface. Shoot in dappled garden light for a romantic-but-editorial feel.",
             "relevance": "medium",
             "tags": ["floral", "marine", "botanical", "nature", "SS26"],
+            "reference": {
+                "label": "Marie Claire — The Defining Jewelry Trends for 2026",
+                "url": "https://www.marieclaire.com/fashion/jewelry-trends-2026/"
+            },
             "studio": {
                 "directive": "SS26 nature motifs — bold oversized florals and marine-inspired forms (shells, waves, coral, pearl), organic curves, jewellery nestled in real petals or on wet stone, romantic yet sculptural",
                 "lightingMood": "dappled",

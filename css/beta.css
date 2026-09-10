@@ -1778,8 +1778,23 @@
   color: var(--psb-text-3);
   text-transform: capitalize;
 }
-.psb-trend-clear {
+.psb-trend-ref {
+  display: block;
   margin-top: 10px;
+  padding: 7px 9px;
+  border-radius: 9px;
+  background: rgba(245,166,35,0.1);
+  border: 1px solid rgba(245,166,35,0.3);
+  color: var(--psb-gold);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.psb-trend-ref:hover { background: rgba(245,166,35,0.18); text-decoration: underline; }
+
+.psb-trend-clear {
+  margin-top: 8px;
   width: 100%;
   padding: 7px;
   border-radius: 9px;

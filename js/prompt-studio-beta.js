@@ -1,5 +1,8 @@
 /**
- * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v11.
+ * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v12.
+ *
+ * Changes in v12: each trend can carry a `reference` { label, url } — shown as a
+ * "See it first" link in the active-trend box (and on the Trends page cards).
  *
  * Changes in v11 — Live Trends integration:
  *  - Loads assets/trends.json and shows a "Live Trends" panel under the Smart Guide (right column)
@@ -2197,6 +2200,9 @@ const PromptStudioBeta = {
                             const ch = this._getTrendChanges(active);
                             return ch.length ? `<div class="psb-trend-changes">${ch.map(c => `<span>${c}</span>`).join('')}</div>` : '';
                         })()}
+                        ${active.reference ? `
+                            <a href="${active.reference.url}" target="_blank" rel="noopener noreferrer" class="psb-trend-ref">🔗 See it first — ${active.reference.label} ↗</a>
+                        ` : ''}
                         <button type="button" class="psb-trend-clear" id="psb-trend-clear">✕ Clear trend</button>
                     </div>
                 ` : `<div class="psb-trend-hint">Tap a trend to restyle the shot and lock its look into every prompt.</div>`}
