@@ -45,8 +45,9 @@ const Elaris = {
     },
 
     loadPage(page) {
+        const T = (k, en) => (window.I18n ? window.I18n.t(k, en) : en);
         const container = document.getElementById('page-container');
-        container.innerHTML = '<div class="page-loading"><div class="spinner"></div><p>Loading...</p></div>';
+        container.innerHTML = `<div class="page-loading"><div class="spinner"></div><p>${T('app_loading', 'Loading…')}</p></div>`;
 
         const renderFn = window[`render_${page}`];
         if (typeof renderFn === 'function') {
@@ -56,18 +57,21 @@ const Elaris = {
                 console.error(`[Elaris] Render error for ${page}:`, e);
                 container.innerHTML = `
                     <div class="empty-state">
-                        <h3>Something went wrong</h3>
+                        <h3>${T('app_error_title', 'Something went wrong')}</h3>
                         <p>${e.message}</p>
-                        <button class="btn btn-secondary mt-4" onclick="Elaris.loadPage('${page}')">Retry</button>
+                        <button class="btn btn-secondary mt-4" onclick="Elaris.loadPage('${page}')">${T('app_retry', 'Retry')}</button>
                     </div>`;
             }
         } else {
             container.innerHTML = `
                 <div class="empty-state">
-                    <h3>Coming Soon</h3>
-                    <p>The ${page} module is under construction.</p>
+                    <h3>${T('app_coming_soon', 'Coming Soon')}</h3>
+                    <p>${T('app_coming_soon_desc', 'The {page} module is under construction.').replace('{page}', page)}</p>
                 </div>`;
         }
+
+        // Re-apply static [data-i18n] translations to any freshly-rendered nodes
+        if (window.I18n && typeof window.I18n.applyLanguage === 'function') window.I18n.applyLanguage();
     },
 };
 
@@ -191,12 +195,13 @@ window.render_captions = function(container) {
 
 // ── Trends Page ──────────────────────────────────────────────────
 window.render_trends = function(container) {
+    const T = (k, en) => (window.I18n ? window.I18n.t(k, en) : en);
     container.innerHTML = `
         <div class="page-header">
             <h1 class="page-title" data-i18n="trd_title">Trends</h1>
             <p class="page-subtitle" data-i18n="trd_subtitle">Current jewelry & design trends — stay ahead, never repeat</p>
         </div>
-        <div class="page-loading" id="trends-loading"><div class="spinner"></div><p data-i18n="trd_loading">Loading trends...</p></div>
+        <div class="page-loading" id="trends-loading"><div class="spinner"></div><p data-i18n="trd_loading">Loading trends…</p></div>
         <div id="trends-content" style="display:none"></div>
     `;
 
@@ -218,8 +223,8 @@ window.render_trends = function(container) {
                             <div class="flex items-center gap-3">
                                 <span style="font-size:24px">⚠️</span>
                                 <div>
-                                    <div style="font-weight:600;margin-bottom:2px;color:#ff6b6b">Trends Data is ${daysSince} Days Old</div>
-                                    <div class="text-sm text-muted">Last refreshed ${data.lastUpdated}. Trends move fast — ask your AI agent to research current fine-jewelry &amp; Instagram content trends and rewrite <code>assets/trends.json</code> (keep each trend's <code>studio</code> block so Studio Beta stays wired).</div>
+                                    <div style="font-weight:600;margin-bottom:2px;color:#ff6b6b">${T('trd_stale_title', 'Trends data is {n} days old').replace('{n}', daysSince)}</div>
+                                    <div class="text-sm text-muted">${T('trd_stale_desc', "Last refreshed {date}. Trends move fast — ask your AI agent to research current fine-jewelry & Instagram content trends and rewrite assets/trends.json (keep each trend's studio block so Studio Beta stays wired).").replace('{date}', data.lastUpdated)}</div>
                                 </div>
                             </div>
                         </div>`;
@@ -237,16 +242,16 @@ window.render_trends = function(container) {
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
                             <span style="font-size:20px">${categoryIcons[t.category] || '✦'}</span>
-                            <span class="card-title" style="margin:0">${t.category}</span>
+                            <span class="card-title" style="margin:0">${T('trd_cat_' + t.category, t.category)}</span>
                         </div>
                         <span class="trend-relevance" style="color:${relevanceColors[t.relevance]}">
-                            ● ${t.relevance} relevance
+                            ● ${T('trd_relevance_line', '{level} relevance').replace('{level}', T('trd_rel_' + t.relevance, t.relevance))}
                         </span>
                     </div>
                     <h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:8px">${t.title}</h3>
                     <p class="text-sm" style="color:var(--text-secondary);line-height:1.6;margin-bottom:12px">${t.description}</p>
                     <div class="trend-suggestion">
-                        <div class="text-sm" style="font-weight:600;color:var(--moroccan-bronze);margin-bottom:4px">✦ Suggestion for @elaris.925</div>
+                        <div class="text-sm" style="font-weight:600;color:var(--moroccan-bronze);margin-bottom:4px">✦ ${T('trd_suggestion_for', 'Suggestion for @elaris.925')}</div>
                         <div class="text-sm text-muted">${t.suggestion}</div>
                     </div>
                     <div class="flex gap-2 mt-3" style="flex-wrap:wrap">
@@ -254,16 +259,16 @@ window.render_trends = function(container) {
                     </div>
                     ${t.reference ? `
                         <a href="${t.reference.url}" target="_blank" rel="noopener noreferrer" class="trend-ref-link mt-3">
-                            <span>🔗 See this trend in the wild</span>
+                            <span>🔗 ${T('trd_see_wild', 'See this trend in the wild')}</span>
                             <span class="trend-ref-src">${t.reference.label} ↗</span>
                         </a>
                     ` : ''}
                     ${t.studio ? `
                         <button class="btn btn-sm mt-2 use-trend-btn" data-trend-id="${t.id}" style="width:100%">
-                            🔥 Use in Studio Beta →
+                            🔥 ${T('trd_use_studio', 'Use in Studio Beta →')}
                         </button>
                     ` : `
-                        <div class="text-sm text-muted mt-2" style="text-align:center;opacity:0.7">✎ Content format — no render needed</div>
+                        <div class="text-sm text-muted mt-2" style="text-align:center;opacity:0.7">✎ ${T('trd_no_render', 'Content format — no render needed')}</div>
                     `}
                 </div>
             `;
@@ -277,10 +282,12 @@ window.render_trends = function(container) {
                 if (!items.length) return '';
                 seen.add(key);
                 const meta = groupMeta[key] || { label: key, icon: '✦', blurb: '' };
+                const label = T('trd_group_' + key + '_label', meta.label || key);
+                const blurb = T('trd_group_' + key + '_blurb', meta.blurb || '');
                 return `
                     <h2 class="trend-section-title">
-                        <span>${meta.icon || '✦'} ${meta.label || key}</span>
-                        ${meta.blurb ? `<span class="trend-section-sub">${meta.blurb}</span>` : ''}
+                        <span>${meta.icon || '✦'} ${label}</span>
+                        ${blurb ? `<span class="trend-section-sub">${blurb}</span>` : ''}
                     </h2>
                     <div class="trends-grid mb-4">${items.map(renderCard).join('')}</div>
                 `;
@@ -288,7 +295,7 @@ window.render_trends = function(container) {
             // Catch any trend whose group had no metadata / order slot
             const orphans = data.trends.filter(t => !seen.has(t.group || 'jewelry'));
             const orphansHtml = orphans.length
-                ? `<h2 class="trend-section-title"><span>✦ More Trends</span></h2>
+                ? `<h2 class="trend-section-title"><span>✦ ${T('trd_more', 'More Trends')}</span></h2>
                    <div class="trends-grid mb-4">${orphans.map(renderCard).join('')}</div>`
                 : '';
 
@@ -308,10 +315,12 @@ window.render_trends = function(container) {
                 ${orphansHtml}
 
                 <div class="card mt-4" style="text-align:center">
-                    <p class="text-sm text-muted">Last updated: ${data.lastUpdated}</p>
-                    <p class="text-sm text-muted mt-2">Refresh by rewriting <code>assets/trends.json</code> — keep each <code>studio</code> block so Studio Beta stays linked.</p>
+                    <p class="text-sm text-muted">${T('trd_last_updated', 'Last updated:')} ${data.lastUpdated}</p>
+                    <p class="text-sm text-muted mt-2">${T('trd_refresh_hint', 'Refresh by rewriting assets/trends.json — keep each studio block so Studio Beta stays linked.')}</p>
                 </div>
             `;
+
+            if (window.I18n && window.I18n.applyLanguage) window.I18n.applyLanguage();
 
             // ── Hand off a trend to Studio Beta ──
             content.querySelectorAll('.use-trend-btn').forEach(btn => {
@@ -322,10 +331,11 @@ window.render_trends = function(container) {
             });
         })
         .catch(() => {
-            document.getElementById('trends-loading').innerHTML = `
+            const el = document.getElementById('trends-loading');
+            if (el) el.innerHTML = `
                 <div class="empty-state">
-                    <h3>No Trends Data</h3>
-                    <p>Ask Antigravity to research current trends</p>
+                    <h3>${T('trd_none_title', 'No Trends Data')}</h3>
+                    <p>${T('trd_none_desc', 'Trend data could not be loaded.')}</p>
                 </div>`;
         });
 };

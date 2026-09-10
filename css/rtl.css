@@ -1,0 +1,90 @@
+/* =========================================================================
+ *  rtl.css — right-to-left (Arabic) layout pass.
+ *  Loaded after styles.css and beta.css so it can override directional props.
+ *  styles.css already carries a first RTL block (sidebar borders, nav icons,
+ *  selects, watermark panel); this file extends it to Studio Beta, the Trends
+ *  page and shared components, plus global text-direction hygiene.
+ *  RTL polish is iterative — this makes Arabic usable, not pixel-perfect.
+ * ====================================================================== */
+
+/* ── Global direction & alignment ─────────────────────────────────────── */
+[dir="rtl"] body { direction: rtl; }
+[dir="rtl"] .page-header,
+[dir="rtl"] .page-title,
+[dir="rtl"] .page-subtitle,
+[dir="rtl"] .card,
+[dir="rtl"] .card-title,
+[dir="rtl"] .section-title { text-align: right; }
+
+/* Keep Latin / code / numbers rendering LTR inside RTL text */
+[dir="rtl"] code,
+[dir="rtl"] .hashtag-pill,
+[dir="rtl"] .trend-ref-src,
+[dir="rtl"] input[type="text"],
+[dir="rtl"] input[type="url"],
+[dir="rtl"] textarea {
+    direction: ltr;
+    unicode-bidi: isolate;
+    text-align: right;
+}
+[dir="rtl"] .hashtag-pill { direction: ltr; unicode-bidi: embed; }
+
+/* Sliders should fill from the right in RTL */
+[dir="rtl"] input[type="range"] { direction: rtl; }
+
+/* ── Sidebar / nav (extend styles.css block) ──────────────────────────── */
+[dir="rtl"] .nav-item { text-align: right; }
+[dir="rtl"] .nav-item .nav-icon { margin-right: 0; margin-left: 12px; }
+[dir="rtl"] .nav-section-label { text-align: right; }
+[dir="rtl"] .lang-switcher { flex-direction: row-reverse; }
+
+/* ── Trends page ─────────────────────────────────────────────────────── */
+[dir="rtl"] .trend-section-title,
+[dir="rtl"] .trend-section-sub,
+[dir="rtl"] .trend-card,
+[dir="rtl"] .trend-suggestion { text-align: right; }
+[dir="rtl"] .trend-suggestion {
+    border-left: none;
+    border-right: 3px solid var(--moroccan-bronze);
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+[dir="rtl"] .trend-ref-link { text-align: right; }
+
+/* ── Studio Beta (beta.css has no RTL of its own) ─────────────────────── */
+[dir="rtl"] .psb-root,
+[dir="rtl"] .psb-header,
+[dir="rtl"] .psb-section-title,
+[dir="rtl"] .psb-label,
+[dir="rtl"] .psb-guide-title,
+[dir="rtl"] .psb-guide-body,
+[dir="rtl"] .psb-guide-bestfor,
+[dir="rtl"] .psb-output-body,
+[dir="rtl"] .psb-history-item,
+[dir="rtl"] .psb-trend-card,
+[dir="rtl"] .psb-trend-active-dir,
+[dir="rtl"] .psb-trend-hint { text-align: right; }
+
+/* the compiled-prompt output and any raw prompt text stays LTR */
+[dir="rtl"] .psb-output-body { direction: ltr; text-align: left; unicode-bidi: isolate; }
+
+/* icon / control offsets that were pinned to one side */
+[dir="rtl"] .psb-guide-title-wrap,
+[dir="rtl"] .psb-guide-header { padding-right: 0; padding-left: 52px; }
+[dir="rtl"] .psb-modal-close { right: auto; left: 10px; }
+[dir="rtl"] .psb-arch-type-badge { right: auto; left: 8px; }
+[dir="rtl"] .psb-trend-link,
+[dir="rtl"] .psb-guide-apply-btn .psb-hint-right,
+[dir="rtl"] .psb-count-row .psb-count-label { margin-left: 0; margin-right: auto; }
+
+/* chip rows / carousels read right-to-left */
+[dir="rtl"] .psb-chips,
+[dir="rtl"] .psb-trend-groupbar,
+[dir="rtl"] .psb-mod-tabs,
+[dir="rtl"] .psb-aspect-row { flex-direction: row-reverse; }
+[dir="rtl"] .psb-carousel-track { direction: rtl; }
+
+/* mobile dock */
+[dir="rtl"] .psb-dock { flex-direction: row-reverse; }
+
+/* 3-column grid: let the browser reverse column order (config panel -> right),
+   which is the intended RTL reading order, so no override needed. */

@@ -1248,39 +1248,194 @@ const translations = {
     }
 };
 
-class I18nManager {
-    constructor() {
-        this.lang = localStorage.getItem('elaris-lang') || 'en';
+/* =========================================================================
+ *  i18n engine (v2)
+ *  - t(key, en): English lives at the CALL SITE. Only `fr` / `ar` need dict
+ *    entries; a missing key falls back to the English arg, then the `en`
+ *    dict, then the key itself. New strings go in the Object.assign blocks
+ *    below (grouped by module), never by editing the giant literal above.
+ *  - setLanguage() persists, flips <html dir/lang>, updates static
+ *    [data-i18n] nodes, then re-renders the active page so JS-built views
+ *    (Studio Beta, Motion, Trends, …) rebuild in the new language.
+ *  - [data-i18n] supports [data-i18n-attr="placeholder|title|aria-label"];
+ *    default target is textContent (or .placeholder for inputs).
+ * ====================================================================== */
+const I18nManager = {
+    RTL_LANGS: ['ar'],
+    SUPPORTED: ['en', 'fr', 'ar'],
+    lang: 'en',
+
+    init() {
+        try { this.lang = localStorage.getItem('elaris-lang') || 'en'; } catch (e) { this.lang = 'en'; }
+        if (!this.SUPPORTED.includes(this.lang)) this.lang = 'en';
         this.applyLanguage();
-    }
+    },
+
+    isRTL() { return this.RTL_LANGS.includes(this.lang); },
+
+    t(key, en) {
+        const dict = translations[this.lang];
+        if (dict && dict[key] != null) return dict[key];
+        if (en != null) return en;
+        if (translations.en && translations.en[key] != null) return translations.en[key];
+        return key;
+    },
 
     setLanguage(lang) {
-        if (!translations[lang]) return;
+        if (!this.SUPPORTED.includes(lang) || lang === this.lang) {
+            if (lang === this.lang) this._syncButtons();
+            return;
+        }
         this.lang = lang;
-        localStorage.setItem('elaris-lang', lang);
+        try { localStorage.setItem('elaris-lang', lang); } catch (e) {}
         this.applyLanguage();
-    }
-
-    t(key) {
-        return translations[this.lang][key] || translations['en'][key] || key;
-    }
+        // Rebuild the current JS-rendered view in the new language.
+        if (window.Elaris && typeof window.Elaris.loadPage === 'function' && window.Elaris.currentPage) {
+            window.Elaris.loadPage(window.Elaris.currentPage);
+        }
+        window.dispatchEvent(new CustomEvent('elaris:languagechange', { detail: { lang } }));
+        window.dispatchEvent(new Event('languagechange')); // legacy
+    },
 
     applyLanguage() {
-        document.documentElement.lang = this.lang;
-        document.documentElement.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
-        
+        const html = document.documentElement;
+        html.lang = this.lang;
+        html.dir = this.isRTL() ? 'rtl' : 'ltr';
+        html.setAttribute('data-lang', this.lang);
+
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                if (el.placeholder) el.placeholder = this.t(key);
-            } else {
-                el.textContent = this.t(key);
-            }
+            const en  = el.getAttribute('data-i18n-en');
+            const val = this.t(key, en != null ? en : (el.getAttribute('data-i18n-attr') ? null : el.textContent));
+            const attr = el.getAttribute('data-i18n-attr');
+            if (attr) el.setAttribute(attr, val);
+            else if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = val;
+            else el.textContent = val;
         });
-        
-        // Update document title if needed, or trigger events
-        window.dispatchEvent(new Event('languagechange'));
-    }
+
+        this._syncButtons();
+    },
+
+    _syncButtons() {
+        document.querySelectorAll('.lang-btn').forEach(b => {
+            b.classList.toggle('active', (b.textContent || '').trim().toLowerCase() === this.lang);
+        });
+    },
+};
+
+window.I18n = I18nManager;
+window.t = (key, en) => I18nManager.t(key, en);
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => I18nManager.init());
+} else {
+    I18nManager.init();
 }
 
-window.I18n = new I18nManager();
+/* =========================================================================
+ *  ADDED STRINGS — grouped by module / rollout phase.
+ *  English lives at the call site via t('key', 'English'); only fr / ar here.
+ *  Keep blocks small and labelled so translation coverage is auditable.
+ * ====================================================================== */
+
+/* ── Phase 1 · App shell + Trends page (chrome only; trend copy stays EN) ── */
+Object.assign(translations.fr, {
+    nav_promptstudiobeta: "Studio Bêta",
+    nav_motionstudio: "Studio Motion",
+    app_loading: "Chargement…",
+    app_coming_soon: "Bientôt disponible",
+    app_coming_soon_desc: "Le module {page} est en cours de construction.",
+    app_error_title: "Une erreur est survenue",
+    app_retry: "Réessayer",
+
+    trd_stale_title: "Données de tendances vieilles de {n} jours",
+    trd_stale_desc: "Dernière actualisation le {date}. Les tendances évoluent vite — demandez à votre agent IA de rechercher les tendances actuelles de la joaillerie fine et du contenu Instagram, puis de réécrire assets/trends.json (en conservant le bloc studio de chaque tendance pour garder le lien avec Studio Bêta).",
+    trd_group_jewelry_label: "Tendances Joaillerie & Design",
+    trd_group_jewelry_blurb: "Comment la joaillerie fine est conçue, stylée et photographiée en ce moment.",
+    trd_group_social_label: "Tendances Sociales & Virales",
+    trd_group_social_blurb: "Des formats souples, tous secteurs confondus — filtres viraux, styles photo et angles de contenu qu'Elaris peut exploiter, pas seulement propres à la joaillerie.",
+    trd_more: "Plus de tendances",
+    trd_relevance_line: "pertinence {level}",
+    trd_rel_high: "élevée",
+    trd_rel_medium: "moyenne",
+    trd_rel_low: "faible",
+    trd_suggestion_for: "Suggestion pour @elaris.925",
+    trd_see_wild: "Voir cette tendance en situation réelle",
+    trd_use_studio: "Utiliser dans Studio Bêta →",
+    trd_no_render: "Format de contenu — aucun rendu nécessaire",
+    trd_last_updated: "Dernière mise à jour :",
+    trd_refresh_hint: "Actualisez en réécrivant assets/trends.json — conservez chaque bloc studio pour garder le lien avec Studio Bêta.",
+    trd_none_title: "Aucune donnée de tendances",
+    trd_none_desc: "Impossible de charger les données de tendances.",
+    trd_cat_design: "design",
+    trd_cat_photography: "photographie",
+    trd_cat_content: "contenu",
+    trd_cat_strategy: "stratégie",
+    trd_cat_video: "vidéo",
+    trd_cat_styling: "stylisme",
+    "trd_cat_viral-format": "format viral",
+    "trd_cat_ai-filter": "filtre IA",
+    trd_cat_audio: "audio",
+    trd_full_page: "page complète →",
+    trd_live: "Tendances en direct",
+    trd_updated: "mis à jour",
+    trd_days_old: "j",
+    trd_tap_hint: "Touchez une tendance pour restyler la prise de vue et verrouiller son rendu dans chaque prompt.",
+    trd_clear: "✕ Effacer la tendance",
+    trd_see_first: "🔗 À voir d'abord",
+    trd_active_prefix: "🔥 Tendance active :",
+    trd_active_suffix: "— sa directive est injectée dans ce prompt",
+    trd_grp_all: "Toutes",
+    trd_grp_jewelry: "💎 Joaillerie",
+    trd_grp_social: "📱 Social",
+});
+Object.assign(translations.ar, {
+    nav_promptstudiobeta: "الاستوديو التجريبي",
+    nav_motionstudio: "استوديو الحركة",
+    app_loading: "جارٍ التحميل…",
+    app_coming_soon: "قريباً",
+    app_coming_soon_desc: "وحدة {page} قيد الإنشاء.",
+    app_error_title: "حدث خطأ ما",
+    app_retry: "إعادة المحاولة",
+
+    trd_stale_title: "بيانات الاتجاهات قديمة منذ {n} يوماً",
+    trd_stale_desc: "آخر تحديث في {date}. الاتجاهات تتغير بسرعة — اطلب من وكيل الذكاء الاصطناعي البحث عن أحدث اتجاهات المجوهرات الفاخرة ومحتوى إنستغرام ثم إعادة كتابة assets/trends.json (مع الحفاظ على كتلة studio لكل اتجاه ليبقى مرتبطاً بالاستوديو التجريبي).",
+    trd_group_jewelry_label: "اتجاهات المجوهرات والتصميم",
+    trd_group_jewelry_blurb: "كيف تُصمَّم المجوهرات الفاخرة وتُنسَّق وتُصوَّر في الوقت الحالي.",
+    trd_group_social_label: "الاتجاهات الاجتماعية والمنتشرة",
+    trd_group_social_blurb: "صيغ مرنة عابرة للقطاعات — فلاتر منتشرة، وأنماط تصوير، وزوايا محتوى يمكن لإيلاريس الاستفادة منها، وليست خاصة بالمجوهرات فقط.",
+    trd_more: "المزيد من الاتجاهات",
+    trd_relevance_line: "صلة {level}",
+    trd_rel_high: "عالية",
+    trd_rel_medium: "متوسطة",
+    trd_rel_low: "منخفضة",
+    trd_suggestion_for: "اقتراح لـ @elaris.925",
+    trd_see_wild: "شاهد هذا الاتجاه على أرض الواقع",
+    trd_use_studio: "← استخدمه في الاستوديو التجريبي",
+    trd_no_render: "صيغة محتوى — لا حاجة إلى تكوين صورة",
+    trd_last_updated: "آخر تحديث:",
+    trd_refresh_hint: "حدِّث الملف بإعادة كتابة assets/trends.json — واحتفظ بكل كتلة studio ليبقى مرتبطاً بالاستوديو التجريبي.",
+    trd_none_title: "لا توجد بيانات اتجاهات",
+    trd_none_desc: "تعذّر تحميل بيانات الاتجاهات.",
+    trd_cat_design: "تصميم",
+    trd_cat_photography: "تصوير",
+    trd_cat_content: "محتوى",
+    trd_cat_strategy: "استراتيجية",
+    trd_cat_video: "فيديو",
+    trd_cat_styling: "تنسيق",
+    "trd_cat_viral-format": "صيغة منتشرة",
+    "trd_cat_ai-filter": "فلتر ذكاء اصطناعي",
+    trd_cat_audio: "صوت",
+    trd_full_page: "الصفحة الكاملة →",
+    trd_live: "اتجاهات مباشرة",
+    trd_updated: "حُدِّث",
+    trd_days_old: "يوم",
+    trd_tap_hint: "انقر على اتجاه لإعادة تصميم اللقطة وتثبيت مظهره في كل prompt.",
+    trd_clear: "✕ مسح الاتجاه",
+    trd_see_first: "🔗 شاهده أولاً",
+    trd_active_prefix: "🔥 اتجاه نشط:",
+    trd_active_suffix: "— توجيهه مُضمَّن في هذا الـ prompt",
+    trd_grp_all: "الكل",
+    trd_grp_jewelry: "💎 مجوهرات",
+    trd_grp_social: "📱 اجتماعي",
+});
