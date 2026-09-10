@@ -2077,7 +2077,14 @@ const PromptStudio = {
         this._render();
         this._renderArchetypeGrid();
         this._bind();
+        if (window.I18n && window.I18n.applyLanguage) window.I18n.applyLanguage();
     },
+
+    // ── i18n shorthand — English lives at the call site ────
+    _t(key, en) { return window.I18n ? window.I18n.t(key, en) : en; },
+    // Shared archetype name/tagline keys (same 74 as Studio Beta)
+    _archName(a) { return a ? this._t('psb_arch_' + String(a.id).replace(/-/g, '_') + '_name', a.name || a.id) : ''; },
+    _archTag(a)  { return a ? this._t('psb_arch_' + String(a.id).replace(/-/g, '_') + '_tag', a.tagline || '') : ''; },
 
     // ── Compute a single consistent score for sort + display ──────────────────────
     // This guarantees that badge rank = visual rank. Score is always 0-100.
@@ -2193,20 +2200,10 @@ const PromptStudio = {
             const isWatchArch = WATCH_ARCHETYPES.has(a.id);
             const isSetArch   = SET_ARCHETYPES.has(a.id);
 
-            // Dynamic translation for archetypes based on ID prefix
-            const tPrefix = a.id === 'body-intimate' ? 'body' :
-                            a.id === 'object-pairing' ? 'obj' :
-                            a.id === 'macro-detail' ? 'macro' :
-                            a.id === 'editorial-abstract' ? 'edit' :
-                            a.id === 'lifestyle-ritual' ? 'life' :
-                            a.id === 'nature-botanical' ? 'nat' :
-                            a.id === 'heritage-moroccan' ? 'her' :
-                            a.id === 'minimalist-space' ? 'min' :
-                            null;
-
-            const name = tPrefix && window.I18n ? window.I18n.t(`ps_arch_${tPrefix}_title`) : a.name;
-            const tagline = tPrefix && window.I18n ? window.I18n.t(`ps_arch_${tPrefix}_tag`) : a.tagline;
-            const bestForText = window.I18n ? window.I18n.t('ps_best_for') : 'Best for:';
+            // All 74 archetypes share the psb_arch_<id>_name/_tag keys with Studio Beta
+            const name = this._archName(a);
+            const tagline = this._archTag(a);
+            const bestForText = this._t('ps_best_for', 'Best for:');
             const bestForVal = a.bestFor.replace('Best for:', '').trim();
 
             return `
@@ -2236,9 +2233,9 @@ const PromptStudio = {
             <div style="margin-top:12px;border:1px dashed rgba(255,255,255,0.1);border-radius:12px;padding:16px;background:var(--surface);opacity:0.6">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                     <span style="font-size:16px">🧭</span>
-                    <span style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted)">Smart Guide</span>
+                    <span style="font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted)">${this._t('ps_smart_guide', 'Smart Guide')}</span>
                 </div>
-                <p style="font-size:12px;color:var(--text-muted);line-height:1.5;margin:0">Select one or more archetypes above to get personalised recommendations for the best camera angles, lighting &amp; mood, and lens profiles.</p>
+                <p style="font-size:12px;color:var(--text-muted);line-height:1.5;margin:0">${this._t('ps_sg_empty', 'Select one or more archetypes above to get personalised recommendations for the best camera angles, lighting & mood, and lens profiles.')}</p>
             </div>`;
         }
 
@@ -2338,9 +2335,9 @@ const PromptStudio = {
             <div style="margin-top:12px;border:1px solid rgba(168,85,247,0.2);border-radius:12px;padding:16px;background:rgba(124,58,237,0.05)">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
                     <span style="font-size:16px">🧭</span>
-                    <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#a855f7">Smart Guide</span>
+                    <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#a855f7">${this._t('ps_smart_guide', 'Smart Guide')}</span>
                 </div>
-                <p style="font-size:12px;color:var(--text-muted);line-height:1.5;margin:0">✨ Great selection! Hit Generate Prompts to create your editorial prompts.</p>
+                <p style="font-size:12px;color:var(--text-muted);line-height:1.5;margin:0">${this._t('ps_sg_ready', '✨ Great selection! Hit Generate Prompts to create your editorial prompts.')}</p>
             </div>`;
         }
 
@@ -2365,27 +2362,27 @@ const PromptStudio = {
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
                 <div style="display:flex;align-items:center;gap:8px">
                     <span style="font-size:16px">🧭</span>
-                    <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#a855f7">Smart Guide</span>
+                    <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#a855f7">${this._t('ps_smart_guide', 'Smart Guide')}</span>
                 </div>
-                <span style="font-size:10px;color:var(--text-muted);opacity:0.7">Based on your archetype selection</span>
+                <span style="font-size:10px;color:var(--text-muted);opacity:0.7">${this._t('ps_sg_basedon', 'Based on your archetype selection')}</span>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
                 <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px">
-                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;margin-bottom:6px">📐 Best Angles</div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#60a5fa;margin-bottom:6px">📐 ${this._t('ps_sg_best_angles', 'Best Angles')}</div>
                     ${bestAngles.map((id, i) => `<div style="font-size:11px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:4px">${i === 0 ? '<span style="color:#fbbf24">⭐</span>' : '<span style="opacity:0.4">·</span>'} ${angleLabel(id)}</div>`).join('')}
                 </div>
                 <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px">
-                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#34d399;margin-bottom:6px">💡 Best Lighting</div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#34d399;margin-bottom:6px">💡 ${this._t('ps_sg_best_lighting', 'Best Lighting')}</div>
                     ${bestLighting.map((id, i) => `<div style="font-size:11px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:4px">${i === 0 ? '<span style="color:#fbbf24">⭐</span>' : '<span style="opacity:0.4">·</span>'} ${lightLabel(id)}</div>`).join('')}
                 </div>
                 <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:10px">
-                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f472b6;margin-bottom:6px">📷 Best Camera</div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#f472b6;margin-bottom:6px">📷 ${this._t('ps_sg_best_camera', 'Best Camera')}</div>
                     ${bestCameras.map((id, i) => `<div style="font-size:11px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:4px">${i === 0 ? '<span style="color:#fbbf24">⭐</span>' : '<span style="opacity:0.4">·</span>'} ${cameraLabel(id)}</div>`).join('')}
                 </div>
             </div>
             ${allTips.length > 0 ? `
             <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:10px">
-                <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#fb923c;margin-bottom:8px">📌 Pro Tips</div>
+                <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#fb923c;margin-bottom:8px">📌 ${this._t('ps_sg_pro_tips', 'Pro Tips')}</div>
                 ${allTips.map(tip => `<div style="font-size:11px;color:var(--text-muted);margin-bottom:5px;line-height:1.5;display:flex;gap:6px"><span style="color:#fb923c;flex-shrink:0;margin-top:1px">→</span><span>${tip}</span></div>`).join('')}
             </div>` : ''}
         </div>`;
@@ -2442,7 +2439,7 @@ const PromptStudio = {
 
                     <div class="card">
                         <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
-                            <span class="card-title">Brand Identity</span>
+                            <span class="card-title">${this._t('ps_brand_identity', 'Brand Identity')}</span>
                             <label class="wm-toggle-label">
                                 <input type="checkbox" id="ps-brand-identity-toggle" ${this.state.brandIdentityEnabled ? 'checked' : ''}>
                                 <span class="wm-toggle-switch"></span>
@@ -2450,14 +2447,14 @@ const PromptStudio = {
                         </div>
                         <div id="ps-brand-identity-body" style="${this.state.brandIdentityEnabled ? '' : 'display:none'}">
                             <div class="form-group">
-                                <p class="text-sm text-muted" style="line-height:1.4;margin-bottom:8px">Add Elaris signature to your images — choose how the brand appears in each shot.</p>
+                                <p class="text-sm text-muted" style="line-height:1.4;margin-bottom:8px">${this._t('ps_brand_identity_desc', 'Add Elaris signature to your images — choose how the brand appears in each shot.')}</p>
                                 <div class="ps-chip-group" id="ps-brand-touch">
-                                    <button class="ps-chip ${this.state.brandTouch === 'logomark' ? 'active' : ''}" data-val="logomark" title="Small four-pointed star brooch on lapel">⭐ Logomark</button>
-                                    <button class="ps-chip ${this.state.brandTouch === 'wordmark' ? 'active' : ''}" data-val="wordmark" title="ELARIS wordmark embroidered on clothing">ELARIS Wordmark</button>
-                                    <button class="ps-chip ${this.state.brandTouch === 'logo-embedded' ? 'active' : ''}" data-val="logo-embedded" title="ELARIS logo composited into the image like a luxury fashion campaign">🖼️ Logo Embedded</button>
+                                    <button class="ps-chip ${this.state.brandTouch === 'logomark' ? 'active' : ''}" data-val="logomark" title="Small four-pointed star brooch on lapel">⭐ ${this._t('ps_bt_logomark', 'Logomark')}</button>
+                                    <button class="ps-chip ${this.state.brandTouch === 'wordmark' ? 'active' : ''}" data-val="wordmark" title="ELARIS wordmark embroidered on clothing">${this._t('ps_bt_wordmark', 'ELARIS Wordmark')}</button>
+                                    <button class="ps-chip ${this.state.brandTouch === 'logo-embedded' ? 'active' : ''}" data-val="logo-embedded" title="ELARIS logo composited into the image like a luxury fashion campaign">🖼️ ${this._t('ps_bt_embedded', 'Logo Embedded')}</button>
                                 </div>
                                 <p class="text-sm text-muted" style="line-height:1.4;margin-top:6px;margin-bottom:0">
-                                    ${this.state.brandTouch === 'logomark' ? '⭐ Four-pointed star pin brooch on lapel — Elaris signature.' : this.state.brandTouch === 'wordmark' ? '"ELARIS" embroidered on visible garment area — brand always present.' : this.state.brandTouch === 'logo-embedded' ? '🖼️ Sophisticated "ELARIS" logo rendered within the image — AI chooses placement & sizing for each shot, like a luxury fashion campaign.' : 'Select a brand identity option above.'}
+                                    ${this.state.brandTouch === 'logomark' ? this._t('ps_bt_logomark_note', '⭐ Four-pointed star pin brooch on lapel — Elaris signature.') : this.state.brandTouch === 'wordmark' ? this._t('ps_bt_wordmark_note', '"ELARIS" embroidered on visible garment area — brand always present.') : this.state.brandTouch === 'logo-embedded' ? this._t('ps_bt_embedded_note', '🖼️ Sophisticated "ELARIS" logo rendered within the image — AI chooses placement & sizing for each shot, like a luxury fashion campaign.') : this._t('ps_bt_select', 'Select a brand identity option above.')}
                                 </p>
                             </div>
                         </div>
@@ -2465,29 +2462,29 @@ const PromptStudio = {
 
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">Model &amp; Human Elements</span>
+                            <span class="card-title">${this._t('ps_model_human', 'Model & Human Elements')}</span>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Model Gender</label>
+                            <label class="form-label">${this._t('ps_model_gender', 'Model Gender')}</label>
                             <div id="ps-gender-select" class="ps-chip-group" style="margin-bottom:0">
-                                <button class="ps-chip ${this.state.modelGender === 'female' ? 'active' : ''}" data-val="female">♀ Female</button>
-                                <button class="ps-chip ${this.state.modelGender === 'male' ? 'active' : ''}" data-val="male">♂ Male</button>
-                                <button class="ps-chip ${this.state.modelGender === 'none' ? 'active' : ''}" data-val="none" title="Product / surreal shots — no human model in scene">⊖ No Model</button>
+                                <button class="ps-chip ${this.state.modelGender === 'female' ? 'active' : ''}" data-val="female">♀ ${this._t('ps_female', 'Female')}</button>
+                                <button class="ps-chip ${this.state.modelGender === 'male' ? 'active' : ''}" data-val="male">♂ ${this._t('ps_male', 'Male')}</button>
+                                <button class="ps-chip ${this.state.modelGender === 'none' ? 'active' : ''}" data-val="none" title="Product / surreal shots — no human model in scene">⊖ ${this._t('ps_no_model', 'No Model')}</button>
                             </div>
-                            ${this.state.modelGender === 'none' ? `<p class="text-sm text-muted" style="margin-top:6px;margin-bottom:0;line-height:1.4">Product-only or surreal mode — all human elements are suppressed from prompts.</p>` : ''}
+                            ${this.state.modelGender === 'none' ? `<p class="text-sm text-muted" style="margin-top:6px;margin-bottom:0;line-height:1.4">${this._t('ps_no_model_note', 'Product-only or surreal mode — all human elements are suppressed from prompts.')}</p>` : ''}
                         </div>
 
                         <!-- Skin Tone selector (hidden for no-model) -->
                         <div class="form-group" style="padding-top:10px;border-top:1px dashed var(--border);${this.state.modelGender === 'none' ? 'display:none' : ''}">
-                            <label class="form-label" style="margin-bottom:2px">🎨 Skin Tone</label>
-                            <p class="text-sm text-muted" style="line-height:1.4;max-width:220px;margin:0;margin-bottom:6px">Choose the model's skin tone or let it vary automatically.</p>
+                            <label class="form-label" style="margin-bottom:2px">🎨 ${this._t('ps_skin_tone', 'Skin Tone')}</label>
+                            <p class="text-sm text-muted" style="line-height:1.4;max-width:220px;margin:0;margin-bottom:6px">${this._t('ps_skin_tone_desc', "Choose the model's skin tone or let it vary automatically.")}</p>
                             <div class="ps-chip-group" id="ps-ethnicity" style="flex-wrap:wrap">
-                                <button class="ps-chip ${this.state.modelEthnicity === 'diverse' ? 'active' : ''}" data-val="diverse" title="Random diverse skin tones each generation">🎲 Diverse</button>
-                                <button class="ps-chip ${this.state.modelEthnicity === 'fair' ? 'active' : ''}" data-val="fair" title="Fair ivory skin with cool undertones">🌾 Light / Fair</button>
-                                <button class="ps-chip ${this.state.modelEthnicity === 'olive' ? 'active' : ''}" data-val="olive" title="Olive Mediterranean complexion">☀️ Olive</button>
-                                <button class="ps-chip ${this.state.modelEthnicity === 'warm' ? 'active' : ''}" data-val="warm" title="Warm golden sun-kissed skin">🌅 Warm / Tan</button>
-                                <button class="ps-chip ${this.state.modelEthnicity === 'caramel' ? 'active' : ''}" data-val="caramel" title="Caramel medium complexion">🍯 Caramel</button>
-                                <button class="ps-chip ${this.state.modelEthnicity === 'deep' ? 'active' : ''}" data-val="deep" title="Deep rich brown skin">🌰 Deep / Rich</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'diverse' ? 'active' : ''}" data-val="diverse" title="Random diverse skin tones each generation">🎲 ${this._t('ps_eth_diverse', 'Diverse')}</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'fair' ? 'active' : ''}" data-val="fair" title="Fair ivory skin with cool undertones">🌾 ${this._t('ps_eth_fair', 'Light / Fair')}</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'olive' ? 'active' : ''}" data-val="olive" title="Olive Mediterranean complexion">☀️ ${this._t('ps_eth_olive', 'Olive')}</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'warm' ? 'active' : ''}" data-val="warm" title="Warm golden sun-kissed skin">🌅 ${this._t('ps_eth_warm', 'Warm / Tan')}</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'caramel' ? 'active' : ''}" data-val="caramel" title="Caramel medium complexion">🍯 ${this._t('ps_eth_caramel', 'Caramel')}</button>
+                                <button class="ps-chip ${this.state.modelEthnicity === 'deep' ? 'active' : ''}" data-val="deep" title="Deep rich brown skin">🌰 ${this._t('ps_eth_deep', 'Deep / Rich')}</button>
                             </div>
                         </div>
 
@@ -2495,8 +2492,8 @@ const PromptStudio = {
                         <div class="form-group" style="padding-top:10px;border-top:1px dashed var(--border);${this.state.modelGender === 'female' ? '' : 'display:none'}">
                             <div style="display:flex;align-items:center;justify-content:space-between">
                                 <div>
-                                    <label class="form-label" style="margin-bottom:2px">🧕 Hijabi Model</label>
-                                    <p class="text-sm text-muted" style="line-height:1.4;max-width:220px;margin:0">Model wears a hijab, headscarf, or veil — for cultural, artistic, or identity representation.</p>
+                                    <label class="form-label" style="margin-bottom:2px">🧕 ${this._t('ps_hijabi_model', 'Hijabi Model')}</label>
+                                    <p class="text-sm text-muted" style="line-height:1.4;max-width:220px;margin:0">${this._t('ps_hijabi_model_desc', 'Model wears a hijab, headscarf, or veil — for cultural, artistic, or identity representation.')}</p>
                                 </div>
                                 <label class="wm-toggle-label">
                                     <input type="checkbox" id="ps-hijabi-toggle" ${this.state.hijabi ? 'checked' : ''}>
@@ -2505,14 +2502,14 @@ const PromptStudio = {
                             </div>
                             ${this.state.hijabi ? `
                             <div style="margin-top:10px">
-                                <label class="form-label" style="font-size:11px;opacity:0.8">Hijab Style</label>
+                                <label class="form-label" style="font-size:11px;opacity:0.8">${this._t('ps_hijab_style', 'Hijab Style')}</label>
                                 <div class="ps-chip-group" id="ps-hijab-style" style="flex-wrap:wrap">
-                                    <button class="ps-chip ${this.state.hijabStyle === 'classic' ? 'active' : ''}" data-val="classic" title="Traditional draped hijab covering hair and neck">Classic</button>
-                                    <button class="ps-chip ${this.state.hijabStyle === 'draped' ? 'active' : ''}" data-val="draped" title="Loose elegant fabric draped around head and shoulders">Draped Silk</button>
-                                    <button class="ps-chip ${this.state.hijabStyle === 'turban' ? 'active' : ''}" data-val="turban" title="Fashion-forward wrapped turban style">Turban</button>
-                                    <button class="ps-chip ${this.state.hijabStyle === 'niqab' ? 'active' : ''}" data-val="niqab" title="Face veil with eyes exposed — editorial and artistic">Niqab ✦</button>
-                                    <button class="ps-chip ${this.state.hijabStyle === 'modern' ? 'active' : ''}" data-val="modern" title="Contemporary minimal hijab with face and neck framing">Modern</button>
-                                    <button class="ps-chip ${this.state.hijabStyle === 'sheer-veil' ? 'active' : ''}" data-val="sheer-veil" title="Sheer translucent fabric — artistic/editorial styling">Sheer Veil</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'classic' ? 'active' : ''}" data-val="classic" title="Traditional draped hijab covering hair and neck">${this._t('ps_hs_classic', 'Classic')}</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'draped' ? 'active' : ''}" data-val="draped" title="Loose elegant fabric draped around head and shoulders">${this._t('ps_hs_draped', 'Draped Silk')}</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'turban' ? 'active' : ''}" data-val="turban" title="Fashion-forward wrapped turban style">${this._t('ps_hs_turban', 'Turban')}</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'niqab' ? 'active' : ''}" data-val="niqab" title="Face veil with eyes exposed — editorial and artistic">${this._t('ps_hs_niqab', 'Niqab ✦')}</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'modern' ? 'active' : ''}" data-val="modern" title="Contemporary minimal hijab with face and neck framing">${this._t('ps_hs_modern', 'Modern')}</button>
+                                    <button class="ps-chip ${this.state.hijabStyle === 'sheer-veil' ? 'active' : ''}" data-val="sheer-veil" title="Sheer translucent fabric — artistic/editorial styling">${this._t('ps_hs_sheer', 'Sheer Veil')}</button>
                                 </div>
                             </div>` : ''}
                         </div>
@@ -2536,19 +2533,19 @@ const PromptStudio = {
                         </div>
                         ${this.state.consistencyOn ? `
                         <div class="form-group" style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)">
-                            <label class="form-label" style="margin-bottom:6px">Model Image Reference</label>
+                            <label class="form-label" style="margin-bottom:6px">${this._t('ps_model_img_ref', 'Model Image Reference')}</label>
                             <div class="ps-chip-group" id="ps-model-image-ref" style="margin-bottom:4px">
                                 <button class="ps-chip ${this.state.modelImageAttached ? 'active' : ''}" data-val="true" style="font-size:11px">
-                                    📎 Image attached
+                                    📎 ${this._t('ps_img_attached', 'Image attached')}
                                 </button>
                                 <button class="ps-chip ${!this.state.modelImageAttached ? 'active' : ''}" data-val="false" style="font-size:11px">
-                                    📝 Text only
+                                    📝 ${this._t('ps_text_only', 'Text only')}
                                 </button>
                             </div>
                             <p class="text-sm text-muted" style="line-height:1.4;margin-bottom:0">
                                 ${this.state.modelImageAttached
-                                    ? 'Prompt will reference the model photo by image slot number.'
-                                    : 'Prompt will use the model descriptor text only — no image slot needed.'}
+                                    ? this._t('ps_img_attached_note', 'Prompt will reference the model photo by image slot number.')
+                                    : this._t('ps_text_only_note', 'Prompt will use the model descriptor text only — no image slot needed.')}
                             </p>
                         </div>
                         <div class="form-group" style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)">
@@ -2557,8 +2554,8 @@ const PromptStudio = {
                                 <button class="btn btn-sm btn-secondary" id="ps-new-profile" data-i18n="ps_new_profile">+ New</button>
                             </div>
                             <div id="ps-new-profile-form" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
-                                <input type="text" id="ps-new-profile-name" placeholder="Model name" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--primary);margin-bottom:8px;padding:4px 0;outline:none">
-                                <textarea id="ps-new-profile-desc" rows="2" placeholder="Physical descriptor..." style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px;font-size:12px;outline:none"></textarea>
+                                <input type="text" id="ps-new-profile-name" placeholder="${this._t('ps_profile_name_ph', 'Model name')}" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--primary);margin-bottom:8px;padding:4px 0;outline:none">
+                                <textarea id="ps-new-profile-desc" rows="2" placeholder="${this._t('ps_profile_desc_ph', 'Physical descriptor…')}" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px;font-size:12px;outline:none"></textarea>
                                 <button class="btn btn-sm btn-primary" id="ps-save-profile" style="width:100%;margin-top:8px" data-i18n="ps_save_profile">Save Profile</button>
                             </div>
                             <div style="display:flex;flex-direction:column;gap:8px" id="ps-profile-list">
@@ -2585,26 +2582,26 @@ const PromptStudio = {
                     </div>
 
                     <div class="card">
-                        <div class="card-header"><span class="card-title">Modifiers</span></div>
+                        <div class="card-header"><span class="card-title">${this._t('ps_modifiers', 'Modifiers')}</span></div>
                         <div class="form-group">
-                            <label class="form-label">📐 Camera Angle</label>
+                            <label class="form-label">📐 ${this._t('ps_camera_angle', 'Camera Angle')}</label>
                             <div class="ps-chip-group" id="ps-angle" style="flex-wrap:wrap">
                                 ${this._getAnglesForCategory(this.state.category).map((a, i) => `<button class="ps-chip ${a.id === this.state.angle ? 'active' : ''}" data-val="${a.id}" title="${i < 3 ? 'Recommended for ' + (this.state.category || 'ring') : a.label}" style="${i === 0 ? 'border-color:var(--accent);' : i < 3 ? 'border-color:var(--accent);opacity:0.85;' : ''}">${i === 0 ? '⭐ ' : ''}${a.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">💡 Lighting &amp; Mood</label>
+                            <label class="form-label">💡 ${this._t('ps_lighting_mood', 'Lighting & Mood')}</label>
                             <div class="ps-chip-group" id="ps-lighting-mood" style="flex-wrap:wrap">
                                 ${this._buildLightingChips()}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">📷 Lens / Camera Preset <span class="text-sm text-muted">(overrides angle lens)</span></label>
+                            <label class="form-label">📷 ${this._t('ps_lens_preset', 'Lens / Camera Preset')} <span class="text-sm text-muted">${this._t('ps_lens_preset_note', '(overrides angle lens)')}</span></label>
                             <div class="ps-chip-group" id="ps-camera-profile" style="flex-wrap:wrap">
                                 ${this.cameraProfiles.map(c => `<button class="ps-chip ${c.id === this.state.cameraProfile ? 'active' : ''}" data-val="${c.id}" title="${c.desc || 'Let the selected angle determine the camera'}">${c.label}</button>`).join('')}
                             </div>
                             <p class="text-sm text-muted" style="line-height:1.4;margin-top:6px;margin-bottom:0">
-                                ${(this.cameraProfiles.find(c => c.id === this.state.cameraProfile) || {}).desc || 'Camera choice driven by the selected angle above.'}
+                                ${(this.cameraProfiles.find(c => c.id === this.state.cameraProfile) || {}).desc || this._t('ps_lens_auto_note', 'Camera choice driven by the selected angle above.')}
                             </p>
                         </div>
                         <div class="form-group">
@@ -2630,7 +2627,7 @@ const PromptStudio = {
                             </div>
                         </div>
                         <div class="form-group" style="${this.state.modelGender === 'none' ? 'display:none' : ''}">
-                            <label class="form-label"><span data-i18n="ps_styling">Model Styling</span> <span class="text-sm text-muted">(human archetypes)</span></label>
+                            <label class="form-label"><span data-i18n="ps_styling">Model Styling</span> <span class="text-sm text-muted">${this._t('ps_human_archetypes', '(human archetypes)')}</span></label>
                             <div class="ps-chip-group" id="ps-styling">
                                 ${this.stylings.map(s => `<button class="ps-chip ${s.id === this.state.styling ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
                             </div>
@@ -2638,43 +2635,43 @@ const PromptStudio = {
 
                         <!-- ── Scene Realism Controls ─────────────────── -->
                         <div class="form-group" style="margin-top:8px;padding-top:10px;border-top:1px solid var(--border)">
-                            <label class="form-label" style="font-size:11px;letter-spacing:0.06em;opacity:0.7;text-transform:uppercase;font-weight:700">🎭 Scene Realism</label>
+                            <label class="form-label" style="font-size:11px;letter-spacing:0.06em;opacity:0.7;text-transform:uppercase;font-weight:700">🎭 ${this._t('ps_scene_realism', 'Scene Realism')}</label>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">📷 Photo Realism Level</label>
-                            <p class="text-sm text-muted" style="line-height:1.3;margin-bottom:6px">Inject photographic realism cues into AI-generated images. Higher = more authentic grain, imperfections, and camera artifacts.</p>
+                            <label class="form-label">📷 ${this._t('ps_photo_realism', 'Photo Realism Level')}</label>
+                            <p class="text-sm text-muted" style="line-height:1.3;margin-bottom:6px">${this._t('ps_photo_realism_desc', 'Inject photographic realism cues into AI-generated images. Higher = more authentic grain, imperfections, and camera artifacts.')}</p>
                             <div class="ps-chip-group" id="ps-realism-level">
-                                <button class="ps-chip ${this.state.realismLevel === 'standard' ? 'active' : ''}" data-val="standard">Standard</button>
-                                <button class="ps-chip ${this.state.realismLevel === 'high' ? 'active' : ''}" data-val="high">High</button>
-                                <button class="ps-chip ${this.state.realismLevel === 'ultra' ? 'active' : ''}" data-val="ultra">⚡ Ultra</button>
+                                <button class="ps-chip ${this.state.realismLevel === 'standard' ? 'active' : ''}" data-val="standard">${this._t('ps_rl_standard', 'Standard')}</button>
+                                <button class="ps-chip ${this.state.realismLevel === 'high' ? 'active' : ''}" data-val="high">${this._t('ps_rl_high', 'High')}</button>
+                                <button class="ps-chip ${this.state.realismLevel === 'ultra' ? 'active' : ''}" data-val="ultra">⚡ ${this._t('ps_rl_ultra', 'Ultra')}</button>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Skin Texture</label>
+                            <label class="form-label">${this._t('ps_skin_texture', 'Skin Texture')}</label>
                             <div class="ps-chip-group" id="ps-skin-texture">
                                 ${this.skinTextures.map(s => `<button class="ps-chip ${s.id === this.state.skinTexture ? 'active' : ''}" data-val="${s.id}">${s.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Expression Lines / Wrinkles</label>
+                            <label class="form-label">${this._t('ps_wrinkles', 'Expression Lines / Wrinkles')}</label>
                             <div class="ps-chip-group" id="ps-wrinkles">
                                 ${this.wrinkleLevels.map(w => `<button class="ps-chip ${w.id === this.state.wrinkles ? 'active' : ''}" data-val="${w.id}">${w.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group" style="${this.state.modelGender === 'none' ? 'display:none' : ''}">
-                            <label class="form-label">Body Hair <span class="text-sm text-muted">(human archetypes)</span></label>
+                            <label class="form-label">${this._t('ps_body_hair', 'Body Hair')} <span class="text-sm text-muted">${this._t('ps_human_archetypes', '(human archetypes)')}</span></label>
                             <div class="ps-chip-group" id="ps-body-hair">
                                 ${this.bodyHairLevels.map(b => `<button class="ps-chip ${b.id === this.state.bodyHair ? 'active' : ''}" data-val="${b.id}">${b.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Skin Detail</label>
+                            <label class="form-label">${this._t('ps_skin_detail', 'Skin Detail')}</label>
                             <div class="ps-chip-group" id="ps-skin-detail">
                                 ${this.skinDetails.map(d => `<button class="ps-chip ${d.id === this.state.skinDetail ? 'active' : ''}" data-val="${d.id}">${d.label}</button>`).join('')}
                             </div>
                         </div>
                         <div class="form-group" style="${this.state.modelGender === 'none' ? 'display:none' : ''}">
-                            <label class="form-label">Facial Expression <span class="text-sm text-muted">(human archetypes)</span></label>
+                            <label class="form-label">${this._t('ps_facial_expression', 'Facial Expression')} <span class="text-sm text-muted">${this._t('ps_human_archetypes', '(human archetypes)')}</span></label>
                             <div class="ps-chip-group" id="ps-facial-expression">
                                 ${this.facialExpressions.map(f => `<button class="ps-chip ${f.id === this.state.facialExpression ? 'active' : ''}" data-val="${f.id}">${f.label}</button>`).join('')}
                             </div>
@@ -2726,8 +2723,8 @@ const PromptStudio = {
                     <div id="ps-output-area" style="display:none">
                         <div class="card" style="margin-top:16px">
                             <div class="card-header">
-                                <span class="card-title">Generated Prompts</span>
-                                <button class="btn btn-sm btn-secondary" id="ps-copy-all">📋 Copy All</button>
+                                <span class="card-title">${this._t('ps_generated_prompts', 'Generated Prompts')}</span>
+                                <button class="btn btn-sm btn-secondary" id="ps-copy-all">📋 ${this._t('ps_copy_all', 'Copy All')}</button>
                             </div>
                             <div id="ps-prompts-list"></div>
                         </div>
@@ -2742,17 +2739,17 @@ const PromptStudio = {
                             <button class="btn btn-sm btn-secondary" id="ps-clear-history" data-i18n="ps_clear">Clear</button>
                         </div>
                         <div id="ps-history" class="ps-history-list">
-                            <p class="text-sm text-muted" style="text-align:center;padding:20px">No prompts generated yet</p>
+                            <p class="text-sm text-muted" style="text-align:center;padding:20px">${this._t('ps_history_empty', 'No prompts generated yet')}</p>
                         </div>
                     </div>
 
                     <div class="card">
                         <div class="card-header"><span class="card-title" data-i18n="ps_quick_tips">Quick Tips</span></div>
                         <div class="ps-tips">
-                            <div class="ps-tip">💡 Select multiple archetypes for batch prompt generation</div>
-                            <div class="ps-tip">✏️ Be specific in your piece description for best results</div>
-                            <div class="ps-tip">📋 Copy prompts directly into Gemini, Midjourney, or Leonardo</div>
-                            <div class="ps-tip">🔄 Re-generate for fresh variations of the same concept</div>
+                            <div class="ps-tip">💡 ${this._t('ps_tip_1', 'Select multiple archetypes for batch prompt generation')}</div>
+                            <div class="ps-tip">✏️ ${this._t('ps_tip_2', 'Be specific in your piece description for best results')}</div>
+                            <div class="ps-tip">📋 ${this._t('ps_tip_3', 'Copy prompts directly into Gemini, Midjourney, or Leonardo')}</div>
+                            <div class="ps-tip">🔄 ${this._t('ps_tip_4', 'Re-generate for fresh variations of the same concept')}</div>
                         </div>
                     </div>
                 </div>
@@ -2948,7 +2945,7 @@ const PromptStudio = {
                 this._render();
                 this._renderArchetypeGrid();
                 this._bind();
-                Elaris.toast('Profile saved', 'success');
+                Elaris.toast(this._t('ps_toast_profile_saved', 'Profile saved'), 'success');
             });
         }
 
@@ -2980,7 +2977,7 @@ const PromptStudio = {
                             this._render();
                             this._renderArchetypeGrid();
                             this._bind();
-                            Elaris.toast('Reference image saved', 'success');
+                            Elaris.toast(this._t('ps_toast_ref_saved', 'Reference image saved'), 'success');
                         }
                     };
                     reader.readAsDataURL(file);
@@ -3023,7 +3020,7 @@ const PromptStudio = {
         q('#ps-clear-history').addEventListener('click', () => {
             this.state.history = [];
             q('#ps-history').innerHTML = '<p class="text-sm text-muted" style="text-align:center;padding:20px">No prompts generated yet</p>';
-            Elaris.toast('History cleared', 'info');
+            Elaris.toast(this._t('ps_toast_hist_cleared', 'History cleared'), 'info');
         });
 
         // v3.0: Camera System profile selector
@@ -3283,7 +3280,7 @@ const PromptStudio = {
         this._autoDescribe();
         const selected = this.state.selectedArchetypes;
         if (selected.length === 0) {
-            Elaris.toast('Select at least one archetype', 'error');
+            Elaris.toast(this._t('ps_toast_pick_arch', 'Select at least one archetype'), 'error');
             return;
         }
         const prompts = [];
@@ -3311,11 +3308,11 @@ const PromptStudio = {
         list.innerHTML = prompts.map((p, i) => `
             <div class="ps-prompt-block ${p.similar ? 'ps-prompt-similar' : ''}" data-idx="${i}" data-arch-id="${p.archId}">
                 <div class="ps-prompt-header">
-                    <span>${p.icon} ${p.archetype}${p.similar ? ' <span class="ps-similar-badge" title="This prompt has significant overlap with another prompt in this batch — consider regenerating">⚠️ Similar</span>' : ''}</span>
+                    <span>${p.icon} ${p.archetype}${p.similar ? ` <span class="ps-similar-badge" title="This prompt has significant overlap with another prompt in this batch — consider regenerating">⚠️ ${this._t('ps_similar', 'Similar')}</span>` : ''}</span>
                     <div class="ps-prompt-actions">
-                        <button class="btn btn-sm btn-outline ps-regen-one" data-idx="${i}" data-arch-id="${p.archId}" title="Regenerate this prompt with a different scene">↺ New</button>
-                        <button class="btn btn-sm btn-accent ps-refine-one" data-idx="${i}" data-arch-id="${p.archId}" title="Keep this prompt but apply your current modifier changes (ratio, model, hijab, etc.)">✨ Refine</button>
-                        <button class="btn btn-sm btn-secondary ps-copy-one" data-idx="${i}">📋 Copy</button>
+                        <button class="btn btn-sm btn-outline ps-regen-one" data-idx="${i}" data-arch-id="${p.archId}" title="Regenerate this prompt with a different scene">↺ ${this._t('ps_new', 'New')}</button>
+                        <button class="btn btn-sm btn-accent ps-refine-one" data-idx="${i}" data-arch-id="${p.archId}" title="Keep this prompt but apply your current modifier changes (ratio, model, hijab, etc.)">✨ ${this._t('ps_refine', 'Refine')}</button>
+                        <button class="btn btn-sm btn-secondary ps-copy-one" data-idx="${i}">📋 ${this._t('ps_copy', 'Copy')}</button>
                     </div>
                 </div>
                 <div class="ps-prompt-text" id="ps-prompt-${i}">${p.text}</div>
@@ -3328,7 +3325,7 @@ const PromptStudio = {
             btn.addEventListener('click', () => {
                 const idx = parseInt(btn.dataset.idx);
                 navigator.clipboard.writeText(prompts[idx].text).then(() => {
-                    Elaris.toast('Prompt copied ✓', 'success');
+                    Elaris.toast(this._t('ps_toast_copied', 'Prompt copied ✓'), 'success');
                 });
             });
         });
@@ -3352,7 +3349,7 @@ const PromptStudio = {
                     if (capDiv) { capDiv.innerHTML = ''; capDiv.style.display = 'none'; delete capDiv.dataset.generated; }
                 }
                 prompts[idx].text = newText;
-                Elaris.toast('New prompt generated ✨', 'info');
+                Elaris.toast(this._t('ps_toast_new_prompt', 'New prompt generated ✨'), 'info');
             });
         });
 
@@ -3372,7 +3369,7 @@ const PromptStudio = {
                     if (capDiv) { capDiv.innerHTML = ''; capDiv.style.display = 'none'; delete capDiv.dataset.generated; }
                 }
                 prompts[idx].text = refined;
-                Elaris.toast('Prompt refined with current settings ✨', 'success');
+                Elaris.toast(this._t('ps_toast_refined', 'Prompt refined with current settings ✨'), 'success');
             });
         });
 
@@ -3393,7 +3390,7 @@ const PromptStudio = {
                         // Wire copy-caption btn
                         capDiv.querySelector('.ps-copy-caption').addEventListener('click', () => {
                             const text = capDiv.querySelector('.ps-caption-text')?.textContent || '';
-                            navigator.clipboard.writeText(text).then(() => Elaris.toast('Caption copied! ✨', 'success'));
+                            navigator.clipboard.writeText(text).then(() => Elaris.toast(this._t('ps_toast_caption_copied', 'Caption copied! ✨'), 'success'));
                         });
                     }
                     capDiv.style.display = 'block';
@@ -3411,7 +3408,7 @@ const PromptStudio = {
         }
         this._renderHistory();
 
-        Elaris.toast(`${prompts.length} prompt(s) generated ✨`, 'success');
+        Elaris.toast(this._t('ps_toast_generated_n', '{n} prompt(s) generated ✨').replace('{n}', prompts.length), 'success');
 
         // Scroll to output
         outputArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3475,11 +3472,11 @@ const PromptStudio = {
         const comp = this.state.setComposition || ['ring', 'necklace', 'earrings'];
         const isSet = this.state.category === 'jewelry-set' || this.state.category === 'set';
         const pieces = [
-            { id: 'ring',     label: '💍 Ring' },
-            { id: 'necklace', label: '📿 Necklace' },
-            { id: 'earrings', label: '✨ Earrings' },
-            { id: 'bracelet', label: '💫 Bracelet' },
-            { id: 'bangle',   label: '⭕ Bangle' },
+            { id: 'ring',     label: '💍 ' + this._t('psb_piece_ring', 'Ring') },
+            { id: 'necklace', label: '📿 ' + this._t('psb_piece_necklace', 'Necklace') },
+            { id: 'earrings', label: '✨ ' + this._t('psb_piece_earrings', 'Earrings') },
+            { id: 'bracelet', label: '💫 ' + this._t('psb_piece_bracelet', 'Bracelet') },
+            { id: 'bangle',   label: '⭕ ' + this._t('psb_piece_bangle', 'Bangle') },
         ];
         const chips = pieces.map(p => {
             const active = comp.includes(p.id);
@@ -3487,12 +3484,12 @@ const PromptStudio = {
                 class="ps-set-chip${active ? ' active' : ''}"
                 data-piece="${p.id}"
                 onclick="PromptStudio._toggleSetPiece('${p.id}')"
-                title="Include ${p.label} in the set">${p.label}</button>`;
+                title="${p.label}">${p.label}</button>`;
         }).join('');
         return `<div class="form-group ps-set-composition-row" id="ps-set-composition-group" style="${isSet ? '' : 'display:none;'}">
             <label class="form-label">
-                <span>✦</span> Set Includes
-                <span class="ps-label-hint">Choose which pieces are in this set/pack</span>
+                <span>✦</span> ${this._t('ps_set_includes', 'Set Includes')}
+                <span class="ps-label-hint">${this._t('ps_set_includes_hint', 'Choose which pieces are in this set/pack')}</span>
             </label>
             <div class="ps-set-chips">${chips}</div>
         </div>`;
@@ -3504,7 +3501,7 @@ const PromptStudio = {
         const idx = comp.indexOf(pieceId);
         if (idx >= 0) {
             if (comp.length === 1) {
-                if (window.Elaris && window.Elaris.toast) window.Elaris.toast('At least one piece must remain in the set', 'info');
+                if (window.Elaris && window.Elaris.toast) window.Elaris.toast(this._t('ps_toast_min_piece', 'At least one piece must remain in the set'), 'info');
                 return;
             }
             comp.splice(idx, 1);
@@ -4086,7 +4083,7 @@ const PromptStudio = {
             `--- ${p.icon} ${p.archetype} ---\n${p.text}`
         ).join('\n\n');
         navigator.clipboard.writeText(text).then(() => {
-            Elaris.toast('All prompts copied ✓', 'success');
+            Elaris.toast(this._t('ps_toast_all_copied', 'All prompts copied ✓'), 'success');
         });
     },
 
@@ -4114,7 +4111,7 @@ const PromptStudio = {
                 const h = this.state.history[idx];
                 if (h) {
                     navigator.clipboard.writeText(h.text).then(() => {
-                        Elaris.toast('Prompt copied from history ✓', 'success');
+                        Elaris.toast(this._t('ps_toast_hist_copied', 'Prompt copied from history ✓'), 'success');
                     });
                 }
             });
