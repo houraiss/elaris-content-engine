@@ -108,6 +108,9 @@ const PromptStudioBeta = {
         }
     },
 
+    // ── i18n shorthand — English lives here at the call site ────
+    _t(key, en) { return window.I18n ? window.I18n.t(key, en) : en; },
+
     // ── History Persistence ─────────────────────────────────────
     _loadSavedHistory() {
         try {
@@ -202,7 +205,7 @@ const PromptStudioBeta = {
                 if (handoff && list.some(t => t.id === handoff)) {
                     try { localStorage.removeItem('elaris_active_trend'); } catch (e) {}
                     this._applyTrend(handoff, { silent: true });
-                    this._showToast(`🔥 Trend loaded: ${this._getActiveTrend().title}`);
+                    this._showToast(`🔥 ${this._t('psb_toast_trend_loaded', 'Trend loaded:')} ${this._getActiveTrend().title}`);
                 }
 
                 this._render();
@@ -241,7 +244,7 @@ const PromptStudioBeta = {
         if (!opts.silent) {
             this._render();
             this._bindEvents();
-            this._showToast(`🔥 Trend applied: ${trend.title}`);
+            this._showToast(`🔥 ${this._t('psb_toast_trend_applied', 'Trend applied:')} ${trend.title}`);
         }
     },
 
@@ -257,15 +260,15 @@ const PromptStudioBeta = {
     _getTrendChanges(trend) {
         const s = (trend && trend.studio) || {};
         const out = [];
-        if (s.lightingMood)   out.push(`Lighting → ${this._getLabelForLighting(s.lightingMood)}`);
-        if (s.surface)        out.push(`Surface → ${s.surface.replace(/-/g, ' ')}`);
-        if (s.palette)        out.push(`Palette → ${s.palette.replace(/-/g, ' ')}`);
-        if (s.angle)          out.push(`Angle → ${this._getLabelForAngle(s.angle)}`);
-        if (s.cameraProfile)  out.push(`Lens → ${this._getLabelForCamera(s.cameraProfile)}`);
-        if (s.moodIntensity)  out.push(`Mood → ${s.moodIntensity}`);
-        if (s.seasonTime)     out.push(`Time → ${s.seasonTime.replace(/-/g, ' ')}`);
-        if (s.filmStyle)      out.push(`Film → ${s.filmStyle.replace(/-/g, ' ')}`);
-        if (Array.isArray(s.jewelryStyle) && s.jewelryStyle.length) out.push(`Style +${s.jewelryStyle.join(', ')}`);
+        if (s.lightingMood)   out.push(`${this._t('psb_ch_lighting', 'Lighting')} → ${this._getLabelForLighting(s.lightingMood)}`);
+        if (s.surface)        out.push(`${this._t('psb_ch_surface', 'Surface')} → ${s.surface.replace(/-/g, ' ')}`);
+        if (s.palette)        out.push(`${this._t('psb_ch_palette', 'Palette')} → ${s.palette.replace(/-/g, ' ')}`);
+        if (s.angle)          out.push(`${this._t('psb_ch_angle', 'Angle')} → ${this._getLabelForAngle(s.angle)}`);
+        if (s.cameraProfile)  out.push(`${this._t('psb_ch_lens', 'Lens')} → ${this._getLabelForCamera(s.cameraProfile)}`);
+        if (s.moodIntensity)  out.push(`${this._t('psb_ch_mood', 'Mood')} → ${s.moodIntensity}`);
+        if (s.seasonTime)     out.push(`${this._t('psb_ch_time', 'Time')} → ${s.seasonTime.replace(/-/g, ' ')}`);
+        if (s.filmStyle)      out.push(`${this._t('psb_ch_film', 'Film')} → ${s.filmStyle.replace(/-/g, ' ')}`);
+        if (Array.isArray(s.jewelryStyle) && s.jewelryStyle.length) out.push(`${this._t('psb_ch_style', 'Style')} +${s.jewelryStyle.join(', ')}`);
         return out;
     },
 
@@ -1325,7 +1328,9 @@ const PromptStudioBeta = {
         }
 
         if (window.Elaris && typeof window.Elaris.showToast === 'function') {
-            const label = count > 1 ? `✦ ${count} variations generated & copied!` : '✦ Prompt generated & copied to clipboard!';
+            const label = count > 1
+                ? this._t('psb_toast_variations', '✦ {n} variations generated & copied!').replace('{n}', count)
+                : this._t('psb_toast_generated', '✦ Prompt generated & copied to clipboard!');
             window.Elaris.showToast(label, 'success');
         }
 
@@ -1462,7 +1467,7 @@ const PromptStudioBeta = {
         const search   = (this.state.modalSearch || '').toLowerCase();
         const category = this.state.modalCategory || 'all';
         const filtered = this._filterArchetypes(all, category, search);
-        countEl.textContent = `${filtered.length} archetypes`;
+        countEl.textContent = `${filtered.length} ${this._t('psb_archetypes_word', 'archetypes')}`;
     },
 
     // ── Motion-reactive spotlight tracker ───────────────────────
@@ -1513,10 +1518,10 @@ const PromptStudioBeta = {
                 <header class="psb-header">
                     <div class="psb-beta-badge">
                         <span class="psb-beta-dot"></span>
-                        iOS 26 Studio Beta
+                        ${this._t('psb_beta_badge', 'iOS 26 Studio Beta')}
                     </div>
-                    <h1 class="psb-header-title">Prompt Studio Beta</h1>
-                    <span class="psb-header-sub">Liquid Glass Dynamic Prompt Engineering Sandbox</span>
+                    <h1 class="psb-header-title">${this._t('psb_title', 'Prompt Studio Beta')}</h1>
+                    <span class="psb-header-sub">${this._t('psb_subtitle', 'Liquid Glass Dynamic Prompt Engineering Sandbox')}</span>
                 </header>
 
                 <!-- 3-Column Glass Layout -->
@@ -1526,11 +1531,11 @@ const PromptStudioBeta = {
                     <section class="psb-panel psb-left-col">
                         <div class="psb-spot"></div>
 
-                        <div class="psb-section-title">💍 Piece Configurator</div>
+                        <div class="psb-section-title">💍 ${this._t('psb_piece_config', 'Piece Configurator')}</div>
 
                         <!-- Category -->
                         <div class="psb-form-group">
-                            <label class="psb-label">Category</label>
+                            <label class="psb-label">${this._t('psb_category', 'Category')}</label>
                             <select class="psb-select" id="psb-category-select">
                                 ${categories.map(c => `<option value="${c.id}" ${c.id === this.state.category ? 'selected' : ''}>${c.label}</option>`).join('')}
                             </select>
@@ -1538,7 +1543,7 @@ const PromptStudioBeta = {
 
                         <!-- Material -->
                         <div class="psb-form-group">
-                            <label class="psb-label">Precious Metal</label>
+                            <label class="psb-label">${this._t('psb_precious_metal', 'Precious Metal')}</label>
                             <select class="psb-select" id="psb-material-select">
                                 ${materials.map(m => `<option value="${m.id}" ${m.id === this.state.material ? 'selected' : ''}>${m.label}</option>`).join('')}
                             </select>
@@ -1546,7 +1551,7 @@ const PromptStudioBeta = {
 
                         <!-- Stone -->
                         <div class="psb-form-group">
-                            <label class="psb-label">Center Gemstone</label>
+                            <label class="psb-label">${this._t('psb_center_gem', 'Center Gemstone')}</label>
                             <select class="psb-select" id="psb-stone-select">
                                 ${stones.map(s => `<option value="${s.id}" ${s.id === this.state.stone ? 'selected' : ''}>${s.label}</option>`).join('')}
                             </select>
@@ -1555,11 +1560,11 @@ const PromptStudioBeta = {
 
                         <!-- Set Composition (jewelry-set only) -->
                         <div class="psb-form-group" id="psb-set-group" style="display:${isSet ? 'block' : 'none'};">
-                            <label class="psb-label">Set Pieces Included</label>
+                            <label class="psb-label">${this._t('psb_set_pieces', 'Set Pieces Included')}</label>
                             <div class="psb-chips">
                                 ${['ring', 'necklace', 'earrings', 'bracelet', 'bangle'].map(p => `
                                     <button type="button" class="psb-chip psb-set-chip ${this.state.setComposition.includes(p) ? 'active' : ''}" data-piece="${p}">
-                                        ${p.charAt(0).toUpperCase() + p.slice(1)}
+                                        ${this._t('psb_piece_' + p, p.charAt(0).toUpperCase() + p.slice(1))}
                                     </button>
                                 `).join('')}
                             </div>
@@ -1567,7 +1572,7 @@ const PromptStudioBeta = {
 
                         <!-- Aspect Ratio -->
                         <div class="psb-form-group" style="margin-top:16px;">
-                            <label class="psb-label">Aspect Ratio</label>
+                            <label class="psb-label">${this._t('psb_aspect_ratio', 'Aspect Ratio')}</label>
                             <div class="psb-aspect-bar">
                                 ${[
                                     { ar: '1:1',  name: 'Square',   w: 14, h: 14 },
@@ -1588,21 +1593,21 @@ const PromptStudioBeta = {
 
                         <!-- Prompt Quality Level -->
                         <div class="psb-form-group" style="margin-top:14px;">
-                            <label class="psb-label">Prompt Detail Level</label>
+                            <label class="psb-label">${this._t('psb_detail_level', 'Prompt Detail Level')}</label>
                             <div class="psb-chips">
-                                <button type="button" class="psb-chip psb-quality-chip ${this.state.promptQuality === 'standard' ? 'active' : ''}" data-quality="standard">🔹 Standard</button>
-                                <button type="button" class="psb-chip psb-quality-chip ${this.state.promptQuality === 'detailed' ? 'active' : ''}" data-quality="detailed">🔷 Detailed</button>
-                                <button type="button" class="psb-chip psb-quality-chip ${this.state.promptQuality === 'ultra' ? 'active' : ''}" data-quality="ultra">💎 Ultra</button>
+                                <button type="button" class="psb-chip psb-quality-chip ${this.state.promptQuality === 'standard' ? 'active' : ''}" data-quality="standard">🔹 ${this._t('psb_quality_standard', 'Standard')}</button>
+                                <button type="button" class="psb-chip psb-quality-chip ${this.state.promptQuality === 'detailed' ? 'active' : ''}" data-quality="detailed">🔷 ${this._t('psb_quality_detailed', 'Detailed')}</button>
+                                <button type="button" class="psb-chip psb-quality-chip ${this.state.promptQuality === 'ultra' ? 'active' : ''}" data-quality="ultra">💎 ${this._t('psb_quality_ultra', 'Ultra')}</button>
                             </div>
                         </div>
 
                         <!-- Realism Engine -->
                         <div class="psb-form-group" style="margin-top:14px;">
-                            <label class="psb-label">Realism Engine</label>
+                            <label class="psb-label">${this._t('psb_realism_engine', 'Realism Engine')}</label>
                             <div class="psb-chips">
-                                <button type="button" class="psb-chip psb-realism-chip ${this.state.realismLevel === 'standard' ? 'active' : ''}" data-level="standard">✨ Standard</button>
-                                <button type="button" class="psb-chip psb-realism-chip ${this.state.realismLevel === 'high' ? 'active' : ''}" data-level="high">📸 DSLR Realism</button>
-                                <button type="button" class="psb-chip psb-realism-chip ${this.state.realismLevel === 'ultra' ? 'active' : ''}" data-level="ultra">🔬 RAW Film</button>
+                                <button type="button" class="psb-chip psb-realism-chip ${this.state.realismLevel === 'standard' ? 'active' : ''}" data-level="standard">✨ ${this._t('psb_realism_standard', 'Standard')}</button>
+                                <button type="button" class="psb-chip psb-realism-chip ${this.state.realismLevel === 'high' ? 'active' : ''}" data-level="high">📸 ${this._t('psb_realism_dslr', 'DSLR Realism')}</button>
+                                <button type="button" class="psb-chip psb-realism-chip ${this.state.realismLevel === 'ultra' ? 'active' : ''}" data-level="ultra">🔬 ${this._t('psb_realism_raw', 'RAW Film')}</button>
                             </div>
                         </div>
                     </section>
@@ -1615,9 +1620,9 @@ const PromptStudioBeta = {
                             <div class="psb-spot"></div>
 
                             <div class="psb-carousel-header">
-                                <div class="psb-section-title" style="margin-bottom:0;">🌟 Top 10 Recommended Archetypes</div>
+                                <div class="psb-section-title" style="margin-bottom:0;">🌟 ${this._t('psb_top10', 'Top 10 Recommended Archetypes')}</div>
                                 <button type="button" class="psb-view-all-btn" id="psb-open-modal-btn">
-                                    ⚡ Full Library (+70)
+                                    ⚡ ${this._t('psb_full_library', 'Full Library (+70)')}
                                 </button>
                             </div>
 
@@ -1649,7 +1654,7 @@ const PromptStudioBeta = {
                                             </div>
                                             <div class="psb-arch-card-name" title="${arch.name}">${arch.name}</div>
                                             <div class="psb-arch-card-tag">${arch.tagline || arch.desc || ''}</div>
-                                            <div class="psb-arch-score-badge" style="color:${scoreColor}">${score}% Match</div>
+                                            <div class="psb-arch-score-badge" style="color:${scoreColor}">${score}% ${this._t('psb_match', 'Match')}</div>
                                         </div>
                                     `;
                                 }).join('')}
@@ -1657,7 +1662,7 @@ const PromptStudioBeta = {
 
                             <!-- Deep Modifiers Collapsible Trigger -->
                             <button type="button" class="psb-expert-toggle ${this.state.expertOpen ? 'open' : ''}" id="psb-expert-toggle">
-                                <span>⚙ Deep Modifiers &amp; Creative Control</span>
+                                <span>⚙ ${this._t('psb_deep_modifiers', 'Deep Modifiers & Creative Control')}</span>
                                 <span class="psb-expert-arrow">▼</span>
                             </button>
 
@@ -1666,26 +1671,26 @@ const PromptStudioBeta = {
 
                                 <!-- Tab Bar -->
                                 <div class="psb-mod-tabs">
-                                    <button type="button" class="psb-mod-tab ${this.state.activeModTab === 'model'   ? 'active' : ''}" data-modtab="model">👤 Model</button>
-                                    <button type="button" class="psb-mod-tab ${this.state.activeModTab === 'camera'  ? 'active' : ''}" data-modtab="camera">📸 Camera</button>
-                                    <button type="button" class="psb-mod-tab ${this.state.activeModTab === 'styling' ? 'active' : ''}" data-modtab="styling">🎨 Styling</button>
-                                    <button type="button" class="psb-mod-tab ${this.state.activeModTab === 'brand'   ? 'active' : ''}" data-modtab="brand">💎 Brand</button>
+                                    <button type="button" class="psb-mod-tab ${this.state.activeModTab === 'model'   ? 'active' : ''}" data-modtab="model">👤 ${this._t('psb_tab_model', 'Model')}</button>
+                                    <button type="button" class="psb-mod-tab ${this.state.activeModTab === 'camera'  ? 'active' : ''}" data-modtab="camera">📸 ${this._t('psb_tab_camera', 'Camera')}</button>
+                                    <button type="button" class="psb-mod-tab ${this.state.activeModTab === 'styling' ? 'active' : ''}" data-modtab="styling">🎨 ${this._t('psb_tab_styling', 'Styling')}</button>
+                                    <button type="button" class="psb-mod-tab ${this.state.activeModTab === 'brand'   ? 'active' : ''}" data-modtab="brand">💎 ${this._t('psb_tab_brand', 'Brand')}</button>
                                 </div>
 
                                 <!-- ─── Tab 1: Model & Hijabi ─── -->
                                 <div class="psb-mod-content ${this.state.activeModTab === 'model' ? 'active' : ''}" id="psb-modtab-model">
                                     <div class="psb-form-group">
-                                        <label class="psb-label">Model Subject</label>
+                                        <label class="psb-label">${this._t('psb_model_subject', 'Model Subject')}</label>
                                         <div class="psb-chips">
-                                            <button type="button" class="psb-chip psb-gender-chip ${this.state.modelGender === 'female' ? 'active' : ''}" data-gender="female">👩 Female Model</button>
-                                            <button type="button" class="psb-chip psb-gender-chip ${this.state.modelGender === 'male'   ? 'active' : ''}" data-gender="male">👨 Male Model</button>
-                                            <button type="button" class="psb-chip psb-gender-chip ${this.state.modelGender === 'none'   ? 'active' : ''}" data-gender="none">🚫 No Model (Pure Product)</button>
+                                            <button type="button" class="psb-chip psb-gender-chip ${this.state.modelGender === 'female' ? 'active' : ''}" data-gender="female">👩 ${this._t('psb_female_model', 'Female Model')}</button>
+                                            <button type="button" class="psb-chip psb-gender-chip ${this.state.modelGender === 'male'   ? 'active' : ''}" data-gender="male">👨 ${this._t('psb_male_model', 'Male Model')}</button>
+                                            <button type="button" class="psb-chip psb-gender-chip ${this.state.modelGender === 'none'   ? 'active' : ''}" data-gender="none">🚫 ${this._t('psb_no_model', 'No Model (Pure Product)')}</button>
                                         </div>
                                     </div>
 
                                     <!-- New v10: Body Part Focus -->
                                     <div class="psb-form-group">
-                                        <label class="psb-label">🎯 Body Part Focus <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">Which zone the shot emphasizes</span></label>
+                                        <label class="psb-label">🎯 ${this._t('psb_body_focus', 'Body Part Focus')} <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">${this._t('psb_body_focus_hint', 'Which zone the shot emphasizes')}</span></label>
                                         <select class="psb-select" id="psb-bodyfocus-select">
                                             ${this._getBodyFocusOptions().map(b => `
                                                 <option value="${b.id}" ${this.state.bodyFocus === b.id ? 'selected' : ''}>${b.label}</option>
@@ -1695,7 +1700,7 @@ const PromptStudioBeta = {
 
                                     ${this.state.modelGender !== 'none' ? `
                                         <div class="psb-form-group">
-                                            <label class="psb-label">Complexion &amp; Skin Tone</label>
+                                            <label class="psb-label">${this._t('psb_complexion', 'Complexion & Skin Tone')}</label>
                                             <select class="psb-select" id="psb-ethnicity-select">
                                                 ${ethnicities.map(e => `
                                                     <option value="${e.id}" ${this.state.modelEthnicity === e.id ? 'selected' : ''}>${e.label}</option>
@@ -1704,7 +1709,7 @@ const PromptStudioBeta = {
                                         </div>
 
                                         <div class="psb-form-group">
-                                            <label class="psb-label">Facial Expression</label>
+                                            <label class="psb-label">${this._t('psb_facial_expression', 'Facial Expression')}</label>
                                             <select class="psb-select" id="psb-expr-select">
                                                 ${facialExpressions.map(ex => `
                                                     <option value="${ex.id}" ${this.state.facialExpression === ex.id ? 'selected' : ''}>${ex.label}</option>
@@ -1715,8 +1720,8 @@ const PromptStudioBeta = {
                                         <!-- Hijabi Toggle -->
                                         <div class="psb-toggle-row">
                                             <div class="psb-toggle-label">
-                                                <span class="psb-toggle-title">🧕 Hijabi &amp; Modest Fashion</span>
-                                                <span class="psb-toggle-desc">Enable luxury silk hijab drape and modest neckline</span>
+                                                <span class="psb-toggle-title">🧕 ${this._t('psb_hijabi_title', 'Hijabi & Modest Fashion')}</span>
+                                                <span class="psb-toggle-desc">${this._t('psb_hijabi_desc', 'Enable luxury silk hijab drape and modest neckline')}</span>
                                             </div>
                                             <label class="psb-switch">
                                                 <input type="checkbox" id="psb-hijabi-toggle" ${this.state.hijabi ? 'checked' : ''}>
@@ -1726,7 +1731,7 @@ const PromptStudioBeta = {
 
                                         ${this.state.hijabi ? `
                                             <div class="psb-form-group">
-                                                <label class="psb-label">Hijab Wrap Style</label>
+                                                <label class="psb-label">${this._t('psb_hijab_style', 'Hijab Wrap Style')}</label>
                                                 <div class="psb-chips">
                                                     ${hijabStyles.map(st => `
                                                         <button type="button" class="psb-chip psb-hijabstyle-chip ${this.state.hijabStyle === st.id ? 'active' : ''}" data-style="${st.id}">
@@ -1742,8 +1747,8 @@ const PromptStudioBeta = {
                                     <div class="psb-guide-divider" style="margin:14px 0 10px;"></div>
                                     <div class="psb-toggle-row" style="align-items:flex-start;">
                                         <div class="psb-toggle-label">
-                                            <span class="psb-toggle-title">🧠 Model Consistency</span>
-                                            <span class="psb-toggle-desc">Lock a virtual model profile across all your shots for consistent characters</span>
+                                            <span class="psb-toggle-title">🧠 ${this._t('psb_consistency_title', 'Model Consistency')}</span>
+                                            <span class="psb-toggle-desc">${this._t('psb_consistency_desc', 'Lock a virtual model profile across all your shots for consistent characters')}</span>
                                         </div>
                                         <label class="psb-switch">
                                             <input type="checkbox" id="psb-consistency-toggle" ${this.state.consistencyOn ? 'checked' : ''}>
@@ -1753,11 +1758,11 @@ const PromptStudioBeta = {
 
                                     ${this.state.consistencyOn ? `
                                         <div style="margin-top:12px;">
-                                            <div style="font-size:10px;color:var(--psb-text-3);margin-bottom:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">Model Profile</div>
+                                            <div style="font-size:10px;color:var(--psb-text-3);margin-bottom:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;">${this._t('psb_model_profile', 'Model Profile')}</div>
                                             <div class="psb-profile-list" id="psb-profile-list">
                                                 ${(() => {
                                                     const profiles = this._getFilteredProfiles();
-                                                    if (!profiles.length) return `<div style="font-size:11px;color:var(--psb-text-3);padding:10px 0;">No profiles for this gender.</div>`;
+                                                    if (!profiles.length) return `<div style="font-size:11px;color:var(--psb-text-3);padding:10px 0;">${this._t('psb_no_profiles', 'No profiles for this gender.')}</div>`;
                                                     return profiles.map(p => {
                                                         const isActive = p.id === this.state.activeProfileId;
                                                         const initial = p.name[0].toUpperCase();
@@ -1784,37 +1789,37 @@ const PromptStudioBeta = {
                                 <!-- ─── Tab 2: Camera & Light ─── -->
                                 <div class="psb-mod-content ${this.state.activeModTab === 'camera' ? 'active' : ''}" id="psb-modtab-camera">
                                     <div class="psb-form-group">
-                                        <label class="psb-label">Lighting Mood</label>
+                                        <label class="psb-label">${this._t('psb_lighting_mood', 'Lighting Mood')}</label>
                                         <div class="psb-chips" style="margin-bottom:8px;">
-                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'all'         ? 'active' : ''}" data-lf="all">All</button>
-                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'natural'     ? 'active' : ''}" data-lf="natural">🌤 Natural</button>
-                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'studio'      ? 'active' : ''}" data-lf="studio">🎥 Studio</button>
-                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'cinematic'   ? 'active' : ''}" data-lf="cinematic">🌑 Cinematic</button>
-                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'atmospheric' ? 'active' : ''}" data-lf="atmospheric">🌫 Atmos</button>
-                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'special'     ? 'active' : ''}" data-lf="special">✨ Special</button>
+                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'all'         ? 'active' : ''}" data-lf="all">${this._t('psb_lf_all', 'All')}</button>
+                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'natural'     ? 'active' : ''}" data-lf="natural">🌤 ${this._t('psb_lf_natural', 'Natural')}</button>
+                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'studio'      ? 'active' : ''}" data-lf="studio">🎥 ${this._t('psb_lf_studio', 'Studio')}</button>
+                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'cinematic'   ? 'active' : ''}" data-lf="cinematic">🌑 ${this._t('psb_lf_cinematic', 'Cinematic')}</button>
+                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'atmospheric' ? 'active' : ''}" data-lf="atmospheric">🌫 ${this._t('psb_lf_atmos', 'Atmos')}</button>
+                                            <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'special'     ? 'active' : ''}" data-lf="special">✨ ${this._t('psb_lf_special', 'Special')}</button>
                                         </div>
                                         <select class="psb-select" id="psb-lighting-select">
-                                            <optgroup label="🌤 Natural Light" data-lf="natural" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'natural' ? 'style="display:none"' : ''}>
+                                            <optgroup label="🌤 ${this._t('psb_lg_natural', 'Natural Light')}" data-lf="natural" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'natural' ? 'style="display:none"' : ''}>
                                                 ${lightingMoods.filter(m => m.category === 'natural').map(m => `
                                                     <option value="${m.id}" ${this.state.lightingMood === m.id ? 'selected' : ''}>${m.label}</option>
                                                 `).join('')}
                                             </optgroup>
-                                            <optgroup label="🎥 Studio Lighting" data-lf="studio" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'studio' ? 'style="display:none"' : ''}>
+                                            <optgroup label="🎥 ${this._t('psb_lg_studio', 'Studio Lighting')}" data-lf="studio" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'studio' ? 'style="display:none"' : ''}>
                                                 ${lightingMoods.filter(m => m.category === 'studio').map(m => `
                                                     <option value="${m.id}" ${this.state.lightingMood === m.id ? 'selected' : ''}>${m.label}</option>
                                                 `).join('')}
                                             </optgroup>
-                                            <optgroup label="🌑 Cinematic &amp; Dramatic" data-lf="cinematic" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'cinematic' ? 'style="display:none"' : ''}>
+                                            <optgroup label="🌑 ${this._t('psb_lg_cinematic', 'Cinematic & Dramatic')}" data-lf="cinematic" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'cinematic' ? 'style="display:none"' : ''}>
                                                 ${lightingMoods.filter(m => m.category === 'cinematic').map(m => `
                                                     <option value="${m.id}" ${this.state.lightingMood === m.id ? 'selected' : ''}>${m.label}</option>
                                                 `).join('')}
                                             </optgroup>
-                                            <optgroup label="🌫 Atmospheric" data-lf="atmospheric" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'atmospheric' ? 'style="display:none"' : ''}>
+                                            <optgroup label="🌫 ${this._t('psb_lg_atmospheric', 'Atmospheric')}" data-lf="atmospheric" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'atmospheric' ? 'style="display:none"' : ''}>
                                                 ${lightingMoods.filter(m => m.category === 'atmospheric').map(m => `
                                                     <option value="${m.id}" ${this.state.lightingMood === m.id ? 'selected' : ''}>${m.label}</option>
                                                 `).join('')}
                                             </optgroup>
-                                            <optgroup label="✨ Special &amp; Reflective" data-lf="special" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'special' ? 'style="display:none"' : ''}>
+                                            <optgroup label="✨ ${this._t('psb_lg_special', 'Special & Reflective')}" data-lf="special" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'special' ? 'style="display:none"' : ''}>
                                                 ${lightingMoods.filter(m => m.category === 'special').map(m => `
                                                     <option value="${m.id}" ${this.state.lightingMood === m.id ? 'selected' : ''}>${m.label}</option>
                                                 `).join('')}
@@ -1823,7 +1828,7 @@ const PromptStudioBeta = {
                                     </div>
 
                                     <div class="psb-form-group">
-                                        <label class="psb-label">Camera Lens Profile <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">⭐ = recommended for active archetype</span></label>
+                                        <label class="psb-label">${this._t('psb_camera_lens', 'Camera Lens Profile')} <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">${this._t('psb_camera_lens_hint', '⭐ = recommended for active archetype')}</span></label>
                                         <select class="psb-select" id="psb-camera-select">
                                             ${(() => {
                                                 const recCam = (guideData.camera || [])[0];
@@ -1839,13 +1844,13 @@ const PromptStudioBeta = {
                                     </div>
 
                                     <div class="psb-form-group">
-                                        <label class="psb-label">Camera Shot Angle</label>
+                                        <label class="psb-label">${this._t('psb_shot_angle', 'Camera Shot Angle')}</label>
                                         <select class="psb-select" id="psb-angle-select">
                                             ${['Classic & Portrait', 'Macro & Product', 'Cinematic & Atmospheric', 'Editorial & High Fashion', 'Artistic & Tactile', 'Environmental & Dynamic', 'POV & Power', 'Watch Exclusive'].map(groupName => {
                                                 const groupAngles = angles.filter(a => (a.group || 'Classic & Portrait') === groupName);
                                                 if (!groupAngles.length) return '';
                                                 return `
-                                                    <optgroup label="${groupName}">
+                                                    <optgroup label="${this._t('psb_anggrp_' + groupName.replace(/[^a-z]/gi, '').toLowerCase(), groupName)}">
                                                         ${groupAngles.map(a => `
                                                             <option value="${a.id}" ${this.state.angle === a.id ? 'selected' : ''}>${a.label}</option>
                                                         `).join('')}
@@ -1861,7 +1866,7 @@ const PromptStudioBeta = {
 
                                     <!-- Jewelry Style multi-select -->
                                     <div class="psb-form-group">
-                                        <label class="psb-label">Jewelry Design Style (multi-select)</label>
+                                        <label class="psb-label">${this._t('psb_jewelry_style', 'Jewelry Design Style (multi-select)')}</label>
                                         <div class="psb-chips">
                                             ${jewelryStyles.map(js => `
                                                 <button type="button" class="psb-chip psb-jstyle-chip ${this.state.jewelryStyle.includes(js.id) ? 'active' : ''}" data-jstyle="${js.id}">
@@ -1872,7 +1877,7 @@ const PromptStudioBeta = {
                                     </div>
 
                                     <div class="psb-form-group">
-                                        <label class="psb-label">👗 Wardrobe &amp; Outfit <span style="font-size:9px;color:#34d399;font-weight:600;">✦ AI Chooses = max variety</span></label>
+                                        <label class="psb-label">👗 ${this._t('psb_wardrobe', 'Wardrobe & Outfit')} <span style="font-size:9px;color:#34d399;font-weight:600;">✦ ${this._t('psb_ai_chooses_variety', 'AI Chooses = max variety')}</span></label>
                                         <select class="psb-select" id="psb-styling-select">
                                             ${stylings.map(st => `
                                                 <option value="${st.id}" ${this.state.styling === st.id ? 'selected' : ''}>${st.label}</option>
@@ -1881,7 +1886,7 @@ const PromptStudioBeta = {
                                     </div>
 
                                     <div class="psb-form-group">
-                                        <label class="psb-label">🎨 Color Palette Harmony <span style="font-size:9px;color:#34d399;font-weight:600;">✦ AI Chooses = max variety</span></label>
+                                        <label class="psb-label">🎨 ${this._t('psb_palette_harmony', 'Color Palette Harmony')} <span style="font-size:9px;color:#34d399;font-weight:600;">✦ ${this._t('psb_ai_chooses_variety', 'AI Chooses = max variety')}</span></label>
                                         <select class="psb-select" id="psb-palette-select">
                                             ${palettes.map(pal => `
                                                 <option value="${pal.id}" ${this.state.palette === pal.id ? 'selected' : ''}>${pal.label}</option>
@@ -1890,7 +1895,7 @@ const PromptStudioBeta = {
                                     </div>
 
                                     <div class="psb-form-group">
-                                        <label class="psb-label">🪨 Surface &amp; Backdrop Material <span style="font-size:9px;color:#34d399;font-weight:600;">✦ AI Chooses = max variety</span></label>
+                                        <label class="psb-label">🪨 ${this._t('psb_surface_backdrop', 'Surface & Backdrop Material')} <span style="font-size:9px;color:#34d399;font-weight:600;">✦ ${this._t('psb_ai_chooses_variety', 'AI Chooses = max variety')}</span></label>
                                         <select class="psb-select" id="psb-surface-select">
                                             ${surfaces.map(s => `
                                                 <option value="${s.id}" ${this.state.surface === s.id ? 'selected' : ''}>${s.label}</option>
@@ -1900,7 +1905,7 @@ const PromptStudioBeta = {
 
                                     <!-- New v10: Environment / Background -->
                                     <div class="psb-form-group">
-                                        <label class="psb-label">🌍 Environment / Background <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">Location context beyond surface</span></label>
+                                        <label class="psb-label">🌍 ${this._t('psb_environment', 'Environment / Background')} <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">${this._t('psb_environment_hint', 'Location context beyond surface')}</span></label>
                                         <select class="psb-select" id="psb-environment-select">
                                             ${this._getEnvironmentOptions().map(e => `
                                                 <option value="${e.id}" ${this.state.environment === e.id ? 'selected' : ''}>${e.label}</option>
@@ -1910,7 +1915,7 @@ const PromptStudioBeta = {
 
                                     <!-- New v10: Film Style -->
                                     <div class="psb-form-group">
-                                        <label class="psb-label">🎞 Film Style &amp; Grade <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">Post-processing look &amp; color science</span></label>
+                                        <label class="psb-label">🎞 ${this._t('psb_film_style', 'Film Style & Grade')} <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">${this._t('psb_film_style_hint', 'Post-processing look & color science')}</span></label>
                                         <select class="psb-select" id="psb-filmstyle-select">
                                             ${this._getFilmStyleOptions().map(f => `
                                                 <option value="${f.id}" ${this.state.filmStyle === f.id ? 'selected' : ''}>${f.label}</option>
@@ -1920,7 +1925,7 @@ const PromptStudioBeta = {
 
                                     <!-- New v10: Mood Intensity -->
                                     <div class="psb-form-group">
-                                        <label class="psb-label">⚡ Mood Intensity <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">Overall emotional register of the scene</span></label>
+                                        <label class="psb-label">⚡ ${this._t('psb_mood_intensity', 'Mood Intensity')} <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">${this._t('psb_mood_intensity_hint', 'Overall emotional register of the scene')}</span></label>
                                         <select class="psb-select" id="psb-moodintensity-select">
                                             ${this._getMoodIntensityOptions().map(m => `
                                                 <option value="${m.id}" ${this.state.moodIntensity === m.id ? 'selected' : ''}>${m.label}</option>
@@ -1930,7 +1935,7 @@ const PromptStudioBeta = {
 
                                     <!-- New v10: Season & Time of Day -->
                                     <div class="psb-form-group">
-                                        <label class="psb-label">🕐 Season &amp; Time of Day <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">Temporal atmosphere &amp; color temperature</span></label>
+                                        <label class="psb-label">🕐 ${this._t('psb_season_time', 'Season & Time of Day')} <span style="font-size:9px;color:var(--psb-text-3);font-weight:400;">${this._t('psb_season_time_hint', 'Temporal atmosphere & color temperature')}</span></label>
                                         <select class="psb-select" id="psb-seasontime-select">
                                             ${this._getSeasonTimeOptions().map(s => `
                                                 <option value="${s.id}" ${this.state.seasonTime === s.id ? 'selected' : ''}>${s.label}</option>
@@ -1944,8 +1949,8 @@ const PromptStudioBeta = {
 
                                     <div class="psb-toggle-row">
                                         <div class="psb-toggle-label">
-                                            <span class="psb-toggle-title">🔍 925 Hallmark Engraving</span>
-                                            <span class="psb-toggle-desc">Discreet microscopic authenticity hallmark on silver shank</span>
+                                            <span class="psb-toggle-title">🔍 ${this._t('psb_hallmark_title', '925 Hallmark Engraving')}</span>
+                                            <span class="psb-toggle-desc">${this._t('psb_hallmark_desc', 'Discreet microscopic authenticity hallmark on silver shank')}</span>
                                         </div>
                                         <label class="psb-switch">
                                             <input type="checkbox" id="psb-hallmark-toggle" ${this.state.hallmarkEnabled ? 'checked' : ''}>
@@ -1955,8 +1960,8 @@ const PromptStudioBeta = {
 
                                     <div class="psb-toggle-row">
                                         <div class="psb-toggle-label">
-                                            <span class="psb-toggle-title">✨ Brand Identity Touch</span>
-                                            <span class="psb-toggle-desc">Embed luxury branding detail on apparel or packaging</span>
+                                            <span class="psb-toggle-title">✨ ${this._t('psb_brand_touch_title', 'Brand Identity Touch')}</span>
+                                            <span class="psb-toggle-desc">${this._t('psb_brand_touch_desc', 'Embed luxury branding detail on apparel or packaging')}</span>
                                         </div>
                                         <label class="psb-switch">
                                             <input type="checkbox" id="psb-brand-toggle" ${this.state.brandIdentityEnabled ? 'checked' : ''}>
@@ -1966,7 +1971,7 @@ const PromptStudioBeta = {
 
                                     ${this.state.brandIdentityEnabled ? `
                                         <div class="psb-form-group">
-                                            <label class="psb-label">Brand Touch Type</label>
+                                            <label class="psb-label">${this._t('psb_brand_touch_type', 'Brand Touch Type')}</label>
                                             <select class="psb-select" id="psb-brandtouch-select">
                                                 ${brandTouches.map(b => `
                                                     <option value="${b.id}" ${this.state.brandTouch === b.id ? 'selected' : ''}>${b.label}</option>
@@ -1976,12 +1981,12 @@ const PromptStudioBeta = {
                                     ` : ''}
 
                                     <div class="psb-form-group" style="margin-top:12px;">
-                                        <label class="psb-label">Micro-Realism Elements</label>
+                                        <label class="psb-label">${this._t('psb_micro_realism', 'Micro-Realism Elements')}</label>
                                         <div class="psb-chips">
-                                            <button type="button" class="psb-chip psb-skin-chip ${this.state.skinTexture ? 'active' : ''}" data-feat="skinTexture">✦ Natural Pores</button>
-                                            <button type="button" class="psb-chip psb-skin-chip ${this.state.skinDetail  ? 'active' : ''}" data-feat="skinDetail">✦ Veins &amp; Freckles</button>
-                                            <button type="button" class="psb-chip psb-skin-chip ${this.state.bodyHair    ? 'active' : ''}" data-feat="bodyHair">✦ Subtle Arm Hair</button>
-                                            <button type="button" class="psb-chip psb-skin-chip ${this.state.wrinkles   ? 'active' : ''}" data-feat="wrinkles">✦ Natural Micro-Lines</button>
+                                            <button type="button" class="psb-chip psb-skin-chip ${this.state.skinTexture ? 'active' : ''}" data-feat="skinTexture">✦ ${this._t('psb_mr_pores', 'Natural Pores')}</button>
+                                            <button type="button" class="psb-chip psb-skin-chip ${this.state.skinDetail  ? 'active' : ''}" data-feat="skinDetail">✦ ${this._t('psb_mr_veins', 'Veins & Freckles')}</button>
+                                            <button type="button" class="psb-chip psb-skin-chip ${this.state.bodyHair    ? 'active' : ''}" data-feat="bodyHair">✦ ${this._t('psb_mr_armhair', 'Subtle Arm Hair')}</button>
+                                            <button type="button" class="psb-chip psb-skin-chip ${this.state.wrinkles   ? 'active' : ''}" data-feat="wrinkles">✦ ${this._t('psb_mr_lines', 'Natural Micro-Lines')}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1989,18 +1994,18 @@ const PromptStudioBeta = {
 
                             <!-- Variation Count + Generate -->
                             <div class="psb-count-row">
-                                <span class="psb-count-label">Variations</span>
+                                <span class="psb-count-label">${this._t('psb_variations', 'Variations')}</span>
                                 <button type="button" class="psb-count-btn" id="psb-count-minus">−</button>
                                 <span class="psb-count-val" id="psb-count-val">${this.state.variationCount}</span>
                                 <button type="button" class="psb-count-btn" id="psb-count-plus">+</button>
                             </div>
 
                             ${this._getActiveTrend() ? `
-                                <div class="psb-trend-armed">🔥 Trend active: <b>${this._getActiveTrend().title}</b> — its directive rides into this prompt</div>
+                                <div class="psb-trend-armed">🔥 ${this._t('trd_active_prefix', 'Trend active:')} <b>${this._getActiveTrend().title}</b> ${this._t('trd_active_suffix', '— its directive rides into this prompt')}</div>
                             ` : ''}
 
                             <button type="button" class="psb-generate-btn" id="psb-generate-btn">
-                                <span>⚡ Generate${this.state.variationCount > 1 ? ` ${this.state.variationCount} Variations` : ' Prompt'} &amp; Copy</span>
+                                <span>⚡ ${this.state.variationCount > 1 ? this._t('psb_generate_n', 'Generate {n} Variations & Copy').replace('{n}', this.state.variationCount) : this._t('psb_generate_1', 'Generate Prompt & Copy')}</span>
                             </button>
 
                             <!-- Output Card -->
@@ -2008,11 +2013,11 @@ const PromptStudioBeta = {
                                 <div class="psb-output-header">
                                     <div class="psb-output-label">
                                         <span class="psb-output-dot"></span>
-                                        Compiled Production Prompt
+                                        ${this._t('psb_compiled_prompt', 'Compiled Production Prompt')}
                                     </div>
                                     <div class="psb-output-actions">
-                                        <button type="button" class="psb-btn psb-btn-glass psb-btn-sm" id="psb-copy-output-btn">📋 Copy</button>
-                                        <button type="button" class="psb-btn psb-btn-glass psb-btn-sm" id="psb-send-motion-btn">🎬 Motion Studio</button>
+                                        <button type="button" class="psb-btn psb-btn-glass psb-btn-sm" id="psb-copy-output-btn">📋 ${this._t('psb_copy', 'Copy')}</button>
+                                        <button type="button" class="psb-btn psb-btn-glass psb-btn-sm" id="psb-send-motion-btn">🎬 ${this._t('nav_motionstudio', 'Motion Studio')}</button>
                                     </div>
                                 </div>
                                 <div class="psb-output-body" id="psb-output-body">${this.state.generatedPrompt}</div>
@@ -2024,7 +2029,7 @@ const PromptStudioBeta = {
                     <section class="psb-panel psb-right-col">
                         <div class="psb-spot"></div>
 
-                        <div class="psb-section-title">🧭 Smart Guide Live</div>
+                        <div class="psb-section-title">🧭 ${this._t('psb_smart_guide', 'Smart Guide Live')}</div>
 
                         <!-- Archetype Header -->
                         <div class="psb-guide-top">
@@ -2039,79 +2044,79 @@ const PromptStudioBeta = {
                         </div>
 
                         ${activeArch.bestFor ? `<div class="psb-guide-bestfor">${activeArch.bestFor}</div>` : ''}
-                        <div class="psb-guide-body">${activeArch.desc || 'Optimized archetype for cinematic realism.'}</div>
+                        <div class="psb-guide-body">${activeArch.desc || this._t('psb_guide_fallback_desc', 'Optimized archetype for cinematic realism.')}</div>
 
                         <div class="psb-guide-divider"></div>
 
                         <!-- Scene Intelligence -->
-                        <div class="psb-guide-section-label">◈ Scene Intelligence</div>
+                        <div class="psb-guide-section-label">◈ ${this._t('psb_scene_intel', 'Scene Intelligence')}</div>
                         <div class="psb-guide-stat-row">
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Compatibility</span>
+                                <span class="psb-guide-stat-label">${this._t('psb_compatibility', 'Compatibility')}</span>
                                 <span class="psb-guide-stat-value" style="color:${activeScore >= 85 ? '#34d399' : activeScore >= 70 ? '#fbbf24' : '#f87171'}">${activeScore}%</span>
                             </div>
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Category</span>
+                                <span class="psb-guide-stat-label">${this._t('psb_category', 'Category')}</span>
                                 <span class="psb-guide-stat-value">${this._inferCategory(activeArch).replace(/\b\w/g, l => l.toUpperCase())}</span>
                             </div>
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Piece Synergy</span>
-                                <span class="psb-guide-stat-value" style="color:${activeScore >= 85 ? '#34d399' : activeScore >= 70 ? '#fbbf24' : '#f87171'}">${activeScore >= 85 ? 'Excellent ✦' : activeScore >= 70 ? 'Good' : 'Low'}</span>
+                                <span class="psb-guide-stat-label">${this._t('psb_piece_synergy', 'Piece Synergy')}</span>
+                                <span class="psb-guide-stat-value" style="color:${activeScore >= 85 ? '#34d399' : activeScore >= 70 ? '#fbbf24' : '#f87171'}">${activeScore >= 85 ? this._t('psb_synergy_excellent', 'Excellent ✦') : activeScore >= 70 ? this._t('psb_synergy_good', 'Good') : this._t('psb_synergy_low', 'Low')}</span>
                             </div>
                         </div>
 
                         <div class="psb-guide-divider"></div>
 
                         <!-- Optimal Setup -->
-                        <div class="psb-guide-section-label">◈ Optimal Setup</div>
+                        <div class="psb-guide-section-label">◈ ${this._t('psb_optimal_setup', 'Optimal Setup')}</div>
                         <div class="psb-guide-stat-row">
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Shot Angle #1</span>
+                                <span class="psb-guide-stat-label">${this._t('psb_shot_angle_1', 'Shot Angle #1')}</span>
                                 <span class="psb-guide-stat-value">${this._getLabelForAngle(guideData.angle && guideData.angle[0])}</span>
                             </div>
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Shot Angle #2</span>
+                                <span class="psb-guide-stat-label">${this._t('psb_shot_angle_2', 'Shot Angle #2')}</span>
                                 <span class="psb-guide-stat-value">${guideData.angle && guideData.angle[1] ? this._getLabelForAngle(guideData.angle[1]) : '—'}</span>
                             </div>
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Lighting #1</span>
+                                <span class="psb-guide-stat-label">${this._t('psb_lighting_1', 'Lighting #1')}</span>
                                 <span class="psb-guide-stat-value">${this._getLabelForLighting(guideData.lighting && guideData.lighting[0])}</span>
                             </div>
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Lighting #2</span>
+                                <span class="psb-guide-stat-label">${this._t('psb_lighting_2', 'Lighting #2')}</span>
                                 <span class="psb-guide-stat-value">${guideData.lighting && guideData.lighting[1] ? this._getLabelForLighting(guideData.lighting[1]) : '—'}</span>
                             </div>
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">⭐ Lens Profile</span>
+                                <span class="psb-guide-stat-label">⭐ ${this._t('psb_lens_profile', 'Lens Profile')}</span>
                                 <span class="psb-guide-stat-value">${this._getLabelForCamera(guideData.camera && guideData.camera[0])}</span>
                             </div>
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Alt Lens</span>
+                                <span class="psb-guide-stat-label">${this._t('psb_alt_lens', 'Alt Lens')}</span>
                                 <span class="psb-guide-stat-value">${guideData.camera && guideData.camera[1] ? this._getLabelForCamera(guideData.camera[1]) : '—'}</span>
                             </div>
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">Depth of Field</span>
+                                <span class="psb-guide-stat-label">${this._t('psb_dof', 'Depth of Field')}</span>
                                 <span class="psb-guide-stat-value">${this._getGuideDOF(guideData)}</span>
                             </div>
                             <div class="psb-guide-stat">
-                                <span class="psb-guide-stat-label">ISO Range</span>
+                                <span class="psb-guide-stat-label">${this._t('psb_iso_range', 'ISO Range')}</span>
                                 <span class="psb-guide-stat-value">${this._getGuideISO(activeArch)}</span>
                             </div>
                         </div>
 
-                        <button type="button" class="psb-guide-apply-btn" id="psb-apply-guide-btn" title="Auto-select recommended Angle, Lighting, and Camera Lens Profile">
-                            ⚡ Apply Recommended Setup
+                        <button type="button" class="psb-guide-apply-btn" id="psb-apply-guide-btn" title="${this._t('psb_apply_setup_title', 'Auto-select recommended Angle, Lighting, and Camera Lens Profile')}">
+                            ⚡ ${this._t('psb_apply_setup', 'Apply Recommended Setup')}
                         </button>
 
                         <div class="psb-guide-divider" style="margin-top:14px;"></div>
 
                         <!-- Director Tips -->
-                        <div class="psb-guide-tips-title">✦ Director Photography Tips</div>
+                        <div class="psb-guide-tips-title">✦ ${this._t('psb_director_tips', 'Director Photography Tips')}</div>
                         <ul class="psb-guide-tips-list">
                             ${(guideData.tips || [
-                                'Pair with high-polish silver for rich specular highlights.',
-                                'Use shallow depth of field to isolate gem facets.',
-                                'Keep background texture complementary to the metal tone.',
+                                this._t('psb_tip_default_1', 'Pair with high-polish silver for rich specular highlights.'),
+                                this._t('psb_tip_default_2', 'Use shallow depth of field to isolate gem facets.'),
+                                this._t('psb_tip_default_3', 'Keep background texture complementary to the metal tone.'),
                             ]).map(t => `<li class="psb-guide-tip-item">${t}</li>`).join('')}
                         </ul>
 
@@ -2119,18 +2124,18 @@ const PromptStudioBeta = {
 
                         ${this._renderTrendsPanel()}
 
-                        <div class="psb-section-title" style="margin-top:14px;">🕒 Recent Generations</div>
+                        <div class="psb-section-title" style="margin-top:14px;">🕒 ${this._t('psb_recent_gen', 'Recent Generations')}</div>
                         <div class="psb-history-list" id="psb-history-list">
                             ${this.state.history.length === 0
-                                ? `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:16px;">No recent prompts yet. Tap Generate!</div>`
+                                ? `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:16px;">${this._t('psb_no_history', 'No recent prompts yet. Tap Generate!')}</div>`
                                 : this.state.history.map(item => {
                                     const safePrompt = (item && item.prompt) ? item.prompt : '';
-                                    const safeArch   = (item && item.archetype) ? item.archetype : 'Unknown';
+                                    const safeArch   = (item && item.archetype) ? item.archetype : this._t('psb_unknown', 'Unknown');
                                     const safeTime   = (item && item.timestamp) ? item.timestamp : '';
                                     return `<div class="psb-history-item" data-prompt="${encodeURIComponent(safePrompt)}">
                                         <div class="psb-history-arch">${safeArch}${safeTime ? ` • <span style="color:var(--psb-text-3);">${safeTime}</span>` : ''}</div>
                                         <div class="psb-history-preview">${safePrompt.substring(0, 120)}${safePrompt.length > 120 ? '…' : ''}</div>
-                                        <button type="button" class="psb-history-copy">Copy</button>
+                                        <button type="button" class="psb-history-copy">${this._t('psb_copy', 'Copy')}</button>
                                     </div>`;
                                 }).join('')}
                         </div>
@@ -2145,22 +2150,22 @@ const PromptStudioBeta = {
                 <nav class="psb-dock">
                     <button type="button" class="psb-dock-btn active" id="psb-dock-studio">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>
-                        <span>Studio</span>
+                        <span>${this._t('psb_dock_studio', 'Studio')}</span>
                     </button>
                     <button type="button" class="psb-dock-btn" id="psb-dock-library">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
-                        <span>Library</span>
+                        <span>${this._t('psb_dock_library', 'Library')}</span>
                     </button>
                     <button type="button" class="psb-dock-gen" id="psb-dock-generate">
-                        <span>⚡ Generate</span>
+                        <span>⚡ ${this._t('psb_dock_generate', 'Generate')}</span>
                     </button>
                     <button type="button" class="psb-dock-btn" id="psb-dock-guide">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                        <span>Guide</span>
+                        <span>${this._t('psb_dock_guide', 'Guide')}</span>
                     </button>
                     <button type="button" class="psb-dock-btn" id="psb-dock-modifiers">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                        <span>Expert</span>
+                        <span>${this._t('psb_dock_expert', 'Expert')}</span>
                     </button>
                 </nav>
             </div>
@@ -2179,12 +2184,15 @@ const PromptStudioBeta = {
         // Group filter — only offer it when more than one group is present
         const groupsPresent = [...new Set(trends.map(t => t.group || 'jewelry'))];
         const grpMeta = this.state.trendsGroups || {};
-        const grpLabel = { jewelry: '💎 Jewelry', social: '📱 Social' };
+        const grpLabel = {
+            jewelry: this._t('trd_grp_jewelry', '💎 Jewelry'),
+            social: this._t('trd_grp_social', '📱 Social'),
+        };
         const gf = this.state.trendGroupFilter || 'all';
         const shown = gf === 'all' ? trends : trends.filter(t => (t.group || 'jewelry') === gf);
         const groupChips = groupsPresent.length > 1 ? `
             <div class="psb-trend-groupbar">
-                <button type="button" class="psb-tg-chip ${gf === 'all' ? 'active' : ''}" data-tg="all">All</button>
+                <button type="button" class="psb-tg-chip ${gf === 'all' ? 'active' : ''}" data-tg="all">${this._t('trd_grp_all', 'All')}</button>
                 ${groupsPresent.map(g => `
                     <button type="button" class="psb-tg-chip ${gf === g ? 'active' : ''}" data-tg="${g}">${
                         grpLabel[g] || ((grpMeta[g] && grpMeta[g].icon || '✦') + ' ' + (grpMeta[g] && grpMeta[g].label || g))
@@ -2197,14 +2205,14 @@ const PromptStudioBeta = {
         if (meta && typeof meta.daysOld === 'number') {
             const stale = meta.daysOld > 45;
             staleBadge = `<span class="psb-trend-stale" style="color:${stale ? '#f87171' : 'var(--psb-text-3)'}">${
-                stale ? `⚠ ${meta.daysOld}d old` : `updated ${meta.lastUpdated}`
+                stale ? `⚠ ${meta.daysOld}${this._t('trd_days_old', 'd')} ${this._t('trd_old', 'old')}` : `${this._t('trd_updated', 'updated')} ${meta.lastUpdated}`
             }</span>`;
         }
 
         const body = trends.length === 0
             ? (meta === null
-                ? `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:14px;">Loading trends…</div>`
-                : `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:14px;">Trends unavailable offline. <a href="#trends" style="color:var(--psb-gold,#f5a623);">Open Trends page</a></div>`)
+                ? `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:14px;">${this._t('trd_loading', 'Loading trends…')}</div>`
+                : `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:14px;">${this._t('trd_offline', 'Trends unavailable offline.')} <a href="#trends" style="color:var(--psb-gold,#f5a623);">${this._t('trd_open_page', 'Open Trends page')}</a></div>`)
             : `
                 ${groupChips}
                 <div class="psb-trend-list">
@@ -2227,19 +2235,19 @@ const PromptStudioBeta = {
                             return ch.length ? `<div class="psb-trend-changes">${ch.map(c => `<span>${c}</span>`).join('')}</div>` : '';
                         })()}
                         ${active.reference ? `
-                            <a href="${active.reference.url}" target="_blank" rel="noopener noreferrer" class="psb-trend-ref">🔗 See it first — ${active.reference.label} ↗</a>
+                            <a href="${active.reference.url}" target="_blank" rel="noopener noreferrer" class="psb-trend-ref">${this._t('trd_see_first', '🔗 See it first')} — ${active.reference.label} ↗</a>
                         ` : ''}
-                        <button type="button" class="psb-trend-clear" id="psb-trend-clear">✕ Clear trend</button>
+                        <button type="button" class="psb-trend-clear" id="psb-trend-clear">${this._t('trd_clear', '✕ Clear trend')}</button>
                     </div>
-                ` : `<div class="psb-trend-hint">Tap a trend to restyle the shot and lock its look into every prompt.</div>`}
+                ` : `<div class="psb-trend-hint">${this._t('trd_tap_hint', 'Tap a trend to restyle the shot and lock its look into every prompt.')}</div>`}
             `;
 
         return `
             <div class="psb-trend-panel" id="psb-trend-panel">
                 <div class="psb-section-title" style="margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                    🔥 Live Trends
+                    🔥 ${this._t('trd_live', 'Live Trends')}
                     ${staleBadge}
-                    <a href="#trends" class="psb-trend-link" title="Open the full Trends page">full page →</a>
+                    <a href="#trends" class="psb-trend-link" title="${this._t('trd_open_full', 'Open the full Trends page')}">${this._t('trd_full_page', 'full page →')}</a>
                 </div>
                 ${body}
             </div>
@@ -2256,25 +2264,25 @@ const PromptStudioBeta = {
         const filtered = this._filterArchetypes(all, category, search);
 
         const cats = [
-            { id: 'all',     label: `All (${all.length})` },
-            { id: 'human',   label: '👤 Model & Human' },
-            { id: 'product', label: '💎 Product & Studio' },
-            { id: 'organic', label: '🌿 Organic & Nature' },
-            { id: 'mood',    label: '🌑 Artistic & Mood' },
-            { id: 'sets',    label: '👑 Sets & Suites' },
-            { id: 'watches', label: '⌚ Watches' },
+            { id: 'all',     label: `${this._t('psb_cat_all', 'All')} (${all.length})` },
+            { id: 'human',   label: '👤 ' + this._t('psb_cat_human', 'Model & Human') },
+            { id: 'product', label: '💎 ' + this._t('psb_cat_product', 'Product & Studio') },
+            { id: 'organic', label: '🌿 ' + this._t('psb_cat_organic', 'Organic & Nature') },
+            { id: 'mood',    label: '🌑 ' + this._t('psb_cat_mood', 'Artistic & Mood') },
+            { id: 'sets',    label: '👑 ' + this._t('psb_cat_sets', 'Sets & Suites') },
+            { id: 'watches', label: '⌚ ' + this._t('psb_cat_watches', 'Watches') },
         ];
 
         return `
             <div class="psb-modal-backdrop" id="psb-modal-backdrop">
                 <div class="psb-modal-window">
                     <div class="psb-modal-header">
-                        <h2 class="psb-modal-title">💎 Fine Jewelry Archetype Library (${all.length})</h2>
+                        <h2 class="psb-modal-title">💎 ${this._t('psb_modal_title', 'Fine Jewelry Archetype Library')} (${all.length})</h2>
                         <button type="button" class="psb-modal-close-btn" id="psb-modal-close-btn">✕</button>
                     </div>
                     <div class="psb-modal-search-row">
                         <input type="text" class="psb-input" id="psb-modal-search-input"
-                            placeholder="🔍 Search by name, theme, or description..."
+                            placeholder="${this._t('psb_modal_search_ph', '🔍 Search by name, theme, or description…')}"
                             value="${this.state.modalSearch}">
                     </div>
                     <div class="psb-cat-tabs">
@@ -2285,12 +2293,12 @@ const PromptStudioBeta = {
                         `).join('')}
                     </div>
                     <div class="psb-modal-sort-bar">
-                        <button type="button" class="psb-modal-sort-btn ${this.state.modalV3Only ? 'active' : ''}" id="psb-modal-v3-filter">🏷 V3 Only</button>
-                        <button type="button" class="psb-modal-sort-btn ${this.state.modalSortAZ ? 'active' : ''}" id="psb-modal-sort-az">A–Z</button>
-                        <span class="psb-modal-count">${filtered.length} archetypes</span>
+                        <button type="button" class="psb-modal-sort-btn ${this.state.modalV3Only ? 'active' : ''}" id="psb-modal-v3-filter">🏷 ${this._t('psb_v3_only', 'V3 Only')}</button>
+                        <button type="button" class="psb-modal-sort-btn ${this.state.modalSortAZ ? 'active' : ''}" id="psb-modal-sort-az">${this._t('psb_sort_az', 'A–Z')}</button>
+                        <span class="psb-modal-count">${filtered.length} ${this._t('psb_archetypes_word', 'archetypes')}</span>
                     </div>
                     <div class="psb-modal-body">
-                        ${filtered.length === 0 ? `<div class="psb-empty">No archetypes found. Try a different search or adjust filters.</div>` : ''}
+                        ${filtered.length === 0 ? `<div class="psb-empty">${this._t('psb_no_archetypes', 'No archetypes found. Try a different search or adjust filters.')}</div>` : ''}
                         <div class="psb-modal-grid">
                             ${filtered.map(arch => {
                                 const score    = this._calculateArchetypeScore(arch);
@@ -2375,7 +2383,7 @@ const PromptStudioBeta = {
                 const prompt = item ? decodeURIComponent(item.dataset.prompt || '') : '';
                 if (navigator.clipboard && prompt) {
                     navigator.clipboard.writeText(prompt).then(() => {
-                        if (window.Elaris && window.Elaris.showToast) window.Elaris.showToast('📋 History prompt copied!', 'success');
+                        if (window.Elaris && window.Elaris.showToast) window.Elaris.showToast(this._t('psb_toast_hist_copied', '📋 History prompt copied!'), 'success');
                     });
                 }
                 btn.textContent = '✓';
@@ -2388,7 +2396,7 @@ const PromptStudioBeta = {
                 const prompt = decodeURIComponent(item.dataset.prompt || '');
                 if (navigator.clipboard && prompt) {
                     navigator.clipboard.writeText(prompt).then(() => {
-                        if (window.Elaris && window.Elaris.showToast) window.Elaris.showToast('📋 History prompt copied!', 'success');
+                        if (window.Elaris && window.Elaris.showToast) window.Elaris.showToast(this._t('psb_toast_hist_copied', '📋 History prompt copied!'), 'success');
                     });
                 }
             });
@@ -2731,7 +2739,7 @@ const PromptStudioBeta = {
                     this.container.querySelectorAll('.psb-mod-content').forEach(c => c.classList.toggle('active', c.id === 'psb-modtab-camera'));
                 }
 
-                this._showToast(`⚡ Applied setup: ${this._getLabelForAngle(recAngle)} + ${this._getLabelForLighting(recLighting)}`);
+                this._showToast(`⚡ ${this._t('psb_toast_applied', 'Applied setup:')} ${this._getLabelForAngle(recAngle)} + ${this._getLabelForLighting(recLighting)}`);
             });
         }
 
@@ -2744,9 +2752,9 @@ const PromptStudioBeta = {
         if (copyOutBtn) copyOutBtn.addEventListener('click', () => {
             if (this.state.generatedPrompt && navigator.clipboard) {
                 navigator.clipboard.writeText(this.state.generatedPrompt).then(() => {
-                    if (window.Elaris && window.Elaris.showToast) window.Elaris.showToast('📋 Prompt copied!', 'success');
-                    copyOutBtn.textContent = '✓ Copied!';
-                    setTimeout(() => { copyOutBtn.textContent = '📋 Copy'; }, 2000);
+                    if (window.Elaris && window.Elaris.showToast) window.Elaris.showToast(this._t('psb_toast_copied', '📋 Prompt copied!'), 'success');
+                    copyOutBtn.textContent = '✓ ' + this._t('psb_copied', 'Copied!');
+                    setTimeout(() => { copyOutBtn.textContent = '📋 ' + this._t('psb_copy', 'Copy'); }, 2000);
                 });
             }
         });
@@ -2896,8 +2904,8 @@ const PromptStudioBeta = {
         if (countVal) countVal.textContent = this.state.variationCount;
         if (genBtn) {
             genBtn.textContent = this.state.variationCount > 1
-                ? `⚡ Generate ${this.state.variationCount} Variations & Copy`
-                : '⚡ Generate Prompt & Copy';
+                ? '⚡ ' + this._t('psb_generate_n', 'Generate {n} Variations & Copy').replace('{n}', this.state.variationCount)
+                : '⚡ ' + this._t('psb_generate_1', 'Generate Prompt & Copy');
         }
     },
 
@@ -2913,7 +2921,7 @@ const PromptStudioBeta = {
         const filtered = this._filterArchetypes(all, category, search);
 
         if (filtered.length === 0) {
-            gridEl.innerHTML = '<div class="psb-empty">No archetypes found. Try a different search or adjust filters.</div>';
+            gridEl.innerHTML = `<div class="psb-empty">${this._t('psb_no_archetypes', 'No archetypes found. Try a different search or adjust filters.')}</div>`;
             this._updateModalCount();
             return;
         }
