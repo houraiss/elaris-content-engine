@@ -1690,3 +1690,125 @@
   .psb-dock-btn span { display: none; }
   .psb-dock { padding: 8px 6px; }
 }
+
+/* ═══════════════ Live Trends Panel (v11) ═══════════════ */
+.psb-trend-panel { margin-top: 4px; }
+
+.psb-trend-stale {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+.psb-trend-link {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--psb-gold);
+  text-decoration: none;
+  opacity: 0.85;
+}
+.psb-trend-link:hover { opacity: 1; text-decoration: underline; }
+
+.psb-trend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 4px;
+}
+.psb-trend-card {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  text-align: left;
+  padding: 9px 11px;
+  border-radius: 12px;
+  background: var(--psb-chip-bg);
+  border: 1px solid var(--psb-chip-border, rgba(255,255,255,0.1));
+  color: var(--psb-text, #fff);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--psb-spring);
+}
+.psb-trend-card:hover {
+  border-color: rgba(245,166,35,0.5);
+  transform: translateY(-1px);
+}
+.psb-trend-card.active {
+  background: rgba(245,166,35,0.14);
+  border-color: var(--psb-gold);
+  box-shadow: 0 0 0 1px rgba(245,166,35,0.35), 0 6px 18px -8px rgba(245,166,35,0.5);
+}
+.psb-trend-ico { font-size: 14px; flex-shrink: 0; }
+.psb-trend-name { flex: 1; min-width: 0; line-height: 1.35; }
+.psb-trend-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.psb-trend-active {
+  margin-top: 10px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  background: rgba(245,166,35,0.08);
+  border: 1px solid rgba(245,166,35,0.28);
+}
+.psb-trend-active-dir {
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--psb-text, #fff);
+  opacity: 0.9;
+}
+.psb-trend-changes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 9px;
+}
+.psb-trend-changes span {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: var(--psb-chip-bg);
+  color: var(--psb-text-3);
+  text-transform: capitalize;
+}
+.psb-trend-clear {
+  margin-top: 10px;
+  width: 100%;
+  padding: 7px;
+  border-radius: 9px;
+  background: transparent;
+  border: 1px solid var(--psb-chip-border, rgba(255,255,255,0.14));
+  color: var(--psb-text-3);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.psb-trend-clear:hover { color: #f87171; border-color: rgba(248,113,113,0.5); }
+
+.psb-trend-hint {
+  margin-top: 8px;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--psb-text-3);
+}
+
+/* Armed indicator above the Generate button */
+.psb-trend-armed {
+  margin: 4px 0 10px;
+  padding: 8px 11px;
+  border-radius: 10px;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--psb-text, #fff);
+  background: rgba(245,166,35,0.1);
+  border: 1px solid rgba(245,166,35,0.3);
+}
+.psb-trend-armed b { color: var(--psb-gold); }

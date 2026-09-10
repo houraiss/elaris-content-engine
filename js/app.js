@@ -219,7 +219,7 @@ window.render_trends = function(container) {
                                 <span style="font-size:24px">⚠️</span>
                                 <div>
                                     <div style="font-weight:600;margin-bottom:2px;color:#ff6b6b">Trends Data is ${daysSince} Days Old</div>
-                                    <div class="text-sm text-muted">This data was last refreshed on ${data.lastUpdated}. Trends move fast — ask Antigravity to refresh with the latest jewelry & content trends.</div>
+                                    <div class="text-sm text-muted">Last refreshed ${data.lastUpdated}. Trends move fast — ask your AI agent to research current fine-jewelry &amp; Instagram content trends and rewrite <code>assets/trends.json</code> (keep each trend's <code>studio</code> block so Studio Beta stays wired).</div>
                                 </div>
                             </div>
                         </div>`;
@@ -262,15 +262,28 @@ window.render_trends = function(container) {
                             <div class="flex gap-2 mt-3" style="flex-wrap:wrap">
                                 ${t.tags.map(tag => `<span class="hashtag-pill">#${tag}</span>`).join('')}
                             </div>
+                            ${t.studio ? `
+                                <button class="btn btn-sm mt-3 use-trend-btn" data-trend-id="${t.id}" style="width:100%">
+                                    🔥 Use in Studio Beta →
+                                </button>
+                            ` : ''}
                         </div>
                     `).join('')}
                 </div>
 
                 <div class="card mt-4" style="text-align:center">
                     <p class="text-sm text-muted">Last updated: ${data.lastUpdated}</p>
-                    <p class="text-sm text-muted mt-2">Ask Antigravity to refresh trends with latest data</p>
+                    <p class="text-sm text-muted mt-2">Refresh by rewriting <code>assets/trends.json</code> — keep each <code>studio</code> block so Studio Beta stays linked.</p>
                 </div>
             `;
+
+            // ── Hand off a trend to Studio Beta ──
+            content.querySelectorAll('.use-trend-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    try { localStorage.setItem('elaris_active_trend', btn.dataset.trendId); } catch (e) {}
+                    Elaris.navigate('promptstudiobeta');
+                });
+            });
         })
         .catch(() => {
             document.getElementById('trends-loading').innerHTML = `

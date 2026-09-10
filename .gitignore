@@ -20,3 +20,6 @@ output/
 .vscode/
 *.swp
 *.swo
+
+# Claude Code local helpers (preview launch config, etc.)
+.claude/

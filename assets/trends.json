@@ -1,78 +1,190 @@
 {
-    "lastUpdated": "2026-05-14",
+    "lastUpdated": "2026-09-10",
+    "sources": [
+        "whowhatwear.com/fashion/luxury/luxury-jewellery-trends-2026",
+        "marieclaire.com/fashion/jewelry-trends-2026",
+        "forbes.com/sites/laiafarrangraves/2026/06/15/4-jewelry-defining-trends-in-2026",
+        "timothy-hogan.com/resources/future-of-jewelry-photography",
+        "squareshot.com/post/product-photography-trends",
+        "gemfind.com/blogs/digital-marketing/jewelry-instagram-marketing",
+        "hootsuite.com/instagram-reels",
+        "pixofix.com/blog/top-fashion-photography-trends"
+    ],
     "trends": [
         {
-            "id": "raw-texture",
-            "title": "Raw Texture & Organic Forms",
+            "id": "molten-organic-metal",
+            "title": "Molten & Sculptural Free-Form Metal",
             "category": "design",
-            "description": "Unpolished, organic textures are dominating high-end jewelry content. Think hammered silver, rough-cut stones, and imperfect beauty. Brands like Alighieri and Completedworks are leading this aesthetic.",
-            "suggestion": "Photograph pieces on natural stone, linen, or unfinished wood. Let the silver texture be the hero.",
+            "description": "Gold and silver are moving away from clean geometry toward free-form, almost-liquid shapes — twisted bands, uneven hand-formed surfaces, earrings that arc like small sculptures. The imperfect, molten look now reads as high-craft rather than unfinished.",
+            "suggestion": "Shoot your most organic pieces in extreme macro on raw stone so the irregular, hand-poured surface catches light like liquid metal. Let asymmetry be the hero.",
             "relevance": "high",
-            "tags": ["organic", "texture", "raw", "artisanal"]
+            "tags": ["organic", "molten", "sculptural", "freeform", "handcraft"],
+            "studio": {
+                "directive": "Free-form molten sculptural metal as the hero — twisted asymmetric bands, hand-formed uneven surfaces, organic wax-poured forms, liquid-silver highlights rolling across irregular contours",
+                "lightingMood": "dramatic",
+                "surface": "stone-wall",
+                "palette": "warm-earth",
+                "angle": "extreme-macro",
+                "cameraProfile": "macro-100",
+                "moodIntensity": "raw",
+                "jewelryStyle": ["organic", "sculptural"]
+            }
         },
         {
-            "id": "dark-moody",
-            "title": "Dark & Moody Product Shots",
+            "id": "intentional-stacking",
+            "title": "Intentional Maximalist Stacking",
+            "category": "styling",
+            "description": "The defining 2026 styling move is 'maximalist minimalism' — layering with intent. A choker meeting a long chain, a gold bangle stacked with a tennis bracelet, an heirloom ring paired with a personalised band. Pinterest reports maximalist-accessory searches up 105%.",
+            "suggestion": "Style 3–5 pieces together on one wrist or neckline with deliberate rhythm — mix proportions and textures. Show the curated stack, not the single piece.",
+            "relevance": "high",
+            "tags": ["stacking", "layering", "maximalist", "styling", "carousel"],
+            "studio": {
+                "directive": "Intentional maximalist stack — multiple rings and bracelets layered with deliberate rhythm, mixed metal textures and proportions, a choker meeting a long chain, curated 'more is more' composition",
+                "lightingMood": "editorial",
+                "surface": "skin",
+                "palette": "neutral",
+                "angle": "wrist-cross",
+                "moodIntensity": "opulent"
+            }
+        },
+        {
+            "id": "macro-craftsmanship",
+            "title": "Macro Craftsmanship as the Subject",
             "category": "photography",
-            "description": "The 'Cartier Noir' approach is trending hard — deep blacks, dramatic side-lighting, jewelry floating in darkness. Creates immediate luxury perception.",
-            "suggestion": "Use the Cartier Noir creative direction for hero pieces. Works especially well for statement rings and bold pendants.",
+            "description": "Extreme close-ups of engravings, clasps, prong-setting and metal grain continue to outperform full-product shots. Macro detail is what justifies premium pricing on Instagram — the craft IS the content.",
+            "suggestion": "Take 2:1 macro frames of your best detailing — hand-set stones, hallmark stamps, solder seams, Moroccan pattern engraving. One hero detail per post.",
             "relevance": "high",
-            "tags": ["dark", "moody", "dramatic", "luxury"]
+            "tags": ["macro", "detail", "craftsmanship", "closeup", "texture"],
+            "studio": {
+                "directive": "Extreme macro on craftsmanship — visible hand-set stones, hammer marks, engraving burr, solder seams and metal grain, the detail itself as the subject, magnification revealing why the piece is worth its price",
+                "lightingMood": "chrome-bounce",
+                "surface": "obsidian",
+                "palette": "monochrome",
+                "angle": "extreme-macro",
+                "cameraProfile": "macro-180",
+                "moodIntensity": "balanced"
+            }
         },
         {
-            "id": "heritage-storytelling",
-            "title": "Heritage Storytelling Carousels",
-            "category": "content",
-            "description": "Multi-slide posts that tell the origin story — from raw material to finished piece. Consumers want to know the craft behind luxury goods. Moroccan heritage is a unique differentiator.",
-            "suggestion": "Create a carousel: Slide 1: finished piece, Slide 2: workshop detail, Slide 3: artisan hands, Slide 4: heritage pattern inspiration.",
-            "relevance": "high",
-            "tags": ["carousel", "storytelling", "heritage", "morocco"]
-        },
-        {
-            "id": "clean-catalog",
-            "title": "Clean White Catalog Aesthetics",
+            "id": "hard-directional-light",
+            "title": "Hard Directional Light",
             "category": "photography",
-            "description": "Alternating dark moody shots with clean white product shots creates visual rhythm in the feed. Tiffany, Mejuri, and Ana Luisa all use this contrast strategy.",
-            "suggestion": "For every 2 dark posts, do 1 clean white. Use Tiffany Ice or Studio Clean direction.",
+            "description": "Studios are trading the big diffused softbox for a harder, more directional source. Crisp shadow edges and strong specular hits show a piece's true three-dimensional form and dimensionality — flat, evenly-lit product shots feel dated.",
+            "suggestion": "Use one hard key light at a steep angle. Let shadows fall deliberately. Reserve wraparound soft light only for pieces that need to show full 3D volume.",
+            "relevance": "high",
+            "tags": ["lighting", "directional", "contrast", "shadow", "dimensional"],
+            "studio": {
+                "directive": "Single hard directional light source instead of broad soft fill — crisp defined shadow edges, strong specular hits on the metal, sculpted three-dimensional dimensionality, deliberate shadow shapes",
+                "lightingMood": "split-light",
+                "palette": "noir",
+                "filmStyle": "high-contrast",
+                "moodIntensity": "dramatic"
+            }
+        },
+        {
+            "id": "honest-texture",
+            "title": "Honest Texture & Intentional Imperfection",
+            "category": "photography",
+            "description": "One of the biggest 2026 shifts: rough edges build more trust than a flawless finish. Real fabric wrinkles, natural skin texture, subtle lighting variation and honest shadows read as authentic. Luxury brands are retouching less, preserving material character.",
+            "suggestion": "Keep skin pores, keep linen creases, keep a slightly uneven shadow. Brief your retoucher to protect texture, not erase it.",
+            "relevance": "high",
+            "tags": ["authentic", "texture", "imperfection", "natural", "unretouched"],
+            "studio": {
+                "directive": "Honest unretouched realism — real fabric wrinkles, natural skin texture and pores kept, subtle lighting unevenness, soft real shadows, rough organic edges left intact, believable rather than flawless",
+                "lightingMood": "natural",
+                "surface": "linen",
+                "seasonTime": "overcast-day",
+                "filmStyle": "analog-film",
+                "moodIntensity": "raw"
+            }
+        },
+        {
+            "id": "muted-earth-palette",
+            "title": "Muted Earth Palette",
+            "category": "photography",
+            "description": "Sage green, ochre, clay and dusty rose are replacing bright saturated tones in product imagery. These earth tones photograph beautifully in natural light and tie directly into the authenticity movement — the colour stays quiet so the metal leads.",
+            "suggestion": "Build sets from oat linen, terracotta and sage. Shoot near a window on an overcast day. Save the bright colour for every third post.",
             "relevance": "medium",
-            "tags": ["white", "clean", "catalog", "minimal"]
+            "tags": ["earthtone", "muted", "natural-light", "sage", "ochre"],
+            "studio": {
+                "directive": "Muted earth palette — sage green, ochre, dusty rose, warm clay and oat tones, low overall saturation, colours that sit quietly under natural light and let the metal lead",
+                "lightingMood": "overcast",
+                "surface": "linen",
+                "palette": "warm-earth",
+                "seasonTime": "autumn-warm",
+                "filmStyle": "matte-lift",
+                "moodIntensity": "subtle"
+            }
         },
         {
-            "id": "close-up-macro",
-            "title": "Extreme Close-Up Macro Details",
-            "category": "photography",
-            "description": "Zoomed-in shots of engravings, clasps, and surface textures perform 40% better engagement than full-product shots. The detail IS the content.",
-            "suggestion": "Take extreme close-ups of your best detailing work. Sterling silver grain and Moroccan patterns are perfect for this.",
-            "relevance": "high",
-            "tags": ["macro", "detail", "closeup", "texture"]
-        },
-        {
-            "id": "styling-context",
-            "title": "Styled Life Context",
-            "category": "content",
-            "description": "Jewelry shown in lifestyle context (on hands pouring coffee, against fabric, with flowers) outperforms isolated product shots for engagement. But isolated shots win for conversion.",
-            "suggestion": "Mix 60% styled context + 40% isolated product in your content calendar.",
-            "relevance": "medium",
-            "tags": ["lifestyle", "styling", "context", "engagement"]
-        },
-        {
-            "id": "reels-process",
-            "title": "Process Reveal Reels",
-            "category": "video",
-            "description": "Short-form video showing the making process is the #1 performing content type for jewelry brands on Instagram in 2026.",
-            "suggestion": "Even 10-second clips of polishing, setting, or packaging drive massive engagement. Consider filming in your workshop.",
-            "relevance": "high",
-            "tags": ["reels", "video", "process", "behind-the-scenes"]
-        },
-        {
-            "id": "color-blocking",
-            "title": "Color-Blocked Feed Planning",
+            "id": "bold-colour-block",
+            "title": "Bold Colour Blocking for Emotion",
             "category": "strategy",
-            "description": "Top brands plan their feed visually — alternating color themes in rows of 3. Dark-Light-Dark or Warm-Cool-Warm creates a cohesive, curated gallery effect.",
-            "suggestion": "Plan content in sets of 3. Use the creative directions to alternate: Cartier Noir → Tiffany Ice → Heritage Gold.",
+            "description": "Against the muted-earth trend, the counter-move is decisive colour: a single vivid backdrop — electric emerald, ultramarine, tangerine — used to trigger emotion and stop the scroll. Alternating bold-colour posts with clean and moody ones builds feed rhythm.",
+            "suggestion": "For every two natural / macro posts, do one saturated colour-block hero. Match the backdrop to a stone in the piece for a deliberate pairing.",
             "relevance": "medium",
-            "tags": ["feed", "planning", "grid", "strategy"]
+            "tags": ["colour", "bold", "backdrop", "feed-rhythm", "scroll-stopping"],
+            "studio": {
+                "directive": "Bold saturated colour blocking — a single vivid seamless backdrop (electric emerald, ultramarine or tangerine), high-impact contrast against the metal, colour used to trigger emotion and stop the scroll",
+                "lightingMood": "solid-color-backdrop",
+                "surface": "none",
+                "palette": "jewel-tones",
+                "filmStyle": "cross-process",
+                "moodIntensity": "opulent"
+            }
+        },
+        {
+            "id": "craft-process-reels",
+            "title": "Craft-Process Reels",
+            "category": "video",
+            "description": "Short-form video of the making process remains the #1 performing content type for jewelry brands. Reels of 60–90 seconds get the highest engagement; brands should track saves, shares and watch time over likes. Sparkle in motion is the hook.",
+            "suggestion": "Film 60–90s of polishing, stone-setting or packaging in the workshop. Open on a motion shot where the light moves across the piece. Post vertical, 9:16.",
+            "relevance": "high",
+            "tags": ["reels", "video", "process", "behind-the-scenes", "9x16"],
+            "studio": {
+                "directive": "Motion-first hero still pulled from a craft-process reel — mid-gesture hands polishing or setting a stone, sparkle catching the light in movement, shallow workshop depth behind, vertical 9:16 energy",
+                "lightingMood": "window-light",
+                "surface": "wood",
+                "angle": "grip-close-up",
+                "moodIntensity": "raw"
+            }
+        },
+        {
+            "id": "heritage-personal-meaning",
+            "title": "Heritage & Personal-Meaning Storytelling",
+            "category": "content",
+            "description": "Personalised fine jewelry is projected to reach nearly 30% of luxury sales by 2026, driven by Gen Z and Millennials who value meaning over flash. Origin-story carousels — raw material to finished piece — and provenance cues make a piece read as a keepsake. Moroccan heritage is a genuine differentiator.",
+            "suggestion": "Show engraved initials or dates, the piece against traditional textile, a workshop-to-hand carousel. Lead the caption with the story, not the spec.",
+            "relevance": "high",
+            "tags": ["heritage", "personalisation", "storytelling", "morocco", "provenance"],
+            "studio": {
+                "directive": "Heritage and personal-meaning storytelling — Moroccan craft context, engraved initials or a date shown, worn against traditional textile, a piece that reads as a keepsake with provenance rather than just product",
+                "lightingMood": "candlelight",
+                "surface": "terracotta",
+                "palette": "desert-gold",
+                "seasonTime": "golden-hour",
+                "moodIntensity": "cinematic",
+                "jewelryStyle": ["ethnic-tribal", "filigree"]
+            }
+        },
+        {
+            "id": "botanical-marine-motifs",
+            "title": "Bold Florals & Marine Motifs",
+            "category": "design",
+            "description": "SS26 runways pushed two nature directions hard: oversized bold florals and marine-inspired forms — shells, waves, coral, pearl. Organic curves, romantic but sculptural. Sitting the piece in real petals or on wet stone plays straight into it.",
+            "suggestion": "Nest floral or wave-form pieces in fresh petals or on a rain-wet surface. Shoot in dappled garden light for a romantic-but-editorial feel.",
+            "relevance": "medium",
+            "tags": ["floral", "marine", "botanical", "nature", "SS26"],
+            "studio": {
+                "directive": "SS26 nature motifs — bold oversized florals and marine-inspired forms (shells, waves, coral, pearl), organic curves, jewellery nestled in real petals or on wet stone, romantic yet sculptural",
+                "lightingMood": "dappled",
+                "surface": "petals",
+                "palette": "forest-green",
+                "seasonTime": "spring-bloom",
+                "angle": "face-flora-frame",
+                "jewelryStyle": ["floral", "nature-inspired"]
+            }
         }
     ],
-    "contentCalendarTip": "Post 4-5 times per week. Best times for jewelry: Tuesday 10am, Thursday 2pm, Saturday 11am (Morocco time / CET)."
+    "contentCalendarTip": "Post 4–5 times per week, ~4 of them Reels (2 attract / 1 engage / 1 convert). Best jewelry slots (Morocco / CET): Tuesday 10:00, Thursday 14:00, Saturday 11:00. Alternate three looks in rows of three: macro-detail → natural earth → bold colour."
 }

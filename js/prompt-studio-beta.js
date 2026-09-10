@@ -1,5 +1,13 @@
 /**
- * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v10.
+ * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v11.
+ *
+ * Changes in v11 — Live Trends integration:
+ *  - Loads assets/trends.json and shows a "Live Trends" panel under the Smart Guide (right column)
+ *  - Selecting a trend auto-applies its studio setup (lighting / surface / palette / angle / camera /
+ *    mood intensity / season / film style / jewelry style) AND injects its directive into every prompt
+ *  - Two-way link with the Trends page: a card's "Use in Studio Beta" hands off via localStorage
+ *    (elaris_active_trend); the panel links back to #trends
+ *  - Added _showToast() helper (was called by the Smart Guide Apply button but never defined)
  *
  * Changes in v10:
  *  - Camera tab: Added Depth of Field select + ISO Range select (selectable, not just display)
@@ -64,6 +72,10 @@ const PromptStudioBeta = {
         consistencyOn: false,
         activeProfileId: 'lina',
         profiles: [],
+        // Live Trends (loaded from assets/trends.json)
+        trends: [],
+        trendsMeta: null,
+        activeTrendId: null,
         generatedPrompt: '',
         history: [],
     },
@@ -76,6 +88,14 @@ const PromptStudioBeta = {
         this._render();
         this._bindEvents();
         this._initMotionSpotlight();
+        this._loadTrends();
+    },
+
+    // ── Toast helper (Elaris global, no-op if unavailable) ──────
+    _showToast(msg, type = 'success') {
+        if (window.Elaris && typeof window.Elaris.showToast === 'function') {
+            window.Elaris.showToast(msg, type);
+        }
     },
 
     // ── History Persistence ─────────────────────────────────────
@@ -147,6 +167,97 @@ const PromptStudioBeta = {
         const gender = this.state.modelGender || 'female';
         return this.state.profiles.filter(p => (p.gender || 'female') === gender);
     },
+
+    // ── Live Trends (shared data source with the Trends page) ───────────────
+    // Only fields that map to a real modifier state key are honoured here.
+    _TREND_STUDIO_KEYS: ['lightingMood', 'surface', 'palette', 'angle', 'cameraProfile', 'moodIntensity', 'seasonTime', 'filmStyle', 'environment', 'styling'],
+
+    _loadTrends() {
+        fetch('assets/trends.json')
+            .then(r => r.json())
+            .then(data => {
+                const list = Array.isArray(data.trends) ? data.trends.filter(t => t && t.id && t.studio && t.studio.directive) : [];
+                this.state.trends = list;
+                this.state.trendsMeta = {
+                    lastUpdated: data.lastUpdated || null,
+                    daysOld: data.lastUpdated
+                        ? Math.floor((Date.now() - new Date(data.lastUpdated).getTime()) / 86400000)
+                        : null,
+                };
+
+                // Hand-off from the Trends page: "Use in Studio Beta"
+                let handoff = null;
+                try { handoff = localStorage.getItem('elaris_active_trend'); } catch (e) {}
+                if (handoff && list.some(t => t.id === handoff)) {
+                    try { localStorage.removeItem('elaris_active_trend'); } catch (e) {}
+                    this._applyTrend(handoff, { silent: true });
+                    this._showToast(`🔥 Trend loaded: ${this._getActiveTrend().title}`);
+                }
+
+                this._render();
+                this._bindEvents();
+            })
+            .catch(() => { /* panel simply shows an offline note */ });
+    },
+
+    _getActiveTrend() {
+        return this.state.trends.find(t => t.id === this.state.activeTrendId) || null;
+    },
+
+    // Apply a trend's studio recipe to live modifier state + mark it active.
+    _applyTrend(id, opts = {}) {
+        const trend = this.state.trends.find(t => t.id === id);
+        if (!trend) return;
+
+        if (this.state.activeTrendId === id && !opts.force) {
+            // tapping the active trend again clears it
+            this._clearTrend();
+            return;
+        }
+
+        this.state.activeTrendId = id;
+        const s = trend.studio || {};
+
+        this._TREND_STUDIO_KEYS.forEach(k => {
+            if (typeof s[k] === 'string' && s[k]) this.state[k] = s[k];
+        });
+        // jewelryStyle is a multi-select array — merge, keep unique
+        if (Array.isArray(s.jewelryStyle) && s.jewelryStyle.length) {
+            const merged = new Set([...(this.state.jewelryStyle || []), ...s.jewelryStyle]);
+            this.state.jewelryStyle = [...merged];
+        }
+
+        if (!opts.silent) {
+            this._render();
+            this._bindEvents();
+            this._showToast(`🔥 Trend applied: ${trend.title}`);
+        }
+    },
+
+    _clearTrend(opts = {}) {
+        this.state.activeTrendId = null;
+        if (!opts.silent) {
+            this._render();
+            this._bindEvents();
+        }
+    },
+
+    // Plain-language list of which modifiers a trend moved (for the panel).
+    _getTrendChanges(trend) {
+        const s = (trend && trend.studio) || {};
+        const out = [];
+        if (s.lightingMood)   out.push(`Lighting → ${this._getLabelForLighting(s.lightingMood)}`);
+        if (s.surface)        out.push(`Surface → ${s.surface.replace(/-/g, ' ')}`);
+        if (s.palette)        out.push(`Palette → ${s.palette.replace(/-/g, ' ')}`);
+        if (s.angle)          out.push(`Angle → ${this._getLabelForAngle(s.angle)}`);
+        if (s.cameraProfile)  out.push(`Lens → ${this._getLabelForCamera(s.cameraProfile)}`);
+        if (s.moodIntensity)  out.push(`Mood → ${s.moodIntensity}`);
+        if (s.seasonTime)     out.push(`Time → ${s.seasonTime.replace(/-/g, ' ')}`);
+        if (s.filmStyle)      out.push(`Film → ${s.filmStyle.replace(/-/g, ' ')}`);
+        if (Array.isArray(s.jewelryStyle) && s.jewelryStyle.length) out.push(`Style +${s.jewelryStyle.join(', ')}`);
+        return out;
+    },
+
 
     _saveHistory() {
         try {
@@ -905,11 +1016,17 @@ const PromptStudioBeta = {
         if (window.PromptStudio && typeof window.PromptStudio._buildPrompt === 'function') {
             try {
                 const ps = window.PromptStudio.state;
+                const _psPieceDescRestore = ps ? ps.pieceDesc : undefined;
                 if (ps) {
                     ps.category            = this.state.category;
                     ps.material            = this.state.material;
                     ps.stone               = this.state.stone;
-                    ps.pieceDesc           = this.state.pieceDesc;
+                    // Blend the active Live Trend directive into the positive body
+                    // (via pieceDesc) so it lands before the master's negative-prompt tail.
+                    const _trend = this._getActiveTrend();
+                    ps.pieceDesc           = _trend
+                        ? [this.state.pieceDesc, `${_trend.studio.directive} [trend: ${_trend.title}]`].filter(Boolean).join(', ')
+                        : this.state.pieceDesc;
                     ps.lightingMood        = this.state.lightingMood;
                     ps.cameraProfile       = this.state.cameraProfile;
                     ps.angle               = this.state.angle;
@@ -939,6 +1056,7 @@ const PromptStudioBeta = {
                     ps.profiles            = this.state.profiles;
                 }
                 const prompt = window.PromptStudio._buildPrompt(arch);
+                if (ps) ps.pieceDesc = _psPieceDescRestore; // don't pollute the master studio
                 if (prompt && prompt.length > 30) return prompt;
             } catch (err) {
                 console.warn('[PSBeta] Fallback to internal builder:', err);
@@ -1134,6 +1252,10 @@ const PromptStudioBeta = {
 
         if (this.state.hallmarkEnabled)     parts.push('Discreet microscopic 925 hallmark laser-engraving on inner band');
         if (this.state.brandIdentityEnabled) parts.push(`Subtle luxury brand detail: ${this.state.brandTouch.replace(/-/g, ' ')}`);
+
+        // Live Trend directive — inject before the Midjourney flags
+        const trend = this._getActiveTrend();
+        if (trend) parts.push(`[Trend — ${trend.title}] ${trend.studio.directive}`);
 
         parts.push(`--ar ${this.state.aspectRatio} --v 6.1 --style raw`);
         return parts.join(', ');
@@ -1862,6 +1984,10 @@ const PromptStudioBeta = {
                                 <button type="button" class="psb-count-btn" id="psb-count-plus">+</button>
                             </div>
 
+                            ${this._getActiveTrend() ? `
+                                <div class="psb-trend-armed">🔥 Trend active: <b>${this._getActiveTrend().title}</b> — its directive rides into this prompt</div>
+                            ` : ''}
+
                             <button type="button" class="psb-generate-btn" id="psb-generate-btn">
                                 <span>⚡ Generate${this.state.variationCount > 1 ? ` ${this.state.variationCount} Variations` : ' Prompt'} &amp; Copy</span>
                             </button>
@@ -1980,6 +2106,8 @@ const PromptStudioBeta = {
 
                         <div class="psb-guide-divider" style="margin-top:18px;"></div>
 
+                        ${this._renderTrendsPanel()}
+
                         <div class="psb-section-title" style="margin-top:14px;">🕒 Recent Generations</div>
                         <div class="psb-history-list" id="psb-history-list">
                             ${this.state.history.length === 0
@@ -2024,6 +2152,64 @@ const PromptStudioBeta = {
                         <span>Expert</span>
                     </button>
                 </nav>
+            </div>
+        `;
+    },
+
+    // ── Render Live Trends Panel (right column, under Smart Guide) ──────────
+    _renderTrendsPanel() {
+        const trends = this.state.trends || [];
+        const meta   = this.state.trendsMeta;
+        const active = this._getActiveTrend();
+
+        const catIcon = { design: '🎨', photography: '📸', content: '📱', strategy: '📊', video: '🎬', styling: '👗' };
+        const relColor = { high: '#34d399', medium: '#fbbf24', low: '#94a3b8' };
+
+        let staleBadge = '';
+        if (meta && typeof meta.daysOld === 'number') {
+            const stale = meta.daysOld > 45;
+            staleBadge = `<span class="psb-trend-stale" style="color:${stale ? '#f87171' : 'var(--psb-text-3)'}">${
+                stale ? `⚠ ${meta.daysOld}d old` : `updated ${meta.lastUpdated}`
+            }</span>`;
+        }
+
+        const body = trends.length === 0
+            ? (meta === null
+                ? `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:14px;">Loading trends…</div>`
+                : `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:14px;">Trends unavailable offline. <a href="#trends" style="color:var(--psb-gold,#f5a623);">Open Trends page</a></div>`)
+            : `
+                <div class="psb-trend-list">
+                    ${trends.map(t => {
+                        const on = active && active.id === t.id;
+                        return `
+                            <button type="button" class="psb-trend-card ${on ? 'active' : ''}" data-trend-id="${t.id}">
+                                <span class="psb-trend-ico">${catIcon[t.category] || '✦'}</span>
+                                <span class="psb-trend-name">${t.title}</span>
+                                <span class="psb-trend-dot" style="background:${relColor[t.relevance] || relColor.low}"></span>
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+                ${active ? `
+                    <div class="psb-trend-active">
+                        <div class="psb-trend-active-dir">“${active.studio.directive}”</div>
+                        ${(() => {
+                            const ch = this._getTrendChanges(active);
+                            return ch.length ? `<div class="psb-trend-changes">${ch.map(c => `<span>${c}</span>`).join('')}</div>` : '';
+                        })()}
+                        <button type="button" class="psb-trend-clear" id="psb-trend-clear">✕ Clear trend</button>
+                    </div>
+                ` : `<div class="psb-trend-hint">Tap a trend to restyle the shot and lock its look into every prompt.</div>`}
+            `;
+
+        return `
+            <div class="psb-trend-panel" id="psb-trend-panel">
+                <div class="psb-section-title" style="margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    🔥 Live Trends
+                    ${staleBadge}
+                    <a href="#trends" class="psb-trend-link" title="Open the full Trends page">full page →</a>
+                </div>
+                ${body}
             </div>
         `;
     },
@@ -2325,6 +2511,13 @@ const PromptStudioBeta = {
                 }
             });
         });
+
+        // Live Trends — card select / toggle
+        this.container.querySelectorAll('.psb-trend-card').forEach(card => {
+            card.addEventListener('click', () => this._applyTrend(card.dataset.trendId));
+        });
+        const trendClear = q('#psb-trend-clear');
+        if (trendClear) trendClear.addEventListener('click', () => this._clearTrend());
 
         // Hijab style chips
         this.container.querySelectorAll('.psb-hijabstyle-chip').forEach(chip => {
