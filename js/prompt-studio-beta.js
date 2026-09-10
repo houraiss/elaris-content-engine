@@ -1,5 +1,10 @@
 /**
- * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v12.
+ * prompt-studio-beta.js — iOS 26 Liquid Glass Prompt Engineering Studio v13.
+ *
+ * Changes in v13: trends now carry a `group` (jewelry / social). The Live Trends
+ * panel shows group-filter chips (All / 💎 Jewelry / 📱 Social) when more than
+ * one group is present. Social/viral trends (80s AI portrait, era-swap, AI melt,
+ * kinda-chic, …) apply the same way jewelry trends do.
  *
  * Changes in v12: each trend can carry a `reference` { label, url } — shown as a
  * "See it first" link in the active-trend box (and on the Trends page cards).
@@ -78,7 +83,9 @@ const PromptStudioBeta = {
         // Live Trends (loaded from assets/trends.json)
         trends: [],
         trendsMeta: null,
+        trendsGroups: null,
         activeTrendId: null,
+        trendGroupFilter: 'all',
         generatedPrompt: '',
         history: [],
     },
@@ -181,6 +188,7 @@ const PromptStudioBeta = {
             .then(data => {
                 const list = Array.isArray(data.trends) ? data.trends.filter(t => t && t.id && t.studio && t.studio.directive) : [];
                 this.state.trends = list;
+                this.state.trendsGroups = data.groups || null;
                 this.state.trendsMeta = {
                     lastUpdated: data.lastUpdated || null,
                     daysOld: data.lastUpdated
@@ -2165,8 +2173,25 @@ const PromptStudioBeta = {
         const meta   = this.state.trendsMeta;
         const active = this._getActiveTrend();
 
-        const catIcon = { design: '🎨', photography: '📸', content: '📱', strategy: '📊', video: '🎬', styling: '👗' };
+        const catIcon = { design: '🎨', photography: '📸', content: '📱', strategy: '📊', video: '🎬', styling: '👗', 'viral-format': '🕹️', 'ai-filter': '✨', audio: '🎵' };
         const relColor = { high: '#34d399', medium: '#fbbf24', low: '#94a3b8' };
+
+        // Group filter — only offer it when more than one group is present
+        const groupsPresent = [...new Set(trends.map(t => t.group || 'jewelry'))];
+        const grpMeta = this.state.trendsGroups || {};
+        const grpLabel = { jewelry: '💎 Jewelry', social: '📱 Social' };
+        const gf = this.state.trendGroupFilter || 'all';
+        const shown = gf === 'all' ? trends : trends.filter(t => (t.group || 'jewelry') === gf);
+        const groupChips = groupsPresent.length > 1 ? `
+            <div class="psb-trend-groupbar">
+                <button type="button" class="psb-tg-chip ${gf === 'all' ? 'active' : ''}" data-tg="all">All</button>
+                ${groupsPresent.map(g => `
+                    <button type="button" class="psb-tg-chip ${gf === g ? 'active' : ''}" data-tg="${g}">${
+                        grpLabel[g] || ((grpMeta[g] && grpMeta[g].icon || '✦') + ' ' + (grpMeta[g] && grpMeta[g].label || g))
+                    }</button>
+                `).join('')}
+            </div>
+        ` : '';
 
         let staleBadge = '';
         if (meta && typeof meta.daysOld === 'number') {
@@ -2181,8 +2206,9 @@ const PromptStudioBeta = {
                 ? `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:14px;">Loading trends…</div>`
                 : `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:14px;">Trends unavailable offline. <a href="#trends" style="color:var(--psb-gold,#f5a623);">Open Trends page</a></div>`)
             : `
+                ${groupChips}
                 <div class="psb-trend-list">
-                    ${trends.map(t => {
+                    ${shown.map(t => {
                         const on = active && active.id === t.id;
                         return `
                             <button type="button" class="psb-trend-card ${on ? 'active' : ''}" data-trend-id="${t.id}">
@@ -2515,6 +2541,14 @@ const PromptStudioBeta = {
                     chk.textContent = '✓';
                     card.appendChild(chk);
                 }
+            });
+        });
+
+        // Live Trends — group filter chips
+        this.container.querySelectorAll('.psb-tg-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                this.state.trendGroupFilter = chip.dataset.tg || 'all';
+                this._render(); this._bindEvents();
             });
         });
 

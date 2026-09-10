@@ -1117,6 +1117,23 @@ main {
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 16px;
 }
+.trend-section-title {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin: 26px 0 14px;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+}
+.trend-section-title:first-of-type { margin-top: 8px; }
+.trend-section-sub {
+    font-family: var(--font-body, inherit);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
 .trend-card {
     transition: all var(--transition);
 }

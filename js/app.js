@@ -227,7 +227,70 @@ window.render_trends = function(container) {
             }
 
             const relevanceColors = { high: 'var(--success)', medium: 'var(--warning)', low: 'var(--text-muted)' };
-            const categoryIcons = { design: '🎨', photography: '📸', content: '📱', strategy: '📊', video: '🎬' };
+            const categoryIcons = {
+                design: '🎨', photography: '📸', content: '📱', strategy: '📊', video: '🎬', styling: '👗',
+                'viral-format': '🕹️', 'ai-filter': '✨', audio: '🎵',
+            };
+
+            const renderCard = (t) => `
+                <div class="card trend-card">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <span style="font-size:20px">${categoryIcons[t.category] || '✦'}</span>
+                            <span class="card-title" style="margin:0">${t.category}</span>
+                        </div>
+                        <span class="trend-relevance" style="color:${relevanceColors[t.relevance]}">
+                            ● ${t.relevance} relevance
+                        </span>
+                    </div>
+                    <h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:8px">${t.title}</h3>
+                    <p class="text-sm" style="color:var(--text-secondary);line-height:1.6;margin-bottom:12px">${t.description}</p>
+                    <div class="trend-suggestion">
+                        <div class="text-sm" style="font-weight:600;color:var(--moroccan-bronze);margin-bottom:4px">✦ Suggestion for @elaris.925</div>
+                        <div class="text-sm text-muted">${t.suggestion}</div>
+                    </div>
+                    <div class="flex gap-2 mt-3" style="flex-wrap:wrap">
+                        ${t.tags.map(tag => `<span class="hashtag-pill">#${tag}</span>`).join('')}
+                    </div>
+                    ${t.reference ? `
+                        <a href="${t.reference.url}" target="_blank" rel="noopener noreferrer" class="trend-ref-link mt-3">
+                            <span>🔗 See this trend in the wild</span>
+                            <span class="trend-ref-src">${t.reference.label} ↗</span>
+                        </a>
+                    ` : ''}
+                    ${t.studio ? `
+                        <button class="btn btn-sm mt-2 use-trend-btn" data-trend-id="${t.id}" style="width:100%">
+                            🔥 Use in Studio Beta →
+                        </button>
+                    ` : `
+                        <div class="text-sm text-muted mt-2" style="text-align:center;opacity:0.7">✎ Content format — no render needed</div>
+                    `}
+                </div>
+            `;
+
+            // Group trends into sections (jewelry first, then social / any others)
+            const groupMeta = data.groups || {};
+            const groupOrder = ['jewelry', 'social', ...Object.keys(groupMeta).filter(k => k !== 'jewelry' && k !== 'social')];
+            const seen = new Set();
+            const sectionsHtml = groupOrder.map(key => {
+                const items = data.trends.filter(t => (t.group || 'jewelry') === key);
+                if (!items.length) return '';
+                seen.add(key);
+                const meta = groupMeta[key] || { label: key, icon: '✦', blurb: '' };
+                return `
+                    <h2 class="trend-section-title">
+                        <span>${meta.icon || '✦'} ${meta.label || key}</span>
+                        ${meta.blurb ? `<span class="trend-section-sub">${meta.blurb}</span>` : ''}
+                    </h2>
+                    <div class="trends-grid mb-4">${items.map(renderCard).join('')}</div>
+                `;
+            }).join('');
+            // Catch any trend whose group had no metadata / order slot
+            const orphans = data.trends.filter(t => !seen.has(t.group || 'jewelry'));
+            const orphansHtml = orphans.length
+                ? `<h2 class="trend-section-title"><span>✦ More Trends</span></h2>
+                   <div class="trends-grid mb-4">${orphans.map(renderCard).join('')}</div>`
+                : '';
 
             content.innerHTML = `
                 ${stalenessHtml}
@@ -241,41 +304,8 @@ window.render_trends = function(container) {
                     </div>
                 </div>
 
-                <div class="trends-grid">
-                    ${data.trends.map(t => `
-                        <div class="card trend-card">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center gap-2">
-                                    <span style="font-size:20px">${categoryIcons[t.category] || '✦'}</span>
-                                    <span class="card-title" style="margin:0">${t.category}</span>
-                                </div>
-                                <span class="trend-relevance" style="color:${relevanceColors[t.relevance]}">
-                                    ● ${t.relevance} relevance
-                                </span>
-                            </div>
-                            <h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:8px">${t.title}</h3>
-                            <p class="text-sm" style="color:var(--text-secondary);line-height:1.6;margin-bottom:12px">${t.description}</p>
-                            <div class="trend-suggestion">
-                                <div class="text-sm" style="font-weight:600;color:var(--moroccan-bronze);margin-bottom:4px">✦ Suggestion for @elaris.925</div>
-                                <div class="text-sm text-muted">${t.suggestion}</div>
-                            </div>
-                            <div class="flex gap-2 mt-3" style="flex-wrap:wrap">
-                                ${t.tags.map(tag => `<span class="hashtag-pill">#${tag}</span>`).join('')}
-                            </div>
-                            ${t.reference ? `
-                                <a href="${t.reference.url}" target="_blank" rel="noopener noreferrer" class="trend-ref-link mt-3">
-                                    <span>🔗 See this trend in the wild</span>
-                                    <span class="trend-ref-src">${t.reference.label} ↗</span>
-                                </a>
-                            ` : ''}
-                            ${t.studio ? `
-                                <button class="btn btn-sm mt-2 use-trend-btn" data-trend-id="${t.id}" style="width:100%">
-                                    🔥 Use in Studio Beta →
-                                </button>
-                            ` : ''}
-                        </div>
-                    `).join('')}
-                </div>
+                ${sectionsHtml}
+                ${orphansHtml}
 
                 <div class="card mt-4" style="text-align:center">
                     <p class="text-sm text-muted">Last updated: ${data.lastUpdated}</p>

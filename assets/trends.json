@@ -10,12 +10,29 @@
         "blog.hootsuite.com/instagram-reels",
         "pixofix.com/blog/top-fashion-photography-trends",
         "honhojewelry.com/jewelry-trends-2026",
-        "timothy-hogan.com/resources/future-of-jewelry-photography"
+        "timothy-hogan.com/resources/future-of-jewelry-photography",
+        "indiatvnews.com/trending/offbeat/chatgpt-80s-photo-trend-goes-viral",
+        "latestly.com/technology/what-is-the-viral-80s-ai-photo-trend",
+        "vidguru.ai/blog/2026-top6-video-effects",
+        "pepperagency.com/blog/tiktok-instagram-trends-for-september-2026"
     ],
+    "groups": {
+        "jewelry": {
+            "label": "Jewelry & Design Trends",
+            "icon": "💎",
+            "blurb": "How fine jewelry is being designed, styled and shot right now."
+        },
+        "social": {
+            "label": "Social & Viral Trends",
+            "icon": "📱",
+            "blurb": "Flexible cross-industry formats — viral filters, photo looks and content angles Elaris can ride, not just jewelry-specific."
+        }
+    },
     "trends": [
         {
             "id": "molten-organic-metal",
             "title": "Molten & Sculptural Free-Form Metal",
+            "group": "jewelry",
             "category": "design",
             "description": "Gold and silver are moving away from clean geometry toward free-form, almost-liquid shapes — twisted bands, uneven hand-formed surfaces, earrings that arc like small sculptures. The imperfect, molten look now reads as high-craft rather than unfinished.",
             "suggestion": "Shoot your most organic pieces in extreme macro on raw stone so the irregular, hand-poured surface catches light like liquid metal. Let asymmetry be the hero.",
@@ -39,6 +56,7 @@
         {
             "id": "intentional-stacking",
             "title": "Intentional Maximalist Stacking",
+            "group": "jewelry",
             "category": "styling",
             "description": "The defining 2026 styling move is 'maximalist minimalism' — layering with intent. A choker meeting a long chain, a gold bangle stacked with a tennis bracelet, an heirloom ring paired with a personalised band. Pinterest reports maximalist-accessory searches up 105%.",
             "suggestion": "Style 3–5 pieces together on one wrist or neckline with deliberate rhythm — mix proportions and textures. Show the curated stack, not the single piece.",
@@ -60,6 +78,7 @@
         {
             "id": "macro-craftsmanship",
             "title": "Macro Craftsmanship as the Subject",
+            "group": "jewelry",
             "category": "photography",
             "description": "Extreme close-ups of engravings, clasps, prong-setting and metal grain continue to outperform full-product shots. Macro detail is what justifies premium pricing on Instagram — the craft IS the content.",
             "suggestion": "Take 2:1 macro frames of your best detailing — hand-set stones, hallmark stamps, solder seams, Moroccan pattern engraving. One hero detail per post.",
@@ -82,6 +101,7 @@
         {
             "id": "hard-directional-light",
             "title": "Hard Directional Light",
+            "group": "jewelry",
             "category": "photography",
             "description": "Studios are trading the big diffused softbox for a harder, more directional source. Crisp shadow edges and strong specular hits show a piece's true three-dimensional form and dimensionality — flat, evenly-lit product shots feel dated.",
             "suggestion": "Use one hard key light at a steep angle. Let shadows fall deliberately. Reserve wraparound soft light only for pieces that need to show full 3D volume.",
@@ -102,6 +122,7 @@
         {
             "id": "honest-texture",
             "title": "Honest Texture & Intentional Imperfection",
+            "group": "jewelry",
             "category": "photography",
             "description": "One of the biggest 2026 shifts: rough edges build more trust than a flawless finish. Real fabric wrinkles, natural skin texture, subtle lighting variation and honest shadows read as authentic. Luxury brands are retouching less, preserving material character.",
             "suggestion": "Keep skin pores, keep linen creases, keep a slightly uneven shadow. Brief your retoucher to protect texture, not erase it.",
@@ -123,6 +144,7 @@
         {
             "id": "muted-earth-palette",
             "title": "Muted Earth Palette",
+            "group": "jewelry",
             "category": "photography",
             "description": "Sage green, ochre, clay and dusty rose are replacing bright saturated tones in product imagery. These earth tones photograph beautifully in natural light and tie directly into the authenticity movement — the colour stays quiet so the metal leads.",
             "suggestion": "Build sets from oat linen, terracotta and sage. Shoot near a window on an overcast day. Save the bright colour for every third post.",
@@ -145,6 +167,7 @@
         {
             "id": "bold-colour-block",
             "title": "Bold Colour Blocking for Emotion",
+            "group": "jewelry",
             "category": "strategy",
             "description": "Against the muted-earth trend, the counter-move is decisive colour: a single vivid backdrop — electric emerald, ultramarine, tangerine — used to trigger emotion and stop the scroll. Alternating bold-colour posts with clean and moody ones builds feed rhythm.",
             "suggestion": "For every two natural / macro posts, do one saturated colour-block hero. Match the backdrop to a stone in the piece for a deliberate pairing.",
@@ -166,6 +189,7 @@
         {
             "id": "craft-process-reels",
             "title": "Craft-Process Reels",
+            "group": "jewelry",
             "category": "video",
             "description": "Short-form video of the making process remains the #1 performing content type for jewelry brands. Reels of 60–90 seconds get the highest engagement; brands should track saves, shares and watch time over likes. Sparkle in motion is the hook.",
             "suggestion": "Film 60–90s of polishing, stone-setting or packaging in the workshop. Open on a motion shot where the light moves across the piece. Post vertical, 9:16.",
@@ -186,6 +210,7 @@
         {
             "id": "heritage-personal-meaning",
             "title": "Heritage & Personal-Meaning Storytelling",
+            "group": "jewelry",
             "category": "content",
             "description": "Personalised fine jewelry is projected to reach nearly 30% of luxury sales by 2026, driven by Gen Z and Millennials who value meaning over flash. Origin-story carousels — raw material to finished piece — and provenance cues make a piece read as a keepsake. Moroccan heritage is a genuine differentiator.",
             "suggestion": "Show engraved initials or dates, the piece against traditional textile, a workshop-to-hand carousel. Lead the caption with the story, not the spec.",
@@ -208,6 +233,7 @@
         {
             "id": "botanical-marine-motifs",
             "title": "Bold Florals & Marine Motifs",
+            "group": "jewelry",
             "category": "design",
             "description": "SS26 runways pushed two nature directions hard: oversized bold florals and marine-inspired forms — shells, waves, coral, pearl. Organic curves, romantic but sculptural. Sitting the piece in real petals or on wet stone plays straight into it.",
             "suggestion": "Nest floral or wave-form pieces in fresh petals or on a rain-wet surface. Shoot in dappled garden light for a romantic-but-editorial feel.",
@@ -226,7 +252,129 @@
                 "angle": "face-flora-frame",
                 "jewelryStyle": ["floral", "nature-inspired"]
             }
+        },
+        {
+            "id": "80s-ai-portrait",
+            "title": "80s AI Portrait Trend",
+            "group": "social",
+            "category": "viral-format",
+            "description": "The viral ChatGPT / AI '80s photo' trend: people feed a normal photo to an image model and get back a full 1980s studio portrait — voluminous feathered hair, statement earrings, bold period wardrobe, warm tungsten studio light, old-school backdrop and analog film grain. It reworks wardrobe, hair, lighting and background, not just colour. Big in Morocco and worldwide right now.",
+            "suggestion": "Run a model wearing an Elaris piece through the full 80s treatment — statement earrings and cocktail rings read perfectly as period pieces. Post it beside the clean modern shot of the same jewelry.",
+            "relevance": "high",
+            "tags": ["80s", "retro", "ai-filter", "nostalgia", "portrait", "viral"],
+            "reference": {
+                "label": "India TV News — ChatGPT 80s photo trend goes viral (Sep 2026)",
+                "url": "https://www.indiatvnews.com/trending/offbeat/chatgpt-80s-photo-trend-goes-viral-7-retro-looks-you-can-try-with-your-own-picture-2026-09-10-1053855"
+            },
+            "studio": {
+                "directive": "1980s analog studio-portrait treatment — voluminous feathered 80s hair, bold saturated period wardrobe, statement jewelry as a period piece, laser-grid or airbrushed gradient backdrop, warm tungsten mall-studio lighting with soft-focus glow, heavy film grain and slight VHS softness",
+                "lightingMood": "warm",
+                "surface": "none",
+                "palette": "jewel-tones",
+                "filmStyle": "faded-vintage",
+                "seasonTime": "night-ambient",
+                "angle": "chin-up",
+                "moodIntensity": "opulent",
+                "jewelryStyle": ["vintage", "bold-statement"]
+            }
+        },
+        {
+            "id": "retro-era-swap",
+            "title": "Any-Decade Time Travel",
+            "group": "social",
+            "category": "viral-format",
+            "description": "The broader version of the 80s trend: the same photo re-imagined across eras — 70s disco, 80s yearbook, 90s grunge, Y2K flash — each with era-correct wardrobe, hair, film stock and backdrop. A one-photo carousel that shows range.",
+            "suggestion": "Pick one hero piece and generate it in three eras for a single swipeable post. The jewelry stays constant; everything around it time-travels.",
+            "relevance": "high",
+            "tags": ["retro", "eras", "carousel", "time-travel", "ai-filter", "viral"],
+            "reference": {
+                "label": "LatestLY — The viral 80s AI photo trend, step by step",
+                "url": "https://www.latestly.com/technology/what-is-the-viral-80s-ai-photo-trend-step-by-step-guide-to-creating-your-own-retro-images-using-chatgpt-7596738.html"
+            },
+            "studio": {
+                "directive": "Period time-travel treatment for a chosen past decade — wardrobe, hairstyle, grooming, film stock, colour science and backdrop all shifted to be era-correct, authentic analog photography of that time, the jewelry kept present-day and constant",
+                "lightingMood": "warm",
+                "filmStyle": "analog-film",
+                "surface": "none",
+                "moodIntensity": "cinematic",
+                "jewelryStyle": ["vintage"]
+            }
+        },
+        {
+            "id": "ai-melt-metal",
+            "title": "AI Melt & Squish Effect",
+            "group": "social",
+            "category": "ai-filter",
+            "description": "AI video effects where a rigid object dissolves top-down into a pool of liquid ('Melting') or is squished like memory foam. For a silver brand this is a natural molten-metal reveal — the piece appears to form out of, or melt back into, liquid silver.",
+            "suggestion": "Use as a Reel transition: liquid silver pools, then resolves into the finished ring. A still from the mid-melt frame also works as a striking single post.",
+            "relevance": "medium",
+            "tags": ["ai-filter", "melt", "molten", "transition", "reels", "effect"],
+            "reference": {
+                "label": "Vidguru — Top 6 Viral AI Video Effects 2026 (Melting, Squish)",
+                "url": "https://www.vidguru.ai/blog/2026-top6-video-effects.html"
+            },
+            "studio": {
+                "directive": "Liquid-metal melt-reveal frame — the piece caught mid-transformation, half-formed from a mirror-bright pool of molten silver, dramatic reflective caustics and metallic drips, high-gloss surface tension",
+                "lightingMood": "chrome-bounce",
+                "surface": "water",
+                "palette": "monochrome",
+                "angle": "extreme-macro",
+                "cameraProfile": "macro-100",
+                "moodIntensity": "dramatic",
+                "jewelryStyle": ["sculptural"]
+            }
+        },
+        {
+            "id": "kinda-chic",
+            "title": "Kinda Chic — Romanticise the Ordinary",
+            "group": "social",
+            "category": "content",
+            "description": "A content format where creators use 'kinda chic' to make un-glamorous everyday behaviour aspirational — staying in on a Saturday, outfit-repeating, a quiet morning. It reframes the ordinary as tasteful restraint.",
+            "suggestion": "Show an Elaris piece worn in a real unstyled moment — coffee at a cluttered desk, an unmade linen bed — with a dry 'kinda chic' caption. Quiet-luxury positioning without saying 'luxury'.",
+            "relevance": "medium",
+            "tags": ["content-format", "quiet-luxury", "everyday", "relatable", "caption"],
+            "reference": {
+                "label": "Pepper Agency — TikTok & Instagram Trends for September 2026",
+                "url": "https://www.pepperagency.com/blog/tiktok-instagram-trends-for-september-2026-and-how-brands-can-actually-use-them"
+            },
+            "studio": {
+                "directive": "Un-styled 'kinda chic' realism — a real unglamorous everyday moment (morning coffee, a cluttered desk, unmade linen sheets), soft natural window light, the jewelry worn casually and lived-in rather than presented, quiet-luxury restraint",
+                "lightingMood": "window-light",
+                "surface": "linen",
+                "styling": "linen-set",
+                "filmStyle": "matte-lift",
+                "seasonTime": "overcast-day",
+                "moodIntensity": "subtle"
+            }
+        },
+        {
+            "id": "gold-star-behaviour",
+            "title": "Gold Star Behaviour",
+            "group": "social",
+            "category": "strategy",
+            "description": "A format that celebrates small good habits the audience already feels proud of — finishing a product, making a considered choice — instead of positioning the brand itself as the achievement. Warm, low-pressure, community-building.",
+            "suggestion": "Frame a post around 'gold star behaviour: buying one piece you'll keep for 20 years instead of five you won't'. Ties directly to Elaris's heirloom / anti-fast-fashion angle. No render needed — this is a caption + carousel format.",
+            "relevance": "medium",
+            "tags": ["content-format", "community", "values", "heirloom", "caption"],
+            "reference": {
+                "label": "Pepper Agency — TikTok & Instagram Trends for September 2026",
+                "url": "https://www.pepperagency.com/blog/tiktok-instagram-trends-for-september-2026-and-how-brands-can-actually-use-them"
+            }
+        },
+        {
+            "id": "ghibli-painterly",
+            "title": "Ghibli / Painterly Style Filter",
+            "group": "social",
+            "category": "ai-filter",
+            "description": "AI filters that convert a photo into a hand-drawn, painterly, Studio-Ghibli-style illustration — soft gouache colour, watercolour skies, storybook warmth. Hugely shared, but a stylised illustration rather than product photography.",
+            "suggestion": "Use sparingly — good for a seasonal greeting, a story-highlight cover or a 'behind the design' sketch vibe, not for showing the actual product. Keep it off the main grid so the feed stays photographic.",
+            "relevance": "low",
+            "tags": ["ai-filter", "illustration", "ghibli", "painterly", "stylised"],
+            "reference": {
+                "label": "Vidguru — Top 6 Viral AI Video Effects 2026 (Ghibli Style)",
+                "url": "https://www.vidguru.ai/blog/2026-top6-video-effects.html"
+            }
         }
     ],
-    "contentCalendarTip": "Post 4–5 times per week, ~4 of them Reels (2 attract / 1 engage / 1 convert). Best jewelry slots (Morocco / CET): Tuesday 10:00, Thursday 14:00, Saturday 11:00. Alternate three looks in rows of three: macro-detail → natural earth → bold colour."
+    "contentCalendarTip": "Post 4–5 times per week, ~4 of them Reels (2 attract / 1 engage / 1 convert). Best jewelry slots (Morocco / CET): Tuesday 10:00, Thursday 14:00, Saturday 11:00. Alternate three looks in rows of three: macro-detail → natural earth → bold colour. Ride one Social & Viral trend per week max — keep the feed mostly photographic."
 }

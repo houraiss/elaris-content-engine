@@ -1710,11 +1710,37 @@
 }
 .psb-trend-link:hover { opacity: 1; text-decoration: underline; }
 
+.psb-trend-groupbar {
+  display: flex;
+  gap: 5px;
+  margin: 10px 0 2px;
+  flex-wrap: wrap;
+}
+.psb-tg-chip {
+  flex: 1 1 auto;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--psb-chip-bg);
+  border: 1px solid var(--psb-chip-border, rgba(255,255,255,0.1));
+  color: var(--psb-text-3);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+.psb-tg-chip:hover { color: var(--psb-text, #fff); }
+.psb-tg-chip.active {
+  background: rgba(245,166,35,0.16);
+  border-color: var(--psb-gold);
+  color: var(--psb-gold);
+}
+
 .psb-trend-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin: 10px 0 4px;
+  margin: 8px 0 4px;
 }
 .psb-trend-card {
   display: flex;
