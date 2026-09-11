@@ -2191,7 +2191,18 @@ const PromptStudio = {
         ]);
 
 
-        grid.innerHTML = sorted.map(a => {
+        // Only the strongest matches are shown up front. Rendering all 74 put
+        // ~37 rows on the page and was the second-biggest driver of its
+        // height after the configurator. Anything already selected is always
+        // kept visible, so collapsing can never hide an active choice.
+        const TOP_N = 8;
+        const total = sorted.length;
+        const collapsed = !this._showAllArch && total > TOP_N;
+        const visible = collapsed
+            ? sorted.filter((a, i) => i < TOP_N || this.state.selectedArchetypes.includes(a.id))
+            : sorted;
+
+        grid.innerHTML = visible.map(a => {
             // Use the SAME score for display as used for sorting
             const score = this._computeScore(a, this.state);
             const isSelected = this.state.selectedArchetypes.includes(a.id);
@@ -2219,6 +2230,25 @@ const PromptStudio = {
                 </div>
             `;
         }).join('');
+
+        // Expand / collapse control, rebuilt with the grid so its label always
+        // reflects the current filter count.
+        const host = grid.parentElement;
+        const oldBtn = host && host.querySelector('.ps-arch-more');
+        if (oldBtn) oldBtn.remove();
+        if (host && total > TOP_N) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'ps-arch-more';
+            btn.textContent = collapsed
+                ? `${this._t('ps_arch_show_all', 'Show all')} ${total} ${this._t('ps_arch_archetypes', 'archetypes')}`
+                : this._t('ps_arch_show_less', 'Show fewer');
+            btn.addEventListener('click', () => {
+                this._showAllArch = !this._showAllArch;
+                this._renderArchetypeGrid();
+            });
+            host.appendChild(btn);
+        }
 
         // Update count
         const countEl = this.container.querySelector('#ps-arch-count');
@@ -2437,7 +2467,7 @@ const PromptStudio = {
 
                     </div>
 
-                    <div class="card">
+                    <div class="card" data-ps-tab="brand">
                         <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
                             <span class="card-title">${this._t('ps_brand_identity', 'Brand Identity')}</span>
                             <label class="wm-toggle-label">
@@ -2460,7 +2490,7 @@ const PromptStudio = {
                         </div>
                     </div>
 
-                    <div class="card">
+                    <div class="card" data-ps-tab="model">
                         <div class="card-header">
                             <span class="card-title">${this._t('ps_model_human', 'Model & Human Elements')}</span>
                         </div>
@@ -2581,7 +2611,7 @@ const PromptStudio = {
                         ` : ''}
                     </div>
 
-                    <div class="card">
+                    <div class="card" data-ps-tab="modifiers">
                         <div class="card-header"><span class="card-title">${this._t('ps_modifiers', 'Modifiers')}</span></div>
                         <div class="form-group">
                             <label class="form-label">📐 ${this._t('ps_camera_angle', 'Camera Angle')}</label>
@@ -2612,7 +2642,7 @@ const PromptStudio = {
                         </div>
                     </div>
 
-                    <div class="card">
+                    <div class="card" data-ps-tab="advanced">
                         <div class="card-header"><span class="card-title" data-i18n="ps_adv_controls">Advanced Controls</span></div>
                         <div class="form-group">
                             <label class="form-label" data-i18n="ps_surface">Surface / Backdrop</label>
@@ -2711,7 +2741,7 @@ const PromptStudio = {
                         <div class="ps-archetype-grid" id="ps-archetypes"></div>
                     </div>
 
-                    <div style="display:flex;gap:10px;margin-top:12px">
+                    <div class="ps-generate-sticky">
                         <button class="btn btn-primary btn-lg" id="ps-generate" style="flex:1" data-i18n="ps_generate">
                             ✨ Generate Prompts
                         </button>
@@ -2755,7 +2785,82 @@ const PromptStudio = {
                 </div>
             </div>
         `;
+        this._applyTabs();
         if (window.I18n) window.I18n.applyLanguage();
+    },
+
+    // ── Progressive disclosure ────────────────────────────────────────────
+    // The configurator is five stacked cards and ~185 chips, all expanded at
+    // once — 8.5 screens of scrolling before you reach Generate. Studio Beta
+    // exposes the same engine in ~2 by putting its modifiers behind a
+    // segmented bar, so the four secondary cards ([data-ps-tab]) are moved
+    // into one tabbed shell here. "Describe Your Piece" stays open above it,
+    // since it is the primary input.
+    //
+    // This is a DOM move rather than markup surgery: every id inside the
+    // cards is preserved, and _bind() re-queries after _render(), so all the
+    // existing wiring keeps working untouched.
+    _applyTabs() {
+        const left = this.container.querySelector('.ps-left');
+        if (!left) return;
+
+        const panels = Array.from(left.querySelectorAll(':scope > .card[data-ps-tab]'));
+        if (panels.length < 2) return;
+
+        const TABS = [
+            { id: 'brand',     icon: '✦',  label: this._t('ps_tab_brand', 'Brand') },
+            { id: 'model',     icon: '👤', label: this._t('ps_tab_model', 'Model') },
+            { id: 'modifiers', icon: '🎛', label: this._t('ps_tab_modifiers', 'Modifiers') },
+            { id: 'advanced',  icon: '⚙',  label: this._t('ps_tab_advanced', 'Advanced') }
+        ].filter(t => panels.some(p => p.dataset.psTab === t.id));
+
+        // _render() runs on nearly every chip click, so the open tab is kept
+        // on the module rather than in the DOM it is about to rebuild.
+        if (!TABS.some(t => t.id === this._activeTab)) this._activeTab = TABS[0].id;
+
+        const shell = document.createElement('div');
+        shell.className = 'card ps-tabshell';
+        const bar = document.createElement('div');
+        bar.className = 'ps-tabbar';
+        bar.setAttribute('role', 'tablist');
+        const body = document.createElement('div');
+        body.className = 'ps-tabbody';
+
+        left.insertBefore(shell, panels[0]);
+        shell.appendChild(bar);
+        shell.appendChild(body);
+
+        TABS.forEach(t => {
+            const panel = panels.find(p => p.dataset.psTab === t.id);
+            panel.classList.remove('card');      // the shell is the glass now
+            panel.classList.add('ps-tabpanel');
+            panel.hidden = t.id !== this._activeTab;
+            body.appendChild(panel);
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'ps-tab' + (t.id === this._activeTab ? ' active' : '');
+            btn.dataset.tab = t.id;
+            btn.setAttribute('role', 'tab');
+            btn.setAttribute('aria-selected', String(t.id === this._activeTab));
+            btn.innerHTML = '<span class="ps-tab-ic">' + t.icon + '</span><span>' + t.label + '</span>';
+            btn.addEventListener('click', () => this._setTab(t.id));
+            bar.appendChild(btn);
+        });
+    },
+
+    _setTab(id) {
+        this._activeTab = id;
+        const shell = this.container.querySelector('.ps-tabshell');
+        if (!shell) return;
+        shell.querySelectorAll('.ps-tab').forEach(b => {
+            const on = b.dataset.tab === id;
+            b.classList.toggle('active', on);
+            b.setAttribute('aria-selected', String(on));
+        });
+        shell.querySelectorAll('.ps-tabpanel').forEach(p => {
+            p.hidden = p.dataset.psTab !== id;
+        });
     },
 
     // ── Event Binding ──────────────────────

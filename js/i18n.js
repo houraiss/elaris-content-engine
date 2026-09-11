@@ -2103,3 +2103,27 @@ Object.assign(translations.ar, {
     ps_toast_hist_copied: "تم نسخ موجّه من السجل ✓",
     ps_toast_min_piece: "يجب أن تبقى قطعة واحدة على الأقل في الطقم",
 });
+
+/* ── Phase 4: Prompt Studio progressive-disclosure tabs (v67) ──────────────
+   Labels for the segmented configurator bar and the archetype expander.
+   Kept short: the bar shows four tabs side by side in a 300px column, and
+   on phones it collapses to icons only. */
+Object.assign(translations.fr, {
+    ps_tab_brand:        "Marque",
+    ps_tab_model:        "Mannequin",
+    ps_tab_modifiers:    "Modificateurs",
+    ps_tab_advanced:     "Avancé",
+    ps_arch_show_all:    "Afficher les",
+    ps_arch_archetypes:  "archétypes",
+    ps_arch_show_less:   "Afficher moins",
+});
+
+Object.assign(translations.ar, {
+    ps_tab_brand:        "العلامة",
+    ps_tab_model:        "العارض",
+    ps_tab_modifiers:    "المُعدِّلات",
+    ps_tab_advanced:     "متقدّم",
+    ps_arch_show_all:    "عرض كل",
+    ps_arch_archetypes:  "نموذجاً",
+    ps_arch_show_less:   "عرض أقل",
+});

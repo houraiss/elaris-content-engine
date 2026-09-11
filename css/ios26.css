@@ -1519,3 +1519,120 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--i26-gold); }
     }
     .page-container { padding: 70px 12px 28px; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   20 · PROMPT STUDIO — PROGRESSIVE DISCLOSURE
+   The configurator's four secondary cards are moved into one
+   tabbed shell by PromptStudio._applyTabs(). Same segmented
+   pattern as Studio Beta's .psb-mod-tabs.
+   ══════════════════════════════════════════════════════════ */
+.ps-tabshell { padding: 14px; }
+
+.ps-tabbar {
+    display: flex;
+    gap: 3px;
+    padding: 3px;
+    margin-bottom: 14px;
+    background: var(--i26-chip-bg);
+    border: 1px solid var(--i26-chip-brd);
+    border-radius: 999px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.ps-tabbar::-webkit-scrollbar { display: none; }
+
+.ps-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 8px 10px;
+    border: none;
+    background: transparent;
+    border-radius: 999px;
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all var(--i26-ease);
+    -webkit-tap-highlight-color: transparent;
+}
+.ps-tab:hover:not(.active) {
+    color: var(--text-primary);
+    background: rgba(255,255,255,0.10);
+}
+[data-theme="light"] .ps-tab:hover:not(.active) { background: rgba(0,0,0,0.06); }
+.ps-tab.active {
+    background: var(--i26-gold-grad);
+    color: #0a0800;
+    box-shadow: 0 3px 12px rgba(245,166,35,0.38);
+}
+.ps-tab-ic { font-size: 12px; line-height: 1; }
+
+/* Panels carry no glass of their own — the shell is the surface. */
+.ps-tabpanel { animation: i26TabIn 0.34s var(--i26-spring); }
+.ps-tabpanel[hidden] { display: none !important; }
+.ps-tabpanel > .card-header { margin-bottom: 14px; }
+@keyframes i26TabIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Expand / collapse under the archetype grid */
+.ps-arch-more {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
+    background: var(--i26-chip-bg);
+    border: 1px solid var(--i26-chip-brd);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all var(--i26-ease);
+    -webkit-tap-highlight-color: transparent;
+}
+.ps-arch-more:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(245,166,35,0.42);
+    color: var(--text-primary);
+}
+[data-theme="light"] .ps-arch-more:hover { background: rgba(0,0,0,0.07); }
+
+/* Generate stays reachable instead of scrolling away below the grid. */
+.ps-generate-sticky {
+    position: sticky;
+    bottom: 0;
+    z-index: 7;
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    padding: 12px 0 4px;
+}
+.ps-generate-sticky::before {
+    content: '';
+    position: absolute;
+    inset: -14px -14px 0;
+    z-index: -1;
+    -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(14px);
+    -webkit-mask-image: linear-gradient(to top, #000 0%, #000 62%, transparent 100%);
+            mask-image: linear-gradient(to top, #000 0%, #000 62%, transparent 100%);
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .ps-tabshell { padding: 12px; }
+    .ps-tab span:not(.ps-tab-ic) { display: none; }   /* icons only on phones */
+    .ps-tab { padding: 9px 6px; }
+    .ps-tab-ic { font-size: 15px; }
+}
