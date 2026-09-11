@@ -52,6 +52,9 @@
     --i26-shadow-sm:  0 6px 22px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.18);
     --i26-blur:       blur(32px) saturate(220%);
     --i26-blur-sm:    blur(18px) saturate(180%);
+    --i26-thickness:  inset 0 1.5px 1px -0.5px rgba(255,255,255,0.42),
+                      inset 0 -1.5px 1px -0.5px rgba(0,0,0,0.22),
+                      inset 1.5px 0 1px -1px rgba(255,255,255,0.18);
 
     /* ── Gold accent ── */
     --i26-gold:      #f5a623;
@@ -130,6 +133,9 @@
     --i26-brd-lft:    rgba(255,255,255,0.80);
     --i26-shadow:     0 8px 32px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.90);
     --i26-shadow-sm:  0 4px 18px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.85);
+    --i26-thickness:  inset 0 1.5px 1px -0.5px rgba(255,255,255,0.95),
+                      inset 0 -1.5px 1px -0.5px rgba(0,0,0,0.07),
+                      inset 1.5px 0 1px -1px rgba(255,255,255,0.70);
 
     --i26-field:     rgba(255,255,255,0.80);
     --i26-field-brd: rgba(0,0,0,0.14);
@@ -231,16 +237,22 @@ body { background: var(--i26-dark); }
     overflow: hidden;
     z-index: 10;
 }
-/* Diagonal sheen — the signature Liquid Glass highlight */
+/* Sheen + pointer-tracked specular, same recipe as the content glass */
 .sidebar::before {
     content: '';
     position: absolute;
-    top: -60%; left: -60%;
-    width: 220%; height: 220%;
-    background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.16) 50%, transparent 58%);
+    inset: 0;
+    border-radius: inherit;
+    background:
+        radial-gradient(circle 260px at var(--i26-mx, 50%) var(--i26-my, 0%),
+                        rgba(255,255,255,var(--i26-spec, 0)), transparent 62%),
+        linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.16) 50%, transparent 58%);
     pointer-events: none;
     z-index: 0;
+    transition: --i26-spec 0.40s var(--i26-spring);
 }
+.sidebar:hover::before { --i26-spec: 0.16; }
+[data-theme="light"] .sidebar:hover::before { --i26-spec: 0.50; }
 .sidebar > * { position: relative; z-index: 1; }
 
 .sidebar-brand {
@@ -437,6 +449,29 @@ body { background: var(--i26-dark); }
    ══════════════════════════════════════════════════════════ */
 .main-content { position: relative; z-index: 1; }
 
+/* ── Scroll edge effect ─────────────────────────────────────────
+   Content passing the top of the scroller dissolves into blur
+   instead of being clipped by a hard edge. A sticky pseudo-element
+   pulled back by its own height, so it costs no layout space.
+   js/ios26.js adds .i26-scrolled once the scroller leaves the top. */
+.main-content::before {
+    content: '';
+    display: block;
+    position: sticky;
+    top: 0;
+    height: 74px;
+    margin-bottom: -74px;
+    z-index: 6;
+    pointer-events: none;
+    -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 28%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 0%, #000 28%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s var(--i26-spring);
+}
+.main-content.i26-scrolled::before { opacity: 1; }
+
 .page-container {
     padding: 22px 26px 60px;
     animation: i26PageIn 0.42s var(--i26-spring);
@@ -509,13 +544,28 @@ body { background: var(--i26-dark); }
     border-top-color: var(--i26-brd-top);
     border-left-color: var(--i26-brd-lft);
     border-radius: var(--radius-lg);
-    box-shadow: var(--i26-shadow);
+    /* --i26-thickness reads as the depth of the glass itself: the top
+       inner edge catches light, the bottom inner edge falls into
+       shadow. Frosted panes are flat; Liquid Glass has a body. */
+    box-shadow: var(--i26-shadow), var(--i26-thickness);
     position: relative;
     overflow: hidden;
     transition: box-shadow var(--i26-ease), transform var(--i26-ease), border-color var(--i26-ease);
 }
 
-/* Diagonal sheen on the primary surfaces */
+/* ── Specular layer ─────────────────────────────────────────────
+   Two background layers in the surface's own coordinate space:
+   (1) the pointer-tracked highlight, whose strength is --i26-spec,
+   (2) the static diagonal sheen.
+   --i26-mx / --i26-my are written by js/ios26.js on pointermove.
+   Registering --i26-spec lets the highlight fade in and out; without
+   @property support the value still applies, it just snaps.           */
+@property --i26-spec {
+    syntax: '<number>';
+    inherits: false;
+    initial-value: 0;
+}
+
 .card::before,
 .ps-panel::before,
 .trend-card::before,
@@ -524,11 +574,70 @@ body { background: var(--i26-dark); }
 .ps-prompt-block::before {
     content: '';
     position: absolute;
-    top: -60%; left: -60%;
-    width: 220%; height: 220%;
-    background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.14) 50%, transparent 58%);
+    inset: 0;
+    border-radius: inherit;
+    background:
+        radial-gradient(circle 240px at var(--i26-mx, 50%) var(--i26-my, 0%),
+                        rgba(255,255,255,var(--i26-spec, 0)), transparent 62%),
+        linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.14) 50%, transparent 58%);
     pointer-events: none;
     z-index: 0;
+    transition: --i26-spec 0.40s var(--i26-spring);
+}
+.card:hover::before,
+.ps-panel:hover::before,
+.trend-card:hover::before,
+.wm-guide:hover::before,
+.ms-prompt-block:hover::before,
+.ps-prompt-block:hover::before { --i26-spec: 0.20; }
+[data-theme="light"] .card:hover::before,
+[data-theme="light"] .ps-panel:hover::before,
+[data-theme="light"] .trend-card:hover::before,
+[data-theme="light"] .wm-guide:hover::before,
+[data-theme="light"] .ms-prompt-block:hover::before,
+[data-theme="light"] .ps-prompt-block:hover::before { --i26-spec: 0.55; }
+
+/* ── Specular rim (edge lensing) ────────────────────────────────
+   A 1.5px ring, brightest where the pointer is and falling off
+   around the border — the edge of real Liquid Glass catches light
+   directionally instead of being a uniform hairline. Drawn by
+   masking a gradient down to the padding box.                        */
+.card::after,
+.ps-panel::after,
+.trend-card::after,
+.wm-guide::after,
+.ms-prompt-block::after,
+.ps-prompt-block::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: radial-gradient(circle 340px at var(--i26-mx, 50%) var(--i26-my, 0%),
+                rgba(255,255,255,0.90), rgba(255,255,255,0.30) 38%, rgba(255,255,255,0.04) 72%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.40s var(--i26-spring);
+    z-index: 0;
+}
+.card:hover::after,
+.ps-panel:hover::after,
+.trend-card:hover::after,
+.wm-guide:hover::after,
+.ms-prompt-block:hover::after,
+.ps-prompt-block:hover::after { opacity: 1; }
+[data-theme="light"] .card::after,
+[data-theme="light"] .ps-panel::after,
+[data-theme="light"] .trend-card::after,
+[data-theme="light"] .wm-guide::after,
+[data-theme="light"] .ms-prompt-block::after,
+[data-theme="light"] .ps-prompt-block::after {
+    background: radial-gradient(circle 340px at var(--i26-mx, 50%) var(--i26-my, 0%),
+                rgba(255,255,255,1), rgba(255,255,255,0.55) 38%, rgba(0,0,0,0.05) 72%);
 }
 .card > *,
 .ps-panel > *,
