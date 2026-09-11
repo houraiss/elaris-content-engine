@@ -36,10 +36,11 @@
        same hues at 78% — the single knob to dial the backdrop up or
        down. Set all four to the solid hex above for Beta-identical
        intensity. */
-    --i26-mesh-blue:   rgba(79,142,245,0.78);
-    --i26-mesh-orange: rgba(255,138,92,0.78);
-    --i26-mesh-purple: rgba(180,120,255,0.78);
-    --i26-mesh-teal:   rgba(56,217,196,0.78);
+    --i26-mesh-alpha:  0.78;
+    --i26-mesh-blue:   rgba(79,142,245,var(--i26-mesh-alpha));
+    --i26-mesh-orange: rgba(255,138,92,var(--i26-mesh-alpha));
+    --i26-mesh-purple: rgba(180,120,255,var(--i26-mesh-alpha));
+    --i26-mesh-teal:   rgba(56,217,196,var(--i26-mesh-alpha));
 
     /* ── Glass material ── */
     --i26-tint:       rgba(255,255,255,0.12);
@@ -60,8 +61,9 @@
     --i26-shadow-sm:   0 1px 2px rgba(0,0,0,0.08), 0 4px 10px -4px rgba(0,0,0,0.18);
     --i26-shadow-lift: 0 2px 4px rgba(0,0,0,0.12), 0 14px 30px -8px rgba(0,0,0,0.32);
 
-    --i26-blur:       blur(32px) saturate(220%);
-    --i26-blur-sm:    blur(18px) saturate(180%);
+    --i26-blur-px:    32px;
+    --i26-blur:       blur(var(--i26-blur-px)) saturate(220%);
+    --i26-blur-sm:    blur(calc(var(--i26-blur-px) * 0.56)) saturate(180%);
     --i26-thickness:  inset 0 1.5px 1px -0.5px rgba(255,255,255,0.42),
                       inset 0 -1.5px 1px -0.5px rgba(0,0,0,0.22),
                       inset 1.5px 0 1px -1px rgba(255,255,255,0.18);
@@ -69,8 +71,8 @@
     /* ── Specular strength ──────────────────────────────────────────
        Deliberately near-threshold: the lens should be felt, not seen.
        Set either to 0 to switch that half of the effect off entirely. */
-    --i26-rim-alpha:  0.00;   /* pointer-facing edge highlight */
-    --i26-spec-alpha: 0.00;   /* tracked surface glow           */
+    --i26-rim-alpha:  0.90;   /* pointer-facing edge highlight */
+    --i26-spec-alpha: 0.20;   /* tracked surface glow           */
 
     /* ── Diagonal sheen ─────────────────────────────────────────────
        The fixed 115° white band that crossed every glass surface. It
@@ -80,7 +82,7 @@
        This is a multiplier, not an alpha: each surface keeps its own
        relative strength, so setting this to 1 restores every sheen at
        exactly its original value. */
-    --i26-sheen: 0;
+    --i26-sheen: 0.4;
 
     /* ── Gold accent ── */
     --i26-gold:      #f5a623;
@@ -164,8 +166,8 @@
                       inset 0 -1.5px 1px -0.5px rgba(0,0,0,0.07),
                       inset 1.5px 0 1px -1px rgba(255,255,255,0.70);
 
-    --i26-rim-alpha:  0.00;
-    --i26-spec-alpha: 0.00;
+    --i26-rim-alpha:  0.30;
+    --i26-spec-alpha: 0.07;
 
     --i26-field:     rgba(255,255,255,0.80);
     --i26-field-brd: rgba(0,0,0,0.14);
@@ -607,8 +609,8 @@ body { background: var(--i26-dark); }
     inset: 0;
     border-radius: inherit;
     background:
-        radial-gradient(circle 200px at var(--i26-mx, 50%) var(--i26-my, 0%),
-                        rgba(255,255,255,var(--i26-spec, 0)), transparent 55%),
+        radial-gradient(circle 200px at var(--i26-mx, 50%) var(--i26-my, 20%),
+                        rgba(255,255,255,var(--i26-spec, 0)), transparent 60%),
         linear-gradient(115deg, transparent 42%, rgba(255,255,255,calc(0.14 * var(--i26-sheen))) 50%, transparent 58%);
     pointer-events: none;
     z-index: 0;
@@ -1671,3 +1673,59 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--i26-gold); }
 /* .psb-generate-btn::before is deliberately NOT included: that shimmer
    sits on an opaque gold button, not on glass, so it reads as a button
    highlight rather than the reflection being removed here. */
+
+/* ══════════════════════════════════════════════════════════
+   22 · SETTINGS PAGE
+   ══════════════════════════════════════════════════════════ */
+.set-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 18px;
+    align-items: start;
+}
+.set-side { position: sticky; top: 8px; }
+
+.set-row { padding: 14px 0; border-bottom: 1px solid var(--i26-brd); }
+.set-row:last-child { border-bottom: none; padding-bottom: 4px; }
+.set-row-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+.set-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.set-value {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--i26-gold-soft);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+[data-theme="light"] .set-value { color: #b45309; }
+.set-hint {
+    margin-top: 8px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+.set-slider { display: block; width: 100%; }
+
+.set-swatch { display: flex; gap: 8px; flex-wrap: wrap; }
+.set-divider {
+    border: none;
+    height: 1px;
+    background: var(--i26-brd);
+    margin: 16px 0;
+}
+.set-reset { width: 100%; justify-content: center; }
+
+@media (max-width: 1024px) {
+    .set-layout { grid-template-columns: 1fr; }
+    .set-side { position: static; }
+}

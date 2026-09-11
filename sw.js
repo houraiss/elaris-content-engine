@@ -6,7 +6,7 @@
  * This ensures the app works fully offline after the first visit.
  */
 
-const CACHE_NAME = 'elaris-v51';
+const CACHE_NAME = 'elaris-v52';
 
 // App shell — everything needed for the app to work offline
 const APP_SHELL = [
@@ -18,6 +18,7 @@ const APP_SHELL = [
     './css/rtl.css',
     './js/app.js',
     './js/ios26.js',
+    './js/settings.js',
     './js/canvas-engine.js',
     './js/captions.js',
     './js/export.js',

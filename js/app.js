@@ -38,6 +38,7 @@ const Elaris = {
         const titles = {
             promptstudio: 'Prompt Studio', promptstudiobeta: 'Prompt Studio Beta', motionstudio: 'Motion Studio', captions: 'Captions',
             generate: 'Generate AI Assets', trends: 'Trends', watermark: 'Watermark Studio', batch: 'Batch Mode',
+            settings: 'Settings',
         };
         document.title = `${titles[page] || page} — Elaris Content Engine`;
 
@@ -357,8 +358,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
         if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
-        const pages = ['promptstudio', 'motionstudio', 'generate', 'captions', 'trends', 'batch', 'watermark'];
-        if (e.key >= '1' && e.key <= '7') {
+        const pages = ['promptstudio', 'motionstudio', 'generate', 'captions', 'trends', 'batch', 'watermark', 'settings'];
+        if (e.key >= '1' && e.key <= '8') {
             e.preventDefault();
             Elaris.navigate(pages[parseInt(e.key) - 1]);
         }
@@ -388,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Route from hash
     const hash = window.location.hash.slice(1);
-    const valid = ['promptstudio', 'promptstudiobeta', 'motionstudio', 'generate', 'captions', 'trends', 'batch', 'watermark'];
+    const valid = ['promptstudio', 'promptstudiobeta', 'motionstudio', 'generate', 'captions', 'trends', 'batch', 'watermark', 'settings'];
     Elaris.navigate(valid.includes(hash) ? hash : 'promptstudio');
 
     // ── Mobile Menu ──────────────────────────────────────────
