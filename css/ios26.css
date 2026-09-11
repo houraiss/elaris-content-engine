@@ -48,13 +48,29 @@
     --i26-brd:        rgba(255,255,255,0.28);
     --i26-brd-top:    rgba(255,255,255,0.60);
     --i26-brd-lft:    rgba(255,255,255,0.42);
-    --i26-shadow:     0 14px 50px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.22);
-    --i26-shadow-sm:  0 6px 22px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.18);
+    /* ── Elevation ──────────────────────────────────────────────────
+       Every shadow is two layers: a tight contact shadow that anchors
+       the element, and a wider ambient one spread negatively so it
+       stays under the element instead of haloing out sideways. The
+       earlier single 50px/0.42 blur muddied the mesh it sat on and, at
+       zero offset, leaked past the element's own bounds.
+       The inset highlight that used to ride along here now lives in
+       --i26-thickness, so the two no longer double up.               */
+    --i26-shadow:      0 1px 2px rgba(0,0,0,0.10), 0 8px 20px -6px rgba(0,0,0,0.26);
+    --i26-shadow-sm:   0 1px 2px rgba(0,0,0,0.08), 0 4px 10px -4px rgba(0,0,0,0.18);
+    --i26-shadow-lift: 0 2px 4px rgba(0,0,0,0.12), 0 14px 30px -8px rgba(0,0,0,0.32);
+
     --i26-blur:       blur(32px) saturate(220%);
     --i26-blur-sm:    blur(18px) saturate(180%);
     --i26-thickness:  inset 0 1.5px 1px -0.5px rgba(255,255,255,0.42),
                       inset 0 -1.5px 1px -0.5px rgba(0,0,0,0.22),
                       inset 1.5px 0 1px -1px rgba(255,255,255,0.18);
+
+    /* ── Specular strength ──────────────────────────────────────────
+       Deliberately near-threshold: the lens should be felt, not seen.
+       Set either to 0 to switch that half of the effect off entirely. */
+    --i26-rim-alpha:  0.30;   /* pointer-facing edge highlight */
+    --i26-spec-alpha: 0.07;   /* tracked surface glow           */
 
     /* ── Gold accent ── */
     --i26-gold:      #f5a623;
@@ -103,7 +119,7 @@
 
     --shadow-sm: var(--i26-shadow-sm);
     --shadow-md: var(--i26-shadow);
-    --shadow-lg: 0 24px 70px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.22);
+    --shadow-lg: var(--i26-shadow-lift);
 
     --transition: 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -131,11 +147,15 @@
     --i26-brd:        rgba(0,0,0,0.10);
     --i26-brd-top:    rgba(255,255,255,0.95);
     --i26-brd-lft:    rgba(255,255,255,0.80);
-    --i26-shadow:     0 8px 32px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.90);
-    --i26-shadow-sm:  0 4px 18px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.85);
+    --i26-shadow:      0 1px 2px rgba(0,0,0,0.05), 0 6px 16px -6px rgba(0,0,0,0.13);
+    --i26-shadow-sm:   0 1px 2px rgba(0,0,0,0.04), 0 3px 8px -4px rgba(0,0,0,0.10);
+    --i26-shadow-lift: 0 2px 4px rgba(0,0,0,0.07), 0 12px 26px -8px rgba(0,0,0,0.16);
     --i26-thickness:  inset 0 1.5px 1px -0.5px rgba(255,255,255,0.95),
                       inset 0 -1.5px 1px -0.5px rgba(0,0,0,0.07),
                       inset 1.5px 0 1px -1px rgba(255,255,255,0.70);
+
+    --i26-rim-alpha:  0.34;
+    --i26-spec-alpha: 0.16;
 
     --i26-field:     rgba(255,255,255,0.80);
     --i26-field-brd: rgba(0,0,0,0.14);
@@ -164,7 +184,7 @@
     --border:       var(--i26-brd);
     --border-hover: rgba(0,0,0,0.22);
 
-    --shadow-lg: 0 20px 60px rgba(0,0,0,0.13), inset 0 1px 0 rgba(255,255,255,0.90);
+    --shadow-lg: var(--i26-shadow-lift);
 
     --moroccan-bronze: #b45309;
     --sterling:        rgba(10,14,32,0.58);
@@ -577,8 +597,8 @@ body { background: var(--i26-dark); }
     inset: 0;
     border-radius: inherit;
     background:
-        radial-gradient(circle 240px at var(--i26-mx, 50%) var(--i26-my, 0%),
-                        rgba(255,255,255,var(--i26-spec, 0)), transparent 62%),
+        radial-gradient(circle 200px at var(--i26-mx, 50%) var(--i26-my, 0%),
+                        rgba(255,255,255,var(--i26-spec, 0)), transparent 55%),
         linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.14) 50%, transparent 58%);
     pointer-events: none;
     z-index: 0;
@@ -589,32 +609,24 @@ body { background: var(--i26-dark); }
 .trend-card:hover::before,
 .wm-guide:hover::before,
 .ms-prompt-block:hover::before,
-.ps-prompt-block:hover::before { --i26-spec: 0.20; }
-[data-theme="light"] .card:hover::before,
-[data-theme="light"] .ps-panel:hover::before,
-[data-theme="light"] .trend-card:hover::before,
-[data-theme="light"] .wm-guide:hover::before,
-[data-theme="light"] .ms-prompt-block:hover::before,
-[data-theme="light"] .ps-prompt-block:hover::before { --i26-spec: 0.55; }
+.ps-prompt-block:hover::before { --i26-spec: var(--i26-spec-alpha); }
 
 /* ── Specular rim (edge lensing) ────────────────────────────────
-   A 1.5px ring, brightest where the pointer is and falling off
-   around the border — the edge of real Liquid Glass catches light
-   directionally instead of being a uniform hairline. Drawn by
-   masking a gradient down to the padding box.                        */
+   A 1px arc that brightens only the stretch of border nearest the
+   pointer, then falls off fast — a lens catching light, not an
+   outline. Scoped to the large structural panels: on the small
+   repeating surfaces (trend cards, prompt blocks) a rim on every
+   tile read as decoration rather than material.
+   Zero out --i26-rim-alpha to remove it everywhere.                  */
 .card::after,
-.ps-panel::after,
-.trend-card::after,
-.wm-guide::after,
-.ms-prompt-block::after,
-.ps-prompt-block::after {
+.ps-panel::after {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    padding: 1.5px;
-    background: radial-gradient(circle 340px at var(--i26-mx, 50%) var(--i26-my, 0%),
-                rgba(255,255,255,0.90), rgba(255,255,255,0.30) 38%, rgba(255,255,255,0.04) 72%);
+    padding: 1px;
+    background: radial-gradient(circle 170px at var(--i26-mx, 50%) var(--i26-my, 0%),
+                rgba(255,255,255,var(--i26-rim-alpha)), transparent 58%);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
             mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
@@ -625,20 +637,7 @@ body { background: var(--i26-dark); }
     z-index: 0;
 }
 .card:hover::after,
-.ps-panel:hover::after,
-.trend-card:hover::after,
-.wm-guide:hover::after,
-.ms-prompt-block:hover::after,
-.ps-prompt-block:hover::after { opacity: 1; }
-[data-theme="light"] .card::after,
-[data-theme="light"] .ps-panel::after,
-[data-theme="light"] .trend-card::after,
-[data-theme="light"] .wm-guide::after,
-[data-theme="light"] .ms-prompt-block::after,
-[data-theme="light"] .ps-prompt-block::after {
-    background: radial-gradient(circle 340px at var(--i26-mx, 50%) var(--i26-my, 0%),
-                rgba(255,255,255,1), rgba(255,255,255,0.55) 38%, rgba(0,0,0,0.05) 72%);
-}
+.ps-panel:hover::after { opacity: 1; }
 .card > *,
 .ps-panel > *,
 .trend-card > *,
@@ -649,11 +648,11 @@ body { background: var(--i26-dark); }
 .card { padding: 20px; }
 .card:hover {
     border-color: rgba(255,255,255,0.42);
-    box-shadow: 0 18px 60px rgba(0,0,0,0.50), inset 0 1px 0 rgba(255,255,255,0.28);
+    box-shadow: var(--i26-shadow-lift), var(--i26-thickness);
 }
 [data-theme="light"] .card:hover {
     border-color: rgba(0,0,0,0.18);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.95);
+    box-shadow: var(--i26-shadow-lift), var(--i26-thickness);
 }
 .card-title {
     display: flex;
@@ -968,10 +967,10 @@ body { background: var(--i26-dark); }
     background: rgba(255,255,255,0.14);
     border-color: rgba(245,166,35,0.35);
     transform: translateY(-2px);
-    box-shadow: 0 10px 28px rgba(0,0,0,0.32);
+    box-shadow: var(--i26-shadow-sm);
 }
 [data-theme="light"] .ps-arch-card { background: rgba(0,0,0,0.04); }
-[data-theme="light"] .ps-arch-card:hover { background: rgba(0,0,0,0.07); box-shadow: 0 8px 22px rgba(0,0,0,0.10); }
+[data-theme="light"] .ps-arch-card:hover { background: rgba(0,0,0,0.07); }
 .ps-arch-card.active,
 [data-theme="light"] .ps-arch-card.active {
     background: linear-gradient(135deg, rgba(245,166,35,0.26), rgba(245,166,35,0.10));
@@ -1062,10 +1061,10 @@ body { background: var(--i26-dark); }
     background: rgba(255,255,255,0.14);
     border-color: rgba(245,166,35,0.35);
     transform: translateY(-2px);
-    box-shadow: 0 10px 28px rgba(0,0,0,0.32);
+    box-shadow: var(--i26-shadow-sm);
 }
 [data-theme="light"] .ms-archetype-card { background: rgba(0,0,0,0.04); }
-[data-theme="light"] .ms-archetype-card:hover { background: rgba(0,0,0,0.07); box-shadow: 0 8px 22px rgba(0,0,0,0.10); }
+[data-theme="light"] .ms-archetype-card:hover { background: rgba(0,0,0,0.07); }
 .ms-archetype-card.active,
 [data-theme="light"] .ms-archetype-card.active {
     background: linear-gradient(135deg, rgba(245,166,35,0.26), rgba(245,166,35,0.10));
@@ -1101,9 +1100,9 @@ body { background: var(--i26-dark); }
 .trend-card:hover {
     transform: translateY(-2px);
     border-color: rgba(245,166,35,0.40);
-    box-shadow: 0 18px 52px rgba(0,0,0,0.46), inset 0 1px 0 rgba(255,255,255,0.26);
+    box-shadow: var(--i26-shadow-lift), var(--i26-thickness);
 }
-[data-theme="light"] .trend-card:hover { box-shadow: 0 12px 36px rgba(0,0,0,0.12); }
+
 .trend-section-title {
     display: flex;
     align-items: center;
@@ -1239,11 +1238,9 @@ body { background: var(--i26-dark); }
 .direction-card:hover, .enh-thumb-card:hover {
     transform: translateY(-3px);
     border-color: rgba(245,166,35,0.40);
-    box-shadow: 0 16px 44px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.26);
+    box-shadow: var(--i26-shadow-lift), var(--i26-thickness);
 }
-[data-theme="light"] .template-card:hover, [data-theme="light"] .template-browse-card:hover,
-[data-theme="light"] .preset-card:hover, [data-theme="light"] .direction-card:hover,
-[data-theme="light"] .enh-thumb-card:hover { box-shadow: 0 12px 34px rgba(0,0,0,0.12); }
+
 
 .template-card.active, .preset-card.active, .direction-card.active,
 [data-theme="light"] .template-card.active, [data-theme="light"] .preset-card.active,
@@ -1257,7 +1254,7 @@ body { background: var(--i26-dark); }
 }
 .enh-thumb-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 14px 36px rgba(0,0,0,0.40), 0 0 16px rgba(245,166,35,0.22);
+    box-shadow: var(--i26-shadow-lift), 0 0 14px rgba(245,166,35,0.20);
 }
 .enh-thumb-card.active {
     border-color: rgba(245,166,35,0.70);
@@ -1372,7 +1369,13 @@ body { background: var(--i26-dark); }
         margin: 0;
         border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
         border-left: none;
-        box-shadow: 0 0 80px rgba(0,0,0,0.60);
+        /* No shadow while parked. A centred 80px halo on an element
+           sitting at translateX(-100%) spills its full blur radius back
+           across the left ~21% of a 375px viewport, dimming the content
+           underneath. The drawer only casts a shadow once it is open,
+           and it is offset rightwards so the blur falls away from the
+           screen edge rather than around it. */
+        box-shadow: none;
         /* The desktop rule sets z-index:10 outside any media query; without
            restoring 100 here the drawer falls under .sidebar-overlay (z 90)
            and the overlay's blur smears the drawer's own content. */
@@ -1505,8 +1508,14 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--i26-gold); }
     /* Restore the slide-in transform the desktop rules would otherwise
        leave at translateX(0) once margin/height are re-declared. */
     .sidebar { transform: translateX(-100%); }
-    .sidebar.open { transform: translateX(0); }
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 10px 0 34px -8px rgba(0,0,0,0.45);
+    }
     [dir="rtl"] .sidebar { transform: translateX(100%); }
-    [dir="rtl"] .sidebar.open { transform: translateX(0); }
+    [dir="rtl"] .sidebar.open {
+        transform: translateX(0);
+        box-shadow: -10px 0 34px -8px rgba(0,0,0,0.45);
+    }
     .page-container { padding: 70px 12px 28px; }
 }
