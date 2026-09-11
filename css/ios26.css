@@ -69,8 +69,18 @@
     /* ── Specular strength ──────────────────────────────────────────
        Deliberately near-threshold: the lens should be felt, not seen.
        Set either to 0 to switch that half of the effect off entirely. */
-    --i26-rim-alpha:  0.30;   /* pointer-facing edge highlight */
-    --i26-spec-alpha: 0.07;   /* tracked surface glow           */
+    --i26-rim-alpha:  0.00;   /* pointer-facing edge highlight */
+    --i26-spec-alpha: 0.00;   /* tracked surface glow           */
+
+    /* ── Diagonal sheen ─────────────────────────────────────────────
+       The fixed 115° white band that crossed every glass surface. It
+       read as a smear rather than a reflection — a real one tracks the
+       light source instead of sitting baked into the panel at a
+       constant angle. Switched off app-wide, Studio Beta included.
+       This is a multiplier, not an alpha: each surface keeps its own
+       relative strength, so setting this to 1 restores every sheen at
+       exactly its original value. */
+    --i26-sheen: 0;
 
     /* ── Gold accent ── */
     --i26-gold:      #f5a623;
@@ -154,8 +164,8 @@
                       inset 0 -1.5px 1px -0.5px rgba(0,0,0,0.07),
                       inset 1.5px 0 1px -1px rgba(255,255,255,0.70);
 
-    --i26-rim-alpha:  0.34;
-    --i26-spec-alpha: 0.16;
+    --i26-rim-alpha:  0.00;
+    --i26-spec-alpha: 0.00;
 
     --i26-field:     rgba(255,255,255,0.80);
     --i26-field-brd: rgba(0,0,0,0.14);
@@ -266,7 +276,7 @@ body { background: var(--i26-dark); }
     background:
         radial-gradient(circle 260px at var(--i26-mx, 50%) var(--i26-my, 0%),
                         rgba(255,255,255,var(--i26-spec, 0)), transparent 62%),
-        linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.16) 50%, transparent 58%);
+        linear-gradient(115deg, transparent 42%, rgba(255,255,255,calc(0.16 * var(--i26-sheen))) 50%, transparent 58%);
     pointer-events: none;
     z-index: 0;
     transition: --i26-spec 0.40s var(--i26-spring);
@@ -599,7 +609,7 @@ body { background: var(--i26-dark); }
     background:
         radial-gradient(circle 200px at var(--i26-mx, 50%) var(--i26-my, 0%),
                         rgba(255,255,255,var(--i26-spec, 0)), transparent 55%),
-        linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.14) 50%, transparent 58%);
+        linear-gradient(115deg, transparent 42%, rgba(255,255,255,calc(0.14 * var(--i26-sheen))) 50%, transparent 58%);
     pointer-events: none;
     z-index: 0;
     transition: --i26-spec 0.40s var(--i26-spring);
@@ -1636,3 +1646,28 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--i26-gold); }
     .ps-tab { padding: 9px 6px; }
     .ps-tab-ic { font-size: 15px; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   21 · DIAGONAL SHEEN — APP-WIDE OFF SWITCH
+   Studio Beta paints its own sheen on four surfaces. ios26.css
+   loads after beta.css, so these override the gradient without
+   editing beta.css itself — the .psb-* namespace stays its own.
+   Only the background layer is restated; the pseudo-elements'
+   geometry and stacking are left exactly as beta.css sets them.
+   Each keeps its original alpha, scaled by --i26-sheen.
+   ══════════════════════════════════════════════════════════ */
+.psb-panel::before {
+    background: linear-gradient(115deg, transparent 42%,
+                rgba(255,255,255,calc(0.16 * var(--i26-sheen))) 50%, transparent 58%);
+}
+.psb-arch-card::before {
+    background: linear-gradient(115deg, transparent 42%,
+                rgba(255,255,255,calc(0.12 * var(--i26-sheen))) 50%, transparent 58%);
+}
+.psb-output-card::before {
+    background: linear-gradient(115deg, transparent 42%,
+                rgba(255,255,255,calc(0.11 * var(--i26-sheen))) 50%, transparent 58%);
+}
+/* .psb-generate-btn::before is deliberately NOT included: that shimmer
+   sits on an opaque gold button, not on glass, so it reads as a button
+   highlight rather than the reflection being removed here. */
