@@ -1553,20 +1553,23 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--i26-gold); }
 }
 .ps-tabbar::-webkit-scrollbar { display: none; }
 
+/* Icon above label: four side-by-side labels didn't fit the ~300px column
+   ("Modifiers" ran into "Advanced"), and phones had to drop the labels. */
 .ps-tab {
     flex: 1 1 0;
     min-width: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    padding: 8px 10px;
+    gap: 2px;
+    padding: 6px 4px;
     border: none;
     background: transparent;
     border-radius: 999px;
     color: var(--text-secondary);
     font-family: inherit;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.02em;
     white-space: nowrap;
@@ -1574,6 +1577,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--i26-gold); }
     transition: all var(--i26-ease);
     -webkit-tap-highlight-color: transparent;
 }
+.ps-tab > span:not(.ps-tab-ic) { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .ps-tab:hover:not(.active) {
     color: var(--text-primary);
     background: rgba(255,255,255,0.10);
@@ -1644,8 +1648,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--i26-gold); }
 
 @media (max-width: 768px) {
     .ps-tabshell { padding: 12px; }
-    .ps-tab span:not(.ps-tab-ic) { display: none; }   /* icons only on phones */
-    .ps-tab { padding: 9px 6px; }
+    .ps-tab { padding: 7px 4px; }
     .ps-tab-ic { font-size: 15px; }
 }
 
@@ -1729,3 +1732,30 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--i26-gold); }
     .set-layout { grid-template-columns: 1fr; }
     .set-side { position: static; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   23 · CONTRAST — COLOURED SCORES & SMALL LABELS ON THE MESH
+   Match scores are coloured inline by their value (green / gold /
+   red), so neither theme's class colour applies and bright text
+   washed out on orange, teal and lavender glass. They now sit on
+   a dark pill, which keeps their colour meaning in both themes.
+   ══════════════════════════════════════════════════════════ */
+.ps-arch-score,
+.psb-arch-score-badge,
+.psb-guide-stat-value[style*="color"] {
+    background: rgba(8, 10, 24, 0.62);
+    border-color: rgba(255, 255, 255, 0.10);
+    padding: 2px 8px;
+    border-radius: 999px;
+    opacity: 1;
+}
+.psb-arch-score-badge { display: inline-block; }
+.ps-arch-score { min-width: 0; text-align: center; align-self: flex-start; }
+
+/* Section labels and "Best for" lines are small text straight on the mesh. */
+:root:not([data-theme="light"]) .psb-guide-section-label {
+    color: #ddd6fe;
+    opacity: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+:root:not([data-theme="light"]) .ps-arch-bestfor { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55); }

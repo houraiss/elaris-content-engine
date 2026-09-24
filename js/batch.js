@@ -92,7 +92,7 @@ const Batch = {
                     </div>
 
                     <div class="card mt-4" style="background: transparent; border: none; padding: 0;">
-                        <button class="btn btn-primary btn-lg" id="btn-generate-batch" style="width: 100%;">
+                        <button class="btn btn-primary btn-lg" id="btn-generate-batch" style="width: 100%;" ${this.photos.length ? '' : 'disabled'}>
                             ✦ Start Batch Export
                         </button>
                         <div id="batch-progress-container" style="display:none; margin-top: 16px;">
@@ -118,18 +118,29 @@ const Batch = {
         if (window.I18n) setTimeout(() => window.I18n.applyLanguage(), 10);
     },
 
+    // Brand emblem drawn by templates that define a `logo` (same files as the Watermark page).
+    LOGO_FILES: { white: 'Elaris Jewelry Logo/Asset 3Elaris Logo.png', black: 'Elaris Jewelry Logo/Asset 1Elaris Logo.png' },
+    logos: {},
+
     _setupCanvas() {
         if (window.CanvasEngine) {
             this.engine = new window.CanvasEngine('batch-hidden-canvas');
-            
+            this.engine.setFormat(this.currentFormat);   // the format tab survives page visits
+
             // Render template previews
             document.querySelectorAll('canvas[data-preview]').forEach(c => {
                 const t = window.getTemplate ? window.getTemplate(c.dataset.preview) : null;
                 if (t && window.renderTemplatePreview) {
-                    window.renderTemplatePreview(t, c, 100);
+                    window.renderTemplatePreview(t, c, 100, this.currentFormat);
                 }
             });
         }
+        Object.entries(this.LOGO_FILES).forEach(([key, src]) => {
+            if (this.logos[key]) return;
+            const img = new Image();
+            img.onload = () => { this.logos[key] = img; };
+            img.src = src;
+        });
     },
 
     _setupEvents() {
@@ -249,7 +260,7 @@ const Batch = {
 
         grid.querySelectorAll('canvas[data-preview]').forEach(c => {
             const t = window.getTemplate(c.dataset.preview);
-            if (t && window.renderTemplatePreview) renderTemplatePreview(t, c, 100);
+            if (t && window.renderTemplatePreview) renderTemplatePreview(t, c, 100, this.currentFormat);
         });
     },
 
@@ -274,13 +285,16 @@ const Batch = {
         const headline = document.getElementById('batch-input-headline').value;
         const generateCaptions = document.getElementById('batch-captions-toggle').checked;
         
-        // Set Logo if applicable (use existing logo from Composer if available)
-        if (window.Composer && window.Composer.logoWhiteImg) {
-            const useDarkLogo = template.darkLogo;
-            const logoImg = useDarkLogo ? window.Composer.logoBlackImg : window.Composer.logoWhiteImg;
-            if (logoImg && template.logo) {
-                this.engine.setLogo(logoImg, template.logo);
-            }
+        // Brand emblem: dark on light templates, white elsewhere; none if the template has no logo.
+        const logoImg = template.darkLogo ? this.logos.black : this.logos.white;
+        if (template.logo && logoImg) this.engine.setLogo(logoImg, template.logo);
+        else this.engine.logo = null;
+
+        // Canvas text only uses a web font once it has loaded.
+        if (document.fonts && document.fonts.load) {
+            try {
+                await Promise.all(["500 40px 'Cormorant Garamond'", "400 20px 'Jost'", "500 20px 'Jost'"].map(f => document.fonts.load(f)));
+            } catch (e) { /* fall back to the system font */ }
         }
         
         // Setup Overlays
@@ -290,59 +304,63 @@ const Batch = {
             return overlay;
         });
 
-        // Loop through photos
-        for (let i = 0; i < this.photos.length; i++) {
-            const photo = this.photos[i];
-            
-            // Update progress
-            progText.textContent = `${i + 1} / ${this.photos.length}`;
-            progBar.style.width = `${((i + 1) / this.photos.length) * 100}%`;
-            
-            // Load photo into engine
-            this.engine.setPhoto(photo.img, { scale: 1, fit: 'cover' });
-            
-            // Re-apply template and overlays for each photo to ensure fresh render
-            this.engine.applyTemplate(template);
-            this.engine.setTextOverlays(overlays);
-            
-            // Wait for canvas to draw
-            await new Promise(resolve => setTimeout(resolve, 50));
-            
-            // Determine filename base
-            const safeName = photo.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-            const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '');
-            const baseName = `batch_${dateStr}_${safeName}`;
-            
-            // Generate Caption if requested
-            let captionText = null;
-            if (generateCaptions && window.ElarisCaption) {
-                const text = window.ElarisCaption.generate({ voice: 'luxury', category: 'general', productName: headline });
-                const tags = window.ElarisCaption.generateHashtags({ category: 'general' });
-                captionText = window.ElarisCaption.formatPost(text, tags);
-            }
-            
-            // Export
-            if (window.ElarisExport) {
-                if (captionText) {
-                    await window.ElarisExport.downloadPair(this.engine, captionText, baseName);
-                } else {
-                    await window.ElarisExport.downloadPNG(this.engine, `${baseName}.png`);
+        try {
+            // Loop through photos
+            for (let i = 0; i < this.photos.length; i++) {
+                const photo = this.photos[i];
+
+                // Update progress
+                progText.textContent = `${i + 1} / ${this.photos.length}`;
+                progBar.style.width = `${((i + 1) / this.photos.length) * 100}%`;
+
+                // Load photo into engine
+                this.engine.setPhoto(photo.img, { scale: 1, fit: 'cover' });
+
+                // Re-apply template and overlays for each photo to ensure fresh render
+                this.engine.applyTemplate(template);
+                this.engine.setTextOverlays(overlays);
+
+                // Wait for canvas to draw
+                await new Promise(resolve => setTimeout(resolve, 50));
+
+                // Determine filename base
+                const safeName = photo.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '');
+                const baseName = `batch_${dateStr}_${safeName}`;
+
+                // Generate Caption if requested
+                let captionText = null;
+                if (generateCaptions && window.ElarisCaption) {
+                    const text = window.ElarisCaption.generate({ voice: 'luxury', category: 'general', productName: headline });
+                    const tags = window.ElarisCaption.generateHashtags({ category: 'general' });
+                    captionText = window.ElarisCaption.formatPost(text, tags);
                 }
+
+                // Export
+                if (window.ElarisExport) {
+                    if (captionText) {
+                        await window.ElarisExport.downloadPair(this.engine, captionText, baseName);
+                    } else {
+                        await window.ElarisExport.downloadPNG(this.engine, `${baseName}.png`);
+                    }
+                }
+
+                // Delay to prevent browser from blocking multiple downloads
+                await new Promise(resolve => setTimeout(resolve, 600));
             }
-            
-            // Delay to prevent browser from blocking multiple downloads
-            await new Promise(resolve => setTimeout(resolve, 600));
+            if (window.Elaris && window.Elaris.toast) {
+                window.Elaris.toast('Batch export complete! ✓', 'success');
+            }
+        } catch (e) {
+            console.error('[Batch] export failed:', e);
+            if (window.Elaris && window.Elaris.toast) window.Elaris.toast('Batch export failed: ' + e.message, 'error');
+        } finally {
+            // Always release the button, even if one export failed
+            this.isProcessing = false;
+            btn.disabled = false;
+            btn.textContent = `✦ Start Batch Export (${this.photos.length} photos)`;
         }
-        
-        // Cleanup UI
-        this.isProcessing = false;
-        btn.disabled = false;
-        btn.textContent = `✦ Start Batch Export (${this.photos.length} photos)`;
-        
-        if (window.Elaris && window.Elaris.toast) {
-            window.Elaris.toast('Batch export complete! ✓', 'success');
-        }
-        
+
         // Wait a bit, then hide progress
         setTimeout(() => {
             progContainer.style.display = 'none';

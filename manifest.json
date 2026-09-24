@@ -2,11 +2,12 @@
   "name": "Elaris Content Engine",
   "short_name": "Elaris",
   "description": "Instagram content studio for Elaris Jewelry Store - prompt engineering, watermarking, and brand management",
-  "start_url": "/elaris-content-engine/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a0a0a",
-  "theme_color": "#a67c52",
+  "theme_color": "#0e1020",
   "categories": ["business", "design", "productivity"],
   "icons": [
     {

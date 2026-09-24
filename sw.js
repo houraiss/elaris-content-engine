@@ -4,9 +4,13 @@
  * Strategy: Cache-first for app shell (HTML/CSS/JS/icons),
  * network-first for dynamic content (images, API calls).
  * This ensures the app works fully offline after the first visit.
+ *
+ * index.html requests every script and stylesheet with a ?v= cache-buster, while the
+ * shell is stored without one — so shell lookups ignore the query string. (They used to
+ * match exactly, which left an offline launch stuck on "Loading…".)
  */
 
-const CACHE_NAME = 'elaris-v52';
+const CACHE_NAME = 'elaris-v53';
 
 // App shell — everything needed for the app to work offline
 const APP_SHELL = [
@@ -16,29 +20,43 @@ const APP_SHELL = [
     './css/beta.css',
     './css/ios26.css',
     './css/rtl.css',
-    './js/app.js',
-    './js/ios26.js',
-    './js/settings.js',
-    './js/canvas-engine.js',
+    './js/i18n.js',
     './js/captions.js',
     './js/export.js',
-    './js/enhance-prompt.js',
     './js/prompt-studio.js',
-    './js/watermark.js',
+    './js/prompt-studio-beta.js',
+    './js/motion-studio.js',
     './js/generate.js',
+    './js/watermark.js',
+    './js/canvas-engine.js',
+    './js/templates.js',
     './js/batch.js',
-    './js/i18n.js',
+    './js/app.js',
+    './js/settings.js',
+    './js/ios26.js',
     './js/pwa.js',
+    './icons/icon-180.png',
     './icons/icon-192.png',
     './icons/icon-512.png',
     './manifest.json',
+    './Elaris Jewelry Logo/Elaris Lite White.svg',
+    './Elaris Jewelry Logo/Elaris Lite Black.svg',
+    './Elaris Jewelry Logo/Asset 1Elaris Logo.png',
+    './Elaris Jewelry Logo/Asset 2Elaris Logo.png',
+    './Elaris Jewelry Logo/Asset 3Elaris Logo.png',
+    './Elaris Jewelry Logo/Asset 4Elaris Logo.png',
 ];
+
+// Absolute, percent-encoded paths (e.g. "Elaris%20Jewelry%20Logo/…") for matching requests.
+const SHELL_PATHS = new Set(APP_SHELL.map(p => new URL(p, self.location).pathname));
 
 // ── Install: Pre-cache the app shell ─────────────────────────
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(APP_SHELL))
+            // cache: 'reload' skips the browser's HTTP cache, so a new version never
+            // precaches a stale copy of a file.
+            .then(cache => cache.addAll(APP_SHELL.map(p => new Request(p, { cache: 'reload' }))))
             .then(() => self.skipWaiting())
     );
 });
@@ -76,17 +94,10 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // App shell files: cache-first
-    const isAppShell = APP_SHELL.some(path => {
-        const cleanPath = path.replace('./', '');
-        return cleanPath === '' 
-            ? url.pathname.endsWith('/') 
-            : url.pathname.endsWith('/' + cleanPath);
-    });
-
-    if (isAppShell) {
+    // App shell files: cache-first, ignoring the ?v= cache-buster
+    if (url.origin === self.location.origin && SHELL_PATHS.has(url.pathname)) {
         event.respondWith(
-            caches.match(event.request).then(cached => cached || fetch(event.request))
+            caches.match(event.request, { ignoreSearch: true }).then(cached => cached || fetch(event.request))
         );
         return;
     }
@@ -102,7 +113,6 @@ self.addEventListener('fetch', event => {
                 }
                 return response;
             })
-            .catch(() => caches.match(event.request))
+            .catch(() => caches.match(event.request, { ignoreSearch: true }))
     );
 });
-

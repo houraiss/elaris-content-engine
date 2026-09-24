@@ -8,6 +8,12 @@ const Elaris = {
     currentPage: null,
     pageScripts: { captions: true, batch: true },
 
+    // Every page the router may open from a URL hash; anything else is ignored.
+    ROUTES: ['promptstudio', 'promptstudiobeta', 'motionstudio', 'generate', 'captions', 'trends', 'batch', 'watermark', 'settings'],
+    // Shortcuts that open Prompt Studio with the Jewelry Set category selected.
+    SET_ALIASES: ['set', 'jewelry-set', 'jewelryset'],
+    isRoute(page) { return this.ROUTES.includes(page) || this.SET_ALIASES.includes(page); },
+
     // ── Toast ────────────────────────────────────────────────────
     toast(message, type = 'info') {
         const container = document.getElementById('toast-container');
@@ -21,11 +27,12 @@ const Elaris = {
     // ── Router ───────────────────────────────────────────────────
     navigate(page) {
         // Alias route handling for set / jewelry-set
-        if (page === 'set' || page === 'jewelry-set' || page === 'jewelryset') {
+        if (this.SET_ALIASES.includes(page)) {
             if (window.PromptStudio && window.PromptStudio.state) {
                 window.PromptStudio.state.category = 'jewelry-set';
             }
             page = 'promptstudio';
+            this.currentPage = null;   // re-render even if Prompt Studio is already open
         }
         if (this.currentPage === page) return;
         this.currentPage = page;
@@ -355,42 +362,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Keyboard shortcuts
+    // Keyboard shortcuts: 1–9 follow the sidebar order
     document.addEventListener('keydown', (e) => {
-        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
-        const pages = ['promptstudio', 'motionstudio', 'generate', 'captions', 'trends', 'batch', 'watermark', 'settings'];
-        if (e.key >= '1' && e.key <= '8') {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable) return;
+        const pages = [...document.querySelectorAll('.nav-item[data-page]')].map(a => a.dataset.page);
+        const n = parseInt(e.key, 10);
+        if (n >= 1 && n <= pages.length) {
             e.preventDefault();
-            Elaris.navigate(pages[parseInt(e.key) - 1]);
+            Elaris.navigate(pages[n - 1]);
         }
     });
 
     // Theme toggle
+    const T = (k, en) => (window.I18n ? window.I18n.t(k, en) : en);
+    const showTheme = (theme) => {
+        const icon = document.getElementById('theme-icon');
+        const label = document.getElementById('theme-label');
+        if (icon) icon.textContent = theme === 'dark' ? '🌙' : '☀️';
+        if (label) {
+            // The label is re-translated on every page change, so its i18n key must follow the theme.
+            const key = theme === 'dark' ? 'theme_dark' : 'theme_light';
+            label.setAttribute('data-i18n', key);
+            label.textContent = T(key, theme === 'dark' ? 'Dark' : 'Light');
+        }
+    };
     const savedTheme = localStorage.getItem('elaris-theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    const themeIcon = document.getElementById('theme-icon');
-    const themeLabel = document.getElementById('theme-label');
-    if (themeIcon && themeLabel) {
-        themeIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
-        themeLabel.textContent = savedTheme === 'dark' ? 'Dark' : 'Light';
-    }
+    showTheme(savedTheme);
 
     document.getElementById('theme-toggle')?.addEventListener('click', () => {
         const current = document.documentElement.getAttribute('data-theme') || 'dark';
         const next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('elaris-theme', next);
-        const icon = document.getElementById('theme-icon');
-        const label = document.getElementById('theme-label');
-        if (icon) icon.textContent = next === 'dark' ? '🌙' : '☀️';
-        if (label) label.textContent = next === 'dark' ? 'Dark' : 'Light';
-        Elaris.toast(`Switched to ${next} mode`, 'info');
+        showTheme(next);
+        Elaris.toast(next === 'dark' ? T('toast_theme_dark', 'Switched to dark mode') : T('toast_theme_light', 'Switched to light mode'), 'info');
     });
 
     // Route from hash
     const hash = window.location.hash.slice(1);
-    const valid = ['promptstudio', 'promptstudiobeta', 'motionstudio', 'generate', 'captions', 'trends', 'batch', 'watermark', 'settings'];
-    Elaris.navigate(valid.includes(hash) ? hash : 'promptstudio');
+    Elaris.navigate(Elaris.isRoute(hash) ? hash : 'promptstudio');
 
     // ── Mobile Menu ──────────────────────────────────────────
     const menuBtn = document.getElementById('mobile-menu-btn');
@@ -423,5 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('hashchange', () => {
     const hash = window.location.hash.slice(1);
-    if (hash && hash !== Elaris.currentPage) Elaris.navigate(hash);
+    if (!hash || hash === Elaris.currentPage) return;
+    if (Elaris.isRoute(hash)) Elaris.navigate(hash);
+    else history.replaceState(null, '', '#' + (Elaris.currentPage || 'promptstudio'));   // unknown route: stay put
 });

@@ -624,10 +624,34 @@ const MotionStudio = {
     init(container) {
         this.container = container;
         this._sortMode = 'recommended';
-        this._archetypeView = 'video';
+        this._archetypeView = this._pendingView || 'video';
+        this._pendingView = null;
         this._render();
         this._renderArchetypeGrid();
         this._bind();
+    },
+
+    // ── Hand-off from Studio Beta ("🎬 Motion Studio" on the compiled prompt) ──
+    // Opens this studio on the same piece and shot instead of a blank slate. A value is
+    // only taken when this studio offers it, so no select ends up showing a blank.
+    receiveFromStudio(opts = {}) {
+        const s = this.state;
+        const offered = {
+            category:     this.categories,
+            material:     this.materials.map(m => m.id),
+            stone:        this.stones.map(x => x.id),
+            lightingMood: this.lightingMoods.map(m => m.id),
+            palette:      this.palettes.map(p => p.id),
+            modelGender:  ['female', 'male', 'none'],
+        };
+        Object.keys(offered).forEach(k => {
+            if (offered[k].includes(opts[k])) s[k] = opts[k];
+        });
+        if (typeof opts.pieceDesc === 'string') s.pieceDesc = opts.pieceDesc;
+        if (opts.archetypeId && this._getImageArchetypes().some(a => a.id === opts.archetypeId)) {
+            s.selectedArchetypes = [opts.archetypeId];
+            this._pendingView = 'image';   // image archetypes are hidden in the default video view
+        }
     },
 
     // ── Get all archetypes based on view ──────────────────────
