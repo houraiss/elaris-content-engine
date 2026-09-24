@@ -100,9 +100,8 @@ class CanvasEngine {
         if (template.background) {
             this.background = { ...template.background };
         }
-        if (template.frame) {
-            this.frame = { ...template.frame };
-        }
+        // A template without a frame must clear the previous template's frame.
+        this.frame = template.frame ? { ...template.frame } : null;
         this.render();
     }
 
@@ -336,23 +335,23 @@ class CanvasEngine {
                 ctx.shadowOffsetY = 2;
             }
 
-            // Word wrap
-            if (t.maxWidth) {
-                this._drawWrappedText(ctx, t.text, tx, ty, t.maxWidth * w, fontSize * 1.3);
-            } else {
-                ctx.fillText(t.text, tx, ty);
-            }
-
-            // Letter spacing for labels
             if (t.letterSpacing) {
-                // Canvas doesn't support letterSpacing natively, draw char by char
+                // Canvas has no portable letter-spacing, so spaced labels are laid out one
+                // character at a time (centred on tx) instead of the normal fillText —
+                // drawing both printed the label twice on top of itself.
                 ctx.textAlign = 'left';
-                const chars = t.text.split('');
-                let cx = tx - (chars.length * (fontSize * 0.6 + t.letterSpacing)) / 2;
+                const chars = [...t.text];
+                const total = chars.reduce((sum, c) => sum + ctx.measureText(c).width, 0) + t.letterSpacing * (chars.length - 1);
+                let cx = tx - total / 2;
                 chars.forEach(c => {
                     ctx.fillText(c, cx, ty);
                     cx += ctx.measureText(c).width + t.letterSpacing;
                 });
+            } else if (t.maxWidth) {
+                // Word wrap
+                this._drawWrappedText(ctx, t.text, tx, ty, t.maxWidth * w, fontSize * 1.3);
+            } else {
+                ctx.fillText(t.text, tx, ty);
             }
 
             ctx.restore();
@@ -385,8 +384,9 @@ class CanvasEngine {
     _drawHandle(ctx, w, h) {
         const fontSize = 14 * (w / 1080);
         ctx.save();
-        ctx.font = `500 ${fontSize}px 'Montserrat', sans-serif`;
-        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.font = `500 ${fontSize}px 'Jost', sans-serif`;
+        // Light templates (dark logo) need a dark handle to stay legible.
+        ctx.fillStyle = this.template?.darkLogo ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.25)';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillText('@elaris.925', w / 2, h - 20 * (w / 1080));

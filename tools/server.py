@@ -2,6 +2,7 @@ import http.server
 import socketserver
 import json
 import os
+import re
 import sys
 import time
 import shutil
@@ -9,17 +10,35 @@ import webbrowser
 import threading
 
 PORT = 8080
+HOST = "127.0.0.1"   # this machine only — don't expose the project folder to the local network
 
-# ── CRITICAL: Set working directory to this script's folder ──────
+# ── CRITICAL: Serve the project root (the folder above tools/) ──────
 # When double-clicking the file, Windows sets CWD to the Python install
 # folder, not the project folder. This fixes that so all static files
-# (index.html, css/, js/, etc.) are served correctly.
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+# (index.html, css/, js/, etc.) are served correctly. The script lives in
+# tools/, so the project root is its parent folder.
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(PROJECT_ROOT)
+
+
+def safe_name(value, default):
+    """Keep only characters that are safe in a file name (no paths, no '..')."""
+    cleaned = re.sub(r"[^A-Za-z0-9_-]", "", str(value or ""))[:60]
+    return cleaned or default
 
 
 class ContentEngineHandler(http.server.SimpleHTTPRequestHandler):
     """Serves static files + handles local API endpoints."""
+
+    # Windows can map .js to text/plain, and browsers refuse to register a
+    # service worker served that way; pin the types the app relies on.
+    extensions_map = {
+        **http.server.SimpleHTTPRequestHandler.extensions_map,
+        ".js": "text/javascript",
+        ".json": "application/json",
+        ".svg": "image/svg+xml",
+        ".webmanifest": "application/manifest+json",
+    }
 
     def end_headers(self):
         self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
@@ -33,13 +52,12 @@ class ContentEngineHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         if self.path == '/api/generate':
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
-
             try:
-                payload = json.loads(post_data.decode('utf-8'))
-                archetype_id = payload.get('archetype_id', 'custom')
-                piece = payload.get('piece', 'piece_001')
+                content_length = int(self.headers.get('Content-Length') or 0)
+                post_data = self.rfile.read(content_length)
+                payload = json.loads(post_data.decode('utf-8') or '{}')
+                archetype_id = safe_name(payload.get('archetype_id'), 'custom')
+                piece = safe_name(payload.get('piece'), 'piece_001')
 
                 print(f"[*] Local generation request for {piece} - {archetype_id}")
 
@@ -47,11 +65,12 @@ class ContentEngineHandler(http.server.SimpleHTTPRequestHandler):
                 output_path = os.path.join(PROJECT_ROOT, "output", "rings", output_filename)
                 enhanced_path = os.path.join(PROJECT_ROOT, "assets", "enhanced", output_filename)
 
-                # Copy a reference image as placeholder
+                # Copy a reference image as placeholder (this endpoint does not call an AI model)
                 source_image = os.path.join(PROJECT_ROOT, "references", "rings", "Ring_organic_sand.jpeg")
-                if os.path.exists(source_image):
-                    shutil.copy(source_image, output_path)
-                    shutil.copy(source_image, enhanced_path)
+                if not os.path.exists(source_image):
+                    raise FileNotFoundError(f"placeholder image not found: {source_image}")
+                shutil.copy(source_image, output_path)
+                shutil.copy(source_image, enhanced_path)
 
                 # Update manifest.json
                 manifest_path = os.path.join(PROJECT_ROOT, "assets", "enhanced", "manifest.json")
@@ -73,7 +92,7 @@ class ContentEngineHandler(http.server.SimpleHTTPRequestHandler):
                 response_data = {
                     "status": "success",
                     "file": output_filename,
-                    "message": "Asset saved locally."
+                    "message": "Placeholder asset saved locally."
                 }
 
                 self.send_response(200)
@@ -99,6 +118,14 @@ def open_browser():
     webbrowser.open(url)
 
 
+def wait_for_enter():
+    """Keep a double-clicked window open; skip quietly when there is no console."""
+    try:
+        input("  Press Enter to close this window...")
+    except EOFError:
+        pass
+
+
 if __name__ == '__main__':
     # Ensure output directories exist
     os.makedirs(os.path.join(PROJECT_ROOT, "output", "rings"), exist_ok=True)
@@ -117,7 +144,7 @@ if __name__ == '__main__':
 
     try:
         socketserver.ThreadingTCPServer.allow_reuse_address = True
-        with socketserver.ThreadingTCPServer(("", PORT), ContentEngineHandler) as httpd:
+        with socketserver.ThreadingTCPServer((HOST, PORT), ContentEngineHandler) as httpd:
             # Auto-open browser in a background thread
             threading.Thread(target=open_browser, daemon=True).start()
             httpd.serve_forever()
@@ -139,4 +166,4 @@ if __name__ == '__main__':
 
     # Keep the window open so the user can read any errors
     print()
-    input("  Press Enter to close this window...")
+    wait_for_enter()

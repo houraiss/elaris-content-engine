@@ -101,11 +101,18 @@ const PromptStudioBeta = {
         this._loadTrends();
     },
 
-    // ── Toast helper (Elaris global, no-op if unavailable) ──────
+    // ── Toast helper (the app-wide Elaris.toast, no-op if unavailable) ──
     _showToast(msg, type = 'success') {
-        if (window.Elaris && typeof window.Elaris.showToast === 'function') {
-            window.Elaris.showToast(msg, type);
+        if (window.Elaris && typeof window.Elaris.toast === 'function') {
+            window.Elaris.toast(msg, type);
         }
+    },
+
+    // Escape text for innerHTML templates (prompts carry user-typed descriptions).
+    _esc(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     },
 
     // ── i18n shorthand — English lives here at the call site ────
@@ -287,7 +294,12 @@ const PromptStudioBeta = {
     // ── Category Inference ────────────────────────────────────────
     // Archetypes in prompt-studio.js lack a .category field.
     // We infer it from the archetype ID using the same classification as the main studio.
-    _HUMAN_IDS: new Set([
+    // The model-based list comes from the main studio when it is loaded, so the library
+    // tabs and the prompt builder always agree; the local copy is only a fallback.
+    get _HUMAN_IDS() {
+        return (window.PromptStudio && window.PromptStudio.HUMAN_ARCHETYPES) || this._HUMAN_IDS_FALLBACK;
+    },
+    _HUMAN_IDS_FALLBACK: new Set([
         'body-intimate', 'editorial-model', 'bw-dramatic', 'collection-showcase', 'motion-blur',
         'cinematic-portrait', 'celestial-mythic', 'masculine-editorial', 'surface-lean', 'hair-drama',
         'lifestyle-moment', 'heritage-moroccan', 'architectural-context', 'wet-element',
@@ -1030,55 +1042,85 @@ const PromptStudioBeta = {
         return 'ISO 100–400';
     },
 
+    // Beta state expressed in the master builder's vocabulary. Most option IDs are
+    // shared; the micro-realism toggles are booleans here but named levels there.
+    _masterStateOverrides(arch) {
+        const S = this.state;
+        const trend = this._getActiveTrend();
+        return {
+            // Beta has no product switch: watch archetypes imply a watch.
+            product:              String(arch && arch.id || '').startsWith('watch-') ? 'watch' : 'silver',
+            category:             S.category,
+            material:             S.material,
+            stone:                S.stone,
+            pieceDesc:            S.pieceDesc,
+            // Passed separately so the builder's piece-description cleanup
+            // (which strips jewelry and metal words) can't mangle it.
+            trendDirective:       trend ? trend.studio.directive : '',
+            lightingMood:         S.lightingMood,
+            cameraProfile:        S.cameraProfile,
+            angle:                S.angle,
+            format:               this._AR_TO_FORMAT[S.aspectRatio] || S.format || 'square',
+            aspectRatio:          S.aspectRatio,
+            surface:              S.surface,
+            palette:              S.palette,
+            jewelryStyle:         S.jewelryStyle,
+            hallmarkEnabled:      S.hallmarkEnabled,
+            brandIdentityEnabled: S.brandIdentityEnabled,
+            brandTouch:           S.brandTouch,
+            realismLevel:         S.realismLevel,
+            skinTexture:          S.skinTexture ? 'pores' : 'natural',
+            wrinkles:             S.wrinkles ? 'subtle' : 'none',
+            bodyHair:             S.bodyHair ? 'fine' : 'none',
+            skinDetail:           S.skinDetail ? 'veins-freckles' : 'none',
+            modelGender:          S.modelGender,
+            modelEthnicity:       S.modelEthnicity,
+            facialExpression:     S.facialExpression,
+            hijabi:               S.hijabi,
+            hijabStyle:           S.hijabStyle,
+            styling:              S.styling,
+            setComposition:       S.setComposition,
+            consistencyOn:        S.consistencyOn,
+            activeProfileId:      S.activeProfileId,
+            profiles:             S.profiles,
+            // Beta has no reference-image slots, so always the single-image format.
+            jewelryCount:         0,
+            modelImageAttached:   false,
+            // Scene controls that only Studio Beta exposes.
+            environment:          S.environment,
+            filmStyle:            S.filmStyle,
+            seasonTime:           S.seasonTime,
+            moodIntensity:        S.moodIntensity,
+            dof:                  S.dof,
+            isoRange:             S.isoRange,
+            bodyFocus:            S.bodyFocus,
+            promptQuality:        S.promptQuality,
+        };
+    },
+
     _buildSinglePrompt(arch) {
-        // Prefer master compiler from global PromptStudio
-        if (window.PromptStudio && typeof window.PromptStudio._buildPrompt === 'function') {
+        // Prefer the master compiler. Beta's settings are lent to the master state for
+        // this one build and then put back, so the old Prompt Studio is left untouched.
+        const M = window.PromptStudio;
+        if (M && typeof M._buildPrompt === 'function' && M.state) {
+            const ps = M.state;
+            const overrides = this._masterStateOverrides(arch);
+            const saved = {};
+            const savedLast = [M._lastPiece, M._lastMaterial];
             try {
-                const ps = window.PromptStudio.state;
-                const _psPieceDescRestore = ps ? ps.pieceDesc : undefined;
-                if (ps) {
-                    ps.category            = this.state.category;
-                    ps.material            = this.state.material;
-                    ps.stone               = this.state.stone;
-                    // Blend the active Live Trend directive into the positive body
-                    // (via pieceDesc) so it lands before the master's negative-prompt tail.
-                    const _trend = this._getActiveTrend();
-                    ps.pieceDesc           = _trend
-                        ? [this.state.pieceDesc, `${_trend.studio.directive} [trend: ${_trend.title}]`].filter(Boolean).join(', ')
-                        : this.state.pieceDesc;
-                    ps.lightingMood        = this.state.lightingMood;
-                    ps.cameraProfile       = this.state.cameraProfile;
-                    ps.angle               = this.state.angle;
-                    ps.format              = this._AR_TO_FORMAT[this.state.aspectRatio] || this.state.format || 'square';
-                    ps.aspectRatio         = this.state.aspectRatio;
-                    ps.surface             = this.state.surface;
-                    ps.palette             = this.state.palette;
-                    ps.jewelryStyle        = this.state.jewelryStyle;
-                    ps.hallmarkEnabled     = this.state.hallmarkEnabled;
-                    ps.brandIdentityEnabled = this.state.brandIdentityEnabled;
-                    ps.brandTouch          = this.state.brandTouch;
-                    ps.realismLevel        = this.state.realismLevel;
-                    ps.skinTexture         = this.state.skinTexture;
-                    ps.wrinkles            = this.state.wrinkles;
-                    ps.bodyHair            = this.state.bodyHair;
-                    ps.skinDetail          = this.state.skinDetail;
-                    ps.modelGender         = this.state.modelGender;
-                    ps.modelEthnicity      = this.state.modelEthnicity;
-                    ps.facialExpression    = this.state.facialExpression;
-                    ps.hijabi              = this.state.hijabi;
-                    ps.hijabStyle          = this.state.hijabStyle;
-                    ps.styling             = this.state.styling;
-                    ps.setComposition      = this.state.setComposition;
-                    // Sync model consistency to master state
-                    ps.consistencyOn       = this.state.consistencyOn;
-                    ps.activeProfileId     = this.state.activeProfileId;
-                    ps.profiles            = this.state.profiles;
-                }
-                const prompt = window.PromptStudio._buildPrompt(arch);
-                if (ps) ps.pieceDesc = _psPieceDescRestore; // don't pollute the master studio
+                Object.keys(overrides).forEach(k => {
+                    saved[k] = Object.prototype.hasOwnProperty.call(ps, k) ? { v: ps[k] } : null;
+                    ps[k] = overrides[k];
+                });
+                const prompt = M._buildPrompt(arch);
                 if (prompt && prompt.length > 30) return prompt;
             } catch (err) {
                 console.warn('[PSBeta] Fallback to internal builder:', err);
+            } finally {
+                Object.keys(saved).forEach(k => {
+                    if (saved[k]) ps[k] = saved[k].v; else delete ps[k];
+                });
+                [M._lastPiece, M._lastMaterial] = savedLast;
             }
         }
 
@@ -1144,111 +1186,18 @@ const PromptStudioBeta = {
             parts.push('wardrobe and outfit: AI-selected unique editorial styling for maximum diversity');
         }
 
-        // Body Part Focus (v10)
-        if (this.state.bodyFocus && this.state.bodyFocus !== 'auto') {
-            const focusMap = {
-                'wrist-hand': 'primary focus on wrist and hand', 'neck-collar': 'primary focus on neck and collarbone',
-                'ear-face': 'primary focus on ear and side profile', 'finger-close': 'extreme close-up on finger and ring',
-                'full-body': 'full body editorial composition', 'face-close': 'intimate face and eye close-up',
-                'torso': 'torso and décolletage as primary canvas', 'ankle-foot': 'ankle and foot in sharp focus',
-                'silhouette': 'atmospheric full-body silhouette composition',
-            };
-            parts.push(focusMap[this.state.bodyFocus] || this.state.bodyFocus.replace(/-/g, ' '));
-        }
-
-        // Environment (v10)
-        if (this.state.environment && this.state.environment !== 'auto') {
-            const envMap = {
-                'studio-infinity': 'photographed in a clean studio with seamless infinity wall background',
-                'rooftop': 'shot on an urban luxury rooftop with glittering city skyline behind',
-                'desert-dunes': 'set against sweeping golden Sahara desert dunes at dusk',
-                'moroccan-riad': 'interior of a traditional Moroccan riad with ornate zellige tilework',
-                'botanical-garden': 'surrounded by lush botanical garden tropical foliage',
-                'marble-palace': 'inside a grand marble palace with high ceilings and columns',
-                'ocean-shore': 'shot at the ocean shoreline with waves and sea foam',
-                'dark-hotel-suite': 'inside a moody dark luxury hotel suite with ambient candlelight',
-                'forest-mist': 'deep in a misty ancient forest with dappled light through canopy',
-                'souq-market': 'vibrant colorful souq or night market setting',
-                'glass-greenhouse': 'inside a tropical glass greenhouse with lush green plants',
-                'car-interior': 'inside a luxury sports car interior with leather and chrome',
-                'art-gallery': 'inside a minimalist white-walled art gallery space',
-            };
-            parts.push(envMap[this.state.environment] || `environment: ${this.state.environment.replace(/-/g, ' ')}`);
-        }
-
-        // Season & Time of Day (v10)
-        if (this.state.seasonTime && this.state.seasonTime !== 'auto') {
-            const stMap = {
-                'golden-hour': 'during golden hour with warm amber sunlight and long shadows',
-                'blue-hour': 'at blue hour twilight with cool indigo ambient glow',
-                'midday-sun': 'under harsh high-noon direct sunlight with sharp shadows',
-                'overcast-day': 'on an overcast day with diffused soft shadowless light',
-                'night-ambient': 'at night lit by artificial ambient and neon light sources',
-                'spring-bloom': 'in spring bloom with soft pastel floral atmosphere',
-                'summer-vivid': 'in peak summer with vivid saturated colors and warm haze',
-                'autumn-warm': 'in autumn warmth with rich amber gold and terracotta tones',
-                'winter-frost': 'in winter frost with crisp cool blue-white atmosphere',
-                'pre-dawn': 'in pre-dawn dark blue stillness before sunrise',
-            };
-            parts.push(stMap[this.state.seasonTime] || this.state.seasonTime.replace(/-/g, ' '));
-        }
-
-        // Mood Intensity (v10)
-        if (this.state.moodIntensity && this.state.moodIntensity !== 'balanced') {
-            const moodMap = {
-                'subtle': 'subtle understated elegance, quiet luxury, whispered sophistication',
-                'dramatic': 'dramatic high-contrast scene with intense emotional tension',
-                'cinematic': 'cinematic movie-grade atmosphere with masterful visual storytelling',
-                'ethereal': 'ethereal dreamy haze with soft light diffusion and otherworldly glow',
-                'raw': 'raw unfiltered gritty realism, authentic and unretouched energy',
-                'opulent': 'over-the-top opulent richness, extravagant maximalist luxury',
-            };
-            parts.push(moodMap[this.state.moodIntensity] || this.state.moodIntensity);
-        }
-
-        // DOF (v10)
-        if (this.state.dof && this.state.dof !== 'auto') {
-            const dofMap = {
-                'razor-thin': 'razor-thin depth of field f/1.4–f/2.8 with extreme background blur',
-                'shallow': 'shallow depth of field f/2.8–f/4 with creamy bokeh subject separation',
-                'moderate': 'moderate depth of field f/4–f/5.6 with balanced foreground and background detail',
-                'deep': 'deep depth of field f/8–f/11 with sharp environmental context throughout frame',
-                'macro-extreme': 'macro depth of field f/16–f/22 with maximum gem facet sharpness',
-                'tilt-plane': 'tilt-shift selective focus plane with miniature editorial effect',
-            };
-            parts.push(dofMap[this.state.dof] || this.state.dof.replace(/-/g, ' '));
-        }
-
-        // ISO (v10)
-        if (this.state.isoRange && this.state.isoRange !== 'auto') {
-            const isoMap = {
-                'iso-50': 'ISO 50 noiseless tripod studio perfection',
-                'iso-100': 'ISO 100 tripod daylight pristine clarity',
-                'iso-200': 'ISO 200 bright natural light clean render',
-                'iso-400': 'ISO 400 versatile ambient balanced exposure',
-                'iso-800': 'ISO 800 soft indoor warm ambient glow',
-                'iso-1600': 'ISO 1600 atmospheric low light subtle grain',
-                'iso-3200': 'ISO 3200 cinematic visible grain moody texture',
-                'iso-6400': 'ISO 6400 heavy grain raw aesthetic intentional noise',
-            };
-            parts.push(isoMap[this.state.isoRange] || this.state.isoRange);
-        }
-
-        // Film Style (v10)
-        if (this.state.filmStyle && this.state.filmStyle !== 'auto') {
-            const filmMap = {
-                'clean-digital': 'clean sharp modern digital rendering',
-                'analog-film': 'Kodak Portra 400 analog film grain, warm halation, gentle color shift',
-                'faded-vintage': 'faded vintage desaturated 1970s photography aesthetic',
-                'teal-orange': 'teal and orange Hollywood cinematic color grade',
-                'high-contrast': 'high contrast deep ink-black shadows and blown-out highlights',
-                'matte-lift': 'lifted blacks matte finish soft tone grade',
-                'bleach-bypass': 'bleach bypass desaturated silver halide reduced saturation',
-                'cross-process': 'cross-process vivid unexpected color shift',
-                'infrared': 'infrared photography ethereal white foliage luminous glow',
-            };
-            parts.push(filmMap[this.state.filmStyle] || this.state.filmStyle.replace(/-/g, ' '));
-        }
+        // v10 scene controls — the wording lives in PromptStudio.sceneModifierText,
+        // shared with the master builder so the two paths can't drift apart again.
+        const mod =(kind, id) => (M && typeof M._sceneModifier === 'function') ? M._sceneModifier(kind, id) : '';
+        [
+            this.state.modelGender !== 'none' ? mod('bodyFocus', this.state.bodyFocus) : '',
+            mod('environment', this.state.environment),
+            mod('seasonTime', this.state.seasonTime),
+            mod('moodIntensity', this.state.moodIntensity),
+            mod('dof', this.state.dof),
+            mod('isoRange', this.state.isoRange),
+            mod('filmStyle', this.state.filmStyle),
+        ].forEach(t => { if (t) parts.push(t); });
 
         if (this.state.promptQuality === 'ultra' || this.state.realismLevel === 'ultra') {
             parts.push('RAW DNG uncompressed photograph, natural filmic grain, microscopic skin pores, authentic sensor noise, chromatic aberration, non-retouched realism');
@@ -1328,16 +1277,19 @@ const PromptStudioBeta = {
         });
         this._saveHistory();
 
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(finalPrompt).catch(() => {});
-        }
-
-        if (window.Elaris && typeof window.Elaris.showToast === 'function') {
-            const label = count > 1
-                ? this._t('psb_toast_variations', '✦ {n} variations generated & copied!').replace('{n}', count)
-                : this._t('psb_toast_generated', '✦ Prompt generated & copied to clipboard!');
-            window.Elaris.showToast(label, 'success');
-        }
+        // Only claim "copied" once the clipboard write has actually succeeded.
+        const copied = (navigator.clipboard && navigator.clipboard.writeText)
+            ? navigator.clipboard.writeText(finalPrompt).then(() => true, () => false)
+            : Promise.resolve(false);
+        copied.then(ok => {
+            if (ok) {
+                this._showToast(count > 1
+                    ? this._t('psb_toast_variations', '✦ {n} variations generated & copied!').replace('{n}', count)
+                    : this._t('psb_toast_generated', '✦ Prompt generated & copied to clipboard!'), 'success');
+            } else {
+                this._showToast(this._t('psb_toast_generated_nocopy', '✦ Prompt generated — use the Copy button to copy it'), 'info');
+            }
+        });
 
         this._updateOutputCard();
         this._updateHistoryList();
@@ -1476,16 +1428,26 @@ const PromptStudioBeta = {
     },
 
     // ── Motion-reactive spotlight tracker ───────────────────────
+    // #page-container is shared by every page and survives navigation, so the
+    // listener is bound once per container (not once per visit) and rAF-throttled.
+    _spotlightBound: new WeakSet(),
     _initMotionSpotlight() {
-        if (!this.container) return;
-        this.container.addEventListener('mousemove', (e) => {
-            const panels = this.container.querySelectorAll('.psb-panel');
-            panels.forEach(p => {
-                const rect = p.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 100;
-                const y = ((e.clientY - rect.top) / rect.height) * 100;
-                p.style.setProperty('--psb-mx', `${x}%`);
-                p.style.setProperty('--psb-my', `${y}%`);
+        const container = this.container;
+        if (!container || this._spotlightBound.has(container)) return;
+        this._spotlightBound.add(container);
+        let frame = 0, last = null;
+        container.addEventListener('mousemove', (e) => {
+            last = e;
+            if (frame) return;
+            frame = requestAnimationFrame(() => {
+                frame = 0;
+                container.querySelectorAll('.psb-panel').forEach(p => {
+                    const rect = p.getBoundingClientRect();
+                    const x = ((last.clientX - rect.left) / rect.width) * 100;
+                    const y = ((last.clientY - rect.top) / rect.height) * 100;
+                    p.style.setProperty('--psb-mx', `${x}%`);
+                    p.style.setProperty('--psb-my', `${y}%`);
+                });
             });
         });
     },
@@ -2025,7 +1987,7 @@ const PromptStudioBeta = {
                                         <button type="button" class="psb-btn psb-btn-glass psb-btn-sm" id="psb-send-motion-btn">🎬 ${this._t('nav_motionstudio', 'Motion Studio')}</button>
                                     </div>
                                 </div>
-                                <div class="psb-output-body" id="psb-output-body">${this.state.generatedPrompt}</div>
+                                <div class="psb-output-body" id="psb-output-body">${this._esc(this.state.generatedPrompt)}</div>
                             </div>
                         </div><!-- /psb-panel carousel -->
                     </section><!-- /center col -->
@@ -2131,18 +2093,7 @@ const PromptStudioBeta = {
 
                         <div class="psb-section-title" style="margin-top:14px;">🕒 ${this._t('psb_recent_gen', 'Recent Generations')}</div>
                         <div class="psb-history-list" id="psb-history-list">
-                            ${this.state.history.length === 0
-                                ? `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:16px;">${this._t('psb_no_history', 'No recent prompts yet. Tap Generate!')}</div>`
-                                : this.state.history.map(item => {
-                                    const safePrompt = (item && item.prompt) ? item.prompt : '';
-                                    const safeArch   = (item && item.archetype) ? item.archetype : this._t('psb_unknown', 'Unknown');
-                                    const safeTime   = (item && item.timestamp) ? item.timestamp : '';
-                                    return `<div class="psb-history-item" data-prompt="${encodeURIComponent(safePrompt)}">
-                                        <div class="psb-history-arch">${safeArch}${safeTime ? ` • <span style="color:var(--psb-text-3);">${safeTime}</span>` : ''}</div>
-                                        <div class="psb-history-preview">${safePrompt.substring(0, 120)}${safePrompt.length > 120 ? '…' : ''}</div>
-                                        <button type="button" class="psb-history-copy">${this._t('psb_copy', 'Copy')}</button>
-                                    </div>`;
-                                }).join('')}
+                            ${this._historyItemsHTML()}
                         </div>
                     </section>
 
@@ -2360,23 +2311,26 @@ const PromptStudioBeta = {
     _updateHistoryList() {
         const histEl = this.container.querySelector('#psb-history-list');
         if (!histEl) return;
-        if (this.state.history.length === 0) {
-            histEl.innerHTML = '<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:16px;">No recent prompts yet. Tap Generate!</div>';
-            return;
-        }
-        histEl.innerHTML = this.state.history.map(item => {
-            const safePrompt = (item && item.prompt) ? item.prompt : '';
-            const safeArch   = (item && item.archetype) ? item.archetype : 'Unknown';
-            const safeTime   = (item && item.timestamp) ? item.timestamp : '';
-            return `
-            <div class="psb-history-item" data-prompt="${encodeURIComponent(safePrompt)}">
-                <div class="psb-history-arch">${safeArch}${safeTime ? ` • <span style="color:var(--psb-text-3);">${safeTime}</span>` : ''}</div>
-                <div class="psb-history-preview">${safePrompt.substring(0, 120)}${safePrompt.length > 120 ? '…' : ''}</div>
-                <button type="button" class="psb-history-copy">Copy</button>
-            </div>`;
-        }).join('');
+        histEl.innerHTML = this._historyItemsHTML();
         // Re-bind history copy
         this._bindHistoryCopy();
+    },
+
+    // Shared by the first render and every later refresh, so both stay translated and escaped.
+    _historyItemsHTML() {
+        if (this.state.history.length === 0) {
+            return `<div style="font-size:11px;color:var(--psb-text-3);text-align:center;padding:16px;">${this._t('psb_no_history', 'No recent prompts yet. Tap Generate!')}</div>`;
+        }
+        return this.state.history.map(item => {
+            const prompt = (item && item.prompt) ? item.prompt : '';
+            const arch   = (item && item.archetype) ? item.archetype : this._t('psb_unknown', 'Unknown');
+            const time   = (item && item.timestamp) ? item.timestamp : '';
+            return `<div class="psb-history-item" data-prompt="${encodeURIComponent(prompt)}">
+                <div class="psb-history-arch">${this._esc(arch)}${time ? ` • <span style="color:var(--psb-text-3);">${this._esc(time)}</span>` : ''}</div>
+                <div class="psb-history-preview">${this._esc(prompt.substring(0, 120))}${prompt.length > 120 ? '…' : ''}</div>
+                <button type="button" class="psb-history-copy">${this._t('psb_copy', 'Copy')}</button>
+            </div>`;
+        }).join('');
     },
 
     // ── Bind History Copy buttons ───────────────────────────────
@@ -2388,11 +2342,11 @@ const PromptStudioBeta = {
                 const prompt = item ? decodeURIComponent(item.dataset.prompt || '') : '';
                 if (navigator.clipboard && prompt) {
                     navigator.clipboard.writeText(prompt).then(() => {
-                        if (window.Elaris && window.Elaris.showToast) window.Elaris.showToast(this._t('psb_toast_hist_copied', '📋 History prompt copied!'), 'success');
+                        this._showToast(this._t('psb_toast_hist_copied', '📋 History prompt copied!'), 'success');
                     });
                 }
                 btn.textContent = '✓';
-                setTimeout(() => { btn.textContent = 'Copy'; }, 1800);
+                setTimeout(() => { btn.textContent = this._t('psb_copy', 'Copy'); }, 1800);
             });
         });
         this.container.querySelectorAll('.psb-history-item').forEach(item => {
@@ -2401,7 +2355,7 @@ const PromptStudioBeta = {
                 const prompt = decodeURIComponent(item.dataset.prompt || '');
                 if (navigator.clipboard && prompt) {
                     navigator.clipboard.writeText(prompt).then(() => {
-                        if (window.Elaris && window.Elaris.showToast) window.Elaris.showToast(this._t('psb_toast_hist_copied', '📋 History prompt copied!'), 'success');
+                        this._showToast(this._t('psb_toast_hist_copied', '📋 History prompt copied!'), 'success');
                     });
                 }
             });
@@ -2757,21 +2711,27 @@ const PromptStudioBeta = {
         if (copyOutBtn) copyOutBtn.addEventListener('click', () => {
             if (this.state.generatedPrompt && navigator.clipboard) {
                 navigator.clipboard.writeText(this.state.generatedPrompt).then(() => {
-                    if (window.Elaris && window.Elaris.showToast) window.Elaris.showToast(this._t('psb_toast_copied', '📋 Prompt copied!'), 'success');
+                    this._showToast(this._t('psb_toast_copied', '📋 Prompt copied!'), 'success');
                     copyOutBtn.textContent = '✓ ' + this._t('psb_copied', 'Copied!');
                     setTimeout(() => { copyOutBtn.textContent = '📋 ' + this._t('psb_copy', 'Copy'); }, 2000);
                 });
             }
         });
 
-        // Send to Motion Studio
+        // Send to Motion Studio: open it on the same piece and shot. The hand-off must
+        // happen before navigating, because navigation renders Motion Studio immediately.
         const sendMotionBtn = q('#psb-send-motion-btn');
         if (sendMotionBtn) sendMotionBtn.addEventListener('click', () => {
+            if (window.MotionStudio && typeof window.MotionStudio.receiveFromStudio === 'function') {
+                const S = this.state;
+                window.MotionStudio.receiveFromStudio({
+                    category: S.category, material: S.material, stone: S.stone, pieceDesc: S.pieceDesc,
+                    lightingMood: S.lightingMood, palette: S.palette, modelGender: S.modelGender,
+                    archetypeId: S.archetypeId,
+                });
+            }
             if (window.Elaris && typeof window.Elaris.navigate === 'function') {
                 window.Elaris.navigate('motionstudio');
-                if (window.MotionStudio && typeof window.MotionStudio.setPrompt === 'function') {
-                    window.MotionStudio.setPrompt(this.state.generatedPrompt);
-                }
             }
         });
 

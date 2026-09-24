@@ -2,7 +2,7 @@
  * captions.js — Caption & hashtag engine for @elaris.925.
  *
  * Generates on-brand captions using template formulas (no API needed).
- * Includes hashtag strategy with rotation to avoid shadow-banning.
+ * Hashtags rotate within Instagram's 5-per-post limit.
  */
 
 const ElarisCaption = {
@@ -150,28 +150,22 @@ const ElarisCaption = {
     },
 
     // ── Generate Hashtags ────────────────────────────────────────
+    // Instagram allows at most 5 hashtags per post (since December 2025), and a few
+    // specific tags outperform generic ones: brand + material + 2 product + 1 origin.
+    // (The `reach` pool above is no longer used for posts.)
+    MAX_HASHTAGS: 5,
+
     generateHashtags(opts = {}) {
         const category = opts.category || 'general';
-        const maxCount = opts.maxCount || 25;
-
-        let tags = [];
-
-        // Core (always)
-        tags.push(...this.hashtags.core);
-
-        // Brand (pick 3)
-        tags.push(...this._sample(this.hashtags.brand, 3));
-
-        // Category (pick 4)
+        const maxCount = Math.min(opts.maxCount || this.MAX_HASHTAGS, this.MAX_HASHTAGS);
         const catTags = this.hashtags.category[category] || this.hashtags.category.general;
-        tags.push(...this._sample(catTags, 4));
 
-        // Reach (fill remaining)
-        const remaining = maxCount - tags.length;
-        if (remaining > 0) {
-            const pool = this.hashtags.reach.filter(t => !tags.includes(t));
-            tags.push(...this._sample(pool, Math.min(remaining, pool.length)));
-        }
+        const tags = [
+            this.hashtags.core[0],                                            // #elaris925
+            ...this._sample(this.hashtags.core.slice(2), 1),                  // material
+            ...this._sample(catTags, 2),                                      // product
+            ...this._sample(this.hashtags.brand, 1),                          // Moroccan origin / craft
+        ];
 
         // Deduplicate
         return [...new Set(tags)].slice(0, maxCount);

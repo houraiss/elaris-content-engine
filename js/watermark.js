@@ -148,7 +148,7 @@ const WatermarkStudio = {
                         <div class="wm-layer-body" id="wm-diag-body">
                             <div class="form-group">
                                 <label class="form-label" data-i18n="wm_text">Text</label>
-                                <input type="text" class="form-input" id="wm-diag-text" value="${this.state.diagText}">
+                                <input type="text" class="form-input" id="wm-diag-text" value="${this._esc(this.state.diagText)}">
                             </div>
                             <div class="form-group">
                                 <label class="form-label"><span data-i18n="wm_font_size">Font Size:</span> <span id="wm-diag-size-val">${this.state.diagFontSize}px</span></label>
@@ -205,7 +205,7 @@ const WatermarkStudio = {
                         <div class="wm-layer-body" id="wm-stego-body">
                             <div class="form-group">
                                 <label class="form-label" data-i18n="wm_hidden_msg">Hidden Message</label>
-                                <textarea class="form-textarea" id="wm-stego-text" rows="2">${this.state.stegoText}</textarea>
+                                <textarea class="form-textarea" id="wm-stego-text" rows="2">${this._esc(this.state.stegoText)}</textarea>
                             </div>
                             <p class="text-sm text-muted" style="line-height:1.5" data-i18n="wm_stego_desc">
                                 Embeds invisible data into pixel structure. Won't survive screenshots, but proves ownership on original files.
@@ -541,30 +541,30 @@ const WatermarkStudio = {
     },
 
     // ── Layer 4: Steganographic Encoding ─────────────────────────
+    // The message is stored as UTF-8 bytes, one bit per R/G/B least-significant bit,
+    // ending with a 0 byte. (Writing charCodeAt() values as 8 bits broke on anything
+    // above U+00FF — including the "—" in the default text, and all Arabic.)
     _encodeSteganographic(canvas, text) {
         const ctx = canvas.getContext('2d');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
 
-        // Convert text to binary with a delimiter
-        const message = 'ELARIS_SIG:' + text + '\0';
-        let binary = '';
-        for (let i = 0; i < message.length; i++) {
-            binary += message.charCodeAt(i).toString(2).padStart(8, '0');
-        }
+        const bytes = new TextEncoder().encode('ELARIS_SIG:' + text + '\0');
+        const totalBits = bytes.length * 8;
 
         // Check capacity
         const maxBits = Math.floor((data.length / 4) * 3); // RGB channels only, skip alpha
-        if (binary.length > maxBits) {
+        if (totalBits > maxBits) {
             Elaris.toast('Message too long for this image', 'error');
             return false;
         }
 
-        // Encode into LSB of RGB channels
+        // Encode into LSB of RGB channels, most significant bit of each byte first
         let bitIndex = 0;
-        for (let i = 0; i < data.length && bitIndex < binary.length; i++) {
+        for (let i = 0; i < data.length && bitIndex < totalBits; i++) {
             if (i % 4 === 3) continue; // Skip alpha channel
-            data[i] = (data[i] & 0xFE) | parseInt(binary[bitIndex], 2);
+            const bit = (bytes[bitIndex >> 3] >> (7 - (bitIndex & 7))) & 1;
+            data[i] = (data[i] & 0xFE) | bit;
             bitIndex++;
         }
 
@@ -575,30 +575,45 @@ const WatermarkStudio = {
     // ── Steganographic Decoding ──────────────────────────────────
     _decodeSteganographic(canvas) {
         const ctx = canvas.getContext('2d');
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const PREFIX = 'ELARIS_SIG:';
 
-        let binary = '';
-        for (let i = 0; i < data.length; i++) {
+        // Read bytes up to the 0 terminator; give up early on unsigned images.
+        const bytes = [];
+        let byte = 0, nbits = 0;
+        for (let i = 0; i < data.length && bytes.length < 8192; i++) {
             if (i % 4 === 3) continue; // Skip alpha
-            binary += (data[i] & 1).toString();
+            byte = (byte << 1) | (data[i] & 1);
+            if (++nbits < 8) continue;
+            if (byte === 0) break; // Null terminator
+            bytes.push(byte);
+            if (bytes.length === PREFIX.length && String.fromCharCode(...bytes) !== PREFIX) {
+                return { found: false, message: null };
+            }
+            byte = 0; nbits = 0;
         }
 
-        // Convert binary to text
-        let text = '';
-        for (let i = 0; i < binary.length; i += 8) {
-            const byte = binary.substring(i, i + 8);
-            if (byte.length < 8) break;
-            const charCode = parseInt(byte, 2);
-            if (charCode === 0) break; // Null terminator
-            text += String.fromCharCode(charCode);
+        const raw = new Uint8Array(bytes);
+        let text;
+        try {
+            text = new TextDecoder('utf-8', { fatal: true }).decode(raw);
+        } catch (e) {
+            // Images signed before the UTF-8 fix stored one byte per character (Latin-1).
+            text = Array.from(raw, b => String.fromCharCode(b)).join('');
         }
 
         // Check for signature
-        if (text.startsWith('ELARIS_SIG:')) {
-            return { found: true, message: text.replace('ELARIS_SIG:', '') };
+        if (text.startsWith(PREFIX)) {
+            return { found: true, message: text.slice(PREFIX.length) };
         }
         return { found: false, message: null };
+    },
+
+    // Escape text for innerHTML templates (the verified message comes from an arbitrary image).
+    _esc(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     },
 
     // ── Export ────────────────────────────────────────────────────
@@ -680,7 +695,7 @@ const WatermarkStudio = {
                             <div style="font-weight:700;color:#4ade80;font-size:13px;margin-bottom:6px">✅ ELARIS WATERMARK DETECTED</div>
                             <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">
                                 <strong>Hidden message:</strong><br>
-                                <code style="font-size:11px;word-break:break-all">${result.message}</code>
+                                <code style="font-size:11px;word-break:break-all">${this._esc(result.message)}</code>
                             </div>
                             <div style="font-size:11px;color:var(--text-muted);margin-top:8px">
                                 This image contains a verified Elaris ownership signature.
