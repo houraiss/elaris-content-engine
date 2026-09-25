@@ -34,11 +34,11 @@ const PromptStudioBeta = {
         stone: 'none',
         pieceDesc: '',
         archetypeId: 'body-intimate',
-        lightingMood: 'editorial',
+        lightingMood: 'auto',       // 'auto' = the archetype's recommended lighting
         cameraProfile: 'auto',
-        angle: '45-degree',
-        format: 'square',
-        aspectRatio: '1:1',
+        angle: 'auto',              // 'auto' = the best angle for the archetype and piece
+        format: 'portrait',
+        aspectRatio: '4:5',         // the feed format with the most screen space
         // AI Chooses is now the default for max diversity across 100+ generations
         surface: 'ai-choice',
         palette: 'ai-choice',
@@ -87,6 +87,7 @@ const PromptStudioBeta = {
         activeTrendId: null,
         trendGroupFilter: 'all',
         generatedPrompt: '',
+        promptTarget: 'natural',   // image model the prompt is written for (shared with Prompt Studio)
         history: [],
     },
 
@@ -95,6 +96,7 @@ const PromptStudioBeta = {
         this.container = container;
         this._loadSavedHistory();
         this._loadProfiles();
+        if (window.PromptStudio && PromptStudio.getPromptTarget) this.state.promptTarget = PromptStudio.getPromptTarget();
         this._render();
         this._bindEvents();
         this._initMotionSpotlight();
@@ -1054,6 +1056,12 @@ const PromptStudioBeta = {
             material:             S.material,
             stone:                S.stone,
             pieceDesc:            S.pieceDesc,
+            // Piece Library (empty when the piece is not from the library)
+            pieceId:              S.pieceId || null,
+            pieceName:            S.pieceName || '',
+            pieceNotes:           S.pieceNotes || '',
+            pieceSize:            S.pieceSize || '',
+            piecePhotoCount:      S.piecePhotoCount || 0,
             // Passed separately so the builder's piece-description cleanup
             // (which strips jewelry and metal words) can't mangle it.
             trendDirective:       trend ? trend.studio.directive : '',
@@ -1107,13 +1115,14 @@ const PromptStudioBeta = {
             const overrides = this._masterStateOverrides(arch);
             const saved = {};
             const savedLast = [M._lastPiece, M._lastMaterial];
+            this._lastBuild = null;
             try {
                 Object.keys(overrides).forEach(k => {
                     saved[k] = Object.prototype.hasOwnProperty.call(ps, k) ? { v: ps[k] } : null;
                     ps[k] = overrides[k];
                 });
-                const prompt = M._buildPrompt(arch);
-                if (prompt && prompt.length > 30) return prompt;
+                const res = M._buildPromptSpec(arch, this.state.promptTarget);
+                if (res && res.text && res.text.length > 30) { this._lastBuild = res; return res.text; }
             } catch (err) {
                 console.warn('[PSBeta] Fallback to internal builder:', err);
             } finally {
@@ -1229,6 +1238,20 @@ const PromptStudioBeta = {
         return parts.join(', ');
     },
 
+    _VARIATION_SEP: '\n\n─────────────────────────────────\n\n',
+
+    // Same shots, written for another image model (no new random picks).
+    _rewriteForTarget(t) {
+        const M = window.PromptStudio;
+        const results = (this._lastResults || []).filter(r => r && r.spec);
+        if (!M || !results.length || results.length !== (this._lastResults || []).length) return false;
+        results.forEach(r => { r.text = M._compilePrompt(r.spec, t); r.target = t; });
+        this.state.generatedPrompt = results.length === 1 ? results[0].text
+            : results.map((r, i) => `[Variation ${i + 1}]\n${r.text}`).join(this._VARIATION_SEP);
+        this._updateOutputCard();
+        return true;
+    },
+
     buildPrompt() {
         const archetypes = this._getArchetypes();
         const arch = archetypes.find(a => a.id === this.state.archetypeId) || archetypes[0];
@@ -1242,8 +1265,10 @@ const PromptStudioBeta = {
         const count = Math.max(1, Math.min(5, this.state.variationCount || 1));
 
         let finalPrompt = '';
+        this._lastResults = [];
         if (count === 1) {
             finalPrompt = this._buildSinglePrompt(arch);
+            this._lastResults.push(this._lastBuild);
         } else {
             const variations = [];
             // Slight style variation for each copy
@@ -1261,10 +1286,11 @@ const PromptStudioBeta = {
                 this.state.angle   = tweak.angle;
                 this.state.palette = tweak.palette;
                 variations.push(`[Variation ${i + 1}]\n${this._buildSinglePrompt(arch)}`);
+                this._lastResults.push(this._lastBuild);
             }
             this.state.angle   = savedAngle;
             this.state.palette = savedPalette;
-            finalPrompt = variations.join('\n\n─────────────────────────────────\n\n');
+            finalPrompt = variations.join(this._VARIATION_SEP);
         }
 
         this.state.generatedPrompt = finalPrompt;
@@ -1349,13 +1375,13 @@ const PromptStudioBeta = {
 
     // ── Human-Readable Modifier Label Resolvers ────────────────
     _getLabelForAngle(id) {
-        if (!id) return '45° Three-Quarter';
+        if (!id || id === 'auto') return '✦ ' + this._t('ps_auto', 'Auto');
         const found = this._getAngles().find(a => a.id === id);
         return found ? found.label : id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     },
 
     _getLabelForLighting(id) {
-        if (!id) return 'Studio Lighting';
+        if (!id || id === 'auto') return '✦ ' + this._t('ps_auto', 'Auto');
         const found = this._getLightingMoods().find(m => m.id === id);
         return found ? found.label : id.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     },
@@ -1499,6 +1525,11 @@ const PromptStudioBeta = {
                         <div class="psb-spot"></div>
 
                         <div class="psb-section-title">💍 ${this._t('psb_piece_config', 'Piece Configurator')}</div>
+
+                        ${window.Pieces ? `<div class="psb-form-group pc-studio-picker">
+                            <label class="psb-label" for="psb-piece-select">${this._t('pc_picker_label', 'Your piece')} <a href="#pieces" class="pc-manage-link">${this._t('pc_manage', 'Manage library')}</a></label>
+                            ${Pieces.pickerHTML('psb-piece-select', this.state.pieceId, 'psb-select')}
+                        </div>` : ''}
 
                         <!-- Category -->
                         <div class="psb-form-group">
@@ -1766,6 +1797,7 @@ const PromptStudioBeta = {
                                             <button type="button" class="psb-chip psb-lf-chip ${this.state.lightingFilter === 'special'     ? 'active' : ''}" data-lf="special">✨ ${this._t('psb_lf_special', 'Special')}</button>
                                         </div>
                                         <select class="psb-select" id="psb-lighting-select">
+                                            <option value="auto" ${this.state.lightingMood === 'auto' ? 'selected' : ''}>✦ ${this._t('psb_auto_lighting', "Auto: the archetype's recommended lighting")}</option>
                                             <optgroup label="🌤 ${this._t('psb_lg_natural', 'Natural Light')}" data-lf="natural" ${this.state.lightingFilter !== 'all' && this.state.lightingFilter !== 'natural' ? 'style="display:none"' : ''}>
                                                 ${lightingMoods.filter(m => m.category === 'natural').map(m => `
                                                     <option value="${m.id}" ${this.state.lightingMood === m.id ? 'selected' : ''}>${m.label}</option>
@@ -1813,6 +1845,7 @@ const PromptStudioBeta = {
                                     <div class="psb-form-group">
                                         <label class="psb-label">${this._t('psb_shot_angle', 'Camera Shot Angle')}</label>
                                         <select class="psb-select" id="psb-angle-select">
+                                            <option value="auto" ${this.state.angle === 'auto' ? 'selected' : ''}>✦ ${this._t('psb_auto_angle', 'Auto: best angle for the archetype and piece')}</option>
                                             ${['Classic & Portrait', 'Macro & Product', 'Cinematic & Atmospheric', 'Editorial & High Fashion', 'Artistic & Tactile', 'Environmental & Dynamic', 'POV & Power', 'Watch Exclusive'].map(groupName => {
                                                 const groupAngles = angles.filter(a => (a.group || 'Classic & Portrait') === groupName);
                                                 if (!groupAngles.length) return '';
@@ -1971,6 +2004,11 @@ const PromptStudioBeta = {
                                 <div class="psb-trend-armed">🔥 ${this._t('trd_active_prefix', 'Trend active:')} <b>${this._getActiveTrend().title}</b> ${this._t('trd_active_suffix', '— its directive rides into this prompt')}</div>
                             ` : ''}
 
+                            <div class="psb-target-row">
+                                <div class="psb-label" style="margin-bottom:6px">✍️ ${this._t('pe_target_label', 'Write the prompt for')}</div>
+                                <div class="psb-chips" id="psb-target">${window.PromptStudio && PromptStudio.promptTargetChips ? PromptStudio.promptTargetChips(this.state.promptTarget, 'psb-chip') : ''}</div>
+                            </div>
+
                             <button type="button" class="psb-generate-btn" id="psb-generate-btn">
                                 <span>⚡ ${this.state.variationCount > 1 ? this._t('psb_generate_n', 'Generate {n} Variations & Copy').replace('{n}', this.state.variationCount) : this._t('psb_generate_1', 'Generate Prompt & Copy')}</span>
                             </button>
@@ -1984,10 +2022,12 @@ const PromptStudioBeta = {
                                     </div>
                                     <div class="psb-output-actions">
                                         <button type="button" class="psb-btn psb-btn-glass psb-btn-sm" id="psb-copy-output-btn">📋 ${this._t('psb_copy', 'Copy')}</button>
+                                        <button type="button" class="psb-btn psb-btn-glass psb-btn-sm" id="psb-send-generate-btn" title="${this._esc(this._t('pe_send_title', 'Open this prompt on the Generate page'))}">🖼️ ${this._t('pe_send', 'Generate')}</button>
                                         <button type="button" class="psb-btn psb-btn-glass psb-btn-sm" id="psb-send-motion-btn">🎬 ${this._t('nav_motionstudio', 'Motion Studio')}</button>
                                     </div>
                                 </div>
                                 <div class="psb-output-body" id="psb-output-body">${this._esc(this.state.generatedPrompt)}</div>
+                                <div id="psb-output-notes">${this._outputNotesHTML()}</div>
                             </div>
                         </div><!-- /psb-panel carousel -->
                     </section><!-- /center col -->
@@ -2294,9 +2334,17 @@ const PromptStudioBeta = {
     },
 
     // ── Update Output Card ──────────────────────────────────────
+    _outputNotesHTML() {
+        const M = window.PromptStudio;
+        const first = (this._lastResults || [])[0];
+        return M && M.promptNotesHTML && first && first.spec ? M.promptNotesHTML(first.spec, first.target) : '';
+    },
+
     _updateOutputCard() {
         const card = this.container.querySelector('#psb-output-card');
         const body = this.container.querySelector('#psb-output-body');
+        const notes = this.container.querySelector('#psb-output-notes');
+        if (notes) notes.innerHTML = this._outputNotesHTML();
         if (card && body) {
             body.textContent = this.state.generatedPrompt;
             card.style.display = 'block';
@@ -2367,20 +2415,40 @@ const PromptStudioBeta = {
         if (!this.container) return;
         const q = sel => this.container.querySelector(sel);
 
+        // Library piece: fills category / metal / stones; changing one of those by hand unlinks it.
+        const pieceSel = q('#psb-piece-select');
+        const unlinkPiece = () => {
+            if (!this.state.pieceId || !window.Pieces) return;
+            Pieces.clearFrom(this.state);
+            if (pieceSel) pieceSel.value = '';
+        };
+        if (pieceSel && window.Pieces) {
+            Pieces.fillPicker(pieceSel);
+            pieceSel.addEventListener('change', async () => {
+                if (!pieceSel.value) { Pieces.clearFrom(this.state); return; }
+                const piece = await Pieces.get(pieceSel.value);
+                if (!piece) return;
+                Pieces.applyTo(this.state, piece);
+                this._render(); this._bindEvents();
+                this._showToast(this._t('pc_toast_using', 'Using {name} ✓').replace('{name}', piece.name), 'success');
+            });
+        }
+
         // Category
         const catSel = q('#psb-category-select');
         if (catSel) catSel.addEventListener('change', (e) => {
+            unlinkPiece();
             this.state.category = e.target.value;
             this._render(); this._bindEvents();
         });
 
         // Material
         const matSel = q('#psb-material-select');
-        if (matSel) matSel.addEventListener('change', (e) => { this.state.material = e.target.value; });
+        if (matSel) matSel.addEventListener('change', (e) => { unlinkPiece(); this.state.material = e.target.value; });
 
         // Stone
         const stoneSel = q('#psb-stone-select');
-        if (stoneSel) stoneSel.addEventListener('change', (e) => { this.state.stone = e.target.value; });
+        if (stoneSel) stoneSel.addEventListener('change', (e) => { unlinkPiece(); this.state.stone = e.target.value; });
 
         // Description input removed (Design Details section removed in v4)
 
@@ -2676,9 +2744,11 @@ const PromptStudioBeta = {
                     if (angleEl) angleEl.value = recAngle;
                 }
                 if (recLighting) {
-                    this.state.lightingMood = recLighting;
+                    const M = window.PromptStudio;
+                    const lightId = M && M.mapGuideLighting ? M.mapGuideLighting(recLighting) : recLighting;
+                    this.state.lightingMood = lightId;
                     const lightEl = this.container.querySelector('#psb-lighting-select');
-                    if (lightEl) lightEl.value = recLighting;
+                    if (lightEl) lightEl.value = lightId;
                 }
                 if (recCamera) {
                     this.state.cameraProfile = recCamera;
@@ -2706,6 +2776,35 @@ const PromptStudioBeta = {
         const genBtn = q('#psb-generate-btn');
         if (genBtn) genBtn.addEventListener('click', () => this.generatePrompt());
 
+        // "Write the prompt for": rewrites the current prompt for that model
+        const targetRow = q('#psb-target');
+        if (targetRow) targetRow.addEventListener('click', e => {
+            const chip = e.target.closest('[data-target]');
+            const M = window.PromptStudio;
+            if (!chip || !M) return;
+            const t = chip.dataset.target;
+            M.setPromptTarget(t);
+            this.state.promptTarget = t;
+            targetRow.querySelectorAll('[data-target]').forEach(c => c.classList.toggle('active', c.dataset.target === t));
+            if (this._rewriteForTarget(t)) {
+                this._showToast(this._t('pe_toast_rewritten', 'Prompts rewritten for {target}').replace('{target}', M.promptTargetLabel(t)), 'info');
+            }
+        });
+
+        // Send to the Generate page (the first variation when there are several)
+        const sendGenBtn = q('#psb-send-generate-btn');
+        if (sendGenBtn) sendGenBtn.addEventListener('click', () => {
+            const M = window.PromptStudio;
+            const first = (this._lastResults || [])[0];
+            if (!M || !this.state.generatedPrompt) return;
+            M.sendToGenerate({
+                text: first ? first.text : this.state.generatedPrompt,
+                spec: first ? first.spec : null,
+                target: first ? first.target : this.state.promptTarget,
+                pieceId: this.state.pieceId || null,
+            });
+        });
+
         // Copy output
         const copyOutBtn = q('#psb-copy-output-btn');
         if (copyOutBtn) copyOutBtn.addEventListener('click', () => {
@@ -2724,9 +2823,12 @@ const PromptStudioBeta = {
         if (sendMotionBtn) sendMotionBtn.addEventListener('click', () => {
             if (window.MotionStudio && typeof window.MotionStudio.receiveFromStudio === 'function') {
                 const S = this.state;
+                const first = (this._lastResults || [])[0];
+                const lightingMood = S.lightingMood !== 'auto' ? S.lightingMood
+                    : (first && first.spec ? first.spec.shot.lightingId : 'editorial');
                 window.MotionStudio.receiveFromStudio({
                     category: S.category, material: S.material, stone: S.stone, pieceDesc: S.pieceDesc,
-                    lightingMood: S.lightingMood, palette: S.palette, modelGender: S.modelGender,
+                    lightingMood, palette: S.palette, modelGender: S.modelGender,
                     archetypeId: S.archetypeId,
                 });
             }

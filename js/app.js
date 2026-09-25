@@ -9,7 +9,7 @@ const Elaris = {
     pageScripts: { captions: true, batch: true },
 
     // Every page the router may open from a URL hash; anything else is ignored.
-    ROUTES: ['promptstudio', 'promptstudiobeta', 'motionstudio', 'generate', 'captions', 'trends', 'batch', 'watermark', 'settings'],
+    ROUTES: ['promptstudio', 'promptstudiobeta', 'motionstudio', 'generate', 'captions', 'pieces', 'trends', 'batch', 'watermark', 'settings'],
     // Shortcuts that open Prompt Studio with the Jewelry Set category selected.
     SET_ALIASES: ['set', 'jewelry-set', 'jewelryset'],
     isRoute(page) { return this.ROUTES.includes(page) || this.SET_ALIASES.includes(page); },
@@ -45,7 +45,7 @@ const Elaris = {
         const titles = {
             promptstudio: 'Prompt Studio', promptstudiobeta: 'Prompt Studio Beta', motionstudio: 'Motion Studio', captions: 'Captions',
             generate: 'Generate AI Assets', trends: 'Trends', watermark: 'Watermark Studio', batch: 'Batch Mode',
-            settings: 'Settings',
+            settings: 'Settings', pieces: 'Piece Library',
         };
         document.title = `${titles[page] || page} — Elaris Content Engine`;
 
