@@ -9,7 +9,11 @@
  * - The aspect ratio is sent as a real API parameter (read from the pasted prompt when it
  *   says "Aspect ratio 4:5" or "--ar 4:5").
  * - Models: Gemini 3.1 Flash Image and GPT Image 2 replace the retired Imagen 3 and
- *   DALL·E 3 endpoints. Both accept the reference photo; Pollinations and FLUX.1 schnell don't.
+ *   DALL·E 3 endpoints. Both accept reference photos; Pollinations and FLUX.1 schnell don't.
+ * - Reference photos: a Piece Library piece's photos plus any photos added here (up to 6).
+ * - A prompt sent from a studio arrives with its shot spec, so switching provider rewrites
+ *   it for that model (Gemini / GPT: full sentences; FLUX: shorter, subject first) until
+ *   the prompt is edited by hand.
  */
 (function () {
     'use strict';
@@ -41,6 +45,10 @@
 
     // FLUX.1 [schnell] reads at most 256 text tokens (roughly 190 words) and drops the rest.
     const FAL_WORD_BUDGET = 190;
+    const MAX_REFS = 6;
+
+    // The prompt format each provider reads best (see PromptStudio.PROMPT_TARGETS).
+    const TARGET_FOR = { gemini: 'natural', openai: 'natural', fal: 'flux', pollinations: 'flux' };
 
     // ── Storage ──────────────────────────────────────────────────
     const store = {
@@ -61,18 +69,25 @@
 
     // ── Prompt helpers ───────────────────────────────────────────
     function detectRatio(text) {
-        const m = String(text || '').match(/--ar\s+(\d+:\d+)/i) || String(text || '').match(/Aspect ratio (\d+:\d+)/i);
+        const t = String(text || '');
+        const m = t.match(/--ar\s+(\d+:\d+)/i) || t.match(/Aspect ratio (\d+:\d+)/i)
+            || t.match(/\b(\d+:\d+)\s+(?:[\w-]+\s+){0,2}(?:frame|post|story|pin|banner)\b/i);   // "vertical 4:5 Instagram feed post"
         return m && RATIOS[m[1]] ? m[1] : null;
     }
 
-    // Midjourney flags (--ar 4:5 --v 6.1 --style raw) mean nothing to these APIs.
+    // Midjourney flags (--ar 4:5 --no text) and a Stable Diffusion negative prompt mean
+    // nothing to these APIs.
     function cleanPrompt(text) {
-        return String(text || '').replace(/\s--[a-z]+(?:\s+(?!--)\S+)?/gi, '').replace(/[,\s]+$/, '').trim();
+        return String(text || '').replace(/\n\s*Negative prompt:[\s\S]*$/i, '')
+            .replace(/\s--[a-z]+(?:\s+(?!--)[^-][^]*?(?=\s--|$))?/gi, '').replace(/[,\s]+$/, '').trim();
     }
 
-    function withReferenceNote(prompt) {
-        if (/\[IMAGE REFERENCES\]/.test(prompt)) return prompt;   // the studio already wrote reference instructions
-        return 'The attached photo shows the exact jewelry piece to feature — reproduce its design, metal color, stones and proportions exactly. ' + prompt;
+    function withReferenceNote(prompt, n) {
+        // The studio already wrote reference instructions.
+        if (/\[IMAGE REFERENCES\]|\bThe attached images?\b/i.test(prompt)) return prompt;
+        return (n > 1
+            ? `The ${n} attached photos show the exact jewelry piece to feature — reproduce its design, metal color, stones and proportions exactly. `
+            : 'The attached photo shows the exact jewelry piece to feature — reproduce its design, metal color, stones and proportions exactly. ') + prompt;
     }
 
     function fitLongSide([w, h], max) {
@@ -101,6 +116,7 @@
     }
 
     // Phone photos are often 10+ MB: send a JPEG with the long side at most 2048 px.
+    // (Takes a File or a Blob, such as a Piece Library photo.)
     async function prepareReference(file) {
         const url = URL.createObjectURL(file);
         try {
@@ -121,9 +137,9 @@
     }
 
     // ── Providers ────────────────────────────────────────────────
-    async function generateGemini(prompt, apiKey, ratio, ref) {
-        const parts = [{ text: ref ? withReferenceNote(prompt) : prompt }];
-        if (ref) parts.push({ inlineData: { mimeType: ref.mimeType, data: ref.base64 } });
+    async function generateGemini(prompt, apiKey, ratio, refs) {
+        const parts = [{ text: refs.length ? withReferenceNote(prompt, refs.length) : prompt }];
+        refs.forEach(ref => parts.push({ inlineData: { mimeType: ref.mimeType, data: ref.base64 } }));
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },   // header, not ?key= in the URL
@@ -145,17 +161,17 @@
         throw new Error(T('gen_err_no_image', 'No image returned') + (why ? ': ' + why : ''));
     }
 
-    async function generateOpenAI(prompt, apiKey, ratio, ref) {
+    async function generateOpenAI(prompt, apiKey, ratio, refs) {
         const [w, h] = RATIOS[ratio].px;
         let res;
-        if (ref) {
-            // The edits endpoint takes the reference photo as a multipart upload.
+        if (refs.length) {
+            // The edits endpoint takes the reference photos as a multipart upload.
             const form = new FormData();
             form.append('model', OPENAI_MODEL);
-            form.append('prompt', withReferenceNote(prompt));
+            form.append('prompt', withReferenceNote(prompt, refs.length));
             form.append('size', `${w}x${h}`);
             form.append('quality', 'high');
-            form.append('image[]', ref.blob, 'reference.jpg');
+            refs.forEach((ref, i) => form.append('image[]', ref.blob, `reference-${i + 1}.jpg`));
             res = await fetch('https://api.openai.com/v1/images/edits', {
                 method: 'POST', headers: { 'Authorization': `Bearer ${apiKey}` }, body: form,
             });
@@ -224,11 +240,43 @@
     // ── Page ─────────────────────────────────────────────────────
     const GEN_ICON = '<svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/></svg>';
 
+    // A prompt handed over by a studio or the Piece Library (read once).
+    function takeHandoff() {
+        let h = window.ElarisGenerateHandoff || null;
+        if (!h) { try { h = JSON.parse(sessionStorage.getItem('elaris_generate_handoff') || 'null'); } catch (e) { h = null; } }
+        window.ElarisGenerateHandoff = null;
+        try { sessionStorage.removeItem('elaris_generate_handoff'); } catch (e) { /* storage blocked */ }
+        return h;
+    }
+    // The spec behind the prompt on screen, kept for this tab so a reload still rewrites it.
+    const specStore = {
+        get() { try { return JSON.parse(sessionStorage.getItem('elaris_generate_spec') || 'null'); } catch (e) { return null; } },
+        set(v) { try { v ? sessionStorage.setItem('elaris_generate_spec', JSON.stringify(v)) : sessionStorage.removeItem('elaris_generate_spec'); } catch (e) { /* storage full */ } },
+    };
+
     window.render_generate = function (container) {
         migrateLegacyKey();
         const savedModel = PROVIDERS[store.get('elaris-ai-model')] ? store.get('elaris-ai-model') : DEFAULT_PROVIDER;
-        const lastPrompt = store.get('elaris-last-prompt') || '';
         const savedRatio = RATIOS[store.get('elaris-ai-ratio')] ? store.get('elaris-ai-ratio') : DEFAULT_RATIO;
+        const handoff = takeHandoff();
+        const PS = window.PromptStudio;
+        const canRewrite = !!(PS && PS._compilePrompt);
+
+        // current = { spec, text, edited }: the studio spec behind the prompt, if any.
+        let current = null;
+        if (handoff && handoff.text) {
+            current = handoff.spec && canRewrite ? { spec: handoff.spec, text: handoff.text, edited: false } : null;
+            store.set('elaris-last-prompt', handoff.text);
+        } else {
+            const saved = specStore.get();
+            if (saved && saved.spec && canRewrite && saved.text === store.get('elaris-last-prompt')) current = { ...saved, edited: false };
+        }
+        specStore.set(current);
+        const lastPrompt = store.get('elaris-last-prompt') || '';
+        // A hand-off decides the piece (none for a prompt that isn't about a library piece),
+        // so another piece's photos never go out with an unrelated prompt.
+        let pieceId = store.get('elaris-gen-piece') || '';
+        if (handoff) { pieceId = handoff.pieceId || ''; store.set('elaris-gen-piece', pieceId); }
 
         container.innerHTML = `
             <div class="page-header">
@@ -254,7 +302,8 @@
 
                     <div class="form-group">
                         <label class="form-label" data-i18n="gen_prompt">Image Prompt</label>
-                        <textarea id="ai-prompt" class="form-textarea" style="min-height:120px;" placeholder="Describe your image..."></textarea>
+                        <textarea id="ai-prompt" class="form-textarea" style="min-height:140px;" placeholder="Describe your image..."></textarea>
+                        <p class="text-sm text-muted" id="ai-prompt-source" style="margin-top:6px;display:none"></p>
                         <p class="text-sm text-muted" id="ai-prompt-meta" style="margin-top:6px"></p>
                     </div>
 
@@ -266,8 +315,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" data-i18n="gen_ref">Reference Image (Optional)</label>
-                        <input type="file" id="ai-ref-image" class="form-input" accept="image/*">
+                        <label class="form-label">${T('gen_refs', 'Reference photos of your piece')}</label>
+                        ${window.Pieces ? `${Pieces.pickerHTML('ai-piece', pieceId)}
+                        <div class="gen-ref-row" id="ai-piece-photos"></div>` : ''}
+                        <input type="file" id="ai-ref-image" class="form-input" accept="image/*" multiple style="margin-top:8px">
                         <p class="text-sm text-muted" id="ai-ref-hint" style="margin-top:6px"></p>
                     </div>
 
@@ -296,39 +347,123 @@
         const promptInput = $('ai-prompt');
         const ratioSelect = $('ai-ratio');
         const refInput = $('ai-ref-image');
+        const pieceSelect = $('ai-piece');
         const btnGenerate = $('btn-generate-ai');
         const resultContainer = $('ai-result-container');
+
+        // Library photos of the chosen piece: { blob, on } (all included by default).
+        let piecePhotos = [];
+        let pieceName = '';
+        const photoUrls = [];
+        const includedCount = () => piecePhotos.filter(p => p.on).length + (refInput.files ? refInput.files.length : 0);
 
         // Values go in through DOM properties, never through the HTML template.
         modelSelect.value = savedModel;
         promptInput.value = lastPrompt;
-        ratioSelect.value = detectRatio(lastPrompt) || savedRatio;
+        const specRatio = current && current.spec.shot && RATIOS[current.spec.shot.ratio] ? current.spec.shot.ratio : null;
+        ratioSelect.value = specRatio || detectRatio(lastPrompt) || savedRatio;
 
         const refresh = () => {
             const p = PROVIDERS[modelSelect.value];
             $('api-key-block').style.display = p.needsKey ? '' : 'none';
             apiKeyInput.value = keyFor(modelSelect.value);
-            const hasRef = refInput.files && refInput.files.length > 0;
+            const n = Math.min(MAX_REFS, includedCount());
             const hint = $('ai-ref-hint');
-            hint.textContent = p.refImage
-                ? T('gen_ref_hint_ok', 'Sent with the prompt so the model reproduces your real piece.')
-                : T('gen_ref_hint_no', "This model can't use a reference photo — choose Google Gemini or OpenAI to include it.");
-            hint.style.color = (!p.refImage && hasRef) ? 'var(--warning)' : '';
+            hint.textContent = !p.refImage
+                ? T('gen_refs_hint_no', "This model can't use reference photos — choose Google Gemini or OpenAI to include them.")
+                : n ? T('gen_refs_hint_n', '{n} photo(s) will be sent with the prompt so the model reproduces your real piece.').replace('{n}', n)
+                    : T('gen_refs_hint_none', 'Add photos so the model reproduces your real piece.');
+            hint.style.color = (!p.refImage && n) ? 'var(--warning)' : '';
             const words = cleanPrompt(promptInput.value).split(/\s+/).filter(Boolean).length;
             const meta = $('ai-prompt-meta');
             const over = modelSelect.value === 'fal' && words > FAL_WORD_BUDGET;
             meta.textContent = T('gen_words', '{n} words').replace('{n}', words) +
                 (over ? ' — ' + T('gen_fal_budget', 'FLUX.1 schnell only reads about the first 190 words; the rest is ignored.') : '');
             meta.style.color = over ? 'var(--warning)' : '';
+            // Where the prompt came from, and whether it follows the provider.
+            const src = $('ai-prompt-source');
+            if (!current) { src.style.display = 'none'; return; }
+            src.style.display = '';
+            src.replaceChildren();
+            if (current.edited) {
+                src.append(T('gen_src_edited', 'Edited by hand, so switching provider keeps your text.') + ' ');
+                const a = document.createElement('a');
+                a.href = '#'; a.textContent = '↺ ' + T('gen_src_rewrite', 'Rewrite for this provider');
+                a.addEventListener('click', e => { e.preventDefault(); current.edited = false; rewrite(); });
+                src.append(a);
+            } else {
+                const label = PS && PS.promptTargetLabel ? PS.promptTargetLabel(TARGET_FOR[modelSelect.value]) : TARGET_FOR[modelSelect.value];
+                src.textContent = '✍️ ' + T('gen_src_auto', 'Written for {target}; it follows the provider you pick.').replace('{target}', label);
+            }
         };
-        refresh();
 
-        modelSelect.addEventListener('change', () => { store.set('elaris-ai-model', modelSelect.value); refresh(); });
+        // Rewrites the studio spec for the chosen provider, with the photos actually attached.
+        const rewrite = () => {
+            if (!current || current.edited || !canRewrite) { refresh(); return; }
+            const p = PROVIDERS[modelSelect.value];
+            const spec = JSON.parse(JSON.stringify(current.spec));
+            if (spec.shot) spec.shot.refs = { pieceImages: p.refImage ? Math.min(MAX_REFS, includedCount()) : 0, modelImage: false };
+            current.text = PS._compilePrompt(spec, TARGET_FOR[modelSelect.value] || 'natural');
+            promptInput.value = current.text;
+            store.set('elaris-last-prompt', current.text);
+            specStore.set({ spec: current.spec, text: current.text });
+            refresh();
+        };
+
+        const drawPiecePhotos = () => {
+            const row = $('ai-piece-photos');
+            if (!row) return;
+            photoUrls.forEach(u => URL.revokeObjectURL(u));
+            photoUrls.length = 0;
+            row.replaceChildren(...piecePhotos.map((ph, i) => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'gen-ref-thumb' + (ph.on ? ' on' : '');
+                b.title = T('gen_ref_toggle', 'Click to include or leave out this photo');
+                b.setAttribute('aria-pressed', ph.on ? 'true' : 'false');
+                const img = document.createElement('img');
+                const u = URL.createObjectURL(ph.blob); photoUrls.push(u);
+                img.src = u; img.alt = `${pieceName} ${i + 1}`;
+                b.appendChild(img);
+                b.addEventListener('click', () => { ph.on = !ph.on; drawPiecePhotos(); rewrite(); });
+                return b;
+            }));
+        };
+        const loadPiece = async (id) => {
+            piecePhotos = []; pieceName = '';
+            if (id && window.Pieces) {
+                try {
+                    const piece = await Pieces.get(id);
+                    if (piece) { pieceName = piece.name; piecePhotos = (piece.photos || []).map(blob => ({ blob, on: true })); }
+                } catch (e) { console.warn('[Generate] piece photos:', e); }
+            }
+            drawPiecePhotos();
+            rewrite();
+        };
+        if (pieceSelect && window.Pieces) {
+            Pieces.fillPicker(pieceSelect).then(() => { if (pieceSelect.value !== pieceId) pieceSelect.value = pieceId || ''; });
+            pieceSelect.addEventListener('change', () => {
+                pieceId = pieceSelect.value;
+                store.set('elaris-gen-piece', pieceId);
+                loadPiece(pieceId);
+            });
+            loadPiece(pieceId);
+        } else {
+            rewrite();
+        }
+
+        modelSelect.addEventListener('change', () => { store.set('elaris-ai-model', modelSelect.value); rewrite(); });
         apiKeyInput.addEventListener('change', () => store.set('elaris-api-key-' + modelSelect.value, apiKeyInput.value.trim()));
         ratioSelect.addEventListener('change', () => store.set('elaris-ai-ratio', ratioSelect.value));
-        refInput.addEventListener('change', refresh);
-        promptInput.addEventListener('input', refresh);
-        // A pasted studio prompt carries its ratio ("Aspect ratio 4:5." / "--ar 4:5"): pick it up.
+        refInput.addEventListener('change', () => {
+            if (includedCount() > MAX_REFS) window.Elaris.toast(T('gen_refs_max', 'Up to {n} photos are sent; the rest are left out.').replace('{n}', MAX_REFS), 'info');
+            rewrite();
+        });
+        promptInput.addEventListener('input', () => {
+            if (current && !current.edited) { current.edited = true; specStore.set(null); }
+            refresh();
+        });
+        // A pasted studio prompt carries its ratio ("vertical 4:5 …" / "--ar 4:5"): pick it up.
         promptInput.addEventListener('paste', () => setTimeout(() => {
             const r = detectRatio(promptInput.value);
             if (r) ratioSelect.value = r;
@@ -347,7 +482,8 @@
             const apiKey = apiKeyInput.value.trim();
             const rawPrompt = promptInput.value.trim();
             const ratio = ratioSelect.value;
-            const refFile = refInput.files[0];
+            const extraFiles = refInput.files ? [...refInput.files] : [];
+            const refSources = [...piecePhotos.filter(p => p.on).map(p => p.blob), ...extraFiles].slice(0, MAX_REFS);
 
             if (provider.needsKey && !apiKey) {
                 window.Elaris.toast(T('gen_toast_need_key', 'Please enter your API key first.'), 'error');
@@ -357,12 +493,13 @@
                 window.Elaris.toast(T('gen_toast_need_prompt', 'Please enter an image prompt.'), 'error');
                 return;
             }
-            if (refFile && !provider.refImage) {
-                window.Elaris.toast(T('gen_ref_hint_no', "This model can't use a reference photo — choose Google Gemini or OpenAI to include it."), 'info');
+            if (refSources.length && !provider.refImage) {
+                window.Elaris.toast(T('gen_refs_hint_no', "This model can't use reference photos — choose Google Gemini or OpenAI to include them."), 'info');
             }
 
             store.set('elaris-api-key-' + model, apiKey);
             store.set('elaris-last-prompt', rawPrompt);
+            if (current) specStore.set(current.edited ? null : { spec: current.spec, text: rawPrompt });
             const prompt = cleanPrompt(rawPrompt);
 
             btnGenerate.disabled = true;
@@ -371,12 +508,12 @@
             resultContainer.querySelector('p').textContent = T('gen_calling', 'Calling {name}…').replace('{name}', provider.label);
 
             try {
-                const ref = (refFile && provider.refImage) ? await prepareReference(refFile) : null;
+                const refs = provider.refImage ? await Promise.all(refSources.map(prepareReference)) : [];
                 let imageUrl;
                 if (model === 'pollinations') imageUrl = pollinationsUrl(prompt, ratio);
-                else if (model === 'gemini') imageUrl = await generateGemini(prompt, apiKey, ratio, ref);
+                else if (model === 'gemini') imageUrl = await generateGemini(prompt, apiKey, ratio, refs);
                 else if (model === 'fal') imageUrl = await generateFal(prompt, apiKey, ratio);
-                else if (model === 'openai') imageUrl = await generateOpenAI(prompt, apiKey, ratio, ref);
+                else if (model === 'openai') imageUrl = await generateOpenAI(prompt, apiKey, ratio, refs);
 
                 const img = await loadImage(imageUrl);   // only report success once it actually loads
                 img.alt = T('gen_result_alt', 'Generated image');

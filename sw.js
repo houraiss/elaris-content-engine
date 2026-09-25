@@ -10,7 +10,7 @@
  * match exactly, which left an offline launch stuck on "Loading…".)
  */
 
-const CACHE_NAME = 'elaris-v53';
+const CACHE_NAME = 'elaris-v54';
 
 // App shell — everything needed for the app to work offline
 const APP_SHELL = [
@@ -27,6 +27,7 @@ const APP_SHELL = [
     './js/prompt-studio-beta.js',
     './js/motion-studio.js',
     './js/generate.js',
+    './js/pieces.js',
     './js/watermark.js',
     './js/canvas-engine.js',
     './js/templates.js',
