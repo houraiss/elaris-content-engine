@@ -87,7 +87,6 @@ const PromptStudioBeta = {
         activeTrendId: null,
         trendGroupFilter: 'all',
         generatedPrompt: '',
-        promptTarget: 'natural',   // image model the prompt is written for (shared with Prompt Studio)
         history: [],
     },
 
@@ -96,7 +95,6 @@ const PromptStudioBeta = {
         this.container = container;
         this._loadSavedHistory();
         this._loadProfiles();
-        if (window.PromptStudio && PromptStudio.getPromptTarget) this.state.promptTarget = PromptStudio.getPromptTarget();
         this._render();
         this._bindEvents();
         this._initMotionSpotlight();
@@ -1121,7 +1119,7 @@ const PromptStudioBeta = {
                     saved[k] = Object.prototype.hasOwnProperty.call(ps, k) ? { v: ps[k] } : null;
                     ps[k] = overrides[k];
                 });
-                const res = M._buildPromptSpec(arch, this.state.promptTarget);
+                const res = M._buildPromptSpec(arch);
                 if (res && res.text && res.text.length > 30) { this._lastBuild = res; return res.text; }
             } catch (err) {
                 console.warn('[PSBeta] Fallback to internal builder:', err);
@@ -1239,18 +1237,6 @@ const PromptStudioBeta = {
     },
 
     _VARIATION_SEP: '\n\n─────────────────────────────────\n\n',
-
-    // Same shots, written for another image model (no new random picks).
-    _rewriteForTarget(t) {
-        const M = window.PromptStudio;
-        const results = (this._lastResults || []).filter(r => r && r.spec);
-        if (!M || !results.length || results.length !== (this._lastResults || []).length) return false;
-        results.forEach(r => { r.text = M._compilePrompt(r.spec, t); r.target = t; });
-        this.state.generatedPrompt = results.length === 1 ? results[0].text
-            : results.map((r, i) => `[Variation ${i + 1}]\n${r.text}`).join(this._VARIATION_SEP);
-        this._updateOutputCard();
-        return true;
-    },
 
     buildPrompt() {
         const archetypes = this._getArchetypes();
@@ -1543,7 +1529,9 @@ const PromptStudioBeta = {
                         <div class="psb-form-group">
                             <label class="psb-label">${this._t('psb_precious_metal', 'Precious Metal')}</label>
                             <select class="psb-select" id="psb-material-select">
-                                ${materials.map(m => `<option value="${m.id}" ${m.id === this.state.material ? 'selected' : ''}>${this._t('ps_mat_' + String(m.id).replace(/-/g, '_'), m.label)}</option>`).join('')}
+                                ${window.PromptStudio && PromptStudio.materialOptionsHTML
+                                    ? PromptStudio.materialOptionsHTML(this.state.material)
+                                    : materials.map(m => `<option value="${m.id}" ${m.id === this.state.material ? 'selected' : ''}>${this._t('ps_mat_' + String(m.id).replace(/-/g, '_'), m.label)}</option>`).join('')}
                             </select>
                         </div>
 
@@ -2004,11 +1992,6 @@ const PromptStudioBeta = {
                                 <div class="psb-trend-armed">🔥 ${this._t('trd_active_prefix', 'Trend active:')} <b>${this._getActiveTrend().title}</b> ${this._t('trd_active_suffix', '— its directive rides into this prompt')}</div>
                             ` : ''}
 
-                            <div class="psb-target-row">
-                                <div class="psb-label" style="margin-bottom:6px">✍️ ${this._t('pe_target_label', 'Write the prompt for')}</div>
-                                <div class="psb-chips" id="psb-target">${window.PromptStudio && PromptStudio.promptTargetChips ? PromptStudio.promptTargetChips(this.state.promptTarget, 'psb-chip') : ''}</div>
-                            </div>
-
                             <button type="button" class="psb-generate-btn" id="psb-generate-btn">
                                 <span>⚡ ${this.state.variationCount > 1 ? this._t('psb_generate_n', 'Generate {n} Variations & Copy').replace('{n}', this.state.variationCount) : this._t('psb_generate_1', 'Generate Prompt & Copy')}</span>
                             </button>
@@ -2337,7 +2320,7 @@ const PromptStudioBeta = {
     _outputNotesHTML() {
         const M = window.PromptStudio;
         const first = (this._lastResults || [])[0];
-        return M && M.promptNotesHTML && first && first.spec ? M.promptNotesHTML(first.spec, first.target) : '';
+        return M && M.promptNotesHTML && first && first.spec ? M.promptNotesHTML(first.spec) : '';
     },
 
     _updateOutputCard() {
@@ -2776,21 +2759,6 @@ const PromptStudioBeta = {
         const genBtn = q('#psb-generate-btn');
         if (genBtn) genBtn.addEventListener('click', () => this.generatePrompt());
 
-        // "Write the prompt for": rewrites the current prompt for that model
-        const targetRow = q('#psb-target');
-        if (targetRow) targetRow.addEventListener('click', e => {
-            const chip = e.target.closest('[data-target]');
-            const M = window.PromptStudio;
-            if (!chip || !M) return;
-            const t = chip.dataset.target;
-            M.setPromptTarget(t);
-            this.state.promptTarget = t;
-            targetRow.querySelectorAll('[data-target]').forEach(c => c.classList.toggle('active', c.dataset.target === t));
-            if (this._rewriteForTarget(t)) {
-                this._showToast(this._t('pe_toast_rewritten', 'Prompts rewritten for {target}').replace('{target}', M.promptTargetLabel(t)), 'info');
-            }
-        });
-
         // Send to the Generate page (the first variation when there are several)
         const sendGenBtn = q('#psb-send-generate-btn');
         if (sendGenBtn) sendGenBtn.addEventListener('click', () => {
@@ -2800,7 +2768,6 @@ const PromptStudioBeta = {
             M.sendToGenerate({
                 text: first ? first.text : this.state.generatedPrompt,
                 spec: first ? first.spec : null,
-                target: first ? first.target : this.state.promptTarget,
                 pieceId: this.state.pieceId || null,
             });
         });

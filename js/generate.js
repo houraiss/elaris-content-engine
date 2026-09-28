@@ -11,9 +11,9 @@
  * - Models: Gemini 3.1 Flash Image and GPT Image 2 replace the retired Imagen 3 and
  *   DALL·E 3 endpoints. Both accept reference photos; Pollinations and FLUX.1 schnell don't.
  * - Reference photos: a Piece Library piece's photos plus any photos added here (up to 6).
- * - A prompt sent from a studio arrives with its shot spec, so switching provider rewrites
- *   it for that model (Gemini / GPT: full sentences; FLUX: shorter, subject first) until
- *   the prompt is edited by hand.
+ * - A prompt sent from a studio arrives with its shot spec, so its reference-photo lines
+ *   ([IMAGE REFERENCES]) are rewritten to match the photos attached here, until the
+ *   prompt is edited by hand.
  */
 (function () {
     'use strict';
@@ -46,9 +46,6 @@
     // FLUX.1 [schnell] reads at most 256 text tokens (roughly 190 words) and drops the rest.
     const FAL_WORD_BUDGET = 190;
     const MAX_REFS = 6;
-
-    // The prompt format each provider reads best (see PromptStudio.PROMPT_TARGETS).
-    const TARGET_FOR = { gemini: 'natural', openai: 'natural', fal: 'flux', pollinations: 'flux' };
 
     // ── Storage ──────────────────────────────────────────────────
     const store = {
@@ -386,24 +383,24 @@
             src.style.display = '';
             src.replaceChildren();
             if (current.edited) {
-                src.append(T('gen_src_edited', 'Edited by hand, so switching provider keeps your text.') + ' ');
+                src.append(T('gen_src_edited_refs', 'Edited by hand, so attaching photos keeps your text.') + ' ');
                 const a = document.createElement('a');
-                a.href = '#'; a.textContent = '↺ ' + T('gen_src_rewrite', 'Rewrite for this provider');
+                a.href = '#'; a.textContent = '↺ ' + T('gen_src_update', 'Update the prompt');
                 a.addEventListener('click', e => { e.preventDefault(); current.edited = false; rewrite(); });
                 src.append(a);
             } else {
-                const label = PS && PS.promptTargetLabel ? PS.promptTargetLabel(TARGET_FOR[modelSelect.value]) : TARGET_FOR[modelSelect.value];
-                src.textContent = '✍️ ' + T('gen_src_auto', 'Written for {target}; it follows the provider you pick.').replace('{target}', label);
+                src.textContent = '✍️ ' + T('gen_src_refs', 'From the studio: its reference-photo lines follow the photos you attach.');
             }
         };
 
-        // Rewrites the studio spec for the chosen provider, with the photos actually attached.
+        // Rewrites the studio spec with the photos actually attached (only Gemini and
+        // OpenAI receive them).
         const rewrite = () => {
             if (!current || current.edited || !canRewrite) { refresh(); return; }
             const p = PROVIDERS[modelSelect.value];
             const spec = JSON.parse(JSON.stringify(current.spec));
             if (spec.shot) spec.shot.refs = { pieceImages: p.refImage ? Math.min(MAX_REFS, includedCount()) : 0, modelImage: false };
-            current.text = PS._compilePrompt(spec, TARGET_FOR[modelSelect.value] || 'natural');
+            current.text = PS._compilePrompt(spec);
             promptInput.value = current.text;
             store.set('elaris-last-prompt', current.text);
             specStore.set({ spec: current.spec, text: current.text });

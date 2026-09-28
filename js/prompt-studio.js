@@ -22,6 +22,11 @@ const PromptStudio = {
         { id: 'brushed-matte', label: 'Brushed Matte Silver' },
         { id: 'high-polish', label: 'High-Polish / Rhodium-Plated' },
         { id: 'silver-vermeil', label: 'Silver Vermeil' },
+        // Gold: 18K yellow is the main gold; red gold is the saturated traditional "beldi" tone.
+        { id: '18k-yellow-gold', label: '18K Yellow Gold' },
+        { id: '18k-rose-gold', label: '18K Rose Gold' },
+        { id: '18k-white-gold', label: '18K White Gold' },
+        { id: 'red-gold-beldi', label: '18K Red Gold (Beldi)' },
     ],
 
     stones: [
@@ -298,7 +303,7 @@ const PromptStudio = {
                 'wind-blown hair revealing {piece}, strands streaking across frame',
                 'model spinning, {piece} frozen in sharp detail while dress blurs around her',
             ],
-            scene: 'slow shutter speed on movement, fast flash freezing jewelry, motion blur on fabric/hair only, dramatic editorial feeling, studio or outdoor with wind machine',
+            scene: 'slow shutter speed on movement, fast flash freezing jewelry, motion blur on fabric/hair only, dramatic editorial feeling, a wind machine driving the movement',
             compat: { ring: 55, necklace: 80, earrings: 95, bracelet: 60, bangles: 65, anklet: 45, brooch: 35, pendant: 70, 'body-jewelry': 80, watch: 70, 'jewelry-set': 55 },
         },
         {
@@ -475,7 +480,7 @@ const PromptStudio = {
                 '{piece} resting on the edge of a single white geometric shape, architectural minimalism',
                 '{piece} on matte cream surface with a single dried blade of grass as the only prop',
             ],
-            scene: 'vast negative space, single focal point, clean uncluttered composition, soft even studio lighting, art gallery or luxury e-commerce aesthetic, the piece speaks entirely for itself, 100mm lens',
+            scene: 'vast negative space, single focal point, clean uncluttered composition, soft even studio lighting, gallery-like luxury e-commerce aesthetic, the piece speaks entirely for itself, 100mm lens',
             compat: { ring: 95, necklace: 75, earrings: 90, bracelet: 80, bangles: 70, anklet: 65, brooch: 85, pendant: 90, 'body-jewelry': 30, watch: 90, 'jewelry-set': 75 },
         },
         // ── NEW: Expansions ──────────────────────
@@ -845,7 +850,7 @@ const PromptStudio = {
                 'chiaroscuro portrait, deep black background, model hand reaching toward camera with {piece} catching golden side-light',
                 'model neck and ear in pools of shadow and light, {piece} earring as single point of brilliance, dramatic fine art portrait',
             ],
-            scene: 'low-key lighting, deep shadows, single light source creating dramatic fall-off, dark background near black, chiaroscuro oil-painting quality, jewelry as the brightest element in frame, fine art editorial photography, Rembrandt or loop lighting pattern',
+            scene: 'low-key lighting, deep shadows, single light source creating dramatic fall-off, dark background near black, Rembrandt-style chiaroscuro, jewelry as the brightest element in frame, fine art editorial photography, Rembrandt or loop lighting pattern',
             compat: { ring: 85, necklace: 90, earrings: 98, bracelet: 80, bangles: 75, anklet: 30, brooch: 70, pendant: 88, 'body-jewelry': 55, watch: 80, 'jewelry-set': 70 },
         },
         // ── v3.3: From Sheet 15 Reference Analysis ──────────────────────
@@ -1000,7 +1005,7 @@ const PromptStudio = {
                 'model in sleek black turtleneck and wide-leg pants, chin slightly up, {piece} earrings catching studio light, solid crimson backdrop',
                 'model in statement coat, arms crossed confidently, {piece} prominently displayed, solid emerald green background, full-body editorial',
             ],
-            scene: 'full-body editorial portrait, solid vibrant single-color backdrop (red, blue, orange, emerald), power stance and authority, Richard Avedon minimalist studio aesthetic, clean negative space, Vogue cover quality, strong directional studio lighting, jewelry as the exclamation mark on the silhouette',
+            scene: 'full-body editorial portrait, solid vibrant single-color backdrop (red, blue, orange, emerald), power stance and authority, Richard Avedon minimalist aesthetic, clean negative space, Vogue cover quality, strong directional studio lighting, jewelry as the exclamation mark on the silhouette',
             compat: { ring: 50, necklace: 90, earrings: 85, bracelet: 60, bangles: 55, anklet: 30, brooch: 95, pendant: 80, 'body-jewelry': 70, watch: 70, 'jewelry-set': 75 },
         },
         {
@@ -1465,13 +1470,13 @@ const PromptStudio = {
         { id: 'canon-135-l',       label: 'Canon 135mm f/2 L',         desc: 'Canon EF 135mm f/2L, highly telephoto-compressed background, creamy buttery bokeh, isolated subject against abstract blur' },
         { id: 'macro-100',         label: '100mm f/2.8 Macro',         desc: '100mm f/2.8 macro lens, razor-thin depth of field, individual metal grain and stone settings visible, studio ring light' },
         { id: 'macro-180',         label: '180mm f/3.5 Macro',         desc: '180mm macro lens at 2:1 magnification, individual gem facets and hallmark stamps visible, extreme close-up detail, zero breathing room around subject' },
-        { id: 'anamorphic-40',     label: 'Anamorphic 40mm',           desc: 'Anamorphic 40mm lens, horizontal blue lens flares, cinematic oval bokeh, widescreen aspect ratio feel, movie-grade cinematographic quality' },
+        { id: 'anamorphic-40',     label: 'Anamorphic 40mm',           desc: 'Anamorphic 40mm lens, horizontal blue lens flares, cinematic oval bokeh, movie-grade cinematographic quality' },
         { id: 'phase-one-iq4',     label: 'Phase One IQ4 55mm',        desc: 'Phase One IQ4 150MP medium format digital back, 55mm lens, extraordinary color depth and tonal range, e-commerce and luxury catalog perfection' },
         // Offered by Studio Beta's lens list; without these entries the builder ignored them.
         { id: 'nikon-z9-85',       label: 'Nikon Z9 85mm f/1.8 S',     desc: 'Nikon Z9 with NIKKOR Z 85mm f/1.8 S lens, clinical edge-to-edge sharpness, natural skin rendering, smooth creamy background falloff' },
         { id: 'fuji-gfx-110',      label: 'Fujifilm GFX 100S 110mm',   desc: 'Fujifilm GFX 100S medium format with GF 110mm f/2 lens, film-like analog color science, vast dynamic range, gentle medium-format depth falloff' },
         { id: 'zeiss-otus-55',     label: 'Zeiss Otus 55mm APO',       desc: 'Zeiss Otus 55mm f/1.4 APO lens, apochromatic correction with no color fringing, extreme micro-contrast on metal edges and gem facets' },
-        { id: 'tilt-shift-90',     label: 'Tilt-Shift 90mm TS-E',      desc: 'Canon TS-E 90mm tilt-shift lens, tilted plane of focus with only a thin slice of the piece sharp, soft miniature-like falloff above and below' },
+        { id: 'tilt-shift-90',     label: 'Tilt-Shift 90mm TS-E',      desc: 'Canon TS-E 90mm tilt-shift lens, a tilted plane of focus running through the piece, soft miniature-like falloff above and below' },
         { id: 'sigma-85-art',      label: 'Sigma 85mm f/1.4 Art',      desc: 'Sigma 85mm f/1.4 DG Art lens wide open, portrait compression, silky round bokeh highlights, crisp subject separation' },
         { id: 'voigtlander-75',    label: 'Voigtländer 75mm f/1.5',    desc: 'Voigtländer Nokton 75mm f/1.5 lens, vintage optical character, warm swirling bokeh, gentle classic analog rendering' },
     ],
@@ -1511,14 +1516,14 @@ const PromptStudio = {
         environment: {
             'studio-infinity': 'photographed in a clean studio with seamless infinity wall background',
             'rooftop': 'shot on an urban luxury rooftop with glittering city skyline behind',
-            'desert-dunes': 'set against sweeping golden Sahara desert dunes at dusk',
+            'desert-dunes': 'set against sweeping golden Sahara desert dunes',
             'moroccan-riad': 'interior of a traditional Moroccan riad with ornate zellige tilework',
             'botanical-garden': 'surrounded by lush botanical garden tropical foliage',
             'marble-palace': 'inside a grand marble palace with high ceilings and columns',
             'ocean-shore': 'shot at the ocean shoreline with waves and sea foam',
-            'dark-hotel-suite': 'inside a moody dark luxury hotel suite with ambient candlelight',
-            'forest-mist': 'deep in a misty ancient forest with dappled light through canopy',
-            'souq-market': 'vibrant colorful souq or night market setting',
+            'dark-hotel-suite': 'inside a moody dark luxury hotel suite',
+            'forest-mist': 'deep in a misty ancient forest under a tall canopy',
+            'souq-market': 'a vibrant, colorful Moroccan souq market',
             'glass-greenhouse': 'inside a tropical glass greenhouse with lush green plants',
             'car-interior': 'inside a luxury sports car interior with leather and chrome',
             'art-gallery': 'inside a minimalist white-walled art gallery space',
@@ -1537,9 +1542,9 @@ const PromptStudio = {
         },
         moodIntensity: {
             'subtle': 'subtle understated elegance, quiet luxury, whispered sophistication',
-            'dramatic': 'dramatic high-contrast scene with intense emotional tension',
+            'dramatic': 'dramatic scene with intense emotional tension',
             'cinematic': 'cinematic movie-grade atmosphere with masterful visual storytelling',
-            'ethereal': 'ethereal dreamy haze with soft light diffusion and otherworldly glow',
+            'ethereal': 'ethereal dreamy haze with an otherworldly atmosphere',
             'raw': 'raw unfiltered gritty realism, authentic and unretouched energy',
             'opulent': 'over-the-top opulent richness, extravagant maximalist luxury',
         },
@@ -1552,25 +1557,25 @@ const PromptStudio = {
             'tilt-plane': 'tilt-shift selective focus plane with miniature editorial effect',
         },
         isoRange: {
-            'iso-50': 'ISO 50 noiseless tripod studio perfection',
-            'iso-100': 'ISO 100 tripod daylight pristine clarity',
-            'iso-200': 'ISO 200 bright natural light clean render',
-            'iso-400': 'ISO 400 versatile ambient balanced exposure',
-            'iso-800': 'ISO 800 soft indoor warm ambient glow',
-            'iso-1600': 'ISO 1600 atmospheric low light subtle grain',
-            'iso-3200': 'ISO 3200 cinematic visible grain moody texture',
-            'iso-6400': 'ISO 6400 heavy grain raw aesthetic intentional noise',
+            'iso-50': 'ISO 50, noiseless and pristine',
+            'iso-100': 'ISO 100, pristine clarity',
+            'iso-200': 'ISO 200, clean and crisp',
+            'iso-400': 'ISO 400, balanced exposure with a fine texture',
+            'iso-800': 'ISO 800, a fine, clean grain',
+            'iso-1600': 'ISO 1600, subtle atmospheric grain',
+            'iso-3200': 'ISO 3200, visible cinematic grain',
+            'iso-6400': 'ISO 6400, heavy intentional grain',
         },
         filmStyle: {
             'clean-digital': 'clean sharp modern digital rendering',
             'analog-film': 'Kodak Portra 400 analog film grain, warm halation, gentle color shift',
             'faded-vintage': 'faded vintage desaturated 1970s photography aesthetic',
             'teal-orange': 'teal and orange Hollywood cinematic color grade',
-            'high-contrast': 'high contrast deep ink-black shadows and blown-out highlights',
+            'high-contrast': 'high-contrast grade with deep ink-black shadows and bright, clean highlights',
             'matte-lift': 'lifted blacks matte finish soft tone grade',
-            'bleach-bypass': 'bleach bypass desaturated silver halide reduced saturation',
+            'bleach-bypass': 'bleach-bypass look with desaturated, low-saturation color and strong contrast',
             'cross-process': 'cross-process vivid unexpected color shift',
-            'infrared': 'infrared photography ethereal white foliage luminous glow',
+            'infrared': 'infrared-film look with luminous pale tones',
         },
         bodyFocus: {
             'wrist-hand': 'primary focus on wrist and hand', 'neck-collar': 'primary focus on neck and collarbone',
@@ -1586,18 +1591,6 @@ const PromptStudio = {
     // without a person (or worn clothing) are kept.
     _PERSON_WORDS: /\b(models?|woman|women|man|men|girls?|boys?|person|people|bride|groom|artisans?|mother|daughter|grandmother|she|her|hers|he|his|him|hands?|fingers?|fingertips?|thumbs?|knuckles?|palms?|wrists?|arms?|forearms?|lips?|mouth|teeth|face|faces|cheeks?|chin|jaw|neck|nape|collarbones?|d[ée]colletage|shoulders?|ears?|earlobes?|eyes?(?!-level)|skin|body|bodies|hair|legs?|ankles?|feet|foot|torso|makeup|gaze|smil(?:e|es|ing)|pose[sd]?|posing|portrait|worn|wearing|wears|clothing|clothes|dress(?:es)?|gowns?|suits?|shirts?|blazers?|jackets?|outfits?|wardrobe|garments?|hijabs?|caftans?|kaftans?|abayas?|tuxedos?|lapels?|sleeves?)\b/i,
 
-    _stillLifeSubject(archetype) {
-        const free = (archetype.subjects || []).filter(s => !this._PERSON_WORDS.test(s.replace(/\{piece\}/g, '')));
-        if (free.length) return free[Math.floor(Math.random() * free.length)];
-        return '{piece} presented on its own as a still-life product shot';
-    },
-
-    _stillLifeScene(scene) {
-        const kept = String(scene || '').split(',').map(c => c.trim())
-            .filter(c => c && !this._PERSON_WORDS.test(c));
-        return kept.length ? kept.join(', ') : 'editorial still-life product photography';
-    },
-
     // Remove focal length / aperture / "lens" wording from an angle description, so a
     // chosen lens profile can stand in for it without two lenses in one prompt.
     _withoutLens(text) {
@@ -1610,7 +1603,7 @@ const PromptStudio = {
     // Remove aperture values and depth-of-field wording (an explicit DOF choice replaces them).
     _withoutAperture(text) {
         return this._tidyClauses(String(text || '')
-            .replace(/\b(?:razor-thin|shallow|deep)\s+depth\s+of\s+field\b/gi, '')
+            .replace(/\b(?:razor-thin|shallow|deep|moderate)\s+depth(?:\s+of\s+field)?\b/gi, '')
             .replace(/\bf\/[\d.]+\b/g, ''));
     },
 
@@ -2141,7 +2134,6 @@ const PromptStudio = {
         hijabi: false,            // when true: model wears hijab/headscarf
         hijabStyle: 'classic',    // 'classic' | 'draped' | 'turban' | 'niqab' | 'modern'
         modelEthnicity: 'diverse', // 'diverse' | 'fair' | 'olive' | 'warm' | 'caramel' | 'deep'
-        promptTarget: null,        // image model the prompt is written for (see PROMPT_TARGETS)
     },
 
     // ── Profiles Management ──────────────────────
@@ -2596,7 +2588,7 @@ const PromptStudio = {
                         <div class="form-group">
                             <label class="form-label" data-i18n="ps_product">Product</label>
                             <select class="form-select" id="ps-product">
-                                <option value="silver" data-i18n="ps_product_silver" ${this.state.product === 'silver' ? 'selected' : ''}>Silver</option>
+                                <option value="silver" data-i18n="ps_product_silver" data-i18n-en="Jewelry" ${this.state.product === 'silver' ? 'selected' : ''}>Jewelry</option>
                                 <option value="watch" data-i18n="ps_product_watch" ${this.state.product === 'watch' ? 'selected' : ''}>Watch</option>
                             </select>
                         </div>
@@ -2616,7 +2608,7 @@ const PromptStudio = {
                         <div class="form-group" id="ps-material-group" style="${this.state.product === 'watch' ? 'display:none' : ''}">
                             <label class="form-label" data-i18n="ps_material">Material</label>
                             <select class="form-select" id="ps-material">
-                                ${this.materials.map(m => `<option value="${m.id}" data-i18n="ps_mat_${m.id.replace(/-/g, '_')}" ${m.id === this.state.material ? 'selected' : ''}>${m.label}</option>`).join('')}
+                                ${this.materialOptionsHTML(this.state.material)}
                             </select>
                         </div>
                         <div class="form-group">
@@ -2900,12 +2892,6 @@ const PromptStudio = {
                             </div>
                         </div>
                         <div class="ps-archetype-grid" id="ps-archetypes"></div>
-                    </div>
-
-                    <div class="card pe-target-card">
-                        <label class="form-label" style="margin-bottom:6px">✍️ ${this._t('pe_target_label', 'Write the prompt for')}</label>
-                        <div class="ps-chip-group" id="ps-target" style="flex-wrap:wrap">${this.promptTargetChips(this.getPromptTarget())}</div>
-                        <p class="text-sm text-muted" style="line-height:1.4;margin:6px 0 0">${this._t('pe_target_hint', 'Same shot, written for the image model you will paste it into. Switching rewrites the prompts below without changing their scenes.')}</p>
                     </div>
 
                     <div class="ps-generate-sticky">
@@ -3314,10 +3300,6 @@ const PromptStudio = {
 
         // Generate
         q('#ps-generate').addEventListener('click', () => this._generate());
-        q('#ps-target').addEventListener('click', e => {
-            const chip = e.target.closest('[data-target]');
-            if (chip) this._setPromptTarget(chip.dataset.target);
-        });
 
         // Copy all
         q('#ps-copy-all').addEventListener('click', () => this._copyAll());
@@ -3597,13 +3579,12 @@ const PromptStudio = {
             Elaris.toast(this._t('ps_toast_pick_arch', 'Select at least one archetype'), 'error');
             return;
         }
-        const target = this.getPromptTarget();
         const prompts = [];
         for (const archId of selected) {
             const arch = this.archetypes.find(a => a.id === archId);
             if (!arch) continue;
-            const r = this._buildPromptSpec(arch, target);
-            prompts.push({ archetype: arch.name, icon: arch.icon, text: r.text, spec: r.spec, target, archId: arch.id, similar: false, id: Date.now() + Math.random() });
+            const r = this._buildPromptSpec(arch);
+            prompts.push({ archetype: arch.name, icon: arch.icon, text: r.text, spec: r.spec, archId: arch.id, similar: false, id: Date.now() + Math.random() });
         }
         this._currentPrompts = prompts;
         this._flagSimilarPrompts();
@@ -3638,18 +3619,8 @@ const PromptStudio = {
         return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     },
 
-    // ── Prompt format ("Write for") chips, shared with Studio Beta ──────────────
-    promptTargetLabel(t) {
-        const en = { natural: 'Gemini · ChatGPT', flux: 'Flux', midjourney: 'Midjourney', sd: 'Stable Diffusion', classic: 'Classic' }[t] || t;
-        return this._t('pe_t_' + t, en);
-    },
-
-    promptTargetChips(active, cls = 'ps-chip') {
-        return this.PROMPT_TARGETS.map(t => `<button type="button" class="${cls} ${t === active ? 'active' : ''}" data-target="${t}">${this._escapeHTML(this.promptTargetLabel(t))}</button>`).join('');
-    },
-
-    // Notes the engine attached to a shot, plus format-specific ones, translated.
-    promptNotes(spec, target) {
+    // Notes the engine attached to a shot (shared with Studio Beta), translated.
+    promptNotes(spec) {
         if (!spec || !spec.shot) return [];
         const notes = (spec.shot.notes || []).map(n => {
             let text = this._t(n.key, n.en);
@@ -3659,41 +3630,23 @@ const PromptStudio = {
             return { level: n.level, text };
         });
         const lib = spec.shot.libraryPiece;
-        if (lib && lib.photos > 0 && !(spec.shot.refs && spec.shot.refs.pieceImages) && (target === 'natural' || !target)) {
+        if (lib && lib.photos > 0 && !(spec.shot.refs && spec.shot.refs.pieceImages)) {
             notes.push({ level: 'info', text: this._t('pe_note_send_photos', 'Send it to Generate to attach the {n} photo(s) of {name}.').replace('{n}', lib.photos).replace('{name}', lib.name) });
-        }
-        if (spec.shot.refs && spec.shot.refs.pieceImages > 0 && target !== 'natural' && target !== 'classic') {
-            notes.push({ level: 'warn', text: this._t('pe_warn_refs', 'This format cannot use your reference photos. Choose Gemini · ChatGPT to keep the exact piece.') });
         }
         return notes;
     },
 
-    promptNotesHTML(spec, target) {
-        const notes = this.promptNotes(spec, target);
+    promptNotesHTML(spec) {
+        const notes = this.promptNotes(spec);
         if (!notes.length) return '';
         return `<div class="pe-notes">${notes.map(n => `<span class="pe-note pe-note-${n.level}">${n.level === 'warn' ? '⚠️' : 'ℹ️'} ${this._escapeHTML(n.text)}</span>`).join('')}</div>`;
     },
 
-    // Rewrites the prompts on screen for another model: same shots, new wording.
-    _setPromptTarget(t) {
-        this.setPromptTarget(t);
-        this.container.querySelectorAll('#ps-target .ps-chip').forEach(c => c.classList.toggle('active', c.dataset.target === t));
-        if (!this._currentPrompts || !this._currentPrompts.length) return;
-        this._currentPrompts.forEach(p => {
-            if (!p.spec) return;
-            p.text = this._compilePrompt(p.spec, t);
-            p.target = t;
-        });
-        this._flagSimilarPrompts();
-        this._renderPromptList();
-        Elaris.toast(this._t('pe_toast_rewritten', 'Prompts rewritten for {target}').replace('{target}', this.promptTargetLabel(t)), 'info');
-    },
-
-    // Hands a prompt to the Generate page, which attaches the piece photos and can
-    // rewrite the spec for the provider it uses.
+    // Hands a prompt to the Generate page, which attaches the piece photos and rewrites
+    // the prompt's reference-photo lines to match them.
     sendToGenerate(entry) {
         const pieceId = entry.pieceId !== undefined ? entry.pieceId : (this.state.pieceId || null);
-        const data = { text: entry.text, spec: entry.spec || null, target: entry.target || this.getPromptTarget(), pieceId, ts: Date.now() };
+        const data = { text: entry.text, spec: entry.spec || null, pieceId, ts: Date.now() };
         window.ElarisGenerateHandoff = data;
         try { sessionStorage.setItem('elaris_generate_handoff', JSON.stringify(data)); } catch (e) { /* storage full or blocked */ }
         if (window.Elaris && Elaris.navigate) Elaris.navigate('generate');
@@ -3717,14 +3670,14 @@ const PromptStudio = {
                     </div>
                 </div>
                 <div class="ps-prompt-text" id="ps-prompt-${i}">${this._escapeHTML(p.text)}</div>
-                ${this.promptNotesHTML(p.spec, p.target)}
+                ${this.promptNotesHTML(p.spec)}
                 <div class="ps-caption-block" id="ps-caption-${i}" style="display:none"></div>
             </div>
         `).join('');
 
         const arch = idx => this.archetypes.find(a => a.id === prompts[idx].archId);
         const replace = (idx, r, toastKey, toastEn) => {
-            Object.assign(prompts[idx], { text: r.text, spec: r.spec, target: r.target, similar: false });
+            Object.assign(prompts[idx], { text: r.text, spec: r.spec, similar: false });
             this._renderPromptList();
             Elaris.toast(this._t(toastKey, toastEn), 'success');
         };
@@ -3746,7 +3699,7 @@ const PromptStudio = {
                 const a = arch(idx);
                 if (!a) return;
                 this._autoDescribe();
-                replace(idx, this._buildPromptSpec(a, this.getPromptTarget()), 'ps_toast_new_prompt', 'New prompt generated ✨');
+                replace(idx, this._buildPromptSpec(a), 'ps_toast_new_prompt', 'New prompt generated ✨');
             });
         });
 
@@ -3758,7 +3711,7 @@ const PromptStudio = {
                 if (!a) return;
                 this._autoDescribe();
                 const lock = prompts[idx].spec ? prompts[idx].spec.picks : null;
-                replace(idx, this._buildPromptSpec(a, this.getPromptTarget(), lock), 'ps_toast_refined', 'Prompt refined with current settings ✨');
+                replace(idx, this._buildPromptSpec(a, lock), 'ps_toast_refined', 'Prompt refined with current settings ✨');
             });
         });
 
@@ -3810,51 +3763,6 @@ const PromptStudio = {
             'jewelry-set': 'PLACEMENT: all set pieces worn simultaneously — ring on finger, necklace at d\u00e9colletage, earrings in earlobes — every piece proportional and anatomically correct, no piece floating or misplaced',
         };
         return rules[category] || '';
-    },
-
-    // ── Category + anatomy aware negative prompts ──────────────────────────
-    // Combines anatomy negatives (for human archetypes) with category-specific
-    // misplacement and scale negatives derived from real AI failure patterns.
-    // opts.brandText: the prompt asks for "ELARIS" text (hallmark / logo / wordmark), so
-    //   generic text and logo negatives are swapped for misspelling/lettering ones.
-    // opts.allowChromaticAberration: Ultra realism asks for it deliberately.
-    _buildCategoryNegatives(category, isHuman, opts = {}) {
-        const anatomy = isHuman
-            ? 'three arms, extra arms, extra limbs, malformed anatomy, extra fingers, six fingers, mutated limbs, fused fingers, asymmetrical geometry'
-            : '(hand, fingers, skin, arm, human), distorted shape, asymmetrical geometry';
-
-        // Scale: filter human-body-referencing terms for product-only shots (no model)
-        const scale = isHuman
-            ? 'oversized jewelry, jewelry disproportionate to body, necklace wider than shoulders, pendant larger than hand, ring wider than palm, earring larger than face, jewelry not to correct real-world scale, miniaturized accessories'
-            : 'oversized jewelry, jewelry not to correct real-world scale, miniaturized accessories, jewelry disproportionate to scene';
-
-        // Placement: category-specific misplacement negatives
-        const placement = {
-            'necklace': 'necklace on the back, necklace hanging behind model, pendant on back, chain only visible from behind, necklace on shoulder, necklace placed at back of neck',
-            'earrings': 'earring too large, earring disproportionate to face size, earring larger than head, misplaced earring',
-            'ring':     'ring too large for finger, ring not on finger, floating ring, ring covering entire hand',
-            'bracelet': 'bracelet not on wrist, bracelet floating off body, bracelet on wrong limb',
-            'bangles':  'bangle not on wrist, floating bangle, bangle on wrong body part',
-            'anklet':   'anklet on wrist, anklet not on ankle, anklet floating',
-            'pendant':  'pendant on back, pendant not visible from front, pendant hanging behind neck',
-            'brooch':   'brooch floating off clothing, brooch not on lapel',
-            'watch':    'watch too large for wrist, watch not on wrist, floating watch, watch covering entire hand, oversized case, strap hanging loose',
-            'jewelry-set': 'pieces floating off body, necklace on back or side, ring oversized or undersized, mismatched set styles, earrings clipping incorrectly, extra fingers, extra limbs, body parts duplicated',
-        };
-
-        const placementNeg = isHuman ? (placement[category] || '') : '';  // product shots intentionally have no finger
-        const parts = [anatomy, scale];
-        if (placementNeg) parts.push(placementNeg);
-        parts.push([
-            'AI artifacts',
-            opts.brandText ? 'misspelled brand name, garbled or extra lettering, third-party logos, watermarks'
-                           : 'text overlay, watermarks, logos',
-            'cartoon, illustration, painting, low quality, blurry',
-            opts.allowChromaticAberration ? '' : 'chromatic aberration',
-            'plastic texture, 3d render',
-        ].filter(Boolean).join(', '));
-
-        return `Negative prompt: ${parts.join(', ')}.`;
     },
 
     // ── Build Single Prompt ──────────────────────
@@ -3911,53 +3819,31 @@ const PromptStudio = {
     },
 
     // ══ Prompt Engine ══════════════════════════════════════════════════════
-    // A prompt is made in two steps. _planShot() decides the shot once (every random
-    // pick: subject, setting, outfit, pose, skin tone; and every resolved setting) and
-    // returns it as plain JSON-safe data, a "spec". A compiler then writes the spec
-    // for one image model:
-    //   natural    Gemini / ChatGPT (default): full sentences with one light, one lens
-    //              and one setting, positive constraints, no negative-prompt block
-    //   flux       FLUX: natural language, subject first, about 170 words, no negatives
-    //   midjourney short (about 60 words) plus --ar / --no parameters
-    //   sd         Stable Diffusion: comma-separated tags plus a separate negative prompt
-    //   classic    the original v1 wording, unchanged
-    // Compiling one spec for two models describes the same shot. Passing a spec's
-    // `picks` back as `lock` keeps its scene while applying changed settings (Refine).
-    PROMPT_TARGETS: ['natural', 'flux', 'midjourney', 'sd', 'classic'],
-
-    getPromptTarget() {
-        let t = this.state.promptTarget;
-        if (!this.PROMPT_TARGETS.includes(t)) {
-            try { t = localStorage.getItem('elaris_prompt_target'); } catch (e) { t = null; }
-        }
-        return this.PROMPT_TARGETS.includes(t) ? t : 'natural';
+    // One prompt format, the detailed "classic" one, built in two steps so that it
+    // can't contradict itself:
+    //   1. _planShot() decides the whole shot once: every random pick (subject, setting,
+    //      outfit, pose, skin tone…) and every setting, resolved so each slot has a single
+    //      answer (one light, one lens, one setting, one wardrobe, one metal color…).
+    //      Priority for a slot: an explicit choice > a trend > the archetype > a random
+    //      pick. The result is plain JSON-safe data (a "spec").
+    //   2. _compileClassic() writes the spec as the classic prompt.
+    // Passing a spec's `picks` back as `lock` keeps its scene while applying changed
+    // settings (Refine); the Generate page recompiles a spec after setting how many
+    // reference photos go with it (spec.shot.refs).
+    _buildPrompt(archetype, lock) {
+        return this._buildPromptSpec(archetype, lock).text;
     },
 
-    setPromptTarget(t) {
-        if (!this.PROMPT_TARGETS.includes(t)) return;
-        this.state.promptTarget = t;
-        try { localStorage.setItem('elaris_prompt_target', t); } catch (e) { /* private mode */ }
+    _buildPromptSpec(archetype, lock) {
+        const spec = this._planShot(archetype, lock && typeof lock === 'object' ? lock : null);
+        return { spec, text: this._compilePrompt(spec) };
     },
 
-    _buildPrompt(archetype, target, lock) {
-        return this._buildPromptSpec(archetype, target, lock).text;
+    _compilePrompt(spec) {
+        return this._compileClassic(spec);
     },
 
-    _buildPromptSpec(archetype, target, lock) {
-        const spec = this._planShot(archetype, lock);
-        const t = this.PROMPT_TARGETS.includes(target) ? target : this.getPromptTarget();
-        return { spec, target: t, text: this._compilePrompt(spec, t) };
-    },
-
-    _compilePrompt(spec, target) {
-        if (target === 'classic')    return this._compileClassic(spec);
-        if (target === 'flux')       return this._compileFlux(spec);
-        if (target === 'midjourney') return this._compileMidjourney(spec);
-        if (target === 'sd')         return this._compileSD(spec);
-        return this._compileNatural(spec);
-    },
-
-    // ── Camera angle descriptions: perspective + one lens each ──────────────────────
+    // ── Camera angles: perspective + one lens each ("{noun}" = the piece) ──────────
     CAMERA_ANGLES: {
         // ── Classic Angles ──────────────────────────────────────────────────
         'eye-level':       'shot on 85mm f/1.4 portrait lens, natural eye-level perspective, shallow depth of field',
@@ -3971,56 +3857,92 @@ const PromptStudio = {
         'from-behind':     'shot from behind focusing on the nape and back details on 85mm f/1.8 lens, mysterious elegance',
         // ── Macro & Product Angles ──────────────────────────────────────────
         'macro':           'shot on 100mm f/2.8 macro lens, razor-thin depth of field, studio ring light, extreme surface detail',
-        'extreme-macro':   'shot on 180mm macro lens at 2:1 magnification, individual gem facets and metal grain visible, zero breathing room around subject',
+        'extreme-macro':   'shot on 180mm macro lens at 2:1 magnification, individual gem facets and metal grain visible, zero breathing room around the {noun}',
         'flat-lay':        'strict top-down flat lay on 50mm f/5.6 lens, perfectly level overhead, graphic two-dimensional composition',
-        'knuckle-level':   'camera at surface height on 85mm f/1.4 lens, jewelry at exact eye level of the piece, intimate product-height perspective',
+        'knuckle-level':   'camera at surface height on 85mm f/1.4 lens, the {noun} at its own eye level, intimate product-height perspective',
         // ── Cinematic & Trending ────────────────────────────────────────────
-        'worms-eye':       'extreme upward-looking angle, camera below subject on 24mm f/2.8 lens, dramatically elongated and powerful composition',
-        'silhouette':      'strong backlit silhouette against bright window or sky, form reduced to shape and outline, high contrast minimal detail',
-        'golden-hour':     'shot at golden hour with warm rim-light behind subject, 85mm f/1.4, halo of warm light on jewelry and hair, deep warm bokeh',
-        'through-glass':   'shot through glass, crystal prism, or water element on 85mm f/1.4, prismatic light refraction framing the piece',
+        'worms-eye':       'extreme upward-looking angle, camera below the subject on 24mm f/2.8 lens, dramatically elongated and powerful composition',
+        'silhouette':      'strong backlit silhouette against a bright window, the form reduced to shape and outline while a precise accent light keeps the {noun} gleaming',
+        'golden-hour':     'shot at golden hour with warm rim light behind the subject, 85mm f/1.4, a halo of warm light around the {noun}, deep warm bokeh',
+        'through-glass':   'shot through glass, crystal prism, or water element on 85mm f/1.4, prismatic light refraction framing the {noun}',
         'candid':          'candid unposed natural moment on 70mm f/2.8, slight motion, real-world editorial energy, authentic and spontaneous',
-        'tilt-shift':      'tilt-shift lens selective plane of focus, only a thin slice of the jewelry sharp, dreamy blur above and below',
+        'tilt-shift':      'tilt-shift lens with a selective plane of focus running through the {noun}, dreamy blur above and below it',
         // ── Editorial & Fashion ─────────────────────────────────────────────
-        'top-down-hand':   'aerial wrist-down shot from directly above the hand on 50mm f/2.8, ring or bracelet visible from above, arm extending from frame edge',
-        'chin-up':         'model chin slightly up, looking directly down the lens on 85mm f/1.4, commanding editorial gaze, jewelry at chest level in foreground',
-        'foreground-blur': 'subject in background, element of the jewelry or scene deliberately blurred in extreme foreground on 85mm f/1.4, framing bokeh effect',
+        'top-down-hand':   'aerial wrist-down shot from directly above the hand on 50mm f/2.8, the {noun} visible from above, arm extending from the frame edge',
+        'chin-up':         'model chin slightly up, looking directly down the lens on 85mm f/1.4, commanding editorial gaze, the {noun} clearly visible',
+        'foreground-blur': 'the {noun} sharp in the mid-ground while a scene element is deliberately blurred in the extreme foreground on 85mm f/1.4, framing bokeh effect',
         // ── v3.0: New angles ─────────────────────────────────────────────
-        'wind-blown':           'model at field level, wide 35mm f/2 lens, wind machine creating hair and fabric motion, natural outdoor available light, Altai/steppe editorial energy',
-        'extreme-close-crop':   'face fills entire frame edge to edge, 100mm f/2.5 lens, eyes and nose dominate, no chin or forehead in frame, extreme intimacy and raw beauty detail',
-        'fabric-reveal':        'fabric being pulled aside to reveal face or jewelry, 85mm f/1.4, the fabric edge cuts diagonally across frame creating dramatic geometry',
-        'three-quarter-above':  'elevated 45-degree diagonal angle looking down at subject, 85mm f/1.8, dimensional depth with slight overhead authority, editorial and elegant',
+        'wind-blown':           'model at field level, wide 35mm f/2 lens, wind creating hair and fabric motion, Altai/steppe editorial energy',
+        'extreme-close-crop':   'tight beauty crop where the face and the {noun} fill the frame edge to edge, 100mm f/2.5 lens, extreme intimacy and raw beauty detail',
+        'fabric-reveal':        'fabric being pulled aside to reveal the {noun}, 85mm f/1.4, the fabric edge cutting diagonally across the frame creating dramatic geometry',
+        'three-quarter-above':  'elevated 45-degree diagonal angle looking down at the subject, 85mm f/1.8, dimensional depth with slight overhead authority, editorial and elegant',
         // v3.3: New angles with full camera descriptions
-        'mouth-bite':           'extreme close-up on 100mm f/2.8 macro lens, model gently biting down on the jewelry piece physically held between her front teeth, lips parted naturally around the metal, real physical contact between teeth and jewelry, visible jaw tension and slight lip pressure from biting, the jewelry is gripped by the teeth NOT floating or hovering near the mouth, intimate sensual editorial, lip texture and skin pores visible',
-        'neck-close-up':        'tight close-up on 100mm f/2.8 lens focused on the neck and collarbone area, necklace or pendant as central subject, skin texture and chain detail visible, elegant vertical composition',
-        'hand-on-face':         'model with hand placed against face or cheek on 85mm f/1.4 lens, ring or bracelet framed by face contact, intimate touch-frame composition, natural finger placement',
-        'wrist-cross':          'both wrists crossed or stacked in frame on 85mm f/1.8 lens, bracelets and rings on full display, editorial hand composition, geometric arm arrangement',
-        'mirror-angle':         'shot through or against a mirror on 85mm f/1.4 lens, dual perspective showing jewelry from two angles simultaneously, reflection composition, infinite depth effect',
-        'upward-gaze':          'camera positioned below chin level on 85mm f/1.8 lens, model gazing upward, elongated neck line showcasing necklace or earrings, dramatic editorial perspective, jaw and neck as sculptural lines',
+        'mouth-bite':           'extreme close-up on 100mm f/2.8 macro lens, the model gently biting the {noun}, held between the front teeth with lips parted naturally around the metal, real physical contact between teeth and metal, visible jaw tension and slight lip pressure, the piece gripped by the teeth NOT floating near the mouth, intimate sensual editorial, lip texture and skin pores visible',
+        'neck-close-up':        'tight close-up on 100mm f/2.8 lens focused on the neck and collarbone area, the {noun} as the central subject, skin texture and metal detail visible, elegant close composition',
+        'hand-on-face':         'model with a hand placed against the face or cheek on 85mm f/1.4 lens, the {noun} framed by the face contact, intimate touch-frame composition, natural finger placement',
+        'wrist-cross':          'both wrists crossed or stacked in frame on 85mm f/1.8 lens, the {noun} on full display, editorial hand composition, geometric arm arrangement',
+        'mirror-angle':         'shot through or against a mirror on 85mm f/1.4 lens, a dual perspective showing the {noun} from two angles simultaneously, reflection composition, infinite depth effect',
+        'upward-gaze':          'camera positioned below chin level on 85mm f/1.8 lens, model gazing upward, elongated neckline showcasing the {noun}, dramatic editorial perspective, jaw and neck as sculptural lines',
         // ── v3.3: Sheet 15 angles ──────────────────────────────────────────
-        'frozen-in-crowd':      'shot on 135mm f/2 lens with 1/15s shutter, subject frozen sharp while background pedestrians and environment blur into motion streaks, long-exposure urban isolation technique',
-        'vehicle-frame':        'shot through car window frame or door opening on 50mm f/2 lens, vehicle metal as natural leading line framing the subject, warm golden interior light',
-        'profile-accessory':    'tight profile crop on 100mm f/2.5 lens, earring + sunglasses + necklace all visible simultaneously on the side of the face, maximum accessory density in one angle',
-        'macro-with-creature':  'shot on 180mm f/3.5 macro lens at 2:1 magnification, tiny insect resting on or near the jewelry, both creature anatomy and metal detail razor-sharp, surreal scale',
+        'frozen-in-crowd':      'shot on 135mm f/2 lens with a 1/15s shutter, the subject frozen sharp while background pedestrians blur into motion streaks, long-exposure urban isolation technique',
+        'vehicle-frame':        'shot through a car window frame or door opening on 50mm f/2 lens, vehicle metal as a natural leading line framing the subject',
+        'profile-accessory':    'tight profile crop on 100mm f/2.5 lens, the {noun} together with sunglasses and other accessories visible on the side of the face, maximum accessory density in one angle',
+        'macro-with-creature':  'shot on 180mm f/3.5 macro lens at 2:1 magnification, a tiny insect resting on or near the {noun}, both creature anatomy and metal detail razor-sharp, surreal scale',
         // ── v3.4: Sheets 8–10 angles ─────────────────────────────────────────
         'through-windshield':   'shot through car windshield or side window glass on 85mm f/1.8 lens, slight glass distortion and reflections layered over the model, automotive-interior editorial framing',
-        'hands-toward-camera':  'model reaching hand directly toward camera on 35mm f/2 lens, dramatic foreshortening, jewelry on fingers/wrist in razor-sharp foreground, face softly blurred behind',
-        'face-flora-frame':     'extreme close-up on 100mm f/2.8 macro lens, botanical elements (dried petals, leaves, gold leaf) arranged on or around the face framing the jewelry, fine-art beauty editorial',
+        'hands-toward-camera':  'model reaching a hand directly toward the camera on 35mm f/2 lens, dramatic foreshortening, the {noun} razor-sharp in the foreground, face softly blurred behind',
+        'face-flora-frame':     'extreme close-up on 100mm f/2.8 macro lens, botanical elements (dried petals, leaves, gold leaf) arranged on or around the face framing the {noun}, fine-art beauty editorial',
         // ── v3.5: Sheets 16–19 angles ─────────────────────────────────────────
-        'watch-on-eye':         'product held directly in front of one eye on 85mm f/1.4 lens, model peering through the jewelry or watch face as a viewfinder, clenched fist framing, dramatic studio light',
-        'full-body-power':      'full-body editorial shot on 50mm f/2.8 lens, model in power stance filling the frame vertically, solid-color studio backdrop, clean negative space, Avedon-style authority',
-        'hood-peek':            'extreme close-up on 100mm f/2.8 lens, model face partially hidden behind fabric slit or hood opening, only one eye and partial face visible, freckled skin detail, mystery and intimacy',
-        // ── v3.6 + watch angles (listed in the angle picker, previously missing here) ──
-        'pov-ring-reach':       'first-person POV on 24mm f/2.8 lens, hand reaching toward the viewer with the ring razor-sharp in the foreground, strong perspective foreshortening',
-        'grip-close-up':        'tight close-up on 85mm f/2 lens of a hand gripping an object, rings and bracelet framed by the grip, tactile tension in the fingers',
+        'watch-on-eye':         'the {noun} held directly in front of one eye on 85mm f/1.4 lens, the model peering through it like a viewfinder, clenched fist framing',
+        'full-body-power':      'full-body editorial shot on 50mm f/2.8 lens, model in a power stance filling the frame, solid-color studio backdrop, clean negative space, Avedon-style authority',
+        'hood-peek':            'extreme close-up on 100mm f/2.8 lens, the model\'s face partially hidden behind a fabric slit or hood opening, only one eye and part of the face visible, fine skin detail, mystery and intimacy',
+        // ── v3.6 + watch angles ──
+        'pov-ring-reach':       'first-person POV on 24mm f/2.8 lens, a hand reaching toward the viewer with the {noun} razor-sharp in the foreground, strong perspective foreshortening',
+        'grip-close-up':        'tight close-up on 85mm f/2 lens of a hand gripping an object, the {noun} framed by the grip, tactile tension in the fingers',
         'playing-card-mirror':  'symmetrical mirrored composition on 50mm f/2.8 lens, the subject reflected top-to-bottom like a playing card, precise graphic symmetry',
-        'watch-wrist-roll':     'wrist caught mid-rotation on 85mm f/1.8 lens with a fast shutter, case and bracelet catching a streak of light, dynamic movement frozen sharp',
+        'watch-wrist-roll':     'wrist caught mid-rotation on 85mm f/1.8 lens with a fast shutter, the {noun} catching a streak of light, dynamic movement frozen sharp',
         'watch-dial-macro':     'extreme macro on 100mm f/2.8 macro lens filling the frame with the dial, indices, hands and complications razor-sharp, sapphire crystal reflections controlled',
         'watch-crown-detail':   'side-on case profile on 100mm f/2.8 macro lens, crown, pushers and case flank in sharp focus, polished bevels and brushed surfaces catching the light',
-        'watch-steering-wheel': 'driver POV on 35mm f/2 lens, wrist resting on a leather steering wheel with the watch in sharp focus, dashboard softly blurred behind',
+        'watch-steering-wheel': 'driver POV on 35mm f/2 lens, wrist resting on a leather steering wheel with the {noun} in sharp focus, dashboard softly blurred behind',
     },
 
-    // Archetypes whose random scene variant is a lifestyle location (the rest get a surface).
+    // Lifestyle locations for model shots (random, when the archetype sets none).
+    // io: 'in' indoors / 'out' outdoors, matched to the light (no noon sun in a library).
+    LOCATION_POOL: [
+        { t: 'inside a café with wooden tables and ceramic cups on the counter', io: 'in' },
+        { t: 'a sleek modern hotel lobby with marble floors', io: 'in' },
+        { t: 'a quiet home library surrounded by stacked books', io: 'in' },
+        { t: 'a rooftop terrace with a city skyline in the distance', io: 'out' },
+        { t: 'a bright Scandinavian-style loft with white walls and oak floors', io: 'in' },
+        { t: 'a Moroccan riad courtyard with intricate zellige tile patterns', io: 'out' },
+        { t: 'a south-of-France terrace with potted lavender nearby', io: 'out' },
+        { t: 'an elegant dressing room with a floor-length mirror', io: 'in' },
+        { t: 'a luxurious boutique hotel suite with European interior design', io: 'in' },
+        { t: 'a Parisian apartment living room with tall windows and parquet floors', io: 'in' },
+        { t: 'a traditional riad garden with a central fountain and lush green plants', io: 'out' },
+        { t: 'a Moroccan medina alleyway framed by carved archways and plaster walls', io: 'out' },
+        { t: 'a rooftop in Marrakech with the medina panorama in the background', io: 'out' },
+        { t: 'a Moroccan wedding venue with embroidered textiles and ornate brass lanterns', io: 'in' },
+        { t: 'a Moroccan hammam anteroom with zellige floors and arched doorways', io: 'in' },
+        { t: 'a cobblestone street in a Mediterranean old town', io: 'out' },
+        { t: 'a Mediterranean harbour with terracotta buildings and blue water', io: 'out' },
+        { t: 'a lush private garden with stone pathways', io: 'out' },
+        { t: 'a modern rooftop pool area with clean geometric lines', io: 'out' },
+        { t: 'an outdoor terrace at a luxury resort', io: 'out' },
+        { t: 'inside a luxury car, leather seat and clean dashboard visible', io: 'in' },
+        { t: 'at a polished marble kitchen counter with minimalist design', io: 'in' },
+        { t: 'at a quiet outdoor café table in a courtyard', io: 'out' },
+        { t: 'in a design bookshop between floor-to-ceiling shelves', io: 'in' },
+        { t: 'at a rooftop bar with panoramic views', io: 'out' },
+    ],
+    // Surfaces for product shots (random, when neither the subject nor the user sets one).
+    SURFACE_POOL: [
+        'a polished white Carrara marble surface', 'an aged raw concrete surface with subtle texture', 'a dark oxidized steel surface',
+        'warm honey-toned oak wood grain', 'a deep black velvet surface', 'a hand-woven natural linen fabric base',
+        'a pale pink sand surface with fine grain texture', 'a brushed brass tray', 'a frosted glass shelf',
+        'an aged terracotta surface with matte warm tones', 'cream paper scattered with dried botanicals', 'a mirror surface dusted with ice crystals',
+    ],
+    // Archetypes whose model shots get a random lifestyle location (the rest set their own).
     LOCATION_ARCHETYPES: ['body-intimate', 'editorial-model', 'bw-dramatic', 'collection-showcase',
         'motion-blur', 'cinematic-portrait', 'lifestyle-moment', 'heritage-moroccan',
         'celestial-mythic', 'architectural-context', 'masculine-editorial',
@@ -4057,19 +3979,23 @@ const PromptStudio = {
     // archetype asks for; otherwise the archetype's recommended angles are weighed
     // against the category's angle ranking (which describes worn pieces, so it counts
     // less for a product shot). Straight-down angles are only used when asked for.
-    _autoAngle(archetype, category, subjectTemplate, withModel) {
+    // `avoid`: angles that would contradict another choice (a close crop for a
+    // full-body framing, a wide shot for a finger close-up, a mouth shot behind a niqab).
+    _autoAngle(archetype, category, subjectTemplate, withModel, avoid) {
+        const ok = id => !(avoid || []).includes(id);
         const s = String(subjectTemplate || '').toLowerCase();
         const bare = s.replace(/\{piece\}/g, '');
         const hasPerson = this._PERSON_WORDS.test(bare);
         const hands = /\b(?:hands?|fingers?|wrists?)\b/.test(bare);
+        const first = (...ids) => ids.find(ok);
+        let stated = '';
         if (/\b(?:flat-lay|flat lay|top-down|aerial view|bird's-eye|god-view|laid out)\b/.test(s)) {
-            return !hasPerson ? 'flat-lay' : (hands ? 'top-down-hand' : 'overhead');
-        }
-        if (/\boverhead\b(?!\s+(?:sun|light|lighting|editorial light))|\bfrom above\b/.test(s)) {
-            return !hasPerson ? 'flat-lay' : (hands ? 'top-down-hand' : 'three-quarter-above');
-        }
-        if (/\blow-angle\b/.test(s)) return 'low-angle';
-        if (/\bprofile view\b/.test(s)) return 'side-profile';
+            stated = !hasPerson ? 'flat-lay' : (hands ? first('top-down-hand', 'overhead') : 'overhead');
+        } else if (/\boverhead\b(?!\s+(?:sun|light|lighting|editorial light))|\bfrom above\b/.test(s)) {
+            stated = !hasPerson ? 'flat-lay' : (hands ? first('top-down-hand', 'three-quarter-above') : 'three-quarter-above');
+        } else if (/\blow-angle\b/.test(s)) stated = 'low-angle';
+        else if (/\bprofile view\b/.test(s)) stated = 'side-profile';
+        if (stated && ok(stated)) return stated;
         const guide = (this._guideFor(archetype.id).angle || []).slice(0, 4);
         const sceneTopDown = this._splitClauses(archetype.scene).some(c => /\btop-down\b|^overhead angle$/i.test(c) && !/\bor\b/i.test(c));
         if (sceneTopDown) return guide.find(id => id === 'flat-lay' || id === 'overhead') || (withModel ? 'overhead' : 'flat-lay');
@@ -4077,7 +4003,9 @@ const PromptStudio = {
         const rankWeight = withModel ? 0.5 : 0.15;
         let best = null, bestScore = Infinity;
         new Set([...guide, ...ranking.slice(0, 3)]).forEach(id => {
-            if (!this.CAMERA_ANGLES[id] || id === 'flat-lay' || id === 'overhead') return;
+            if (!this.CAMERA_ANGLES[id] || id === 'flat-lay' || id === 'overhead' || !ok(id)) return;
+            // A model-only angle can't frame a still life.
+            if (!withModel && this._PERSON_WORDS.test(this.CAMERA_ANGLES[id].replace(/\{noun\}/g, ''))) return;
             const g = guide.indexOf(id), r = ranking.indexOf(id);
             const score = (g < 0 ? 6 : g) + (r < 0 ? 25 : r) * rankWeight;
             if (score < bestScore) { best = id; bestScore = score; }
@@ -4085,585 +4013,265 @@ const PromptStudio = {
         return best || (withModel ? 'eye-level' : '45-degree');
     },
 
-    _planShot(archetype, lock) {
-        lock = lock || {};
-        const picks = {};
-        // A locked pick is reused while its context (key) is unchanged, otherwise it is
-        // drawn again (the outfit, for example, is redrawn when the model's gender changes).
-        const pick = (name, key, draw) => {
-            const held = lock[name];
-            const value = (held && held.key === key) ? held.value : draw();
-            picks[name] = { key, value };
-            return value;
-        };
+    // ── Subjects: the pick must fit the piece and who is in frame ──────────────────
+    // Body zones a subject can mention, and the zones each category is worn on.
+    _ZONES: {
+        hand:  /\b(?:hands?|fingers?|fingertips?|knuckles?|palms?|wrists?|fists?|grip(?:s|ping)?|thumbs?)\b/i,
+        neck:  /\b(?:neck|necklines?|collarbones?|d[ée]colletage|chest|nape|throat)\b/i,
+        ear:   /\b(?:ears?|earlobes?)\b/i,
+        ankle: /\b(?:ankles?|feet|foot|legs?|toes?)\b/i,
+        torso: /\b(?:waist|hips?|torso|midriff|belly)\b/i,
+        lapel: /\b(?:lapels?)\b/i,
+        face:  /\b(?:lips?|mouth|chin|jaw(?:line)?|cheeks?|face)\b/i,
+    },
+    _CATEGORY_ZONES: {
+        ring: ['hand'], bracelet: ['hand'], bangles: ['hand'], watch: ['hand'],
+        necklace: ['neck'], pendant: ['neck'], earrings: ['ear', 'face'], anklet: ['ankle'],
+        'body-jewelry': ['torso', 'neck'], brooch: ['lapel', 'neck'],
+    },
+    // Gem wording ("stone" alone is usually a wall or a surface, so only its plural counts).
+    _STONE_WORDS: /\b(?:stones|gems?|gemstones?|diamonds?|facets?|pav[ée]|emeralds?|sapphires?|rubies|pearls?|(?:centre|center|main|precious) stone)\b/i,
+    // Words that only fit one gender, and the parts of the body a hijab or niqab covers.
+    _FEMALE_WORDS: /\b(?:woman|women|she|her|hers|herself|female|girls?|brides?|mothers?|daughters?|grandmothers?|granddaughters?|lady|ladies)\b/i,
+    _MALE_WORDS: /\b(?:man|men|he|his|him|himself|male|boys?|grooms?|fathers?|sons?|grandfathers?|grandsons?|gentleman|gentlemen|beard|stubble)\b/i,
+    _HAIR_WORDS: /\bhair\b/i,
+    _MOUTH_WORDS: /\b(?:lips?|mouth|teeth|smil(?:e|es|ing)|bit(?:e|es|ing)|kiss\w*|cupid'?s bow|laugh\w*)\b/i,
+    // Parts only a watch has (a "sapphire crystal" ring makes no sense).
+    _WATCH_PARTS: /\b(?:sapphire crystal|dial|bezel|crown|case ?back|watch face|strap|movement|complications?)\b/i,
 
-        // ── PIECE LABEL: Always enforce correct category type word ──────────────
-        // Users sometimes type the wrong category word (e.g. 'bracelet' when ring is
-        // selected, or carry over an old description from a previous category session).
-        // We sanitize the raw description by stripping ALL jewelry-type words and any
-        // material descriptors, then always prepend: material + correct category type.
-        // ── Product-aware piece label ──────────────────────
-        const isWatchProduct = this.state.product === 'watch';
-        const material = isWatchProduct ? '' : (this.materials.find(m => m.id === this.state.material)?.label || '925 sterling silver');
-        const catLabels = {
-            'ring': 'ring', 'necklace': 'necklace', 'earrings': 'earrings',
-            'bracelet': 'bracelet', 'bangles': 'bangles', 'anklet': 'anklet', 'body-jewelry': 'body jewelry',
-            'pendant': 'pendant', 'brooch': 'brooch', 'jewelry-set': 'matching jewelry set',
-        };
-        const catWord = isWatchProduct ? 'watch' : (catLabels[this.state.category] || this.state.category);
-        // Strip jewelry type words so wrong category can't bleed in
-        const _typeWords = 'ring|rings|necklace|necklaces|earring|earrings|bracelet|bracelets|bangle|bangles|anklet|anklets|pendant|pendants|brooch|brooches|brooche|watch|watches';
-        // Strip material text the user may have typed manually
-        const _matWords = '925\\s*sterling\\s*silver|sterling\\s*silver|18k\\s*gold|14k\\s*gold|rose\\s*gold|yellow\\s*gold|white\\s*gold|platinum|\\b925\\b';
-        // (Studio Beta sends no description: the stones and a library piece's notes stand in.)
-        let _rawDesc = this.state.pieceDesc || [this._stoneAccentText(),
-            this.state.pieceId ? this.state.pieceNotes : '', this.state.pieceId ? this.state.pieceSize : ''].filter(Boolean).join(', ');
-        _rawDesc = _rawDesc.replace(new RegExp('\\b(' + _typeWords + ')\\b', 'gi'), '');
-        _rawDesc = _rawDesc.replace(new RegExp('(' + _matWords + ')', 'gi'), '');
-        _rawDesc = _rawDesc.replace(/\s+/g, ' ').trim();
-        // piece = "925 Sterling Silver ring with diamonds accents" OR "luxury watch" for watch product
-        const piece = isWatchProduct
-            ? (_rawDesc ? `luxury watch ${_rawDesc}` : 'luxury watch')
-            : (_rawDesc ? `${material} ${catWord} ${_rawDesc}` : `${material} ${catWord}`);
-        this._lastPiece = piece;
-        this._lastMaterial = material;
-        // v3.1: unified lighting+mood single state key. 'auto' (or unset) = the
-        // archetype's recommended lighting; an explicit choice always wins.
-        const lightingRaw = this.state.lightingMood || this.state.mood;   // legacy fallback
-        const lightExplicit = !!lightingRaw && lightingRaw !== 'auto';
-        const lightingId = lightExplicit ? this.mapGuideLighting(lightingRaw) : this._autoLighting(archetype);
-        const _lm = this.lightingMoods.find(m => m.id === lightingId) || this.lightingMoods[0];
-        const mood    = _lm.label.toLowerCase();
-        const lighting = _lm.label.toLowerCase();
-        const fmt = this.formats.find(f => f.id === this.state.format);
-        // An explicit ratio wins (Studio Beta offers 21:9, which has no format entry).
-        const ratio = this.state.aspectRatio || (fmt ? fmt.ratio : '1:1');
-
-        // ── Who is in frame (decided first: "No Model" changes which subject text is usable) ──
-        const isHuman = this.HUMAN_ARCHETYPES.has(archetype.id);
-        // v3.1: "No Model" gender mode — treat as product-only regardless of archetype
-        const noModel = this.state.modelGender === 'none';
-        const isHumanActive = isHuman && !noModel;   // true only if archetype is human AND gender != none
-        const stillLife = isHuman && noModel;        // model-based concept rendered without a person
-        const category = isWatchProduct ? 'watch' : (this.state.category || 'ring');
-
-        // ── FIX #2: Build subject + inject random scene environment variant ──────────────────────
-        // The material descriptor is injected separately to avoid redundancy.
-        // Scene variant adds randomized setting/environment to prevent same-scene repetition.
-        const poolKey = archetype.id + (stillLife ? '|still' : '|model');
-        const subjectTemplate = pick('subject', poolKey,
-            () => stillLife ? this._stillLifeSubject(archetype) : this._getUniqueSubject(archetype));
-        const subject = subjectTemplate.replace(/\{piece\}/g, piece);
-        // An explicit Environment (Studio Beta) replaces the random location variant.
-        const envDesc = this._sceneModifier('environment', this.state.environment);
-        const sceneVariant = envDesc ? '' : pick('sceneVariant', poolKey, () => this._getSceneVariant(archetype.id, stillLife));
-        // Coherent lighting: if scene has time-of-day language, align lighting desc
-        // Since humanEnvs is now pure-location, lighting override only happens when
-        // the selected lighting option itself contains time-of-day keywords.
-        const lightingCoherent = this._getLightingForScene(sceneVariant, lighting);
-        // Only inject sceneVariant as a bodyPart if it's a location (not a time-of-day variant)
-        // This prevents two lighting descriptions in the same prompt.
-        const _sceneIsLight = /morning|dusk|twilight|blue hour|candlelit|overcast|midday|golden light|lantern light/i.test(sceneVariant);
-        const sceneVariantPart = envDesc || (_sceneIsLight ? '' : sceneVariant);
-
-        // ── FIX #1: Unified camera system — one lens per shot, no conflicts ──────────────────────
-        // Each angle gets a complete, self-contained camera description (CAMERA_ANGLES).
-        // 'auto' (or unset) = the angle that best fits this archetype, subject and piece.
-        const angleRaw = this.state.angle;
-        const angleExplicit = !!angleRaw && angleRaw !== 'auto';
-        const angleId = angleExplicit ? angleRaw : this._autoAngle(archetype, category, subjectTemplate, isHumanActive);
-        // v3.0: Camera profile — a chosen lens replaces only the lens part of the angle
-        // description; the angle's perspective and framing are kept.
-        const profileOverride = this.state.cameraProfile && this.state.cameraProfile !== 'auto'
-            ? (this.cameraProfiles.find(c => c.id === this.state.cameraProfile) || {}).desc || ''
-            : '';
-        const angleDesc = this.CAMERA_ANGLES[angleId] || '';
-        let cameraDesc = profileOverride
-            ? [this._withoutLens(angleDesc), profileOverride].filter(Boolean).join(', ')
-            : (angleDesc || 'shot on 85mm f/1.4 lens, shallow depth of field');
-        // Explicit Depth of Field (Studio Beta) replaces the aperture wording, then ISO.
-        const dofDesc = this._sceneModifier('dof', this.state.dof);
-        if (dofDesc) cameraDesc = [this._withoutAperture(cameraDesc), dofDesc].filter(Boolean).join(', ');
-        const isoDesc = this._sceneModifier('isoRange', this.state.isoRange);
-        if (isoDesc) cameraDesc = `${cameraDesc}, ${isoDesc}`;
-
-        // ── Metal descriptor for the chosen finish (skipped for watches) ──────────────────────
-        const silverDesc = isWatchProduct
-            ? 'precision timepiece, polished case and crystal, refined dial detail, luxury watch craftsmanship'
-            : (this.METAL_TEXT[this.state.material] || this.METAL_TEXT['sterling-silver']).v1;
-
-        // ── Surface/backdrop override ──────────────────────
-        let surfaceDesc = '';
-        if (this.state.surface !== 'none') {
-            const surfMap = {
-                'marble': 'on polished white Carrara marble surface with subtle grey veining',
-                'velvet': 'on deep rich velvet fabric with light catching the nap',
-                'sand': 'on fine warm sand with organic ripple patterns',
-                'concrete': 'on raw brushed concrete surface, industrial contrast',
-                'water': 'on water surface with gentle ripples and reflections',
-                'silk': 'on draped silk charmeuse fabric, lustrous folds',
-                'skin': 'against warm bare skin, intimate body context',
-                'stone-wall': 'against weathered natural stone wall backdrop',
-                'wood': 'on raw untreated wood grain surface, organic warmth',
-                'terracotta': 'on traditional Moroccan terracotta zellige tile, artisanal texture',
-                'mirrored-glass': 'on sharp mirrored glass surface, infinite reflections and modern polish',
-                'satin': 'on smooth lustrous satin fabric, soft rolling liquid folds',
-            };
-            surfaceDesc = surfMap[this.state.surface] || '';
+    // How badly a subject fits (0 = perfectly): wrong person presence rules it out, a
+    // model of the other gender, a hidden body part, a wrong body zone, stones on a
+    // stoneless piece or a surface/background that an explicit choice replaces make it
+    // a worse pick.
+    _subjectMisfit(text, ctx) {
+        const bare = String(text).replace(/\{piece\}/g, '');
+        const person = this._PERSON_WORDS.test(bare);
+        let score = 0;
+        // Person presence must match; a product archetype may still fall back to its
+        // hands-in-frame subjects when it has nothing else.
+        if (person !== ctx.withModel) score += ctx.softPerson ? 50 : 100;
+        if (ctx.withModel && ctx.gender) {
+            if ((ctx.gender === 'male' ? this._FEMALE_WORDS : this._MALE_WORDS).test(bare)) score += 20;
         }
-
-        // ── Color palette direction ──────────────────────
-        const paletteMap = {
-            'auto': '',   // auto: no palette constraint — AI picks what fits the scene
-            'neutral': 'neutral beige and cream color palette, warm luxury tone',
-            'warm-earth': 'warm earthy tones — amber, terracotta, sand, sienna',
-            'cool-steel': 'cool steel and slate blue tones, icy elegance',
-            'monochrome': 'strict monochrome palette, black white and silver only',
-            'jewel-tones': 'rich jewel tones — deep emerald, sapphire blue, ruby',
-            'deep-ocean': 'deep ocean blues and teals, midnight atmosphere',
-            'blush-rose': 'soft blush pink and dusty rose palette, feminine warmth',
-            'noir': 'film noir palette — deep blacks, sharp whites, smoky greys',
-        };
-        const paletteDesc = paletteMap[this.state.palette] || '';
-
-        // Jewelry Style direction
-        let jewelryStyleDesc = '';
-        if (this.state.jewelryStyle && this.state.jewelryStyle.length > 0) {
-            const styleTexts = {
-                'nano': 'ultra-fine nano jewelry aesthetic, delicate miniaturist craftsmanship',
-                'minimalist': 'clean minimalist design language, understated elegant forms',
-                'bohemian': 'free-spirited bohemian styling, organic shapes and natural textures',
-                'art-deco': 'geometric Art Deco motifs, symmetrical precision and luxury patterns',
-                'berber-traditional': 'authentic Berber traditional silverwork, tribal heritage motifs',
-                'gothic': 'bold gothic aesthetic, dark romantic design language',
-                'contemporary': 'modern contemporary luxury, clean architectural lines',
-                'vintage': 'vintage-inspired styling, antique romantic craftsmanship',
-                'streetwear': 'elevated streetwear aesthetic, urban bold and confident',
-            };
-            const texts = this.state.jewelryStyle
-                .filter(s => s !== 'none' && styleTexts[s])
-                .map(s => styleTexts[s]);
-            if (texts.length > 0) jewelryStyleDesc = texts.join(', ');
+        if (ctx.hairCovered && this._HAIR_WORDS.test(bare)) score += 10;
+        if (ctx.hairCovered && /\b(?:nape|bare (?:skin|neck|shoulders?)|off-shoulder)\b/i.test(bare)) score += 5;
+        if (ctx.withModel && ctx.gender === 'male' && /\blipstick\b/i.test(bare)) score += 20;
+        if (ctx.mouthCovered && this._MOUTH_WORDS.test(bare)) score += 10;
+        if (ctx.category !== 'watch' && this._WATCH_PARTS.test(bare)) score += 10;
+        // A necklace or pendant is worn at the front: a shot from behind hides it.
+        if (['necklace', 'pendant'].includes(ctx.category) && /\bfrom behind\b|\bback of the (?:neck|body)\b/i.test(bare)) score += 10;
+        const zones = this._CATEGORY_ZONES[ctx.category];
+        if (zones) {
+            const named = Object.keys(this._ZONES).filter(z => this._ZONES[z].test(bare));
+            if (named.length && !named.some(z => zones.includes(z))) score += 10;
         }
-
-        // (isHuman / noModel / isHumanActive / stillLife are decided at the top of this method.)
-
-        // Model styling (only for human archetypes) — gender-aware phrasing
-        const modelGenderForStyling = this.state.modelGender === 'none' ? 'female' : (this.state.modelGender || 'female');
-        let stylingDesc = '';
-        let outfitDesc = '';
-        let hijabDesc = '';
-        if (isHumanActive) {
-            const styleMap = {
-                'auto': pick('outfit', modelGenderForStyling + '|' + this.state.material,
-                    () => this._getRandomOutfit(modelGenderForStyling, this.state.material)),   // auto: palette-matched random outfit
-                'ai-choice': `outfit creatively chosen by the art director — high-fashion luxury jewelry campaign, neckline naturally open to display the ${this.state.category || 'piece'} piece, elevated editorial styling, garment silhouette and color chosen by the photographer to best complement the jewelry`,
-                'minimal': modelGenderForStyling === 'male'
-                    ? 'model in minimal clean styling, strong build as the canvas'
-                    : 'model in minimal styling, skin as the canvas',
-                'black-dress': modelGenderForStyling === 'male'
-                    ? 'model in tailored all-black outfit, dark shirt open at collar, jewelry as the contrast'
-                    : 'model wearing elegant black dress, jewelry as the contrast',
-                'silk-cami': modelGenderForStyling === 'male'
-                    ? 'model in fitted silk shirt, open collar, effortless luxury'
-                    : 'model in silk camisole, effortless luxury',
-                'blazer': 'model in tailored suit/blazer, power dressing',
-                'caftan': 'model in traditional Moroccan caftan, heritage styling',
-                'white-shirt': 'model in crisp white button-down shirt, classic editorial',
-                'evening-gown': modelGenderForStyling === 'male'
-                    ? 'model in formal black-tie tuxedo, red carpet elegance'
-                    : 'model in floor-length evening gown, red carpet elegance',
-                'streetwear': 'model in elevated streetwear, contemporary luxury',
-            };
-            stylingDesc = styleMap[this.state.styling] || '';
-            outfitDesc = stylingDesc;
-
-            // ── v3.0: Hijabi injection ──────────────────────
-            if (this.state.hijabi) {
-                const hijabStyleMap = {
-                    'classic':    'model wearing a beautifully draped classic hijab covering hair and neck, elegant and dignified styling, fabric falling naturally around the face',
-                    'draped':     'model wearing a luxuriously draped silk hijab loosely arranged around head and shoulders, fabric pooling softly, high-fashion editorial styling',
-                    'turban':     'model wearing a fashion-forward wrapped turban headpiece, contemporary urban styling, bold and confident aesthetic',
-                    'niqab':      'model wearing a flowing niqab — face veil with only the eyes exposed, intensely artistic and editorial, eyes the sole focal point above the veil edge, deeply atmospheric and dramatic',
-                    'modern':     'model wearing a contemporary minimal hijab with clean precise folds framing the face, modern modest fashion aesthetic, sophisticated and editorial',
-                    'sheer-veil': 'model with a sheer translucent chiffon veil draped loosely over the head and partially across the face, ethereal and artistic, fabric creating softness and visual poetry',
-                };
-                hijabDesc = hijabStyleMap[this.state.hijabStyle || 'classic'];
-                stylingDesc = stylingDesc ? `${stylingDesc}, ${hijabDesc}` : hijabDesc;
-            }
-        }
-
-        // Pose detail — ONLY injected for archetypes whose subject templates
-        // describe a general scene (not a specific body position). For archetypes
-        // like surface-lean, hair-drama, body-intimate, masculine-editorial, their
-        // subject templates already fully describe the model's position — injecting
-        // poseDesc on top would create two conflicting body descriptions.
-        const POSE_ARCHETYPES = new Set(['editorial-model', 'bw-dramatic', 'cinematic-portrait', 'lifestyle-moment']);
-        let poseDesc = '';
-        if (isHumanActive && POSE_ARCHETYPES.has(archetype.id)) {
-            const poseMap = {
-                'body-intimate': [
-                    'hand touching chin, {piece} centered on finger',
-                    'hand placed gently on cheek, slight skin crease at fingertip, {piece} visible',
-                    'fingers lightly pressed to lips, natural hand tension, {piece} prominent',
-                    'hand resting against collarbone, relaxed natural wrist angle',
-                    'both hands framing face loosely, natural finger drape',
-                ],
-                'editorial-model': [
-                    'standing with one hand on hip, other loosely at side, confident gaze',
-                    'arms crossed elegantly, jewelry on full display, strong editorial stance',
-                    'one hand raised touching ear/earring, other dropped naturally',
-                    'seated, hands resting in lap, upright elegant posture',
-                    'leaning slightly forward, hands on thighs, direct camera engagement',
-                ],
-                'surface-lean': [
-                    'both elbows on surface, chin resting on interlaced fingers, direct gaze',
-                    'one elbow on surface, head tilted, hand loosely at cheek',
-                    'forearms flat on surface, leaning forward, jewelry at forefront',
-                ],
-                'hair-drama': [
-                    'both hands raised through hair, fingers spread, natural ring display',
-                    'one hand lifting hair off shoulder, elbow raised, earring exposed',
-                    'fingertips at crown pulling hair back, wrists bent naturally',
-                ],
-                'masculine-editorial': [
-                    'standing with hands in jacket pockets, ring at cuff',
-                    'forearm resting on ledge, sleeves rolled, bracelet prominent',
-                    'both arms crossed, ring on clasped hands visible',
-                ],
-            };
-            const poses = poseMap[archetype.id];
-            if (poses && poses.length > 0) {
-                // Pick random pose for variety
-                poseDesc = pick('pose', archetype.id, () => poses[Math.floor(Math.random() * poses.length)]);
-            }
-        }
-
-        // Realism enhancers — wrinkles, natural skin texture for body shots
-        // (only when a person is actually in frame — not for a "No Model" still life)
-        let realismDesc = '';
-        if (isHumanActive) {
-            const realismPool = [
-                'natural skin texture with subtle knuckle wrinkles adding authenticity',
-                'fine skin creases at finger joints visible, photorealistic tactile quality',
-                'natural hand tension and micro-wrinkles at contact points, editorial realism',
-                'skin pores visible in close crop, photographic skin texture',
-            ];
-            // Use user-controlled realism settings if any are set
-            const userSkinTexture = this.state?.skinTexture || 'natural';
-            const userWrinkles = this.state?.wrinkles || 'none';
-            const userBodyHair = this.state?.bodyHair || 'none';
-            const userSkinDetail = this.state?.skinDetail || 'none';
-
-            const realismParts = [];
-
-            // Skin texture
-            const skinTextureMap = {
-                'natural':  'natural photorealistic skin texture with authentic micro-detail',
-                'pores':    'visible skin pores and fine texture, hyperrealistic skin surface',
-                'smooth':   'professionally smooth skin, polished editorial finish',
-                'luminous': 'luminous skin glow, soft subsurface scattering effect',
-            };
-            if (userSkinTexture !== 'natural') realismParts.push(skinTextureMap[userSkinTexture] || '');
-
-            // Wrinkles / expression lines
-            const wrinkleMap = {
-                'none':      '',
-                'subtle':    'subtle natural expression lines, authentic skin character',
-                'natural':   'natural wrinkles and skin creases visible, photorealistic authenticity',
-                'character': 'prominent character expression lines, aged editorial realism',
-            };
-            if (userWrinkles !== 'none') realismParts.push(wrinkleMap[userWrinkles] || '');
-
-            // Body hair
-            const bodyHairMap = {
-                'none':    '',
-                'fine':    'fine subtle arm hair visible, natural human skin detail',
-                'natural': 'natural body hair visible on arms and hands, authentic human realism',
-            };
-            if (userBodyHair !== 'none') realismParts.push(bodyHairMap[userBodyHair] || '');
-
-            // Skin detail
-            const skinDetailMap = {
-                'none':        '',
-                'veins':       'subtle veins visible beneath skin, dermal translucency',
-                'freckles':    'natural freckles and sun spots visible on skin',
-                'translucent': 'skin translucency with subsurface scattering, light passing through thin skin areas',
-                // Studio Beta's single "Veins / Freckles" toggle
-                'veins-freckles': 'subtle veins visible beneath skin and natural freckles, authentic dermal detail',
-            };
-            if (userSkinDetail !== 'none') realismParts.push(skinDetailMap[userSkinDetail] || '');
-
-            if (realismParts.length > 0) {
-                realismDesc = realismParts.filter(Boolean).join(', ');
-            } else {
-                // Fall back to the random realism pool for variety
-                realismDesc = pick('realism', 'pool', () => realismPool[Math.floor(Math.random() * realismPool.length)]);
-            }
-        }
-
-        // ── Facial Expression (human archetypes only) ──────────────────────
-        let expressionDesc = '';
-        if (isHumanActive) {
-            const expressionMap = {
-                'none':       '',
-                'serene':     'serene calm expression, soft relaxed face, eyes slightly downcast, peaceful',
-                'smile':      'gentle authentic smile, soft lips slightly parted, warmth in eyes',
-                'joy':        'genuine laugh, joy visible in crinkled eyes and open smile, natural euphoria',
-                'intense':    'intense focused gaze directly at camera, strong confident expression, sharp eyes',
-                'sultry':     'sultry confident look, soft half-smile, eyes full of quiet confidence and sensuality',
-                'thoughtful': 'thoughtful dreamy expression, eyes slightly unfocused, contemplative and poetic mood',
-            };
-            expressionDesc = expressionMap[this.state?.facialExpression || 'none'] || '';
-        }
-
-
-        // ── Anatomy constraints (only when humans are present) ──────────────────────
-        let anatomyConstraint = '';
-        if (isHumanActive || (archetype.id === 'shadow-play' && !noModel)) {
-            anatomyConstraint = 'CRITICAL: Flawless human anatomy — exactly two arms, exactly two hands, exactly five fingers per hand, correct joint proportions, natural knuckle spacing, no extra or fused digits, photorealistic skin texture.';
-        }
-
-        // ── Hallmark brand injection — only when enabled ──────────────────────
-        let hallmarkDesc = '';
-        if (this.state.hallmarkEnabled) {
-            const hallmarkCat = this.state.product === 'watch' ? 'watch' : (this.state.category || 'general');
-            const hallmarkMap = {
-                'ring':      'tiny "ELARIS" engraved on the inner band, subtle 925 hallmark stamp visible at the edge',
-                'necklace':  'small four-pointed star emblem on the chain clasp, delicate "ELARIS" tag on the chain end link',
-                'bracelet':  'subtle "ELARIS" engraved on inner clasp plate, small star hallmark on the link near closure',
-                'earrings':  'microscopic "ELARIS" stamp on the earring post back, barely visible brand mark',
-                'pendant':   'tiny "ELARIS" engraved on the bail, star hallmark on the pendant reverse side',
-                'brooch':    '"ELARIS" hallmark on the pin clasp mechanism, brand signature subtly visible',
-                'anklet':    'small "ELARIS" brand tag on the anklet chain near clasp',
-                'bangles':   '"ELARIS" engraved on the inner surface of the bangle, 925 hallmark near opening',
-                'watch':     '"ELARIS" brand logo engraved on the watch dial and crown, subtle hallmark on the clasp',
-                'jewelry-set': 'tiny "ELARIS" engraved on the ring inner band, small four-pointed star emblem on the necklace clasp, microscopic brand mark on earring posts — hallmark present on each piece of the set',
-                'general':   'subtle brand hallmark reading "ELARIS" engraved on a discreet area of the jewelry piece, small star emblem stamp',
-            };
-            hallmarkDesc = hallmarkMap[hallmarkCat] || hallmarkMap['general'];
-        }
-
-        // ── Category-aware placement rule (negatives are built after brand touch, below) ──
-        const placementRule  = this._buildPlacementInstruction(category);
-
-        // ── Prompt structure: body (scene) + tail (quality + constraints) ──────────────────────
-        // Splitting into body/tail allows Model Details to be injected BEFORE the
-        // technical tail in consistency mode, ensuring the model descriptor has
-        // higher token weight than the negative prompt.
-        // ── Brand Touch (Elaris identity on model clothing / image) ──────────────────
-        let brandTouchDesc = '';
-        let brandTouchKind = '';
-        let brandPlacement = '';
-        if (this.state.brandIdentityEnabled) {
-            if (isHumanActive && this.state.brandTouch === 'logomark') {
-                // Enamel-filled pin: dark enamel body + polished gold outline = always visible on any garment
-                brandTouchKind = 'logomark';
-                brandTouchDesc = 'model wearing a small "Elaris" four-pointed star pin at the lapel — a discreet luxury pin worn as a brand signature, enamel-and-metal two-tone finish naturally contrasting the garment, pin size proportional to real luxury brand pins (small and refined), positioned naturally on the clothing as an authentic styling detail';
-            } else if (isHumanActive && this.state.brandTouch === 'wordmark') {
-                // Luxury tri-layer embroidery technique
-                brandTouchKind = 'wordmark';
-                brandPlacement = pick('brandPlacement', category + '|' + angleId, () => this._getBrandPlacement(category, angleId));
-                brandTouchDesc = `a small "ELARIS" embroidered wordmark on the garment in capitalized tight-kerned serif lettering with minimal letter spacing, letters nearly touching like a real luxury clothing label — fine single-thread stitching ${brandPlacement}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, styled as an authentic luxury clothing label integrated into the garment, reads as a genuine brand signature not a graphic overlay, NOT widely spaced, NOT spread apart letters`;
-            } else if (this.state.brandTouch === 'logo-embedded') {
-                // v3.6: Sophisticated logo composited into the image like Dior/Chanel campaigns
-                brandTouchKind = 'logo-embedded';
-                brandTouchDesc = 'Include a sophisticated "ELARIS" brand logo rendered directly within the image composition — elegant serif typography in a luxury fashion campaign style, the AI must choose the placement and sizing to best complement this specific shot (options: elegant corner placement, center overlapping the subject like Dior campaign advertising, lower-third banner, or subtly integrated into the scene background), the logo should feel like an authentic part of a high-end luxury fashion campaign advertisement not a watermark, vary the placement and scale naturally with each generation, the typography should be bold and confident like Dior or Chanel campaign logos';
-            }
-        }
-
-        // ── Category-aware negative prompts (placement + scale + anatomy) ──────────────
-        // Never forbid what this prompt asks for: brand text (hallmark / logo / wordmark)
-        // and Ultra realism's deliberate chromatic aberration.
-        const negativePrompt = this._buildCategoryNegatives(category, isHumanActive, {
-            brandText: !!(hallmarkDesc || brandTouchDesc),
-            allowChromaticAberration: this.state.realismLevel === 'ultra',
-        });
-
-        // hasNamedProfile: computed early to avoid TDZ — used in bodyParts below
-        // When a named profile (Amir, Lina...) is active, don't inject random skin tone on top.
-        const activeProfile = this.state.consistencyOn
-            ? this.state.profiles.find(prof => prof.id === this.state.activeProfileId)
-            : null;
-        const hasNamedProfile = !!activeProfile;
-
-        // Studio Beta scene controls (empty when unset)
-        const seasonDesc    = this._sceneModifier('seasonTime', this.state.seasonTime);
-        const intensityDesc = this._sceneModifier('moodIntensity', this.state.moodIntensity);
-        const filmDesc      = this._sceneModifier('filmStyle', this.state.filmStyle);
-        const focusDesc     = isHumanActive ? this._sceneModifier('bodyFocus', this.state.bodyFocus) : '';
-        const qualityPrefix = (this.sceneModifierText.promptQuality[this.state.promptQuality]) || '';
-
-        // SKIN TONE — randomized per generation for model diversity (human archetypes only)
-        const skinTone = (isHumanActive && !hasNamedProfile)
-            ? pick('skinTone', (this.state.modelGender || '') + '|' + (this.state.modelEthnicity || 'diverse'),
-                () => this._getRandomSkinTone(this.state.modelGender))
-            : '';
-
-        const bodyParts = [
-            // SUBJECT — jewelry piece at the center, material injected cleanly on next line
-            subject + '.',
-            stillLife ? 'Still-life product shot: no person, no model, no hands or body parts in frame.' : '',
-            sceneVariantPart ? sceneVariantPart + '.' : '',
-            // MODEL GENDER — explicit instruction for AI (human archetypes only, standard path)
-            (isHumanActive) ? `${this.state.modelGender === 'male' ? 'Male model, man' : 'Female model, woman'}.` : '',
-            // PLACEMENT RULE — only for human archetypes (product shots have no finger)
-            (isHumanActive && placementRule) ? `${placementRule}.` : '',
-            // MATERIAL — stated once, cleanly, with metal descriptor (watch: skip material, use watch descriptor)
-            isWatchProduct ? `${silverDesc}.` : `${material}, ${silverDesc}.`,
-            // SCENE — archetype visual story (lighting, composition, mood)
-            (stillLife ? this._stillLifeScene(archetype.scene) : archetype.scene) + '.',
-            // LIVE TREND (Studio Beta) — kept out of pieceDesc so its wording isn't stripped
-            this.state.trendDirective ? `Trend direction: ${this.state.trendDirective}.` : '',
-            // CAMERA — lens, aperture, depth of field (no angle conflict)
-            `${cameraDesc}.`,
-            // MOOD & LIGHTING (v3.1: single unified value)
-            `${mood} mood, ${lightingCoherent}.`,
-            seasonDesc ? `${seasonDesc}.` : '',
-            intensityDesc ? `${intensityDesc}.` : '',
-            // POSE (human only, no embedded skin notes)
-            poseDesc ? `Pose: ${poseDesc}.` : '',
-            focusDesc ? `Framing: ${focusDesc}.` : '',
-            // EXPRESSION (human only)
-            expressionDesc ? `Expression: ${expressionDesc}.` : '',
-            skinTone ? skinTone + '.' : '',
-            // REALISM (skin texture, wrinkles, body hair, skin detail — user controlled)
-            realismDesc ? realismDesc + '.' : '',
-            // STYLING (outfit) — placed before realism; clearly defines garment
-            stylingDesc ? stylingDesc + '.' : '',
-            // SURFACE / PALETTE — product/environment descriptors
-            surfaceDesc ? surfaceDesc + '.' : '',
-            paletteDesc ? paletteDesc + '.' : '',
-            filmDesc ? `Film look: ${filmDesc}.` : '',
-            // JEWELRY STYLE DIRECTION
-            jewelryStyleDesc ? `Style direction: ${jewelryStyleDesc}.` : '',
-            // BRAND HALLMARK (optional — jewelry engraving)
-            hallmarkDesc ? `Brand hallmark details: ${hallmarkDesc}.` : '',
-            // BRAND TOUCH — Elaris identity on model clothing (logomark / wordmark)
-            brandTouchDesc ? brandTouchDesc + '.' : '',
-        ];
-
-        // Compute ratio string — flat-lay/overhead angles get a framing note in 9:16
-        const _flatAngles = ['flat-lay', 'overhead', 'top-down-hand'];
-        const ratioStr = (_flatAngles.includes(angleId) && ratio === '9:16')
-            ? `Aspect ratio ${ratio}. Note: this overhead/flat angle composition is optimised for 1:1 or 4:5 framing.`
-            : `Aspect ratio ${ratio}.`;
-
-        const tailParts = [
-            (() => {
-                const rl = this.state.realismLevel || 'standard';
-                const base = 'Sharp critical focus on jewelry, perfect geometric proportions, 8K resolution, style photographic, professional commercial photography, RAW quality.';
-                if (rl === 'high') return base + ' Shot on DSLR sensor, natural micro-imperfections in lighting, subtle film grain texture, shallow depth of field falloff at edges, natural lens vignetting, subsurface scattering on skin.';
-                if (rl === 'ultra') return base + ' Shot on full-frame DSLR sensor, visible sensor noise at ISO 400, natural chromatic aberration at frame edges, organic film grain texture, micro-detail on fabric weave and thread texture, individual skin pores and micro-hairs visible, subsurface light scattering through earlobes and thin skin, natural lens imperfections including slight barrel distortion, captured in RAW format with DNG color profile, real photography not CGI not 3D render.';
-                return base;
-            })(),
-            anatomyConstraint,
-            // Aspect ratio: aerial/flat-lay angles read better in square/4:5
-            ratioStr,
-            negativePrompt,
-        ];
-
-        // v3.3: Inject realism prefix at the START of the prompt for higher token priority
-        const realismPrefix = (() => {
-            const rl = this.state.realismLevel || 'standard';
-            if (rl === 'high') return 'Hyper-realistic editorial photograph. Real photography, not AI-generated. Natural imperfections: slight lens vignetting, organic film grain, authentic skin texture with visible pores, natural color cast from real lighting.';
-            if (rl === 'ultra') return 'Indistinguishable from a real photograph taken by a professional photographer on a real camera sensor. Visible: natural sensor noise, chromatic aberration at frame edges, organic film grain, fabric thread texture, individual skin pores and micro-hairs, subsurface light scattering through thin skin and earlobes, natural lens barrel distortion, captured in RAW format with real DNG color profile. NOT CGI, NOT 3D render, NOT illustration, NOT digital art.';
-            return '';
-        })();
-        // Model Consistency: the named profile replaces the random skin tone, so its
-        // descriptor must be in the prompt (it used to be added only in multi-image mode).
-        const modelDetails = (isHumanActive && activeProfile)
-            ? `Model Details (sole appearance reference — match exactly): ${activeProfile.descriptor}.`
-            : '';
-
-        // ── MULTI-IMAGE CONSISTENCY (classic format: reference images the user attaches) ──
-        let multi = null;
-        if (this.state.jewelryCount > 0) {
-            const hasModelDesc  = this.state.consistencyOn;               // model descriptor enabled
-            const hasModelImage = hasModelDesc && this.state.modelImageAttached; // ALSO has photo attached
-            const modelGender   = this.state.modelGender || 'female';
-            const activeProf    = (this.state.profiles || []).find(prof => prof.id === this.state.activeProfileId);
-            multi = {
-                jc: this.state.jewelryCount,
-                hasModelDesc: !!hasModelDesc,
-                hasModelImage: !!hasModelImage,
-                genderNoun: modelGender === 'male' ? 'man' : 'woman',
-                genderHisHer: modelGender === 'male' ? 'his' : 'her',
-                category: this.state.category || 'piece',
-                isHumanActive,
-                profileDescriptor: activeProf ? activeProf.descriptor : '',
-            };
-        }
-
-        // Drawn last so the picks above keep their order (and the classic output its seed).
-        const seed = pick('seed', 'v2', () => Math.random());
-
-        const spec = {
-            v: 2,
-            archetype: { id: archetype.id, name: archetype.name || archetype.id },
-            picks,
-            classic: { qualityPrefix, realismPrefix, bodyParts, modelDetails, tailParts, multi },
-        };
-        spec.shot = this._resolveShot({
-            archetype, seed, category, isWatchProduct, material, piece, ratio,
-            isHuman, noModel, isHumanActive, stillLife,
-            subjectTemplate, envDesc, sceneVariant, sceneIsLight: _sceneIsLight, surfaceDesc,
-            angleId, angleExplicit, cameraDesc, profileOverride,
-            lightingId, lightExplicit, lighting,
-            paletteDesc, jewelryStyleDesc, outfitDesc, hijabDesc, poseDesc, realismDesc, expressionDesc,
-            skinTone, activeProfile: activeProfile ? { id: activeProfile.id, name: activeProfile.name, descriptor: activeProfile.descriptor } : null,
-            hallmarkOn: !!hallmarkDesc, brandTouchKind, brandPlacement,
-            seasonDesc, intensityDesc, filmDesc, focusDesc,
-        });
-        return spec;
+        if (ctx.framing === 'wide' && /\b(?:close-up|close up|macro|tight crop|tight face crop|extreme close)\b/i.test(bare)) score += 8;
+        if (ctx.framing === 'close' && /\b(?:full-body|full body|full-length|wide shot)\b/i.test(bare)) score += 8;
+        if (!ctx.hasStones && this._STONE_WORDS.test(bare)) score += 5;
+        if (ctx.hero && !new RegExp(`\\b${ctx.hero.replace(/s$/, '')}`, 'i').test(bare)) score += 2;
+        if (ctx.explicitSurface && /\b(?:on|atop|against|resting|placed|draped|nestled|laid|arranged)\b[^,]*\b(?:surface|slab|panel|marble|velvet|sand|stone|wood|concrete|fabric|linen|silk|satin|paper|tray|cushion|mirror|glass)\b/i.test(bare)) score += 3;
+        if (ctx.explicitSetting && /\b(?:background|backdrop|seamless|location|street|rooftop|garden|interior|studio)\b/i.test(bare)) score += 3;
+        return score;
     },
 
-    _compileClassic(spec) {
-        const c = spec.classic;
-        const m = c.multi;
-        if (!m) return [c.qualityPrefix, c.realismPrefix, ...c.bodyParts, c.modelDetails, ...c.tailParts].filter(Boolean).join(' ');
-
-        let p = `[IMAGE REFERENCES]\n`;
-        p += m.jc === 1
-            ? `Image 1 shows the exact jewelry piece to be featured.\n`
-            : `Images 1 to ${m.jc} show the exact jewelry piece to be featured.\n`;
-        // Only reference an image slot if the user is actually attaching one
-        if (m.hasModelImage) {
-            p += `Image ${m.jc + 1} is the model reference — keep ${m.genderHisHer} face, features, and skin tone perfectly identical.\n`;
+    // Rewrites gendered words for a model of the other gender ("man in dark blazer" for
+    // a female model). "her" becomes "his" before a noun and "him" otherwise.
+    _swapGender(text, toMale) {
+        const pairs = [['woman', 'man'], ['women', 'men'], ['girl', 'boy'], ['girls', 'boys'], ['bride', 'groom'], ['brides', 'grooms'],
+            ['mother', 'father'], ['mothers', 'fathers'], ['daughter', 'son'], ['daughters', 'sons'], ['grandmother', 'grandfather'],
+            ['granddaughter', 'grandson'], ['female', 'male'], ['she', 'he'], ['herself', 'himself'], ['lady', 'gentleman'], ['ladies', 'gentlemen']];
+        const map = {};
+        pairs.forEach(([f, m]) => { if (toMale) map[f] = m; else map[m] = f; });
+        const keepCase = (src, w) => (src[0] === src[0].toUpperCase() ? w[0].toUpperCase() + w.slice(1) : w);
+        let out = String(text || '').replace(/\b[A-Za-z]+\b/g, w => (map[w.toLowerCase()] ? keepCase(w, map[w.toLowerCase()]) : w));
+        if (toMale) {
+            out = out.replace(/\bher\b(?=\s+(?!(?:and|or|but|as|at|in|on|to|with|from|by|for|while|behind|beside|around|into|over|under|near|like|than|who|which|that|is|was)\b)[a-z])/gi, m => keepCase(m, 'his'))
+                .replace(/\bher\b/gi, m => keepCase(m, 'him'));
+        } else {
+            out = out.replace(/\b(?:his|him)\b/gi, m => keepCase(m, 'her'));
         }
-        p += `\n[JEWELRY RECONSTRUCTION]\n`;
-        p += `Use ALL jewelry image(s) to reconstruct the ${m.category}. Maintain exact metal color, stone placement, and proportions.\n`;
-        p += `\n[SCENE DIRECTION]\n`;
-        if (m.hasModelImage) {
-            // Photo attached: instruct AI to match the specific image
-            p += `Generate a photo of the exact same ${m.genderNoun} from Image ${m.jc + 1} wearing the jewelry.\n`;
-        } else if (m.hasModelDesc && m.isHumanActive) {
-            // No photo: instruct AI to use the text descriptor as sole model reference
-            p += `Generate a photo of a ${m.genderNoun} matching the Model Details description below, wearing the jewelry.\n`;
-        } else if (m.isHumanActive) {
-            p += `Generate a photo of a model wearing the jewelry.\n`;
-        }
-        // Product archetypes: no model direction — scene description speaks for itself
-        p += c.bodyParts.filter(Boolean).join(' ');
-        // Model Details BEFORE the technical tail — higher token priority
-        if (m.hasModelDesc && m.isHumanActive && m.profileDescriptor) {
-            p += m.hasModelImage
-                ? `\n\nModel Details: ${m.profileDescriptor}.`
-                // Text-only: make the descriptor more prominent as the sole reference
-                : `\n\nModel Details (sole appearance reference — no image attached): ${m.profileDescriptor}.`;
-        }
-        // Technical tail last
-        p += '\n\n' + c.tailParts.filter(Boolean).join(' ');
-        return p;
+        return out;
     },
 
-    // ══ Prompt Engine v2: one coherent shot ════════════════════════════════
-    // What each lighting choice physically looks like (v1 only repeated its label).
+    // Under a hijab the hair is covered: hair wording becomes the hijab's fabric.
+    _coverHair(text) {
+        const MOVE = /^(?:wind-blown|windswept|flowing|loose|wild|wet)$/i;
+        return String(text || '')
+            .replace(/\b(?:fabric\/hair|hair\/fabric|hair and fabric|fabric and hair)\b/gi, 'fabric')
+            .replace(/\b(?:skin and hair|hair and skin)\b/gi, 'skin')
+            .replace(/\bcovering (?:the )?hair\b/gi, 'over the hijab')
+            .replace(/\s+into (?:a )?loose updo\b/gi, '')
+            .replace(/\b((?:(?:long|loose|wild|wind-blown|windswept|sun-kissed|slicked-back|tousled|flowing|wet)\s+)*)hair\b/gi,
+                (m, adj) => [...adj.split(/\s+/).filter(w => MOVE.test(w)), 'hijab fabric'].join(' '))
+            .replace(/\bhijab fabric (?:off|at) (?:the )?(?:neck|nape)\b/gi, 'hijab fabric at the shoulder');
+    },
+
+    // "A or B" light alternatives in an archetype's light, settled into one: the one
+    // that matches the family of the other light clauses (neon streetlights → the night
+    // option), else a seeded pick. "studio or …" is left for the setting to settle.
+    _decideLight(clauses, seed) {
+        const NOUN = /\b(?:light|lighting|lights|sunlight|daylight|glow|backlight|flash|box)\b/i;
+        const fixed = clauses.filter(c => !/\s+or\s+/i.test(c));
+        const fams = new Set(fixed.map(c => this._lightFamilyOf(c)).filter(f => !['any', 'studio'].includes(f)));
+        let k = 0;
+        return clauses.map(c => {
+            const m = /\bstudio or\b/i.test(c) ? null : c.match(/^(.*?)\s+or\s+(.*)$/i);
+            if (!m) return c;
+            let [, a, b] = m;
+            const tailOf = t => (t.match(/\b((?:light|lighting|pattern)(?:\s+(?:light|lighting|pattern))*)$/i) || [])[1] || '';
+            if (!NOUN.test(a) && tailOf(b)) a = `${a} ${tailOf(b)}`;
+            if (!NOUN.test(b) && tailOf(a)) b = `${b} ${tailOf(a)}`;
+            if (this._clauseKind(a) !== 'light' || this._clauseKind(b) !== 'light') return c;
+            const fa = this._lightFamilyOf(a), fb = this._lightFamilyOf(b);
+            if (fams.has(fa) && !fams.has(fb)) return a;
+            if (fams.has(fb) && !fams.has(fa)) return b;
+            return this._seeded(seed, 300 + (++k)) < 0.5 ? a : b;
+        });
+    },
+
+    // Picks the archetype subject that fits best, rotating through the fitting ones.
+    _pickSubject(archetype, ctx) {
+        const subjects = archetype.subjects || [];
+        const scores = subjects.map(s => this._subjectMisfit(s, ctx));
+        const best = Math.min(...scores, 100);
+        if (!subjects.length || best >= 100) {
+            // Nothing fits who is in frame: a still life of the piece alone, or (a model
+            // archetype with no model-free subject) the archetype's subjects as they are.
+            return ctx.withModel && subjects.length ? subjects[Math.floor(Math.random() * subjects.length)]
+                : '{piece} presented on its own, the sole subject of the frame';
+        }
+        const allowed = scores.map((s, i) => (s === best ? i : -1)).filter(i => i >= 0);
+        return this._getUniqueSubject(archetype, allowed);
+    },
+
+    // ── Metals ──────────────────────────────────────────────────────────────
+    // family: silver | gold (menu groups); look: the color the eye reads (vermeil reads
+    // gold); word / plural: replace "silver" in archetype wording; tone: outfit palette;
+    // stamp: purity hallmark; v1: the material line; lock: color accuracy; light: how
+    // light plays on the surface; neg: metal colors the negative prompt rules out.
+    METAL_TEXT: {
+        'sterling-silver': {
+            family: 'silver', look: 'silver', word: 'silver', plural: 'silvers', tone: 'cool', stamp: '925',
+            v1: 'a bright white luster, polished surfaces with crisp reflections and clean specular highlights',
+            lock: 'true sterling silver color, bright white metal, not grey, not dull, no yellow or gold tint',
+            light: 'crisp specular highlights on the polished silver, no blown-out hotspots',
+            neg: 'yellow or gold-toned jewelry metal, dull grey or tarnished metal',
+        },
+        '800-silver': {
+            family: 'silver', look: 'silver', word: 'silver', plural: 'silvers', tone: 'neutral', stamp: '800',
+            v1: 'traditional Moroccan silverwork with a soft warm-white tone, hand-hammered artisanal texture and a gentle aged patina in the recesses',
+            lock: 'true 800 silver color, soft warm-white silver with a gentle patina, no gold tint',
+            light: 'soft highlights that reveal the hammered texture',
+            neg: 'yellow or gold-toned jewelry metal, mirror-chrome finish',
+        },
+        'oxidized-silver': {
+            family: 'silver', look: 'silver', word: 'silver', plural: 'silvers', tone: 'neutral', stamp: '925',
+            v1: 'blackened recesses and engraved details contrasting with polished raised highlights, a vintage patina',
+            lock: 'true oxidized silver, dark patina in the recesses with bright silver high points, not black-plated, no gold tint',
+            light: 'raking light that brings out the dark patina and the relief',
+            neg: 'yellow or gold-toned jewelry metal, uniformly shiny finish without patina',
+        },
+        'brushed-matte': {
+            family: 'silver', look: 'silver', word: 'silver', plural: 'silvers', tone: 'cool', stamp: '925',
+            v1: 'a satin finish with fine linear brush marks and a soft low-gloss sheen',
+            lock: 'true brushed silver, a soft satin white-grey sheen, not mirror-shiny, no gold tint',
+            light: 'broad soft highlights on the satin surface, no mirror reflections',
+            neg: 'yellow or gold-toned jewelry metal, mirror-polished chrome finish',
+        },
+        'high-polish': {
+            family: 'silver', look: 'silver', word: 'silver', plural: 'silvers', tone: 'cool', stamp: '925',
+            v1: 'a mirror-bright rhodium-plated surface with a brilliant cool-white luster',
+            lock: 'true rhodium-bright white metal, brilliant and cool, not grey, no gold tint',
+            light: 'clean mirror reflections and crisp specular highlights without blown-out hotspots',
+            neg: 'yellow or gold-toned jewelry metal, dull or brushed finish',
+        },
+        'silver-vermeil': {
+            family: 'silver', look: 'gold', word: 'gold', plural: 'golds', tone: 'warm', stamp: '925',
+            v1: 'sterling silver thickly plated in warm yellow gold, a rich golden luster with soft reflections',
+            lock: 'true vermeil color, a warm yellow-gold surface, not brassy, not orange, no silver showing through',
+            light: 'warm highlights glowing on the gold surface',
+            neg: 'silver-colored jewelry metal, brassy or orange tint, worn or flaking plating',
+        },
+        '18k-yellow-gold': {
+            family: 'gold', look: 'gold', word: 'gold', plural: 'golds', tone: 'warm', stamp: '750',
+            v1: 'the warm buttery luster of true 750 gold, polished surfaces with soft golden reflections and crisp specular highlights',
+            lock: 'true 18K yellow gold color, rich, warm and buttery, not brassy, not orange, not pale lemon, not silver',
+            light: 'warm golden highlights and soft reflections across the polished gold, no blown-out hotspots',
+            neg: 'silver-colored or grey jewelry metal, brassy or orange tint, pale lemon-yellow tint, cheap costume-jewelry shine',
+        },
+        '18k-rose-gold': {
+            family: 'gold', look: 'gold', word: 'rose gold', plural: 'rose golds', tone: 'warm', stamp: '750',
+            v1: 'the soft pink-copper blush of 750 rose gold, a warm romantic luster and gentle rosy reflections',
+            lock: 'true 18K rose gold color, a soft pink-copper blush, not orange, not brown copper, not yellow gold',
+            light: 'soft rosy highlights that bring out the pink-gold warmth',
+            neg: 'silver-colored or yellow gold jewelry metal, orange or brown copper tint',
+        },
+        '18k-white-gold': {
+            family: 'gold', look: 'white', word: 'white gold', plural: 'silvers', tone: 'cool', stamp: '750',
+            v1: 'a bright rhodium-finished cool-white surface of 750 white gold, platinum-like brilliance and crisp mirror reflections',
+            lock: 'true 18K white gold color, bright cool white with a platinum-like sheen, not grey, not yellowish, not dull',
+            light: 'crisp cool-white highlights and clean mirror reflections, no blown-out hotspots',
+            neg: 'yellow or rose-toned jewelry metal, dull grey or tarnished metal',
+        },
+        'red-gold-beldi': {
+            family: 'gold', look: 'gold', word: 'red gold', plural: 'golds', tone: 'warm', stamp: '750',
+            v1: 'traditional Moroccan beldi gold with a deep, saturated reddish tone richer and warmer than standard yellow gold, high-copper warmth and a soft handcrafted luster typical of heritage beldi jewelry',
+            lock: 'true beldi red-gold color, a deep saturated reddish gold, noticeably redder and richer than yellow gold, not orange, not rose-pink, not brassy',
+            light: 'warm saturated highlights that bring out the deep red-gold tone',
+            neg: 'pale yellow gold, silver-colored jewelry metal, orange or rose-pink tint',
+        },
+    },
+    WATCH_TEXT: {
+        family: 'watch', look: 'silver', word: 'steel', plural: 'silvers', tone: 'neutral', stamp: '',
+        v1: 'precision timepiece, polished case and crystal, refined dial detail, luxury watch craftsmanship',
+        lock: '', light: 'controlled reflections on the crystal and the polished case', neg: '',
+    },
+
+    // The metal for a material id (unknown ids fall back to 925 sterling silver).
+    metalFor(materialId) {
+        return this.METAL_TEXT[materialId] || this.METAL_TEXT['sterling-silver'];
+    },
+
+    // <option>s for a material <select>, grouped Silver / Gold.
+    materialOptionsHTML(selectedId, labelOf) {
+        const lbl = labelOf || (m => this._t('ps_mat_' + m.id.replace(/-/g, '_'), m.label));
+        const group = (fam, key, en) => `<optgroup label="${this._t(key, en)}">${this.materials
+            .filter(m => this.metalFor(m.id).family === fam)
+            .map(m => `<option value="${m.id}" ${m.id === selectedId ? 'selected' : ''}>${lbl(m)}</option>`).join('')}</optgroup>`;
+        return group('silver', 'ps_matgrp_silver', 'Silver') + group('gold', 'ps_matgrp_gold', 'Gold');
+    },
+
+    // Archetype and subject wording was written for silver: for a gold piece, "silver"
+    // (the metal) becomes that gold. Props and garments ("silver suit", "silver tray")
+    // keep their color.
+    _adaptMetal(text, metal) {
+        if (!text || !metal || metal.look === 'silver') return text;
+        const keepCase = (src, word) => (src[0] === src[0].toUpperCase() ? word[0].toUpperCase() + word.slice(1) : word);
+        return String(text)
+            .replace(/\bsilversmiths?\b/gi, w => keepCase(w, /s$/i.test(w) ? 'goldsmiths' : 'goldsmith'))
+            .replace(/\bsilvers\b/gi, w => keepCase(w, metal.plural))
+            .replace(/\bsilvery\b/gi, w => keepCase(w, 'pale luminous'))
+            .replace(/\bsilver(?!\s+(?:suits?|tray|halide|screen|lining))\b/gi, w => keepCase(w, metal.word));
+    },
+
+    // A piece without stones: camera and scene wording about gem facets becomes metal detail.
+    _stoneFree(text) {
+        return String(text || '')
+            .replace(/individual gem facets and metal grain/gi, 'individual metal grain and fine tool marks')
+            .replace(/individual metal grain and stone settings/gi, 'individual metal grain and fine tool marks')
+            .replace(/individual gem facets and hallmark stamps/gi, 'individual metal grain and hallmark stamps')
+            .replace(/metal edges and gem facets/gi, 'metal edges and engraved details')
+            .replace(/maximum gem facet sharpness/gi, 'maximum surface detail sharpness')
+            .replace(/\b(?:gem|stone) facets\b/gi, 'metal details');
+    },
+
+    // ── Lighting ────────────────────────────────────────────────────────────
+    // What each lighting choice physically looks like (it used to repeat its label).
     LIGHT_TEXT: {
         'editorial':        'crisp editorial light from a large softbox, clean and controlled',
         'dramatic':         'dramatic directional key light with deep shadows and bright accents',
         'golden-hour':      'warm, low golden-hour sunlight with long soft shadows',
-        'studio':           'controlled studio lighting: a large softbox key with gentle fill',
+        'studio':           'controlled studio lighting, a large softbox key with gentle fill',
         'natural':          'soft natural daylight',
         'soft':             'soft, romantic diffused light with a gentle falloff',
         'warm':             'warm, inviting light with a golden color temperature',
@@ -4675,13 +4283,13 @@ const PromptStudio = {
         'avant-garde':      'bold graphic fashion lighting with hard-edged shadows',
         'hard-flash':       'direct on-camera flash with hard shadows, paparazzi style',
         'dappled':          'dappled sunlight filtering through leaves',
-        'chiaroscuro':      'Rembrandt chiaroscuro: a single key light and a deep shadow side',
+        'chiaroscuro':      'Rembrandt chiaroscuro, a single key light and a deep shadow side',
         'neon-glow':        'a saturated pink and cyan neon glow',
         'window-light':     'soft side light from a large window',
         'overcast':         'even, shadowless overcast daylight',
         'candlelight':      'warm flickering candlelight, low-key and intimate',
         'blue-hour':        'cool blue-hour twilight with a soft ambient glow',
-        'split-light':      'split lighting: one side lit, the other in shadow',
+        'split-light':      'split lighting, one side lit and the other in shadow',
         'shimmer-particle': 'soft light with shimmering particles catching on the skin',
         'transit-streak':   'streaks of moving light from passing traffic',
         'chrome-bounce':    'light bouncing off chrome surfaces for bright reflective accents',
@@ -4700,67 +4308,100 @@ const PromptStudio = {
         'metallic-case-contrast': 'contrasty light that separates polished and brushed metal',
         'harsh-sun':        'harsh high-noon sun with hard, short shadows',
     },
-
-    // Finish-accurate metal wording: v1 = classic prompt, v2 = engine v2, light = how
-    // the light should behave on that surface, short = Midjourney / SD tag.
-    METAL_TEXT: {
-        'sterling-silver': { v1: 'bright white sterling silver luster, polished surface with crisp reflections',
-                             v2: 'polished 925 sterling silver with a bright, cool-white luster',
-                             light: 'crisp specular highlights on the polished silver without blown-out hotspots',
-                             short: 'polished sterling silver' },
-        '800-silver':      { v1: 'warm oxidized patina, traditional Moroccan silverwork texture, hand-hammered artisanal finish',
-                             v2: 'traditional Moroccan 800 silver with a soft warm-white tone, hand-hammered texture and a gentle patina in the recesses',
-                             light: 'soft highlights that reveal the hammered texture',
-                             short: 'hand-hammered Moroccan silver' },
-        'oxidized-silver': { v1: 'oxidized antiqued finish, blackened recesses against polished raised details, vintage patina',
-                             v2: 'oxidized antiqued silver, with blackened recesses and engraved details against polished raised surfaces',
-                             light: 'raking light that brings out the dark patina and the relief',
-                             short: 'oxidized antiqued silver' },
-        'brushed-matte':   { v1: 'brushed satin finish, fine linear brush marks, soft low-gloss sheen',
-                             v2: 'brushed matte silver with a satin finish, fine linear brush marks and a soft low-gloss sheen',
-                             light: 'broad soft highlights on the satin surface, no mirror reflections',
-                             short: 'brushed matte silver' },
-        'high-polish':     { v1: 'rhodium-plated sheen, mirror-polished surface, brilliant metallic luster',
-                             v2: 'high-polish rhodium-plated silver with a mirror-bright, brilliant cool-white surface',
-                             light: 'clean mirror reflections and crisp specular highlights without blown-out hotspots',
-                             short: 'mirror-polished rhodium silver' },
-        'silver-vermeil':  { v1: 'thick yellow-gold vermeil over sterling silver, warm rich golden luster',
-                             v2: 'silver vermeil: sterling silver thickly plated in warm yellow gold, with a rich golden luster',
-                             light: 'warm highlights glowing on the gold surface',
-                             short: 'gold vermeil' },
+    // Where a light can plausibly come from: sun / dusk need the outdoors, window light
+    // an interior, night light practical sources; the rest (studio) work anywhere.
+    LIGHT_FAMILY: {
+        'golden-hour': 'sun', 'harsh-sun': 'sun', 'dappled': 'sun',
+        'natural': 'day', 'candid': 'day', 'overcast': 'overcast', 'rain-diffused': 'overcast',
+        'blue-hour': 'dusk', 'window-light': 'window', 'backlit': 'any',
+        'candlelight': 'night', 'neon-glow': 'night', 'neon-tube-glow': 'night', 'neon-bar-warm': 'night',
+        'transit-streak': 'night', 'mystical': 'night', 'lume-glow-dark': 'night',
     },
-    WATCH_TEXT: { v2: 'a precision luxury timepiece with a polished case, a clear sapphire crystal and a refined dial',
-                  light: 'controlled reflections on the crystal and the polished case',
-                  short: 'luxury' },
+    // The mood each lighting choice sets (its label often just repeats the light).
+    LIGHT_MOOD: {
+        'editorial': 'polished editorial', 'dramatic': 'dramatic', 'golden-hour': 'warm, nostalgic', 'studio': 'clean, controlled',
+        'natural': 'fresh, natural', 'soft': 'soft, romantic', 'warm': 'warm, inviting', 'cool': 'cool, modern',
+        'backlit': 'luminous, ethereal', 'surreal': 'surreal, dreamy', 'mystical': 'mystical, dark', 'candid': 'candid, lifestyle',
+        'avant-garde': 'avant-garde fashion', 'hard-flash': 'raw, paparazzi', 'dappled': 'dreamy, organic', 'chiaroscuro': 'painterly, dramatic',
+        'neon-glow': 'electric, nocturnal', 'window-light': 'quiet, intimate', 'overcast': 'calm, understated', 'candlelight': 'intimate, warm',
+        'blue-hour': 'serene, cinematic', 'split-light': 'bold, graphic', 'shimmer-particle': 'glowing, magical', 'transit-streak': 'kinetic, urban',
+        'chrome-bounce': 'sleek, futuristic', 'rain-diffused': 'moody, atmospheric', 'color-gel-backlit': 'vivid, energetic', 'solid-color-backdrop': 'bold, graphic',
+        'neon-tube-glow': 'electric nightlife', 'neon-bar-warm': 'moody, nocturnal', 'crimson-studio': 'bold, passionate', 'bronzed-beauty': 'sun-kissed, glowing',
+        'chrome-wrap': 'sleek, reflective', 'submerged-diffused': 'serene, weightless', 'leather-highlight': 'rich, tactile', 'sapphire-crystal-bounce': 'precise, refined',
+        'lume-glow-dark': 'nocturnal, technical', 'metallic-case-contrast': 'precise, technical', 'harsh-sun': 'bold, sun-drenched',
+    },
+    // Lighting choices that bring their own backdrop: the backdrop becomes the setting
+    // (off a location, the light keeps only its quality).
+    LIGHT_BACKDROP: {
+        'solid-color-backdrop': { backdrop: 'a solid-color studio backdrop in one bold color', studio: 'bold, even studio light', location: 'bold, even light' },
+        'crimson-studio': { backdrop: 'a bold crimson studio backdrop', studio: 'bold studio light', location: 'bold light with a deep crimson color cast' },
+    },
+    // Where each environment is: indoors, outdoors, a studio, or glass / a car (sun comes in).
+    ENV_IO: {
+        'studio-infinity': 'studio', 'rooftop': 'out', 'desert-dunes': 'out', 'moroccan-riad': 'in', 'botanical-garden': 'out',
+        'marble-palace': 'in', 'ocean-shore': 'out', 'dark-hotel-suite': 'in', 'forest-mist': 'out', 'souq-market': 'out',
+        'glass-greenhouse': 'glass', 'car-interior': 'car', 'art-gallery': 'in',
+    },
+    // Real places (as opposed to a studio set) in archetype settings.
+    _LOCATION_WORDS: /\b(?:desert|dunes?|street|alley(?:way)?s?|medina|souk|souq|market|garden|forest|beach|shore|ocean|sea|rooftop|terrace|courtyard|riad|palace|palatial|landscape|field|steppe|mountains?|city|urban|car|vehicle|travel|hotel|caf[ée]|harbou?r|village|workshop|architectural|archways?|building|outdoor|nature)\b/i,
+    TIME_OF_DAY: ['golden-hour', 'blue-hour', 'midday-sun', 'overcast-day', 'night-ambient', 'pre-dawn'],
+    TIME_FAMILY: { 'golden-hour': 'sun', 'midday-sun': 'sun', 'overcast-day': 'overcast', 'blue-hour': 'dusk', 'pre-dawn': 'dusk', 'night-ambient': 'night' },
+    // Lighting choices that already name a time of day.
+    LIGHT_TIME: { 'golden-hour': 'golden-hour', 'blue-hour': 'blue-hour', 'harsh-sun': 'midday-sun' },
 
+    // The family of a light described in free text (archetype or angle wording).
+    _lightFamilyOf(text) {
+        const t = String(text || '').toLowerCase();
+        if (/\b(?:candle|candlelight|candlelit|lantern|neon|night|moonlit|moonbeam|streetlights?)\b/.test(t)) return 'night';
+        if (/\b(?:golden hour|golden-hour|sunlight|sun|dappled|mediterranean|north african light|coastal light)\b/.test(t)) return 'sun';
+        if (/\bwindow\b/.test(t)) return 'window';
+        if (/\b(?:overcast|rain|mist|fog)\b/.test(t)) return 'overcast';
+        if (/\b(?:daylight|natural|available light|atmospheric)\b/.test(t)) return 'day';
+        if (/\b(?:studio|softbox|soft box|ring light|spotlight|flash|strobe|key light)\b/.test(t)) return 'studio';
+        return 'any';
+    },
+
+    // ── Piece ───────────────────────────────────────────────────────────────
     STONE_TEXT: {
-        'diamond':        'set with brilliant-cut diamonds that throw crisp white sparkle',
-        'emerald':        'set with deep green emeralds',
-        'sapphire':       'set with deep blue sapphires',
-        'ruby':           'set with rich red rubies',
-        'pearl':          'set with lustrous white pearls with a soft glow',
-        'turquoise':      'set with matte sky-blue turquoise',
-        'amber':          'set with warm honey-colored amber',
-        'coral':          'set with red coral',
-        'cubic-zirconia': 'set with sparkling cubic zirconia',
-        'mixed':          'set with mixed colored gemstones',
+        'diamond':        'brilliant-cut diamonds that throw crisp white sparkle and fire',
+        'emerald':        'deep green emeralds with a velvety glow',
+        'sapphire':       'deep blue sapphires with rich saturated color',
+        'ruby':           'rich red rubies with a warm inner glow',
+        'pearl':          'lustrous white pearls with a soft orient glow',
+        'turquoise':      'matte sky-blue turquoise with natural matrix veining',
+        'amber':          'warm honey-colored amber with a soft inner glow',
+        'coral':          'polished red coral',
+        'cubic-zirconia': 'sparkling cubic zirconia',
+        'mixed':          'mixed colored gemstones in a harmonious palette',
     },
-
-    // Worn: where the piece sits on the body, in plain words (v1 used caps and "NEVER").
-    PLACEMENT_TEXT: {
-        'ring':         'The ring sits snugly on the finger at its true size',
-        'necklace':     'The necklace is worn at the front of the neck, the chain resting along the collarbone',
-        'pendant':      'The pendant hangs at the front of the chest on its chain, at its true size',
-        'earrings':     'The earrings are worn in both earlobes, in proportion to the face',
-        'bracelet':     'The bracelet sits on the wrist, sized to the wrist',
-        'bangles':      'The bangles sit on the wrist at their true size',
-        'anklet':       'The anklet sits around the ankle, fine and in proportion',
-        'brooch':       'The brooch is pinned to the upper chest of the garment',
-        'body-jewelry': 'The body chain drapes naturally across the skin',
-        'watch':        'The watch sits on the wrist, the case in proportion to the wrist',
+    // How each piece is built (so the model doesn't invent it): [always, when worn].
+    CRAFT_TEXT: {
+        'ring':         ['a crisp band profile and setting, clean polished edges and a realistic shank thickness', ''],
+        'necklace':     ['fine chain links individually defined and a realistic clasp', 'the chain draping naturally with gravity'],
+        'pendant':      ['the pendant hanging straight from its bail with the chain passing realistically through it', ''],
+        'earrings':     ['a perfectly matching pair, identical in size and design, posts and hooks correctly attached', ''],
+        'bracelet':     ['links and clasp realistically articulated', 'sitting naturally around the wrist'],
+        'bangles':      ['a rigid round profile with consistent thickness', 'sitting and stacking naturally on the wrist'],
+        'anklet':       ['a delicate, finely linked chain', 'resting naturally on the ankle bone'],
+        'brooch':       ['a hidden pin mechanism and a crisply finished front', 'sitting flat against the fabric'],
+        'body-jewelry': ['fine chains with delicate links', "draping with gravity along the body's contours"],
+        'jewelry-set':  ['every piece sharing the same metal color, finish, stones and design language, clearly one matching set', ''],
+        'watch':        ['dial, hands, indices and bracelet crisp, with realistic case proportions', ''],
     },
-    SET_PLACEMENT: { ring: 'the ring on a finger', necklace: 'the necklace at the front of the neck', earrings: 'the earrings in the earlobes', bracelet: 'the bracelet on the wrist', bangle: 'the bangle on the wrist' },
-
+    // Still life: how the piece is laid out so the camera sees it at its best.
+    PRESENTATION_TEXT: {
+        'ring':         'the ring standing upright or gently angled on its shank, the top of the setting turned toward the camera',
+        'necklace':     'the chain laid in a smooth, untangled curve, the clasp hidden and any pendant centered',
+        'pendant':      'the pendant centered, its chain falling in a clean, symmetrical line from the bail',
+        'earrings':     'the pair placed side by side as a mirrored pair, both fronts facing the camera',
+        'bracelet':     'the bracelet closed in a natural oval, the clasp turned away from the camera',
+        'bangles':      'the bangles stacked or overlapping in a loose, balanced cascade',
+        'anklet':       'the anklet laid in a soft, open curve, the chain untangled',
+        'brooch':       'the brooch lying flat and level, its front toward the camera, the pin hidden behind it',
+        'body-jewelry': 'the body chain laid out to show its full drape and every connecting link',
+        'jewelry-set':  'the pieces arranged as one composed family, evenly spaced, none overlapping or hiding another',
+        'watch':        'the watch closed on its bracelet or strap, the dial toward the camera with the time set to 10:10',
+    },
     // Worn: styling that keeps the piece visible.
     STYLING_RULES: {
         'ring':         'relaxed, elegant hands with clean natural nails',
@@ -4768,9 +4409,9 @@ const PromptStudio = {
         'bangles':      'sleeve pushed back so the wrist is bare',
         'watch':        'cuff pulled back so the whole watch is visible',
         'earrings':     'hair tucked behind the ear so the earrings are fully visible',
-        'necklace':     'open neckline with the collarbone visible',
-        'pendant':      'open neckline so the pendant rests on bare skin',
-        'anklet':       'bare ankle, barefoot or in minimal sandals',
+        'necklace':     'an open neckline with the collarbone visible',
+        'pendant':      'an open neckline so the pendant rests on bare skin',
+        'anklet':       'a bare ankle, barefoot or in minimal sandals',
         'body-jewelry': 'bare skin where the body chain drapes',
         'jewelry-set':  'hair tucked behind the ear and an open neckline so every piece is visible',
     },
@@ -4784,18 +4425,22 @@ const PromptStudio = {
         'wearing a wide-leg trouser suit with a long tunic in soft black',
     ],
 
-    HALLMARK_TEXT: {
-        'ring':        'A tiny "ELARIS" engraving is visible on the inside of the band',
-        'necklace':    'A small "ELARIS" tag hangs beside the clasp',
-        'pendant':     'A tiny "ELARIS" engraving sits on the bail',
-        'bracelet':    'A small "ELARIS" engraving sits on the clasp plate',
-        'bangles':     'A small "ELARIS" engraving is visible on the inner surface',
-        'earrings':    'A tiny "ELARIS" stamp sits on the back of the earring post',
-        'brooch':      '"ELARIS" is engraved on the pin clasp',
-        'anklet':      'A small "ELARIS" tag sits near the clasp',
-        'watch':       'The dial carries the "ELARIS" name',
-        'jewelry-set': 'Each piece carries a tiny "ELARIS" engraving',
-        'general':     'A tiny "ELARIS" engraving sits on a discreet part of the piece',
+    // Brand hallmark wording per category, with the metal's purity stamp.
+    _hallmarkText(category, stamp) {
+        const purity = stamp ? `, subtle ${stamp} hallmark stamp` : '';
+        const map = {
+            'ring':        `tiny "ELARIS" engraved on the inner band${purity} visible at the edge`,
+            'necklace':    'small four-pointed star emblem on the chain clasp, delicate "ELARIS" tag on the chain end link',
+            'bracelet':    'subtle "ELARIS" engraved on the inner clasp plate, small star hallmark on the link near the closure',
+            'earrings':    'microscopic "ELARIS" stamp on the back of the earring post, a barely visible brand mark',
+            'pendant':     'tiny "ELARIS" engraved on the bail, star hallmark on the pendant reverse side',
+            'brooch':      '"ELARIS" hallmark on the pin clasp mechanism, brand signature subtly visible',
+            'anklet':      'small "ELARIS" brand tag on the anklet chain near the clasp',
+            'bangles':     `"ELARIS" engraved on the inner surface of the bangle${stamp ? `, ${stamp} hallmark near the opening` : ''}`,
+            'watch':       '"ELARIS" brand logo engraved on the watch dial and crown, subtle hallmark on the clasp',
+            'jewelry-set': 'tiny "ELARIS" engraved on the ring inner band, small four-pointed star emblem on the necklace clasp, microscopic brand mark on the earring posts, a hallmark on each piece of the set',
+        };
+        return map[category] || 'subtle brand hallmark reading "ELARIS" engraved on a discreet area of the piece, small star emblem stamp';
     },
 
     // Framing: close shots show engravings and skin detail; wide shots make small pieces tiny.
@@ -4806,17 +4451,17 @@ const PromptStudio = {
     CLOSE_ARCHETYPES: ['body-intimate', 'macro-detail', 'set-detail-showcase', 'micro-surreal', 'mouth-lips-editorial',
         'skin-canvas', 'stacked-maximalist', 'watch-haute-horlogerie', 'texture-contrast'],
     WIDE_ARCHETYPES: ['power-stance', 'surreal-scale', 'frozen-subject'],
-    TIME_OF_DAY: ['golden-hour', 'blue-hour', 'midday-sun', 'overcast-day', 'night-ambient', 'pre-dawn'],
     RATIO_TEXT: {
-        '1:1':  'square 1:1 Instagram post',
-        '4:5':  'vertical 4:5 Instagram feed post',
-        '9:16': 'full-screen vertical 9:16 Instagram Story',
-        '3:4':  'vertical 3:4 frame',
-        '2:3':  'vertical 2:3 Pinterest pin',
-        '16:9': 'wide 16:9 banner',
-        '21:9': 'ultra-wide 21:9 cinematic banner',
+        '1:1':  'a square 1:1 Instagram post',
+        '4:5':  'a vertical 4:5 Instagram feed post',
+        '9:16': 'a full-screen vertical 9:16 Instagram Story, key subject kept in the central safe zone away from the top and bottom edges',
+        '3:4':  'a vertical 3:4 frame',
+        '2:3':  'a vertical 2:3 Pinterest pin',
+        '16:9': 'a wide 16:9 banner',
+        '21:9': 'an ultra-wide 21:9 cinematic banner',
     },
 
+    // ── Text helpers ────────────────────────────────────────────────────────
     // Split on commas / semicolons outside parentheses.
     _splitClauses(text) {
         const s = String(text || '');
@@ -4833,15 +4478,15 @@ const PromptStudio = {
         return out;
     },
 
-    // What an archetype-scene or camera clause describes, so v2 keeps one light, one
-    // lens and one setting instead of stacking every source.
+    // What an archetype-scene or camera clause describes, so the prompt keeps one light,
+    // one lens and one setting instead of stacking every source.
     _clauseKind(text) {
         const t = String(text || '');
-        if (/\bcomposition(?:al)?\b|\bconcept\b|\bbokeh\b|\bmotion blur\b|\bexposure\b|\bmm film\b|\bas (?:the )?backdrop for\b|\b(?:real-world environment|real outdoor location|authentic outdoor location|urban location|product environment)\b/i.test(t)) return 'art';
+        if (/\bcomposition(?:al)?\b|\bconcept\b|\bbokeh\b|\bblur\b|\bseparation\b|\bmotion blur\b|\bexposure\b|\bmm film\b|\bas (?:the )?backdrop for\b|\b(?:real-world environment|real outdoor location|authentic outdoor location|urban location|product environment)\b/i.test(t)) return 'art';
         if (/\b(?:4k|8k|ultra-realistic|photo-?realistic|hyper-?realistic|3d render|cgi|cinema 4d|render(?:ing)? (?:feel|aesthetic)|ultra-sharp detail|technical perfection)\b/i.test(t)) return 'quality';
         if (/\b\d{2,3}\s?mm\b|\bdepth of field\b|\bf\/[\d.]+|\bmacro lens\b|\bprime lens\b/i.test(t)) return 'lens';
         if (/^(?:[\w'-]+\s+){0,3}(?:angle|angles|perspective)$|\b(?:top-down|bird's-eye)\b/i.test(t)) return 'view';
-        if (/\b(?:light|lights|lighting|lit|sunlight|daylight|sun|flash|backlighting|backlit|rim-light|spotlight|softbox|soft box|candlelight|candlelit|neon|chiaroscuro|moonlit|shadows?|illumination|caustic|fill|diffusion|golden hour|blue hour)\b/i.test(t)) return 'light';
+        if (/\b(?:light(?!\s*(?:gr[ae]y|blue|pink|beige|brown|green|wood|oak|tones?|colou?red))|lights|lighting|lit|sunlight|daylight|sun|flash|backlighting|backlit|rim-light|spotlight|softbox|soft box|candlelight|candlelit|neon|chiaroscuro|moonlit|shadows?|illumination|caustic|fill|diffusion|golden hour|blue hour)\b/i.test(t)) return 'light';
         if (/\bcontrast\b|\bpalettes?\b/i.test(t)) return 'art';
         if (/\b(?:background|backdrops?|seamless|setting|environments?|landscape|interiors?|workshop|boardroom|souk|alleyways?|skyline|voids?|architecture|architectural elements)\b/i.test(t)) return 'setting';
         return 'art';
@@ -4860,7 +4505,10 @@ const PromptStudio = {
         let k = salt;
         const out = String(text)
             .replace(/\bteal-orange or film noir\b/gi, () => (this._seeded(seed, ++k) < 0.5 ? 'teal-orange' : 'film noir'))
-            .replace(new RegExp(`\\b(${W})(?:\\s+or\\s+|\\/)(${W})\\b`, 'gi'), (m, a, b) => (this._seeded(seed, ++k) < 0.5 ? a : b));
+            .replace(new RegExp(`\\b(${W})(?:\\s+or\\s+|\\/)(${W})\\b`, 'gi'), (m, a, b) => (this._seeded(seed, ++k) < 0.5 ? a : b))
+            // "tailored or relaxed clothing", "black or jewel-tone clothing": one of the two
+            .replace(/\b([\w-]+) or ([\w-]+)(?= (?:clothing|outfits?|styling|suits?|shirts?|dress(?:es)?|jackets?|blazers?|coats?|gowns?|trousers|lighting|light|backgrounds?|backdrops?|tones?|colou?rs?|surfaces?|fabrics?|settings?|aesthetic|finish)\b)/gi,
+                (m, a, b) => (/^(?:a|an|the|with|and|in|on|of)$/i.test(a) ? m : (this._seeded(seed, ++k) < 0.5 ? a : b)));
         if (!lists) return out;
         return out
             .replace(/\s*\(([^()]+)\)/g, (m, list) => {
@@ -4874,409 +4522,849 @@ const PromptStudio = {
         return String(text || '').split(/[,;:]|\s—\s/)[0].trim();
     },
 
-    _sentence(text) {
-        let t = String(text || '').replace(/\s+/g, ' ').replace(/\s+([,.;:])/g, '$1').trim();
-        if (!t) return '';
-        t = t.charAt(0).toUpperCase() + t.slice(1);
-        return /[.!?]$/.test(t) ? t : t + '.';
+    // Rotates through a subject list (optionally only the `allowed` indices), preferring
+    // subjects not used in earlier sessions.
+    _getUniqueSubject(archetype, allowed) {
+        const all = archetype.subjects.map((_, i) => i);
+        const indices = allowed && allowed.length ? allowed : all;
+        const poolKey = archetype.id + '|' + indices.join('.');
+        const storageKey = this._getUsedSubjectKey(archetype.id);
+        let used = [];
+        try { used = JSON.parse(localStorage.getItem(storageKey) || '[]'); } catch (e) { used = []; }
+
+        if (!this._subjectPools[poolKey] || this._subjectPools[poolKey].length === 0) {
+            let candidates = indices.filter(i => !used.includes(i));
+            if (!candidates.length) {
+                // every fitting subject has been seen: forget them and start over
+                used = used.filter(i => !indices.includes(i));
+                try { localStorage.setItem(storageKey, JSON.stringify(used)); } catch (e) { /* storage blocked */ }
+                candidates = [...indices];
+            }
+            for (let i = candidates.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+            }
+            this._subjectPools[poolKey] = candidates;
+        }
+        const idx = this._subjectPools[poolKey].pop();
+        try { localStorage.setItem(storageKey, JSON.stringify([...new Set([...used, idx])])); } catch (e) { /* storage blocked */ }
+        return archetype.subjects[idx];
     },
 
-    // Resolves every slot of the shot once: one subject, one light, one lens, one
-    // setting, finish-accurate metal, styling that keeps the piece visible. Priority for
-    // each slot: an explicit choice > a trend > the archetype > a random pick.
-    _resolveShot(c) {
+    // ── Explicit surface wording ──
+    SURFACE_TEXT: {
+        'marble': 'on polished white Carrara marble surface with subtle grey veining',
+        'velvet': 'on deep rich velvet fabric with light catching the nap',
+        'sand': 'on fine warm sand with organic ripple patterns',
+        'concrete': 'on raw brushed concrete surface, industrial contrast',
+        'water': 'on water surface with gentle ripples and reflections',
+        'silk': 'on draped silk charmeuse fabric, lustrous folds',
+        'skin': 'against warm bare skin, intimate body context',
+        'stone-wall': 'against weathered natural stone wall backdrop',
+        'wood': 'on raw untreated wood grain surface, organic warmth',
+        'terracotta': 'on traditional Moroccan terracotta zellige tile, artisanal texture',
+        'mirrored-glass': 'on sharp mirrored glass surface, infinite reflections and modern polish',
+        'satin': 'on smooth lustrous satin fabric, soft rolling liquid folds',
+    },
+    // Black-and-white concepts, and the choices that would put color back into them.
+    BW_ARCHETYPES: ['bw-dramatic', 'monochrome-jewelry-ad'],
+    COLOR_FILMS: ['analog-film', 'teal-orange', 'cross-process', 'faded-vintage'],
+    COLOR_SEASONS: ['spring-bloom', 'summer-vivid', 'autumn-warm', 'winter-frost'],
+    // Colored stones keep their color in a black-and-white shot ({its} = its / their).
+    STONE_COLOR: {
+        'emerald': 'the deep green of {its} emeralds', 'sapphire': 'the deep blue of {its} sapphires', 'ruby': 'the rich red of {its} rubies',
+        'turquoise': 'the sky blue of {its} turquoise', 'amber': 'the honey tone of {its} amber', 'coral': 'the coral red of {its} coral',
+        'mixed': 'the colors of {its} gemstones',
+    },
+    // A product surface that follows the archetype's own material (leather for a leather
+    // concept), so a random marble slab doesn't contradict it.
+    _THEME_SURFACES: [
+        ['leather', 'a rich supple leather surface'], ['velvet', 'a deep velvet surface'], ['marble', 'a polished marble surface'],
+        ['linen', 'a natural linen surface'], ['concrete', 'a raw concrete surface'], ['terracotta', 'an aged terracotta surface'],
+        ['satin', 'smooth satin fabric'], ['silk', 'draped silk fabric'], ['wood', 'a warm wood grain surface'],
+        ['slate', 'a dark slate surface'], ['sand', 'a fine sand surface'], ['mirror', 'a mirror surface'], ['paper', 'textured paper'],
+    ],
+    _themeSurface(archetype) {
+        const t = String(archetype.scene || '').toLowerCase();
+        const hit = this._THEME_SURFACES.find(([w]) => new RegExp(`\\b${w}\\b`).test(t));
+        return hit ? hit[1] : '';
+    },
+
+    // Takes the subject's own clothing out when another outfit is chosen: "in / wearing …"
+    // phrases, then clauses about clothing; a garment left inside the piece's clause
+    // becomes "the outfit" (the chosen one).
+    _dropGarments(text, garment) {
+        const G = new RegExp(`\\b${garment}\\b`, 'i');
+        const WORD = "(?:(?!(?:while|and|with|as|of|to|at|by|from|for|or|but|the)\\b)[\\w'-]+\\s+)";
+        let t = String(text).replace(new RegExp(`\\s*\\b(?:in|wearing)\\s+(?:a\\s+|an\\s+)?${WORD}{0,3}${garment}\\b`, 'gi'), '');
+        t = this._splitClauses(t).filter((cl, i) => i === 0 || /\{piece\}/.test(cl) || !G.test(cl)).join(', ');
+        const ADJ = '(?:cream|white|black|red|orange|ivory|gold|golden|silver|navy|blue|green|pink|beige|grey|gray|champagne|emerald|crimson|burgundy|nude|silk|satin|linen|cotton|leather|velvet|lace|sheer|pleated|flowing|voluminous|sculptural|oversized|structured|tailored|long|short|dark|light|deep|floor-length|evening|elegant|fitted|loose)';
+        return t.replace(new RegExp(`\\b(?:(?:a|an|the)\\s+)?(?:${ADJ}\\s+)*${garment}\\b`, 'gi'), 'the outfit');
+    },
+
+    PALETTE_TEXT: {
+        'neutral': 'neutral beige and cream color palette, warm luxury tone',
+        'warm-earth': 'warm earthy tones: amber, terracotta, sand, sienna',
+        'cool-steel': 'cool steel and slate blue tones, icy elegance',
+        'monochrome': 'strict monochrome palette, black, white and silver only',
+        'jewel-tones': 'rich jewel tones: deep emerald, sapphire blue, ruby',
+        'deep-ocean': 'deep ocean blues and teals, midnight atmosphere',
+        'blush-rose': 'soft blush pink and dusty rose palette, feminine warmth',
+        'noir': 'film noir palette: deep blacks, sharp whites, smoky greys',
+    },
+    JEWELRY_STYLE_TEXT: {
+        'nano': 'ultra-fine nano jewelry aesthetic, delicate miniaturist craftsmanship',
+        'minimalist': 'clean minimalist design language, understated elegant forms',
+        'bohemian': 'free-spirited bohemian styling, organic shapes and natural textures',
+        'art-deco': 'geometric Art Deco motifs, symmetrical precision and luxury patterns',
+        'berber-traditional': 'authentic Berber traditional metalwork, tribal heritage motifs',
+        'gothic': 'bold gothic aesthetic, dark romantic design language',
+        'contemporary': 'modern contemporary luxury, clean architectural lines',
+        'vintage': 'vintage-inspired styling, antique romantic craftsmanship',
+        'streetwear': 'elevated streetwear aesthetic, urban bold and confident',
+    },
+    EXPRESSION_TEXT: {
+        'serene':     'serene calm expression, soft relaxed face, eyes slightly downcast, peaceful',
+        'smile':      'gentle authentic smile, soft lips slightly parted, warmth in the eyes',
+        'joy':        'genuine laugh, joy visible in crinkled eyes and an open smile, natural euphoria',
+        'intense':    'intense focused gaze directly at the camera, strong confident expression, sharp eyes',
+        'sultry':     'sultry confident look, soft half-smile, eyes full of quiet confidence and sensuality',
+        'thoughtful': 'thoughtful dreamy expression, eyes slightly unfocused, contemplative and poetic mood',
+    },
+    HIJAB_TEXT: {
+        'classic':    'wearing a beautifully draped classic hijab covering hair and neck, elegant and dignified styling, fabric falling naturally around the face',
+        'draped':     'wearing a luxuriously draped silk hijab loosely arranged around head and shoulders, fabric pooling softly, high-fashion editorial styling',
+        'turban':     'wearing a fashion-forward wrapped turban headpiece, contemporary urban styling, bold and confident aesthetic',
+        'niqab':      'wearing a flowing niqab, a face veil with only the eyes exposed, intensely artistic and editorial, the eyes the sole focal point above the veil edge, deeply atmospheric and dramatic',
+        'modern':     'wearing a contemporary minimal hijab with clean precise folds framing the face, modern modest fashion aesthetic, sophisticated and editorial',
+        'sheer-veil': 'with a sheer translucent chiffon veil draped loosely over the head and partially across the face, ethereal and artistic, fabric creating softness and visual poetry',
+    },
+    POSE_TEXT: {
+        'editorial-model': [
+            'standing with one hand on hip, the other loosely at the side, confident gaze',
+            'arms crossed elegantly, jewelry on full display, strong editorial stance',
+            'one hand raised to the face, the other dropped naturally',
+            'seated, hands resting in the lap, upright elegant posture',
+            'leaning slightly forward, hands on thighs, direct camera engagement',
+        ],
+        'bw-dramatic': [
+            'standing tall with shoulders angled to the camera, chin lifted',
+            'one hand resting at the collarbone, head turned in profile',
+            'seated sideways, forearm resting on the knee, calm intensity',
+        ],
+        'cinematic-portrait': [
+            'turning back over the shoulder toward the camera, caught mid-movement',
+            'leaning against a wall, one hand relaxed at the jaw',
+            'seated by a window, gaze drifting past the lens',
+        ],
+        'lifestyle-moment': [
+            'relaxed and mid-gesture, as if caught between two sentences',
+            'one hand lightly touching the hair, easy natural smile',
+            'seated at a table, hands resting naturally in front',
+        ],
+    },
+    // Fallback skin realism when none is chosen: [zone, text].
+    REALISM_POOL: [
+        ['hand', 'natural skin texture with subtle knuckle wrinkles adding authenticity'],
+        ['hand', 'fine skin creases at the finger joints, photorealistic tactile quality'],
+        ['hand', 'natural hand tension and micro-wrinkles at contact points, editorial realism'],
+        ['any', 'skin pores visible in the close crop, photographic skin texture'],
+        ['any', 'natural skin texture with soft visible pores and fine peach fuzz'],
+        ['neck', 'subtle natural skin variation and fine texture across the neck and collarbone'],
+    ],
+    // Beta's "Body focus" choices and the body zone each one shows ('' = any).
+    FOCUS_ZONES: {
+        'wrist-hand': 'hand', 'finger-close': 'hand', 'neck-collar': 'neck', 'ear-face': 'ear', 'face-close': 'ear',
+        'torso': 'torso', 'ankle-foot': 'ankle', 'full-body': '', 'silhouette': '',
+    },
+    PLACEMENT_NEG: {
+        'necklace': 'necklace on the back, necklace hanging behind the model, pendant on the back, chain only visible from behind, necklace on the shoulder, necklace placed at the back of the neck',
+        'earrings': 'earring too large, earring disproportionate to face size, earring larger than head, misplaced earring',
+        'ring':     'ring too large for the finger, ring not on a finger, floating ring, ring covering the entire hand',
+        'bracelet': 'bracelet not on the wrist, bracelet floating off the body, bracelet on the wrong limb',
+        'bangles':  'bangle not on the wrist, floating bangle, bangle on the wrong body part',
+        'anklet':   'anklet on the wrist, anklet not on the ankle, anklet floating',
+        'pendant':  'pendant on the back, pendant not visible from the front, pendant hanging behind the neck',
+        'brooch':   'brooch floating off the clothing, brooch not pinned to the garment',
+        'watch':    'watch too large for the wrist, watch not on the wrist, floating watch, watch covering the entire hand, oversized case, strap hanging loose',
+        'jewelry-set': 'pieces floating off the body, necklace on the back or side, ring oversized or undersized, mismatched set styles, earrings clipping incorrectly, body parts duplicated',
+    },
+
+    _planShot(archetype, lock) {
+        lock = lock || {};
+        const picks = {};
+        // A locked pick is reused while its context (key) is unchanged, otherwise it is
+        // drawn again (the outfit, for example, is redrawn when the model's gender changes).
+        const pick = (name, key, draw) => {
+            const held = lock[name];
+            const value = (held && held.key === key) ? held.value : draw();
+            picks[name] = { key, value };
+            return value;
+        };
         const S = this.state;
-        const arch = c.archetype;
-        const cat = c.category;
-        const isSet = cat === 'jewelry-set';
-        const noun = { 'body-jewelry': 'body chain', 'jewelry-set': 'set' }[cat] || cat;
-        const plural = cat === 'earrings' || cat === 'bangles';
-        const male = S.modelGender === 'male';
         const notes = [];
         const note = (level, key, en, vars) => notes.push({ level, key, en, vars: vars || {} });
+        const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+        const seed = pick('seed', 'v3', () => Math.random());
 
-        // ── Subject: the random pick, with the piece named briefly ("the ring"). The
-        // subject's own wardrobe wins over a random outfit; a chosen outfit (or a male
-        // model handed a gown) replaces the subject's wardrobe words.
-        const GARMENT = '(?:gown|dress|suit|blazer|shirt|jacket|coat|top|camisole|caftan|kaftan|abaya|tuxedo|clothing|outfit|sweater|blouse|bodice|trousers|jeans|hoodie|turtleneck)s?';
-        const subjectBare = c.subjectTemplate.replace(/\{piece\}/g, '');
-        const wardrobeFree = !S.styling || S.styling === 'auto' || S.styling === 'ai-choice';
-        let template = c.subjectTemplate;
-        let subjectClothing = c.isHumanActive && new RegExp(`\\b${GARMENT}\\b`, 'i').test(subjectBare);
-        if (subjectClothing && (!wardrobeFree || (male && /\b(?:gown|dress|camisole|bodice|blouse|skirt)\b/i.test(subjectBare)))) {
-            template = template.replace(new RegExp(`\\s*\\b(?:in|wearing)\\s+(?:a\\s+|an\\s+)?[\\w\\s'-]*?\\b${GARMENT}\\b`, 'gi'), '');
-            subjectClothing = false;
+        // ── The piece ──────────────────────────────────────────────────────
+        const isWatch = S.product === 'watch';
+        const category = isWatch ? 'watch' : (S.category || 'ring');
+        const isSet = category === 'jewelry-set';
+        // A set concept shot with one piece: that piece is the hero of a matching set.
+        const heroSet = !isSet && !isWatch && /^set-/.test(archetype.id);
+        const materialId = isWatch ? '' : (this.METAL_TEXT[S.material] ? S.material : 'sterling-silver');
+        const metal = isWatch ? this.WATCH_TEXT : this.metalFor(materialId);
+        const materialLabel = isWatch ? '' : ((this.materials.find(m => m.id === materialId) || {}).label || '925 Sterling Silver');
+        const noun = { 'body-jewelry': 'body chain', 'jewelry-set': 'set' }[category] || category;
+        const plural = category === 'earrings' || category === 'bangles';
+        const its = plural ? 'their' : 'its';
+        const hasStones = !isWatch && !!this.STONE_TEXT[S.stone];
+        const listJoin = a => (a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : (a[0] || ''));
+        const comp = isSet ? (S.setComposition && S.setComposition.length ? S.setComposition : ['ring', 'necklace', 'earrings'])
+            : heroSet ? [...new Set([category, 'ring', 'necklace', 'earrings'])] : [];
+        const compWords = comp.map(c => ({ 'body-jewelry': 'body chain', 'bangle': 'bangle' }[c] || c));
+        const catWord = comp.length ? `matching jewelry set (${listJoin(compWords)})` : (category === 'body-jewelry' ? 'body jewelry' : category);
+        const stoneAccent = hasStones ? this._stoneAccentText() : '';
+        const piece = isWatch ? 'luxury watch' : `${materialLabel} ${catWord}${stoneAccent ? ' ' + stoneAccent : ''}`;
+        this._lastPiece = piece;
+        this._lastMaterial = materialLabel;
+        const lib = S.pieceId ? { id: S.pieceId, name: S.pieceName || '', photos: S.piecePhotoCount || 0,
+            notes: String(S.pieceNotes || '').trim(), size: String(S.pieceSize || '').trim() } : null;
+
+        // ── Who is in frame, format, explicit scene controls ──────────────
+        const isHuman = this.HUMAN_ARCHETYPES.has(archetype.id);
+        const withModel = isHuman && S.modelGender !== 'none';
+        const stillLife = isHuman && !withModel;
+        const male = S.modelGender === 'male';
+        // A hijab covers the hair and a niqab the mouth; a shot built on the mouth keeps
+        // the model's hijab but not the face veil.
+        let hijabStyle = withModel && S.hijabi && !male ? (this.HIJAB_TEXT[S.hijabStyle] ? S.hijabStyle : 'classic') : '';
+        if (hijabStyle === 'niqab' && (archetype.id === 'mouth-lips-editorial' || S.angle === 'mouth-bite')) {
+            hijabStyle = 'classic';
+            note('warn', 'pe_warn_niqab_mouth', 'This shot shows the mouth, so the model wears a classic hijab instead of a niqab');
         }
-        let subject = template
-            .replace(/\{piece\}\s+set pieces\b/gi, isSet ? 'the set pieces' : `the ${noun}`)
-            .replace(/\{piece\}\s+(?:set|pieces)\b/gi, isSet ? 'the set' : `the ${noun}`)
-            .replace(/\{piece\}\s+(rings?|necklaces?|earrings?|bracelets?|pendants?|bangles?)\b/gi, (m, w) => (isSet ? `the set's ${w}` : `the ${noun}`))
-            .replace(/\{piece\}/g, `the ${noun}`);
-        // An explicit angle wins over a viewpoint the subject mentions in passing.
-        if (c.angleExplicit) {
-            subject = this._splitClauses(subject)
-                .filter((cl, i) => i === 0 || !/^(?:[\w'-]+\s+){0,3}(?:angle|shot|perspective)(?:\s+from\s+(?:above|below|behind))?$/i.test(cl))
-                .join(', ');
+        const hairCovered = !!hijabStyle;
+        const mouthCovered = hijabStyle === 'niqab';
+        const fmt = this.formats.find(f => f.id === S.format);
+        const ratio = S.aspectRatio || (fmt ? fmt.ratio : '4:5');
+        const landscape = ratio === '16:9' || ratio === '21:9';
+        const envDesc = this._sceneModifier('environment', S.environment);
+        let surfaceDesc = S.surface && S.surface !== 'none' ? (this.SURFACE_TEXT[S.surface] || '') : '';
+        if (surfaceDesc && S.surface === 'skin' && !withModel) {
+            surfaceDesc = '';
+            note('warn', 'pe_warn_skin_surface', 'Skin surface left out: this shot has no model');
+        }
+        // Body focus (Beta): it must show the piece, and it sets close / wide framing.
+        const focusId = withModel && S.bodyFocus && S.bodyFocus !== 'auto' ? S.bodyFocus : '';
+        const focusZone = focusId ? this.FOCUS_ZONES[focusId] : undefined;
+        const catZones = this._CATEGORY_ZONES[category];
+        let focusDesc = focusId ? this._sceneModifier('bodyFocus', focusId) : '';
+        if (focusDesc && focusZone && catZones && !catZones.includes(focusZone)) {
+            note('warn', 'pe_warn_focus_zone', 'Framing left out: it would not show the {noun}', { noun });
+            focusDesc = '';
+        }
+        let focusFraming = !focusDesc ? '' : ['full-body', 'silhouette'].includes(focusId) ? 'wide'
+            : ['finger-close', 'face-close'].includes(focusId) ? 'close' : '';
+        const angleExplicit = !!S.angle && S.angle !== 'auto';
+        const angleFraming = !angleExplicit ? '' : this.CLOSE_ANGLES.includes(S.angle) ? 'close' : this.WIDE_ANGLES.includes(S.angle) ? 'wide' : '';
+
+        // ── Subject: fits the piece, who is in frame and the explicit choices ──
+        const subjectCtx = { withModel, category, hasStones, softPerson: !isHuman, hero: heroSet ? category : '',
+            gender: withModel ? (male ? 'male' : 'female') : '', hairCovered, mouthCovered, framing: angleFraming || focusFraming,
+            explicitSurface: !!surfaceDesc && !withModel, explicitSetting: !!envDesc };
+        const subjectKey = [archetype.id, category, withModel ? subjectCtx.gender : 'still', hasStones ? 'stones' : 'metal',
+            subjectCtx.explicitSurface ? 'surface' : '', envDesc ? 'env' : '', hijabStyle, subjectCtx.framing].join('|');
+        const subjectTemplate = pick('subject', subjectKey, () => this._pickSubject(archetype, subjectCtx));
+        const subjectBare = subjectTemplate.replace(/\{piece\}/g, '');
+        // A product archetype whose concept needs hands in frame (no model otherwise).
+        const handsInFrame = !withModel && this._PERSON_WORDS.test(subjectBare);
+        const peopleInFrame = withModel || handsInFrame;
+
+        // ── Angle ──────────────────────────────────────────────────────────
+        const avoid = [...(focusFraming === 'wide' ? this.CLOSE_ANGLES : []), ...(focusFraming === 'close' ? this.WIDE_ANGLES : []),
+            ...(mouthCovered ? ['mouth-bite'] : []), ...(hairCovered ? ['from-behind'] : [])];
+        let angleId = angleExplicit ? S.angle : this._autoAngle(archetype, category, subjectTemplate, withModel, avoid);
+        if (!isWatch && ['watch-dial-macro', 'watch-crown-detail'].includes(angleId)) {
+            angleId = 'macro';
+            note('warn', 'pe_warn_watch_angle', 'This angle is made for watches, so a macro angle was used');
+        }
+        if (focusFraming && ((focusFraming === 'wide' && this.CLOSE_ANGLES.includes(angleId)) || (focusFraming === 'close' && this.WIDE_ANGLES.includes(angleId)))) {
+            note('warn', 'pe_warn_focus_angle', 'Framing left out: it does not fit the chosen angle');
+            focusDesc = '';
+            focusFraming = '';
         }
 
-        // ── Archetype scene, sorted by what each clause describes ──
-        let sceneClauses = this._splitClauses(arch.scene);
-        if (c.stillLife) {
+        // ── Archetype scene, sorted by what each clause describes ──────────
+        let sceneClauses = this._splitClauses(archetype.scene);
+        if (!peopleInFrame) {
             sceneClauses = sceneClauses.filter(t => !this._PERSON_WORDS.test(t));
             if (!sceneClauses.length) sceneClauses = ['editorial still-life product photography'];
         }
+        if (hairCovered) sceneClauses = sceneClauses.map(t => this._coverHair(t));
+        if (mouthCovered) sceneClauses = sceneClauses.filter(t => !this._MOUTH_WORDS.test(t));
         const scene = { art: [], quality: [], lens: [], view: [], light: [], setting: [] };
-        sceneClauses.forEach(t => scene[this._clauseKind(t)].push(t));
+        sceneClauses.forEach(t => scene[this._clauseKind(t)].push(this._adaptMetal(t, metal)));
 
-        // ── Framing ──
-        const close = this.CLOSE_ANGLES.includes(c.angleId)
-            || (c.isHumanActive && ['finger-close', 'face-close'].includes(S.bodyFocus))
-            || (!this.WIDE_ANGLES.includes(c.angleId) && this.CLOSE_ARCHETYPES.includes(arch.id));
-        const wide = !close && (this.WIDE_ANGLES.includes(c.angleId)
-            || (c.isHumanActive && ['full-body', 'silhouette'].includes(S.bodyFocus))
-            || this.WIDE_ARCHETYPES.includes(arch.id));
-
-        // ── Setting: an explicit environment / surface, else the archetype's own
-        // setting, else the random variant (a location for model shots, a surface for
-        // product shots; never a product surface under a model).
-        const locationVariant = this.LOCATION_ARCHETYPES.includes(arch.id) && !c.stillLife;
-        const archSetting = scene.setting.map((t, i) => this._decide(t, c.seed, i * 10)).join(', ');
-        const subjectHasSurface = /\b(?:on|atop|across|over|in|inside|into|among|against|nestled|resting|placed|draped|laid|arranged)\b[^,]*\b(?:surface|slab|panel|gradient|marble|velvet|sand|dunes?|stone|wood|concrete|fabric|linen|silk|satin|paper|tray|water|ice|mirror|glass|table|cloth|background|backdrop|box|cushion|pillow|leaf|leaves|petals?|branch|moss|rock|book|plate|dish|bowl|shell)\b/i.test(subjectBare);
-        const subjectHasBackdrop = /\b(?:background|backdrops?|seamless)\b/i.test(subjectBare);
-        let place = '', backdrop = '', surface = c.surfaceDesc || '';
-        if (c.envDesc) place = c.envDesc;
-        else if (archSetting && !subjectHasBackdrop) backdrop = archSetting;
-        if (c.sceneVariant && !c.sceneIsLight && !subjectHasBackdrop) {
-            if (locationVariant) { if (!place && !backdrop) place = c.sceneVariant; }
-            else if (!c.isHumanActive && !surface && !subjectHasSurface) surface = c.sceneVariant;
+        // ── Camera: the angle's perspective + one lens ─────────────────────
+        const profileId = S.cameraProfile && S.cameraProfile !== 'auto' ? S.cameraProfile : '';
+        let profileDesc = profileId ? ((this.cameraProfiles.find(c => c.id === profileId) || {}).desc || '') : '';
+        const theNoun = `the ${noun}`;
+        let angleText = (this.CAMERA_ANGLES[angleId] || 'shot on 85mm f/1.4 lens, shallow depth of field').replace(/\{noun\}/g, noun);
+        if (!peopleInFrame && this._PERSON_WORDS.test(angleText.split(theNoun).join(''))) {
+            // a model angle on a still life: keep its lens, drop the person wording
+            const lens = (angleText.match(/\b\d{2,3}mm(?:\s+f\/[\d.]+)?(?:\s+macro)?(?:\s+lens)?/i) || [''])[0];
+            angleText = this._splitClauses(angleText).filter(c => !this._PERSON_WORDS.test(c.split(theNoun).join(''))).join(', ');
+            if (lens && !/\d{2,3}mm/.test(angleText)) angleText = [`shot on ${lens}`, angleText].filter(Boolean).join(', ');
+            if (angleExplicit) note('warn', 'pe_warn_angle_model', 'This angle is made for a model; its lens was kept for the still life');
         }
-        if (surface && !/^(?:on|against|atop|in|inside|over|across|amid)\b/i.test(surface)) {
-            surface = /\bon\b/i.test(surface) ? 'amid ' + surface
-                : `on ${/^(?:a|an|the)\b/i.test(surface) ? '' : (/^[aeiou]/i.test(surface) ? 'an ' : 'a ')}${surface}`;
+        if (hairCovered) angleText = this._coverHair(angleText);
+        if (!peopleInFrame && profileDesc) profileDesc = this._splitClauses(profileDesc).filter(c => !this._PERSON_WORDS.test(c)).join(', ');
+        let cameraDesc = profileDesc ? [this._withoutLens(angleText), profileDesc].filter(Boolean).join(', ') : angleText;
+        const dofId = S.dof && S.dof !== 'auto' ? S.dof : '';
+        const dofDesc = this._sceneModifier('dof', S.dof);
+        const deepDof = ['deep', 'moderate', 'macro-extreme'].includes(dofId);
+        if (dofDesc) cameraDesc = [this._withoutAperture(cameraDesc), dofDesc].filter(Boolean).join(', ');
+        if (deepDof) {
+            // a deep depth of field has no bokeh, blur or focus falloff
+            cameraDesc = this._splitClauses(cameraDesc).filter(c => c === dofDesc
+                || !/\b(?:bokeh|blur|blurred|razor-thin|shallow|falloff|fall-off|out of focus|selective (?:plane of )?focus|miniature-like)\b/i.test(c)).join(', ');
         }
+        const isoDesc = this._sceneModifier('isoRange', S.isoRange);
+        if (isoDesc) cameraDesc += `, ${isoDesc}`;
+        if (!hasStones) cameraDesc = this._stoneFree(cameraDesc);
+        if (landscape) cameraDesc = cameraDesc.replace(/,?\s*elegant close composition/gi, '').replace(/ filling the frame vertically/gi, ' filling the frame');
+        const camClauses = this._splitClauses(cameraDesc).map(text => ({ text, kind: this._clauseKind(text) }));
+        const cameraLight = camClauses.filter(x => x.kind === 'light').map(x => x.text).join(', ');
+        const cameraSetting = camClauses.filter(x => x.kind === 'setting').map(x => x.text).join(', ');
+        const camera = camClauses.filter(x => !['light', 'quality', 'setting'].includes(x.kind)).map(x => x.text).join(', ')
+            || 'shot on 85mm f/1.4 lens, shallow depth of field';
 
-        // ── Light: one source ──
-        const timeDesc = this.TIME_OF_DAY.includes(S.seasonTime) ? c.seasonDesc : '';
-        const camClauses = this._splitClauses(c.cameraDesc).map(text => ({ text, kind: this._clauseKind(text) }));
-        const angleLight = camClauses.filter(x => x.kind === 'light').map(x => x.text).join(', ');
-        let light, lightSource;
-        if (c.lightExplicit || timeDesc) {
-            light = [c.lightExplicit ? (this.LIGHT_TEXT[c.lightingId] || c.lighting) : '', timeDesc].filter(Boolean).join(', ');
+        // ── Light: one source ──────────────────────────────────────────────
+        const lmRaw = S.lightingMood || S.mood;
+        const lightExplicit = !!lmRaw && lmRaw !== 'auto';
+        const lightingId = lightExplicit ? this.mapGuideLighting(lmRaw) : this._autoLighting(archetype);
+        const lm = this.lightingMoods.find(m => m.id === lightingId) || this.lightingMoods[0];
+        const timeId = this.TIME_OF_DAY.includes(S.seasonTime) ? S.seasonTime : '';
+        const seasonDesc = this._sceneModifier('seasonTime', S.seasonTime);
+        const backdropLight = lightExplicit ? this.LIGHT_BACKDROP[lightingId] : null;
+        let light, lightSource, lightFamily = '';
+        if (lightExplicit) {
+            light = backdropLight ? backdropLight.studio : (this.LIGHT_TEXT[lightingId] || lm.label.toLowerCase());
+            lightFamily = this.LIGHT_FAMILY[lightingId] || 'studio';
             lightSource = 'explicit';
-        } else if (c.angleExplicit && angleLight) {
-            light = angleLight; lightSource = 'angle';
+            if (timeId && timeId !== lightingId && this.LIGHT_TIME[lightingId] !== timeId) {
+                // The time of day joins a light that doesn't already name another moment.
+                const tf = this.TIME_FAMILY[timeId];
+                if (!this.LIGHT_TIME[lightingId] && (tf === lightFamily || ['day', 'any'].includes(lightFamily))) {
+                    light += `, ${seasonDesc}`;
+                    if (['day', 'any'].includes(lightFamily)) lightFamily = tf;
+                } else {
+                    note('warn', 'pe_warn_time_dropped', 'Time of day left out: it contradicts the chosen lighting');
+                }
+            }
+        } else if (timeId) {
+            light = seasonDesc; lightFamily = this.TIME_FAMILY[timeId]; lightSource = 'explicit';
+        } else if ((angleExplicit || profileId) && cameraLight) {
+            light = cameraLight; lightSource = 'angle';
         } else if (scene.light.length) {
-            light = scene.light.join(', '); lightSource = 'archetype';
+            light = this._decideLight(scene.light, seed).join(', '); lightSource = 'archetype';
             // A bare archetype light ("natural lighting") gives way to the fuller description.
-            if (light.split(/\s+/).length <= 2 && this.LIGHT_TEXT[c.lightingId]) { light = this.LIGHT_TEXT[c.lightingId]; lightSource = 'auto'; }
+            if (light.split(/\s+/).length <= 2 && this.LIGHT_TEXT[lightingId]) { light = this.LIGHT_TEXT[lightingId]; lightSource = 'auto'; }
         } else {
-            light = this.LIGHT_TEXT[c.lightingId] || c.lighting; lightSource = 'auto';
+            light = this.LIGHT_TEXT[lightingId] || lm.label.toLowerCase(); lightSource = 'auto';
         }
-        // One light, decided: on location an archetype's "studio" light becomes directional
-        // light; against a backdrop "studio or window light" becomes studio light.
+        if (!lightFamily) lightFamily = this._lightFamilyOf(light);
+        // Lights described on skin (or leather) keep their look without it in frame.
+        if (!peopleInFrame) light = light.replace(/\s*catching on the skin\b/gi, ' floating in the air').replace(/\bthat makes the skin glow\b/gi, 'with a soft golden glow');
+        if (/\bon leather\b/i.test(light) && !/\bleather\b/i.test(`${archetype.scene} ${subjectBare} ${surfaceDesc}`)) light = light.replace(/\s+on leather\b/gi, '');
+
+        // ── Setting: one place / backdrop (+ what the piece rests on) ──────
+        // Priority: an explicit environment > a lighting choice's own backdrop > the
+        // chosen angle's backdrop > the subject's own background > the archetype's
+        // setting > a random location or surface.
+        const subjectHasBackdrop = /\b(?:backgrounds?|backdrops?|seamless|gradients?)\b/i.test(subjectBare);
+        const subjectHasSurface = /\b(?:on|atop|across|over|in|inside|into|among|against|nestled|resting|placed|draped|laid|arranged)\b[^,]*\b(?:surface|slab|panel|gradient|marble|velvet|sand|dunes?|stone|wood|concrete|fabric|linen|silk|satin|paper|tray|water|ice|mirror|glass|table|cloth|background|backdrop|box|cushion|pillow|leaf|leaves|petals?|branch|moss|rock|book|plate|dish|bowl|shell|terracotta|pot|edge|ledge|rim|tiles?|driftwood|stand|bust|plinth|pedestal|board|sheets?|bed|counter|shelf|sill|windowsill|log|bark|leather)\b/i.test(subjectBare);
+        // …or places the piece in / on something (a box, a split pomegranate, a hand).
+        const subjectPlacesPiece = subjectHasSurface
+            || /\b(?:inside|into|in)\s+(?:a |an |the |its |their )?(?:[\w-]+\s+){0,3}(?:box|case|bowl|dish|shell|pomegranate|fruit|water|sand|snow|ice|moss|petals|flowers|leaves|compartments?|pouch|drawer|cushion|nest|basket|jar|glass|vase|cup|tray|velvet|silk|satin|palm)\b/i.test(subjectBare)
+            || /\b(?:placed|resting|rests|nestled|laid|arranged|draped|perched|balanced|tucked|propped|leaning|wrapped|coiled|looped|twisted|hung|hanging|dangling|suspended|floating|threaded|tied|emerging|half-buried|submerged)\b/i.test(subjectBare);
+        const archSetting = scene.setting.map((t, i) => this._decide(t, seed, i * 10)).join(', ');
+        let place = '', backdrop = '', surface = surfaceDesc;
+        if (envDesc) place = envDesc;
+        else if (backdropLight) backdrop = backdropLight.backdrop;
+        else if (angleExplicit && cameraSetting) backdrop = cameraSetting;
+        else if (archSetting && !subjectHasBackdrop) backdrop = archSetting;
+        let placeIo = envDesc ? (this.ENV_IO[S.environment] || '') : '';
+        if (!place && !backdrop && !subjectHasBackdrop && withModel && this.LOCATION_ARCHETYPES.includes(archetype.id)) {
+            // No noon sun in a library: sun and dusk light need the outdoors, window light a room.
+            const io = ['sun', 'dusk'].includes(lightFamily) ? 'out' : (lightFamily === 'window' ? 'in' : '');
+            place = pick('location', archetype.id + '|' + io, () => rnd(this.LOCATION_POOL.filter(l => !io || l.io === io)).t);
+            placeIo = (this.LOCATION_POOL.find(l => l.t === place) || {}).io || '';
+        }
+        if (!withModel && !surface && !subjectPlacesPiece && !subjectHasBackdrop) {
+            surface = pick('surface', archetype.id + '|' + lightingId, () => this._themeSurface({ scene: `${archetype.scene}, ${light}` }) || rnd(this.SURFACE_POOL));
+        }
+        if (surface && withModel && subjectHasSurface) {
+            surface = '';
+            note('info', 'pe_note_surface_subject', 'Surface left out: this concept already sets one');
+        }
+        if (surface && !/^(?:on|against|atop|in|inside|over|across|amid)\b/i.test(surface)) surface = 'on ' + surface;
+        const setText = place || backdrop;
+        const studioSet = placeIo === 'studio' || (!place && /\b(?:studio|seamless|backdrops?|background|voids?|gradient|infinity)\b/i.test(backdrop));
+        const onLocation = !!setText && !studioSet;
+        const OUTDOOR = /\b(?:desert|dunes?|street|alley(?:way)?s?|medina|souk|souq|market|garden|forest|beach|shore|ocean|sea|rooftop|terrace|courtyard|landscape|field|steppe|mountains?|outdoors?|nature|village|harbou?r|skyline)\b/i;
+        const INDOOR = /\b(?:inside|interior|indoors?|room|suite|lobby|library|gallery|hall|loft|apartment|bookshop|venue|hammam|kitchen)\b/i;
+        const outdoors = placeIo === 'out' || (!placeIo && onLocation && OUTDOOR.test(setText) && !INDOOR.test(setText));
+        const indoors = ['in', 'glass', 'car'].includes(placeIo) || (!placeIo && onLocation && INDOOR.test(setText));
+
+        // Light and setting agree: on location an archetype's "studio" light becomes
+        // directional light; against a backdrop "studio or window light" is studio light;
+        // sunlight on a studio set is recreated with studio lights, and comes in through
+        // the windows indoors; window light outdoors keeps only its softness.
         if (lightSource !== 'explicit') {
-            light = place
-                ? light.replace(/\bstudio or\s+/gi, '').replace(/\bstudio[- ](?:lighting|light)\b/gi, 'soft directional light').replace(/\bstudio[- ](?=ring|spotlight)/gi, '')
+            light = onLocation
+                ? light.replace(/\bstudio or\s+/gi, '').replace(/\b(?:soft\s+)?studio[- ](?:lighting|light)\b/gi, 'soft directional light').replace(/\bstudio[- ](?=ring|spotlight)/gi, '')
                 : light.replace(/\bstudio or\s+(?:natural\s+|ambient\s+)?[\w-]+(?:\s+window)?\s+(light|lighting)\b/gi, 'studio $1');
             light = this._tidyClauses(light);
+            lightFamily = this._lightFamilyOf(light);
         }
-        const metal = c.isWatchProduct ? this.WATCH_TEXT : (this.METAL_TEXT[S.material] || this.METAL_TEXT['sterling-silver']);
-        light = `${light}; ${metal.light}`;
+        if (backdropLight && place) {
+            light = backdropLight.location;
+            note('info', 'pe_note_backdrop_env', 'The lighting\'s backdrop was left out: your environment is the setting');
+        }
+        if (studioSet && ['sun', 'dusk'].includes(lightFamily)) {
+            light = `studio lighting that recreates ${light.replace(/^(?:during|at|under|on|in)\s+(?:an?\s+)?/i, '')}`;
+            note('info', 'pe_note_studio_sun', 'Sunlight recreated with studio lights to match the studio backdrop');
+        } else if (indoors && ['sun', 'dusk'].includes(lightFamily) && !/\bwindows?\b|\bthrough\b|\bstreaming\b/i.test(light)) {
+            light += placeIo === 'glass' ? ', filtering in through the glass panes' : placeIo === 'car' ? ', falling in through the car windows' : ', pouring in through tall windows';
+        } else if (outdoors && lightFamily === 'window') {
+            light = this._tidyClauses(light.replace(/\s*\b(?:from|through)\s+(?:a\s+|the\s+)?(?:large\s+|tall\s+|big\s+|nearby\s+)?windows?\b/gi, '')
+                .replace(/\bwindow[- ]?light\b/gi, 'soft directional light'));
+            if (lightSource === 'explicit') note('info', 'pe_note_window_outdoors', 'Window light kept as soft side light: this setting is outdoors');
+        }
+        const mood = lightExplicit ? (this.LIGHT_MOOD[lightingId] || lm.label.toLowerCase()) : '';
 
-        // ── Camera: the angle's perspective and lens (its light moved to the light slot) ──
-        const camera = camClauses.filter(x => x.kind !== 'light' && x.kind !== 'quality').map(x => x.text).join(', ')
-            || 'shot on 85mm f/1.4 lens, shallow depth of field';
-        const lens = (camera.match(/\b\d{2,3}mm(?:\s+f\/[\d.]+)?/i) || [''])[0];
-        const dof = (camera.match(/\b(?:razor-thin|shallow|moderate|deep|macro)\s+depth of field\b/i) || [''])[0];
-        const cameraShort = [this._firstClause(camera), lens && !this._firstClause(camera).includes(lens) ? lens + ' lens' : '', dof].filter(Boolean).join(', ');
+        // ── Framing ────────────────────────────────────────────────────────
+        const focusWide = focusFraming === 'wide';
+        const focusClose = focusFraming === 'close';
+        const close = this.CLOSE_ANGLES.includes(angleId) || focusClose
+            || (!focusWide && !this.WIDE_ANGLES.includes(angleId) && this.CLOSE_ARCHETYPES.includes(archetype.id));
+        const wide = !close && (this.WIDE_ANGLES.includes(angleId) || focusWide || this.WIDE_ARCHETYPES.includes(archetype.id));
 
-        // ── Piece ──
-        const comp = S.setComposition || ['ring', 'necklace', 'earrings'];
-        const listJoin = a => (a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : (a[0] || ''));
-        const pieceName = isSet ? `matching set of ${listJoin(comp)}` : noun;
-        const stones = c.isWatchProduct ? '' : (this.STONE_TEXT[S.stone] || '');
-        const stoneShort = c.isWatchProduct || !this.STONE_TEXT[S.stone] ? '' : ((this.stones.find(s => s.id === S.stone) || {}).label || '').toLowerCase();
-        const pieceLine = `The ${pieceName} ${plural ? 'are' : 'is'} ${metal.v2}${stones ? ', ' + stones : ''}`
-            + (c.jewelryStyleDesc ? `, with ${c.jewelryStyleDesc}` : '');
-        const placement = c.isHumanActive
-            ? (isSet ? `Every piece of the set is worn at once: ${listJoin(comp.map(p => this.SET_PLACEMENT[p] || `the ${p}`))}` : (this.PLACEMENT_TEXT[cat] || ''))
-            : `The ${noun} ${plural ? 'are' : 'is'} shown at ${plural ? 'their' : 'its'} true real-world size, in proportion to everything around ${plural ? 'them' : 'it'}`;
+        // ── Subject sentence ───────────────────────────────────────────────
+        const GARMENT = '(?:gown|dress|suit|blazer|shirt|jacket|coat|camisole|caftan|kaftan|abaya|tuxedo|clothing|outfit|sweater|blouse|bodice|trousers|jeans|hoodie|turtleneck|skirt)s?';
+        const FEMALE_GARMENT = /\b(?:gowns?|dress(?:es)?(?!\s+shirt)|camisoles?|bodices?|blouses?|skirts?|lingerie)\b/i;
+        const wardrobeFree = !S.styling || S.styling === 'auto' || S.styling === 'ai-choice';
+        let template = this._adaptMetal(subjectTemplate, metal);
+        // The subject speaks of the model we have: gender, a covered head, a veiled mouth.
+        if (withModel && (male ? this._FEMALE_WORDS : this._MALE_WORDS).test(template.replace(/\{piece\}/g, ''))) template = this._swapGender(template, male);
+        if (hairCovered) template = this._coverHair(template);
+        if (mouthCovered) template = this._splitClauses(template).filter((cl, i) => i === 0 || /\{piece\}/.test(cl) || !this._MOUTH_WORDS.test(cl)).join(', ');
+        const garmentRe = new RegExp(`\\b${GARMENT}\\b`, 'i');
+        let subjectClothing = withModel && garmentRe.test(template.replace(/\{piece\}/g, ''));
+        // A chosen outfit (or a male model handed a gown) replaces the subject's wardrobe.
+        if (subjectClothing && (!wardrobeFree || (male && FEMALE_GARMENT.test(template)))) {
+            template = this._dropGarments(template, GARMENT);
+            subjectClothing = false;
+        }
+        // Explicit choices win over a viewpoint / light / focus the subject mentions in passing.
+        const lightClause = /\b(?:light|lights|lighting|lit|sunlight|sun|flash|glow|candlelight|lamp|spotlight|moonbeam)\b/i;
+        template = this._splitClauses(template).filter((cl, i) => i === 0 || /\{piece\}/.test(cl) || !(
+            (angleExplicit && /^(?:[\w'-]+\s+){0,3}(?:angle|shot|perspective)(?:\s+from\s+(?:above|below|behind))?$/i.test(cl))
+            || (lightSource === 'explicit' && lightClause.test(cl))
+            || (dofId && /\b(?:depth of field|bokeh)\b/i.test(cl))
+            || (deepDof && /\b(?:soft focus|softly blurred|blurred|blur|soft behind)\b/i.test(cl)))).join(', ');
+        if (angleExplicit && !['overhead', 'flat-lay', 'top-down-hand', 'three-quarter-above'].includes(angleId)) {
+            template = template.replace(/\b(?:aerial|overhead|top-down|bird's-eye)\s+(?:view|shot)\s+of\s+/gi, '').replace(/\b(?:overhead\s+)?flat-lay\s+of\s+/gi, '');
+            template = this._splitClauses(template).filter((cl, i) => i === 0 || /\{piece\}/.test(cl) || !/\b(?:flat-lay|flat lay|top-down|overhead|aerial|bird's-eye)\b/i.test(cl)).join(', ');
+        }
+        if (angleExplicit && !['low-angle', 'worms-eye', 'upward-gaze'].includes(angleId)) {
+            template = this._splitClauses(template).filter((cl, i) => i === 0 || /\{piece\}/.test(cl) || !/\b(?:low-angle|low angle|from below|worm's-eye)\b/i.test(cl)).join(', ');
+        }
+        if (angleFraming === 'close') {
+            template = template.replace(/\b(?:full[- ]body|full[- ]length|wide)\s+(?:editorial\s+)?(?:shot|portrait|view|frame)\s+of\s+/gi, '');
+            template = this._splitClauses(template).filter((cl, i) => i === 0 || /\{piece\}/.test(cl) || !/\b(?:full[- ]body|full[- ]length|wide shot)\b/i.test(cl)).join(', ');
+        } else if (angleFraming === 'wide') {
+            template = template.replace(/\b(?:extreme\s+|tight\s+|editorial\s+)*(?:close-up|macro|close crop|face crop)\s+(?:shot\s+)?of\s+/gi, '');
+            template = this._splitClauses(template).filter((cl, i) => i === 0 || /\{piece\}/.test(cl) || !/\b(?:close-up|macro|tight crop)\b/i.test(cl)).join(', ');
+        }
+        if (!hasStones) template = this._stoneFree(template);
+        // A set subject that already names its pieces gets the shorter set wording.
+        const setPiece = comp.length && /\b(?:rings?|necklaces?|earrings?)\b[^{]*\b(?:rings?|necklaces?|earrings?)\b/i.test(template.replace(/\{piece\}/g, ''))
+            ? `${materialLabel} matching set${stoneAccent ? ' ' + stoneAccent : ''}` : piece;
+        if (hasStones && S.stone !== 'diamond') {
+            const sw = { 'cubic-zirconia': 'cubic zirconia', mixed: 'gemstone' }[S.stone] || S.stone;
+            template = template.replace(/\bdiamond (pav[ée]|setting)/gi, `${sw} $1`);
+        }
+        const PART = '(?:setting|settings|details?|clasp|band|surface|texture|edges?|links?|facets|engraving|hallmark|prongs?|bail|post)';
+        const MOD = "(?:(?![^\\s,]+ing\\b|(?:on|in|with|and|at|to|of|the|a|rings?|necklaces?|earrings?|bracelets?|pendants?|bangles?|set)\\b)[^\\s,{}]+\\s+)";
+        template = template.replace(new RegExp(`\\{piece\\}\\s+(${MOD}{0,2}${PART}(?:\\s+mechanism)?)\\b`, 'gi'), 'the $1 of the {piece}');
+        let subject = template
+            .replace(/\bmatching\s+(?=\{piece\})/gi, '')
+            .replace(/\{piece\}\s+set pieces\b/gi, comp.length ? `the pieces of the ${setPiece}` : piece)
+            .replace(/\{piece\}\s+(?:matching\s+)?(?:jewelry\s+)?(?:set|collection|pieces)\b/gi, comp.length ? setPiece : piece)
+            .replace(/\{piece\}\s+(rings?|necklaces?|earrings?|bracelets?|pendants?|bangles?)\b/gi, (m, w) => (comp.length ? `the ${w} of the ${setPiece}` : piece))
+            .replace(/\{piece\}/g, comp.length ? setPiece : piece);
+        const subjectPose = /\b(?:hands?|touching|holding|posing|pose|arms?|seated|sitting|standing|leaning|framing|reaching|lifting|pulling|crossed|raised|gesture|biting)\b/i.test(subjectBare);
+        if (heroSet) subject = subject.replace(/\b(?:prominent|prominently displayed|as (?:the )?anchor)\b/gi, 'visible');
+        const heroLine = heroSet ? `Hero piece: the ${materialLabel} ${noun}${stoneAccent ? ' ' + stoneAccent : ''} ${plural ? 'are' : 'is'} the star of the set, the sharpest and most prominent piece in frame` : '';
 
-        // ── Model ──
+        // ── Black and white: the concept stays monochrome ─────────────────
+        const bw = this.BW_ARCHETYPES.includes(archetype.id);
+        let paletteExplicit = !!this.PALETTE_TEXT[S.palette];
+        let filmDesc = this._sceneModifier('filmStyle', S.filmStyle);
+        let seasonLook = timeId ? '' : seasonDesc;
+        if (bw) {
+            const dropped = [];
+            if (paletteExplicit && !['monochrome', 'noir'].includes(S.palette)) { paletteExplicit = false; dropped.push('palette'); }
+            if (filmDesc && this.COLOR_FILMS.includes(S.filmStyle)) { filmDesc = ''; dropped.push('film'); }
+            if (seasonLook && this.COLOR_SEASONS.includes(S.seasonTime)) { seasonLook = ''; dropped.push('season'); }
+            if (dropped.length) note('info', 'pe_note_bw_color', 'Color choices left out: this concept is black and white');
+        }
+        // Gold (or colored stones) keeps its color through a selective color treatment.
+        const stoneColor = hasStones && this.STONE_COLOR[S.stone] ? this.STONE_COLOR[S.stone].replace('{its}', its) : '';
+        const selective = bw && !isWatch && (metal.look === 'gold' || !!stoneColor || /\bexcept the jewelry\b|\bselective colou?r\b/i.test(subjectBare));
+        const colorTreatment = !bw ? ''
+            : selective ? `a black-and-white photograph with selective color: only the ${noun} ${plural ? 'keep' : 'keeps'} ${its} true ${metal.word} color${stoneColor ? ` and ${stoneColor}` : ''}, everything else in rich monochrome`
+            : `a true black-and-white photograph, the ${noun} rendered in luminous bright-white metal tones`;
+
+        // ── Model ──────────────────────────────────────────────────────────
         let model = null;
-        if (c.isHumanActive) {
+        let artClauses = scene.art;
+        if (withModel) {
+            const gender = male ? 'male' : 'female';
             const clothingRe = /\b(?:clothing|clothes|outfits?|wardrobe|dress(?:es)?|gowns?|suits?|blazers?|shirts?|jackets?|coats?|streetwear|kaftans?|caftans?|tees|hoodies|bodysuits?)\b/i;
-            const archClothing = scene.art.some(t => clothingRe.test(t));
-            let outfit = S.styling === 'ai-choice'
-                ? `wearing an elevated editorial outfit chosen to complement the ${noun}`
-                : (c.outfitDesc || '').replace(/^model\s+/i, '');
-            if (wardrobeFree && (archClothing || subjectClothing)) outfit = '';   // the archetype / subject dresses the model
-            if (!wardrobeFree) scene.art = scene.art.filter(t => !clothingRe.test(t)); // an explicit outfit wins
-            const hijab = (c.hijabDesc || '').replace(/^model\s+/i, '');
-            if (hijab && wardrobeFree && !archClothing && !subjectClothing && !male) {
-                outfit = this.MODEST_OUTFITS[Math.floor(this._seeded(c.seed, 7) * this.MODEST_OUTFITS.length)];
+            const archClothing = artClauses.some(t => clothingRe.test(t));
+            // A brand mark stitched or pinned on the garment needs a garment.
+            const needsGarment = S.brandIdentityEnabled && ['wordmark', 'logomark'].includes(S.brandTouch);
+            // Wardrobe: an explicit outfit > the archetype's / subject's wardrobe > a random one.
+            const styleMap = {
+                'auto': () => pick('outfit', gender + '|' + metal.tone, () => this._getRandomOutfit(gender, materialId)),
+                'ai-choice': () => `an outfit creatively chosen by the art director for a high-fashion luxury jewelry campaign, silhouette and ${bw ? 'texture' : 'color'} chosen to complement the ${metal.word} ${noun}`,
+                'minimal': () => (needsGarment
+                    ? (male ? 'in minimal clean styling, a simple fitted dark top' : 'in minimal styling, a simple fitted top in a neutral tone')
+                    : (male ? 'in minimal clean styling, a strong build as the canvas' : 'in minimal styling, skin as the canvas')),
+                'black-dress': () => male ? 'in a tailored all-black outfit, dark shirt open at the collar, the jewelry as the contrast' : 'wearing an elegant black dress, the jewelry as the contrast',
+                'silk-cami': () => male ? 'in a fitted silk shirt with an open collar, effortless luxury' : 'in a silk camisole, effortless luxury',
+                'blazer': () => 'in a tailored suit and blazer, power dressing',
+                'caftan': () => 'in a traditional Moroccan caftan, heritage styling',
+                'white-shirt': () => 'in a crisp white button-down shirt, classic editorial',
+                'evening-gown': () => male ? 'in a formal black-tie tuxedo, red carpet elegance' : 'in a floor-length evening gown, red carpet elegance',
+                'streetwear': () => 'in elevated streetwear, contemporary luxury',
+            };
+            let outfit = styleMap[S.styling] ? styleMap[S.styling]() : '';
+            if (wardrobeFree && (archClothing || subjectClothing)) outfit = '';          // the archetype / subject dresses the model
+            if (!wardrobeFree) artClauses = artClauses.filter(t => !clothingRe.test(t)); // an explicit outfit wins
+            const hijab = hijabStyle ? this.HIJAB_TEXT[hijabStyle] : '';
+            if (hijab && wardrobeFree && !archClothing && !subjectClothing) {
+                outfit = this.MODEST_OUTFITS[Math.floor(this._seeded(seed, 7) * this.MODEST_OUTFITS.length)];
                 note('info', 'pe_note_modest', 'Modest outfit chosen to go with the hijab');
             }
-            let care = this.STYLING_RULES[cat] || '';
+            // Styling that keeps the piece visible (a hijab covers ears and neck).
+            let care = this.STYLING_RULES[category] || '';
             if (hijab) {
                 const fixes = [];
-                if ((cat === 'earrings' || isSet) && S.hijabStyle !== 'turban') fixes.push('the hijab arranged to leave the earlobes and earrings visible');
-                if (cat === 'necklace' || cat === 'pendant' || isSet) fixes.push(`the ${cat === 'pendant' ? 'pendant' : 'necklace'} worn over the fabric so it stays clearly visible`);
+                if ((category === 'earrings' || isSet) && hijabStyle !== 'turban') fixes.push('the hijab arranged to leave the earlobes and earrings visible');
+                if (category === 'necklace' || category === 'pendant' || isSet) fixes.push(`the ${category === 'pendant' ? 'pendant' : 'necklace'} worn over the fabric so it stays clearly visible`);
+                if (category === 'body-jewelry') fixes.push('the body chain worn over a fitted outfit so it stays clearly visible');
                 if (fixes.length) { care = fixes.join(', '); note('info', 'pe_note_hijab', 'Hijab styled so the jewelry stays visible'); }
-                else if (/\bhair\b/.test(care)) care = '';
+                else if (/\bhair\b|neckline/.test(care)) care = '';
             }
-            const look = c.activeProfile
-                ? c.activeProfile.descriptor
-                : String(c.skinTone || '').replace(/^(?:fe)?male model has\s+/i, '');
+            // Look: a named profile of the same gender, else a skin tone.
+            const profile = S.consistencyOn ? (S.profiles || []).find(p => p.id === S.activeProfileId) : null;
+            const profileOk = !!profile && (profile.gender || 'female') === gender;
+            if (profile && !profileOk) note('warn', 'pe_warn_profile_gender', 'Model profile {name} does not match the model\'s gender, so it was left out', { name: profile.name || profile.id });
+            let descriptor = profileOk ? String(profile.descriptor || '') : '';
+            if (descriptor && hairCovered) descriptor = this._splitClauses(descriptor).filter(c => !this._HAIR_WORDS.test(c)).join(', ');
+            if (descriptor && mouthCovered) descriptor = this._splitClauses(descriptor).filter(c => !/\b(?:lips?|mouth|jaw\w*|beard|stubble|smil\w*)\b/i.test(c)).join(', ');
+            const look = profileOk
+                ? `Model Details (sole appearance reference, match exactly): ${descriptor}`
+                : pick('skinTone', gender + '|' + (S.modelEthnicity || 'diverse'), () => this._getRandomSkinTone(S.modelGender));
+            // Expression: behind a niqab only the eyes can show it.
+            let expression = this.EXPRESSION_TEXT[S.facialExpression] || '';
+            if (mouthCovered) {
+                const eyes = this._splitClauses(expression).filter(c => /\beyes?\b|\bgaze\b/i.test(c) && !this._MOUTH_WORDS.test(c));
+                expression = eyes.length ? eyes.join(', ') + ', expressive eyes above the veil' : 'expressive eyes above the veil';
+            }
+            // Pose: only where the subject doesn't already place the body.
+            const poses = (this.POSE_TEXT[archetype.id] || [])
+                .filter(p => !(mouthCovered && this._MOUTH_WORDS.test(p)) && !(hairCovered && this._HAIR_WORDS.test(p)));
+            const pose = poses.length && !subjectPose ? pick('pose', archetype.id + '|' + hijabStyle, () => rnd(poses)) : '';
+            // Skin realism: the user's choices, else a fitting random detail.
+            const realismParts = [];
+            const skinTexture = { pores: 'visible skin pores and fine texture, hyperrealistic skin surface', smooth: 'professionally smooth skin, polished editorial finish', luminous: 'luminous skin glow, soft subsurface scattering effect' }[S.skinTexture];
+            if (skinTexture) realismParts.push(skinTexture);
+            const wrinkles = { subtle: 'subtle natural expression lines, authentic skin character', natural: 'natural wrinkles and skin creases visible, photorealistic authenticity', character: 'prominent character expression lines, aged editorial realism' }[S.wrinkles];
+            if (wrinkles) realismParts.push(wrinkles);
+            const bodyHair = { fine: 'fine subtle arm hair visible, natural human skin detail', natural: 'natural body hair visible on arms and hands, authentic human realism' }[S.bodyHair];
+            if (bodyHair) realismParts.push(bodyHair);
+            const skinDetail = { veins: 'subtle veins visible beneath the skin, dermal translucency', freckles: 'natural freckles and sun spots visible on the skin', translucent: 'skin translucency with subsurface scattering, light passing through thin skin areas', 'veins-freckles': 'subtle veins visible beneath the skin and natural freckles, authentic dermal detail' }[S.skinDetail];
+            if (skinDetail) realismParts.push(skinDetail);
+            // (a hijab covers the neck and ears, a niqab the face: the hands stay bare)
+            const zone0 = (catZones || ['any'])[0];
+            const zone = (hairCovered && ['neck', 'ear'].includes(zone0)) || mouthCovered ? 'hand' : zone0;
+            const skin = realismParts.length ? realismParts.join(', ')
+                : pick('realism', zone + (mouthCovered ? '|veiled' : ''), () => rnd(this.REALISM_POOL.filter(([z]) => z === zone || (z === 'any' && !mouthCovered)))[1]);
+            // A smooth or luminous skin choice replaces the archetype's raw-skin wording.
+            if (['smooth', 'luminous'].includes(S.skinTexture)) artClauses = artClauses.filter(t => !/\b(?:pores|no beauty retouching|real skin texture)\b/i.test(t));
+            // Makeup / grooming, unless the archetype or subject already styles it.
+            const styledFace = /\b(?:makeup|lips?|lipstick|kohl)\b/i.test(artClauses.join(' ') + ' ' + subject);
+            const makeup = male ? 'Grooming: neatly groomed hair and brows, natural matte skin'
+                : (mouthCovered ? 'Makeup: softly defined eyes and groomed brows above the veil' : styledFace ? '' : 'Makeup: refined natural makeup, groomed brows and softly defined lips, a healthy natural glow');
             model = {
-                male,
-                intro: c.activeProfile ? `Model: ${look}` : `The model is a ${male ? 'man' : 'woman'} with ${look}`,
-                lookShort: c.activeProfile ? this._splitClauses(look).slice(1, 3).join(', ') : this._firstClause(look),
-                expression: c.expressionDesc,
-                wear: [outfit, hijab].filter(Boolean).join(', '),
-                wearShort: [S.styling === 'ai-choice' ? '' : outfit, hijab].filter(Boolean).join(', '),
-                care,
-                pose: c.poseDesc,
-                skin: c.realismDesc,
-                focus: c.focusDesc,
+                gender: male ? 'Male model, man' : 'Female model, woman',
+                look, expression, makeup,
+                wear: [outfit, outfit && hijab ? hijab.replace(/^wearing\s+/i, 'with ') : hijab].filter(Boolean).join(', '),
+                care, pose, focus: focusDesc, skin,
+                male, profile: profileOk ? { id: profile.id, name: profile.name, descriptor } : null,
             };
         }
 
-        // ── Brand ──
+        // ── The piece in detail ────────────────────────────────────────────
+        const craft = this.CRAFT_TEXT[category] || ['', ''];
+        const style = (S.jewelryStyle || []).filter(s => s !== 'none' && this.JEWELRY_STYLE_TEXT[s]).map(s => this.JEWELRY_STYLE_TEXT[s]).join(', ');
+        const placement = withModel
+            ? [this._buildPlacementInstruction(category), heroSet ? 'the other pieces of the set worn at their own natural places' : ''].filter(Boolean).join(', ')
+            : `Scale: the ${noun} ${plural ? 'are' : 'is'} shown at ${its} true real-world size${/\bno props\b|\bwithout props\b/i.test(`${subjectBare} ${archetype.scene}`) ? '' : `, in realistic proportion to every prop around ${plural ? 'them' : 'it'}`}`;
+        // A still life says how the piece lies (unless the concept already arranges it)
+        // and how its reflections are controlled.
+        const subjectArranges = /\b(?:wrapped|coiled|looped|twisted|hung|hanging|dangling|suspended|floating|threaded|tied|draped|held|holding|stacked|worn|wearing|inside|into|emerging|half-buried|submerged|perched|balanced|tucked|pinned|clipped|hooked|nestled|spilling|scattered|arranged|laid out)\b/i.test(subjectBare);
+        const presentation = !withModel && !handsInFrame && !subjectArranges ? (this.PRESENTATION_TEXT[comp.length ? 'jewelry-set' : category] || '') : '';
+        const reflections = !peopleInFrame ? 'shaped with large diffusion panels and black flags, so the metal shows clean, controlled gradients with no reflection of the camera or photographer' : '';
+        const stonesLine = isWatch ? ''
+            : hasStones ? `Stones: set with ${this.STONE_TEXT[S.stone]}, every stone consistent in size and color and held securely in its setting`
+            : `Design: metal only, no gemstones or crystals anywhere on the ${noun}`;
+
+        // ── Art direction: the archetype's remaining clauses ───────────────
+        if (paletteExplicit) artClauses = artClauses.filter(t => !/\b(?:tones?|palettes?|colou?rs?|monochrome|black[- ]and[- ]white|saturat\w*|desaturated|sepia|pastel)\b/i.test(t));
+        if (filmDesc) artClauses = artClauses.filter(t => !/\b(?:grading|graded|film grain|grain|film photography|disposable camera|analog)\b/i.test(t));
+        artClauses = artClauses.filter(t => {
+            // Studio / location wording that the setting contradicts, and framing that an
+            // explicit body focus replaces.
+            const studio = /\bstudio\b/i.test(t) && !/\bno studio\b/i.test(t);
+            const outside = /\b(?:real|authentic)\s+(?:outdoor\s+)?location\b|\breal-world environment\b|\boutdoor\b|\burban location\b|\bno studio\b|\b(?:garden|street) photography\b/i.test(t);
+            if (studio && onLocation) return false;
+            if (outside && (studioSet || (indoors && !/\bno studio\b/i.test(t)))) return false;
+            if (envDesc && /\b(?:garden|street) photography\b/i.test(t)) return false;
+            if (focusDesc && /\b(?:extreme close-up|close-up|close crop|tight crop|full[- ]body|full-length|wide shot)\b/i.test(t)) return false;
+            if (angleFraming === 'close' && /\b(?:full[- ]body|full-length|wide shot)\b/i.test(t)) return false;
+            if (angleFraming === 'wide' && /\b(?:extreme close-up|close-up|macro|tight crop)\b/i.test(t)) return false;
+            if (deepDof && /\b(?:bokeh|soft focus|shallow depth|background blur|blurred background)\b/i.test(t)) return false;
+            return true;
+        });
+        if (bw) {
+            artClauses = artClauses.map(t => t
+                .replace(/\bjewelry either stays monochrome or gets selective color treatment\b/i, selective ? 'the jewelry kept in its true color by a selective color treatment' : 'the jewelry stays monochrome')
+                .replace(/\bjewelry as the singular focal point in monochrome\b/i, selective ? 'the jewelry as the singular focal point and the only element in color' : 'jewelry as the singular focal point in monochrome'));
+        }
+
+        // ── Brand ──────────────────────────────────────────────────────────
         let hallmark = '';
-        if (c.hallmarkOn) {
-            if (!wide && (close || !c.isHumanActive)) hallmark = this.HALLMARK_TEXT[cat] || this.HALLMARK_TEXT.general;
+        if (S.hallmarkEnabled) {
+            if (!wide && (close || !withModel)) hallmark = this._hallmarkText(category, metal.stamp);
             else note('info', 'pe_note_hallmark', 'Hallmark left out: too small to see at this framing');
         }
         let brand = '';
-        if (c.brandTouchKind === 'logomark') brand = `${male ? 'He' : 'She'} wears a small four-pointed star "Elaris" pin in enamel and metal on the lapel, a discreet brand signature`;
-        else if (c.brandTouchKind === 'wordmark') brand = `A small "ELARIS" wordmark is embroidered ${String(c.brandPlacement).replace(/^(?:discreetly\s+)?embroidered\s+/i, '')}, in fine, tightly spaced serif thread lettering no larger than 2 cm, like a real luxury clothing label`;
-        else if (c.brandTouchKind === 'logo-embedded') brand = 'The "ELARIS" logo is part of the image in elegant, confident serif typography, placed like a luxury fashion campaign ad where it best suits the composition';
-        const wantsText = !!(hallmark || brand) || arch.id === 'bold-typography';
+        if (S.brandIdentityEnabled) {
+            if (withModel && S.brandTouch === 'logomark') {
+                brand = 'model wearing a small "Elaris" four-pointed star pin on the garment at the lapel or neckline, a discreet luxury pin worn as a brand signature, enamel-and-metal two-tone finish naturally contrasting the garment, pin size proportional to real luxury brand pins (small and refined), positioned naturally as an authentic styling detail';
+            } else if (withModel && S.brandTouch === 'wordmark') {
+                const where = pick('brandPlacement', category + '|' + angleId, () => this._getBrandPlacement(category, angleId));
+                brand = `a small "ELARIS" embroidered wordmark on the garment in capitalized tight-kerned serif lettering with minimal letter spacing, letters nearly touching like a real luxury clothing label, fine single-thread stitching ${where}, no larger than 2 cm in real scale, NOT on the sleeve or wrist area, thread color naturally contrasting the fabric for quiet legibility, an authentic luxury clothing label integrated into the garment, a genuine brand signature not a graphic overlay, NOT widely spaced, NOT spread apart letters`;
+            } else if (S.brandTouch === 'logo-embedded') {
+                brand = 'Include a sophisticated "ELARIS" brand logo rendered directly within the image composition, elegant serif typography in a luxury fashion campaign style; choose the placement and size that best complement this shot (an elegant corner, centered over the subject like a Dior campaign, a lower-third banner, or subtly integrated into the background), an authentic part of a high-end campaign advertisement rather than a watermark, bold and confident typography like Dior or Chanel campaign logos';
+            }
+        }
+        const wantsText = !!(hallmark || brand) || archetype.id === 'bold-typography';
+        if (!wantsText) artClauses = artClauses.filter(t => !/\b(?:no|minimal) text\b|\bwatermarks?\b/i.test(t));
+        const art = artClauses.map((t, i) => this._decide(hasStones ? t : this._stoneFree(t), seed, 100 + i * 10, false)).slice(0, 7);
 
-        // ── Art direction: the archetype's remaining clauses, minus what an explicit
-        // palette / film look replaces ──
-        let art = scene.art;
-        if (c.paletteDesc) art = art.filter(t => !/\b(?:tones?|palettes?|colou?rs?|monochrome|black[- ]and[- ]white|saturat\w*|desaturated|sepia|pastel)\b/i.test(t));
-        if (c.filmDesc) art = art.filter(t => !/\b(?:grading|graded|film grain|grain|film photography|disposable camera|analog)\b/i.test(t));
-        if (!wantsText) art = art.filter(t => !/\b(?:no|minimal) text\b|\bwatermarks?\b/i.test(t));
-        art = art.slice(0, 6).map((t, i) => this._decide(t, c.seed, 100 + i * 10, false));
+        // ── Look: palette, film, intensity, season (or a grade that suits the metal) ──
+        const paletteDesc = paletteExplicit ? this._adaptMetal(this.PALETTE_TEXT[S.palette], metal) : '';
+        const intensityDesc = this._sceneModifier('moodIntensity', S.moodIntensity);
+        const look = [paletteDesc, filmDesc && `film look: ${filmDesc}`, intensityDesc, seasonLook].filter(Boolean);
+        if (['faded-vintage', 'bleach-bypass'].includes(S.filmStyle) && !!filmDesc && ['jewel-tones', 'deep-ocean', 'warm-earth'].includes(S.palette) && paletteExplicit) {
+            note('warn', 'pe_warn_film_palette', 'The faded film look will mute this color palette');
+        }
+        const grade = look.length ? '' : bw ? 'a rich black-and-white tonal grade with deep blacks and luminous highlights' : ({
+            warm: `a warm, rich color grade that flatters the ${metal.word}`,
+            cool: `a clean neutral color grade that keeps the ${metal.word} crisp and bright`,
+            neutral: `a natural, balanced color grade true to the ${metal.word}`,
+        }[metal.tone] || 'a natural, balanced color grade');
 
-        // ── Purpose ──
-        const quality = { standard: 'Professional', detailed: 'Luxury editorial', ultra: 'Ultra-premium' }[S.promptQuality] || 'Luxury';
-        const thing = c.isWatchProduct ? 'watch' : 'jewelry';
-        const kind = arch.id === 'product-page-clean' ? `e-commerce ${thing} product photograph`
-            : /macro/.test(c.angleId + ' ' + arch.id) ? `macro ${thing} photograph`
-            : c.isHumanActive ? `${thing} campaign photograph` : `${thing} still-life photograph`;
+        // ── Composition ────────────────────────────────────────────────────
+        const composition = `the ${noun} ${plural ? 'are' : 'is'} the sharpest, most luminous focal point${close ? `, filling a generous part of the frame` : wide ? `, still clearly readable within the wide frame` : `, placed with intentional negative space`}, with clean separation from the background, composed for ${this.RATIO_TEXT[ratio] || `a ${ratio} frame`}`;
 
-        // ── Checks worth telling the user about ──
-        if (wide && c.isHumanActive && ['ring', 'earrings', 'anklet', 'brooch', 'pendant'].includes(cat)) {
+        // ── Quality & realism ──────────────────────────────────────────────
+        const qualityPrefix = this.sceneModifierText.promptQuality[S.promptQuality] || this.sceneModifierText.promptQuality.detailed;
+        const rl = S.realismLevel || 'standard';
+        const cleanDigital = S.filmStyle === 'clean-digital';
+        const grain = cleanDigital ? '' : 'organic film grain';
+        const isoNum = (isoDesc.match(/ISO \d+/) || ['ISO 400'])[0];
+        const lowIso = parseInt(isoNum.replace(/\D/g, ''), 10) < 400;
+        const realismPrefix = rl === 'high'
+            ? `Hyper-realistic editorial photograph. Real photography, not AI-generated. Natural imperfections: slight lens vignetting${grain ? `, ${grain}` : ''}${peopleInFrame ? ', authentic skin texture with visible pores' : ''}, natural color cast from real lighting.`
+            : rl === 'ultra'
+            ? `Indistinguishable from a real photograph taken by a professional photographer on a real camera sensor. Visible: ${lowIso ? `pristine sensor detail at ${isoNum}` : 'natural sensor noise'}, chromatic aberration at the frame edges${grain ? `, ${grain}` : ''}${withModel ? ', fabric thread texture, individual skin pores and micro-hairs, subsurface light scattering through thin skin and earlobes' : ', true metal micro-texture'}, natural lens barrel distortion, captured in RAW format with a real DNG color profile. NOT CGI, NOT 3D render, NOT illustration, NOT digital art.`
+            : '';
+        const tailBase = `Sharp critical focus on the ${noun}, perfect geometric proportions, 8K resolution, photographic style, professional commercial photography, RAW quality.`;
+        const qualityTail = rl === 'high'
+            ? `${tailBase} Shot on a DSLR sensor, natural micro-imperfections in the lighting${grain ? ', subtle film grain texture' : ''}, natural lens vignetting${peopleInFrame ? ', subsurface scattering on skin' : ''}.`
+            : rl === 'ultra'
+            ? `${tailBase} Shot on a full-frame DSLR sensor, ${lowIso ? `clean sensor detail at ${isoNum}` : `visible sensor noise at ${isoNum}`}, natural chromatic aberration at the frame edges${grain ? ', organic film grain texture' : ''}${withModel ? ', micro-detail on fabric weave and thread texture, individual skin pores and micro-hairs visible, subsurface light scattering through earlobes and thin skin' : ', micro-detail on the metal surface'}, natural lens imperfections including slight barrel distortion, captured in RAW format with a DNG color profile, real photography not CGI not 3D render.`
+            : tailBase;
+        const anatomy = withModel
+            ? 'CRITICAL: Flawless human anatomy — never more than two arms and two hands, exactly five fingers on every visible hand, correct joint proportions, natural knuckle spacing, no extra or fused digits, photorealistic skin texture.'
+            : handsInFrame
+            ? 'CRITICAL: Flawless hand anatomy — natural hands with exactly five fingers each, correct joint proportions, natural knuckle spacing, no extra or fused digits.'
+            : '';
+
+        // ── Negative prompt ────────────────────────────────────────────────
+        const negative = this._negativeText({ category, worn: withModel, hands: handsInFrame, metal, hasStones, isWatch,
+            brandText: wantsText, allowCA: rl === 'ultra' });
+
+        // ── Checks worth telling the user about ────────────────────────────
+        if (wide && withModel && ['ring', 'earrings', 'anklet', 'brooch', 'pendant'].includes(category)) {
             note('warn', 'pe_warn_small', 'The {noun} will look tiny in this wide framing; a closer angle shows it better', { noun });
         }
-        if (['flat-lay', 'overhead', 'top-down-hand'].includes(c.angleId) && c.ratio === '9:16') {
+        if (['flat-lay', 'overhead', 'top-down-hand'].includes(angleId) && ratio === '9:16') {
             note('warn', 'pe_warn_flat_story', 'Top-down shots fill a 1:1 or 4:5 frame better than 9:16');
         }
 
-        const rl = S.realismLevel || 'standard';
-        const pieceImages = Math.max(0, parseInt(S.jewelryCount, 10) || 0);
+        const jc = Math.max(0, parseInt(S.jewelryCount, 10) || 0);
+        const blurBehind = close && !!setText && !deepDof;
         return {
-            angleId: c.angleId, lightingId: c.lightingId,
-            kind: `${quality} ${kind}`.toLowerCase(),
-            purpose: `${quality} ${kind}, ${this.RATIO_TEXT[c.ratio] || c.ratio + ' frame'}`,
-            safeZone: c.ratio === '9:16' ? 'Keep the key subject in the middle of the frame, clear of the top and bottom edges' : '',
-            subject,
-            piece: {
-                noun, plural, isSet, line: pieceLine, metalShort: c.isWatchProduct ? '' : metal.short, stoneShort,
-                notes: S.pieceId ? String(S.pieceNotes || '').trim() : '', size: S.pieceId ? String(S.pieceSize || '').trim() : '',
+            v: 3,
+            archetype: { id: archetype.id, name: archetype.name || archetype.id },
+            picks,
+            shot: {
+                angleId, lightingId, noun, plural, category, materialId, stillLife, handsInFrame,
+                qualityPrefix, realismPrefix, realismLevel: rl,
+                subject, heroLine,
+                settingLine: [setText ? `Setting: ${setText}${blurBehind ? ', softly out of focus behind the subject' : ''}` : '',
+                    surface ? (withModel ? `Surface: ${surface}` : subjectPlacesPiece ? `The whole arrangement sits ${surface}` : `The ${noun} ${plural ? 'rest' : 'rests'} ${surface}`) : ''].filter(Boolean).join('. '),
+                model,
+                placement,
+                materialLine: isWatch ? metal.v1 : `${materialLabel}, ${metal.v1}`,
+                metalLock: metal.lock, metalLight: metal.light,
+                stonesLine,
+                craft: [craft[0], withModel ? craft[1] : '', heroSet ? this.CRAFT_TEXT['jewelry-set'][0] : ''].filter(Boolean).join(', ')
+                    .replace(/, stones and design language/, hasStones ? ', stones and design language' : ' and design language'),
+                style, presentation, reflections,
+                libNotes: lib ? lib.notes : '', libSize: lib ? lib.size : '',
+                libraryPiece: lib ? { id: lib.id, name: lib.name, photos: lib.photos } : null,
+                art,
+                trend: this._adaptMetal(S.trendDirective || '', metal),
+                light, lightSource, mood, camera, composition, look, grade, colorTreatment,
+                hallmark, brand, wantsText,
+                qualityTail, anatomy,
+                ratio, negative,
+                refs: { pieceImages: jc, modelImage: !!(jc && S.consistencyOn && S.modelImageAttached && withModel) },
+                notes,
             },
-            libraryPiece: S.pieceId ? { id: S.pieceId, name: S.pieceName || '', photos: S.piecePhotoCount || 0 } : null,
-            placement,
-            model,
-            setting: { place, backdrop, surface, blurred: close && !!(place || backdrop) },
-            art,
-            light,
-            camera, cameraShort,
-            look: [c.paletteDesc, c.filmDesc, c.intensityDesc, timeDesc ? '' : c.seasonDesc].filter(Boolean),
-            trend: S.trendDirective || '',
-            hallmark, brand, wantsText,
-            anatomy: c.isHumanActive && (['ring', 'bracelet', 'bangles', 'watch', 'jewelry-set'].includes(cat)
-                || /\b(?:hands?|fingers?|wrists?|palms?|fist|grip)\b/i.test(subjectBare + ' ' + c.poseDesc))
-                ? 'Natural, anatomically correct hands with five fingers each' : '',
-            realism: rl === 'ultra'
-                ? `Indistinguishable from a real camera photo: natural sensor noise, fine film grain, subtle chromatic aberration at the frame edges${c.isHumanActive ? ', real skin pores and fine hairs' : ', true metal micro-texture'}`
-                : rl === 'high'
-                ? `A real photograph, not CGI: subtle film grain, natural lens vignetting${c.isHumanActive ? ', authentic skin texture' : ', true metal micro-texture'}`
-                : 'A true-to-life photograph with realistic metal reflections',
-            realismLevel: rl,
-            refs: { pieceImages, modelImage: !!(pieceImages && S.consistencyOn && S.modelImageAttached && c.isHumanActive) },
-            ratio: c.ratio,
-            notes,
         };
     },
 
-    // "The attached images 1–3 show the exact ring…" (natural target only).
-    _refsText(s) {
-        const n = s.refs && s.refs.pieceImages || 0;
-        const parts = [];
-        if (n > 0) {
-            parts.push(`${n === 1 ? 'The attached image shows' : `The attached images 1–${n} show`} the exact ${s.piece.noun} to feature: reproduce its design, proportions, stone setting and metal finish exactly`);
-        }
-        if (s.refs && s.refs.modelImage && s.model) {
-            parts.push(`image ${n + 1} is the model: keep ${s.model.male ? 'his' : 'her'} face, features and skin tone identical`);
-        }
-        return parts.join('; ');
+    // Negative prompt that never forbids what the prompt asks for (brand lettering,
+    // Ultra realism's chromatic aberration, hands in a hands-on concept, the metal itself).
+    _negativeText(n) {
+        const human = n.worn || n.hands;
+        const parts = [human
+            ? 'three arms, extra arms, extra limbs, malformed anatomy, extra fingers, six fingers, mutated limbs, fused fingers, asymmetrical geometry'
+            : '(hand, fingers, skin, arm, human), distorted shape, asymmetrical geometry'];
+        parts.push(n.worn
+            ? 'oversized jewelry, jewelry disproportionate to the body, necklace wider than the shoulders, pendant larger than a hand, ring wider than the palm, earring larger than the face, jewelry not at correct real-world scale, miniaturized accessories'
+            : 'oversized jewelry, jewelry not at correct real-world scale, miniaturized accessories, jewelry disproportionate to the scene');
+        if (n.worn && this.PLACEMENT_NEG[n.category]) parts.push(this.PLACEMENT_NEG[n.category]);
+        if (n.metal && n.metal.neg) parts.push(n.metal.neg);
+        if (!n.isWatch) parts.push(n.hasStones ? 'cloudy, mismatched or unevenly set stones' : 'added gemstones or crystals');
+        if (n.category === 'earrings') parts.push('mismatched earrings');
+        parts.push([
+            'AI artifacts',
+            n.brandText ? 'misspelled brand name, garbled or extra lettering, third-party logos, watermarks' : 'text overlay, watermarks, logos',
+            'cartoon, illustration, painting, low quality, blurry or out-of-focus jewelry',
+            n.allowCA ? '' : 'chromatic aberration',
+            'plastic texture, 3d render',
+        ].filter(Boolean).join(', '));
+        return `Negative prompt: ${parts.join(', ')}.`;
     },
 
-    _settingText(s) {
-        const st = s.setting;
-        const out = [];
-        const where = st.place || st.backdrop;
-        if (where) out.push(`Setting: ${where}${st.blurred ? ', softly out of focus' : ''}`);
-        if (st.surface) out.push(s.model ? `Surface: ${st.surface}` : `The ${s.piece.noun} ${s.piece.plural ? 'rest' : 'rests'} ${st.surface}`);
-        return out.join('. ');
-    },
+    // The classic prompt: dense, labeled sentences from the subject to the negative
+    // prompt. With reference photos it uses the [IMAGE REFERENCES] layout.
+    _compileClassic(spec) {
+        const s = spec.shot;
+        const sentence = t => {
+            t = String(t || '').replace(/\s+/g, ' ').replace(/\s+([,.;:])/g, '$1').trim();
+            if (!t) return '';
+            t = t.charAt(0).toUpperCase() + t.slice(1);
+            return /[.!?]$/.test(t) ? t : t + '.';
+        };
+        const body = [];
+        const add = t => { const x = sentence(t); if (x) body.push(x); };
 
-    // Drops the lowest-priority parts (never priority 10) until the prompt fits.
-    _fitBudget(parts, maxWords) {
-        const count = t => t.split(/\s+/).filter(Boolean).length;
-        const items = parts.filter(p => p.text).map((p, i) => ({ pri: p.pri, i, text: this._sentence(p.text) }));
-        let total = items.reduce((a, p) => a + count(p.text), 0);
-        const dropped = new Set();
-        for (const p of [...items].sort((a, b) => a.pri - b.pri || b.i - a.i)) {
-            if (total <= maxWords || p.pri >= 10) break;
-            dropped.add(p.i);
-            total -= count(p.text);
-        }
-        return items.filter(p => !dropped.has(p.i)).map(p => p.text).join(' ');
-    },
-
-    _modelParts(s, add, pri = {}) {
+        // Subject and setting
+        add(s.subject);
+        add(s.heroLine);
+        if (s.stillLife) add('Still-life product shot: no person, no model, no hands or body parts in frame');
+        add(s.settingLine);
+        // The model
         const m = s.model;
-        if (!m) return;
-        const P = (k, d) => (pri[k] != null ? pri[k] : d);
-        add(P('intro', 9), m.intro);
-        add(P('expression', 7), m.expression && `Expression: ${m.expression}`);
-        add(P('wear', 8), m.wear && `${m.male ? 'He' : 'She'} is ${m.wear}`);
-        add(P('care', 7), m.care && `Styling: ${m.care}`);
-        add(P('pose', 7), m.pose && `Pose: ${m.pose}`);
-        add(P('skin', 6), m.skin && `Skin: ${m.skin}`);
-        add(P('focus', 6), m.focus && `Framing: ${m.focus}`);
-    },
-
-    // Gemini / ChatGPT: complete sentences, purpose first, positive constraints.
-    _compileNatural(spec) {
-        const s = spec.shot;
-        const P = [];
-        const add = (pri, text) => { if (text) P.push({ pri, text }); };
-        add(10, s.purpose);
-        add(6, s.safeZone);
-        add(10, this._refsText(s));
-        add(10, s.subject);
-        add(10, s.piece.line);
-        add(9, s.piece.notes && `Piece details: ${s.piece.notes}`);
-        add(9, s.piece.size && `Real size: ${s.piece.size}`);
-        this._modelParts(s, add);
-        add(8, s.placement);
-        add(8, this._settingText(s));
-        add(5, s.art.length && `Art direction: ${s.art.join(', ')}`);
-        add(9, `Lighting: ${s.light}`);
-        add(8, `Camera: ${s.camera}`);
-        add(8, s.look.length && `Look: ${s.look.join('; ')}`);
-        add(8, s.trend && `Trend reference: ${s.trend}`);
-        add(8, s.hallmark);
-        add(9, s.brand);
-        add(7, s.anatomy);
-        add(s.realismLevel === 'standard' ? 5 : 7, s.realism);
-        add(7, s.wantsText ? 'Any lettering reads exactly "ELARIS", with no other text or watermarks' : 'No text, logos or watermarks');
-        return this._fitBudget(P, 280);
-    },
-
-    // FLUX: natural language, subject first (early words weigh most), ~170 words.
-    _compileFlux(spec) {
-        const s = spec.shot;
-        const P = [];
-        const add = (pri, text) => { if (text) P.push({ pri, text }); };
-        add(10, s.subject);
-        add(10, s.piece.line);
-        add(8, s.piece.notes && `Piece details: ${s.piece.notes}`);
-        add(8, s.piece.size && `Real size: ${s.piece.size}`);
-        this._modelParts(s, add, { expression: 6, care: 6, pose: 6, skin: 5, focus: 5 });
-        add(7, s.placement);
-        add(8, this._settingText(s));
-        add(9, `Lighting: ${s.light}`);
-        add(8, `Camera: ${s.camera}`);
-        add(9, s.purpose);
-        add(5, s.look.length && `Look: ${s.look.join('; ')}`);
-        add(4, s.art.length && `Art direction: ${s.art.slice(0, 4).join(', ')}`);
-        add(5, s.trend && `Trend reference: ${s.trend}`);
-        add(7, s.hallmark);
-        add(8, s.brand);
-        add(6, s.anatomy);
-        add(s.realismLevel === 'standard' ? 4 : 6, s.realism);
-        add(6, s.wantsText ? 'Any lettering reads exactly "ELARIS"' : 'No text or watermarks');
-        return this._fitBudget(P, 170);
-    },
-
-    // Midjourney: a short comma-separated description plus --ar / --no.
-    _compileMidjourney(spec) {
-        const s = spec.shot;
-        const f = t => this._firstClause(t);
-        const parts = [
-            f(s.subject),
-            `${s.piece.metalShort ? s.piece.metalShort + ' ' : ''}${s.piece.noun}${s.piece.stoneShort ? ' with ' + s.piece.stoneShort : ''}`,
-            s.model && `${s.model.male ? 'male' : 'female'} model${s.model.lookShort ? ', ' + s.model.lookShort : ''}`,
-            s.model && s.model.wearShort && f(s.model.wearShort),
-            f(s.setting.place || s.setting.backdrop),
-            s.setting.surface && f(s.setting.surface),
-            f(s.light),
-            s.cameraShort,
-            s.look.length ? f(s.look[0]) : '',
-            s.kind,
-        ].filter(Boolean);
-        const seen = new Set();
-        let words = [];
-        for (const p of parts) {
-            const key = p.toLowerCase();
-            if (seen.has(key)) continue;
-            seen.add(key);
-            const w = p.split(/\s+/);
-            if (words.length + w.length > 60) break;
-            words = words.concat(w.map((x, i) => (i === w.length - 1 ? x + ',' : x)));
+        if (m) {
+            add(m.gender);
+            add(m.look);
+            add(m.expression && `Expression: ${m.expression}`);
+            add(m.makeup);
+            add(m.wear && `Styling: ${m.wear}`);
+            add(m.care && `Styling for visibility: ${m.care}`);
+            add(m.pose && `Pose: ${m.pose}`);
+            add(m.focus && `Framing: ${m.focus}`);
+            add(m.skin && `Skin realism: ${m.skin}`);
         }
-        const text = words.join(' ').replace(/,$/, '');
-        const no = s.wantsText ? ['watermark'] : ['text', 'watermark', 'logo'];
-        no.push(...(s.model ? ['extra fingers', 'deformed hands'] : ['people', 'hands']));
-        return `${text} --ar ${s.ratio} --no ${no.join(', ')}`;
-    },
+        // The piece
+        add(s.placement);
+        add(s.materialLine);
+        add(s.metalLock && `Metal color accuracy: ${s.metalLock}`);
+        add(s.stonesLine);
+        add(s.craft && `Craftsmanship: ${s.craft}`);
+        add(s.presentation && `Presentation: ${s.presentation}`);
+        add(s.style && `Style direction: ${s.style}`);
+        add(s.libNotes && `Piece details: ${s.libNotes}`);
+        add(s.libSize && `Real size: ${s.libSize}`);
+        // Scene, light, camera, look
+        add(s.art.length && `Art direction: ${s.art.join(', ')}`);
+        add(s.trend && `Trend direction: ${s.trend}`);
+        add(`Lighting & mood: ${s.light}${s.mood ? `, with ${/^[aeiou]/i.test(s.mood) ? 'an' : 'a'} ${s.mood} mood` : ''}; ${s.metalLight}`);
+        add(s.reflections && `Reflections: ${s.reflections}`);
+        add(`Camera: ${s.camera}, focus locked on the ${s.noun}`);
+        add(`Composition: ${s.composition}`);
+        add(s.look.length ? `Look: ${s.look.join('; ')}` : (s.grade && `Color grade: ${s.grade}`));
+        add(s.colorTreatment && `Color treatment: ${s.colorTreatment}`);
+        // Brand
+        add(s.hallmark && `Brand hallmark details: ${s.hallmark}`);
+        add(s.brand);
 
-    // Stable Diffusion: tags (most important first) + a separate negative prompt.
-    _compileSD(spec) {
-        const s = spec.shot;
-        const f = t => this._firstClause(t);
-        const tags = [
-            s.kind,
-            f(s.subject),
-            `${s.piece.metalShort ? s.piece.metalShort + ' ' : ''}${s.piece.noun}`,
-            s.piece.stoneShort,
-            s.model && `${s.model.male ? 'male' : 'female'} model`,
-            s.model && s.model.lookShort,
-            s.model && s.model.wearShort && f(s.model.wearShort),
-            s.model && s.model.expression && f(s.model.expression),
-            f(s.setting.place || s.setting.backdrop),
-            s.setting.surface && f(s.setting.surface),
-            f(s.light),
-            s.cameraShort,
-            ...s.look.map(f),
-            'sharp focus', 'highly detailed', 'realistic metal reflections',
-        ].filter(Boolean);
-        const seen = new Set();
-        const positive = tags.filter(t => { const k = t.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; }).join(', ');
-        const neg = s.wantsText ? ['watermark', 'misspelled lettering'] : ['text', 'watermark', 'logo'];
-        neg.push('blurry', 'lowres', 'jpeg artifacts', 'cartoon', 'illustration', 'painting', '3d render', 'plastic texture',
-            'oversized jewelry', 'floating jewelry', 'deformed jewelry');
-        if (s.model) neg.push('extra fingers', 'fused fingers', 'deformed hands', 'extra limbs', 'bad anatomy');
-        else neg.push('people', 'hands');
-        return `${positive}\nNegative prompt: ${neg.join(', ')}`;
+        const head = [s.qualityPrefix, s.realismPrefix].filter(Boolean);
+        const tail = [s.qualityTail, s.anatomy, `Aspect ratio ${s.ratio}.`, s.negative].filter(Boolean);
+        const refs = s.refs || {};
+        const n = refs.pieceImages || 0;
+        if (!n) return [...head, ...body, ...tail].join(' ');
+
+        // Reference photos attached: say what each image is before the scene.
+        const his = m && m.male ? 'his' : 'her';
+        const who = m ? (m.male ? 'man' : 'woman') : '';
+        let p = '[IMAGE REFERENCES]\n';
+        p += n === 1 ? 'Image 1 shows the exact jewelry piece to be featured.\n' : `Images 1 to ${n} show the exact jewelry piece to be featured.\n`;
+        if (refs.modelImage && m) p += `Image ${n + 1} is the model reference: keep ${his} face, features and skin tone perfectly identical.\n`;
+        p += '\n[JEWELRY RECONSTRUCTION]\n';
+        p += `Use ALL jewelry image(s) to reconstruct the ${s.noun}. Keep the exact metal color, stone placement and proportions shown in the photos.\n`;
+        p += '\n[SCENE DIRECTION]\n';
+        if (refs.modelImage && m) p += `Generate a photo of the exact same ${who} from Image ${n + 1} wearing the jewelry.\n`;
+        else if (m && m.profile) p += `Generate a photo of a ${who} matching the Model Details below, wearing the jewelry.\n`;
+        else if (m) p += 'Generate a photo of a model wearing the jewelry.\n';
+        p += [...head, ...body].join(' ');
+        p += '\n\n' + tail.join(' ');
+        return p;
     },
 
     // ── Copy All ──────────────────────
@@ -5527,35 +5615,6 @@ const PromptStudio = {
         };
     },
 
-    _getLightingForScene(sceneVariant, selectedLighting) {
-        // Override lighting when sceneVariant has strong time-of-day language
-        // that would contradict the studio lighting picker choice.
-        // If user explicitly picked a non-generic lighting, we still respect it
-        // (only override the default 'studio lighting' fallback).
-        if (!sceneVariant) return selectedLighting;
-        const sv = sceneVariant.toLowerCase();
-        if (sv.includes('morning') || (sv.includes('golden') && sv.includes('light'))) {
-            return 'warm morning golden light, soft natural fill from a low sun angle';
-        }
-        if (sv.includes('dusk') || sv.includes('twilight')) {
-            return 'dusk ambient light, warm-to-cool gradient atmosphere';
-        }
-        if (sv.includes('blue hour')) {
-            return 'blue hour soft twilight, cool diffused ambient exposure';
-        }
-        if (sv.includes('candlelit') || sv.includes('lantern')) {
-            return 'warm candlelit ambient, golden flickering tones, intimate low-key atmosphere';
-        }
-        if (sv.includes('overcast')) {
-            return 'overcast sky, evenly diffused natural light, no harsh shadows, studio-quality daylight';
-        }
-        if (sv.includes('midday') || sv.includes('mediterranean')) {
-            return 'bright high-key midday Mediterranean light, strong directional sun';
-        }
-        return selectedLighting;  // no time-of-day conflict — keep user selection
-    },
-
-    
     _generateCaption(archetypeId, piece, material) {
         // Build a social media caption from archetype vibe + piece + brand voice
         const hooks = {
@@ -5577,7 +5636,7 @@ const PromptStudio = {
             'futuristic-chrome':        'The future is already wearing it.',
             'submerged-beauty':         'Beauty that surfaces on its own.',
             'surreal-material-fusion':  'Where nature ends, craft begins.',
-            'luxury-leather-editorial': 'Leather softens. Silver endures.',
+            'luxury-leather-editorial': 'Leather softens. {Metal} endures.',
             'monochrome-jewelry-ad':    'No color needed. Just craft.',
         };
         // 4 per category + #ElarisJewelry = 5, Instagram's per-post limit since Dec 2025.
@@ -5589,75 +5648,20 @@ const PromptStudio = {
             'pendant':  '#ElarisPendant #SterlingPendant #MoroccanJewelry #PendantDesign',
         };
         const cat = this.state.category || 'ring';
-        const hook = hooks[archetypeId] || 'Jewelry crafted for those who know.';
-        const tags = hashtags[cat] || '#MoroccanJewelry #LuxuryJewelry #SterlingSilver';
+        // The metal tag follows the piece's metal (gold pieces were tagged "Sterling").
+        const tag = ({ '800-silver': 'MoroccanSilver', 'silver-vermeil': 'Vermeil', '18k-yellow-gold': 'Gold',
+            '18k-rose-gold': 'RoseGold', '18k-white-gold': 'WhiteGold', 'red-gold-beldi': 'BeldiGold' })[this.state.material] || 'Sterling';
+        const metalWord = this.metalFor(this.state.material).family === 'gold' ? 'Gold' : 'Silver';
+        const hook = (hooks[archetypeId] || 'Jewelry crafted for those who know.').replace('{Metal}', metalWord);
+        const tags = hashtags[cat] ? hashtags[cat].replace(/Sterling/g, tag)
+            : `#MoroccanJewelry #LuxuryJewelry #${tag === 'Sterling' ? 'SterlingSilver' : tag === 'Gold' ? '18KGold' : tag}`;
         return `${hook}\n\n${material} — ${piece}.\n\n✦ Elaris Jewelry\n\n${tags} #ElarisJewelry`;
     },
 
-    _getSceneVariant(archetypeId, stillLife = false) {
-        // Returns a random environment/setting phrase to inject variety into any archetype
-        // Organized by archetype group — human archetypes get lifestyle settings,
-        // product archetypes get surface/environment settings
-        // ── ENVIRONMENT-ONLY pool (pure locations — NO time-of-day language) ──────
-        // Time-of-day is handled exclusively by _getLightingForScene() to prevent
-        // duplicate lighting descriptions in the generated prompt.
-        const humanEnvs = [
-            // ── Elegant interiors ────────────────────────────────────────────
-            'inside a warmly lit café, wooden tables and ceramic cups on the counter',
-            'a sleek modern hotel lobby with marble floors and architectural lighting',
-            'a quiet home library surrounded by stacked books and warm lamplight',
-            'a rooftop terrace with city skyline as backdrop',
-            'a bright Scandinavian-style loft with white walls and oak floors',
-            'a Moroccan riad courtyard with intricate zellige tile patterns',
-            'a sun-drenched south-of-France terrace with potted lavender nearby',
-            'an elegant dressing room with a floor-length mirror and vanity lighting',
-            'a luxurious boutique hotel suite with European interior design',
-            'a Parisian apartment living room with tall windows and parquet floors',
-            // ── Moroccan / North African settings ────────────────────────────
-            'a traditional riad garden with a central fountain and lush green plants',
-            'a Moroccan medina alleyway framed by carved archways and plaster walls',
-            'a rooftop in Marrakech with the medina panorama visible in the background',
-            'a Moroccan wedding venue with embroidered textiles and ornate lanterns',
-            'a Moroccan hammam anteroom with zellige floors and arched doorways',
-            // ── Aspirational exteriors ───────────────────────────────────────
-            'a cobblestone street in a Mediterranean old town',
-            'a Mediterranean harbour with terracotta buildings and blue water',
-            'a lush private garden with dappled shade and stone pathways',
-            'a modern rooftop pool area with clean geometric lines',
-            'a sunlit outdoor terrace at a luxury resort',
-            // ── Lifestyle settings ───────────────────────────────────────────
-            'inside a luxury car interior, leather seat and clean dashboard visible',
-            'at a polished marble kitchen counter with minimalist design',
-            'at a quiet outdoor café table in a sunlit courtyard',
-            'in a design bookshop between floor-to-ceiling shelves',
-            'at a rooftop bar with panoramic views',
-        ];
-        const productEnvs = [
-            'polished white Carrara marble surface',
-            'aged raw concrete with subtle texture',
-            'dark oxidized steel surface catching studio light',
-            'warm honey-toned oak wood grain',
-            'deep black velvet surface, zero reflection',
-            'hand-woven natural linen fabric base',
-            'pale pink sand surface with fine grain texture',
-            'brushed brass tray with clean studio light',
-            'glass shelf, frosted light diffused from below',
-            'aged terracotta surface, matte warm tones',
-            'scattered dried botanicals on cream paper',
-            'ice crystals forming on a mirror surface',
-        ];
-        // (LOCATION_ARCHETYPES get the lifestyle-location pool; a still life always gets a surface)
-        const pool = this.LOCATION_ARCHETYPES.includes(archetypeId) && !stillLife ? humanEnvs : productEnvs;
-        return pool[Math.floor(Math.random() * pool.length)];
-    },
-
     _getRandomOutfit(gender, materialId) {
-        // Returns a random outfit — palette-tagged and filtered by metal affinity
-        // Rose/yellow gold → warm palette, Silver/platinum → cool, mixed → neutral
-        const warmMats = ['rose-gold', 'gold', 'yellow-gold'];
-        const coolMats = ['sterling-silver', 'platinum', 'white-gold'];
-        const matFamily = warmMats.includes(materialId) ? 'warm'
-                        : coolMats.includes(materialId) ? 'cool' : 'neutral';
+        // Returns a random outfit, palette-matched to the metal: warm golds → warm
+        // palette, bright silver / white gold → cool, antiqued finishes → neutral.
+        const matFamily = (this.METAL_TEXT[materialId] || {}).tone || 'neutral';
 
         // ── JEWELRY-CAMPAIGN OUTFITS ──────────────────────────────────────────
         // Inspired by Cartier, Tiffany, Van Cleef & Arpels, Bulgari campaign styling.
@@ -5738,46 +5742,6 @@ const PromptStudio = {
         return 'elaris_used_' + archetypeId;
     },
 
-    _getUniqueSubject(archetype) {
-        // ── Cross-session deduplication via localStorage ───────────────────
-        // We track which subject indices have been used in previous sessions.
-        // Prefer unused-across-sessions subjects, cycling through them before repeating.
-        const storageKey = this._getUsedSubjectKey(archetype.id);
-        let usedAcrossSessions = [];
-        try {
-            usedAcrossSessions = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        } catch(e) { usedAcrossSessions = []; }
-
-        const allIndices = archetype.subjects.map((_, i) => i);
-        const unusedAcross = allIndices.filter(i => !usedAcrossSessions.includes(i));
-
-        // If pool doesn't exist or is empty, rebuild from unused-across-sessions first
-        if (!this._subjectPools[archetype.id] || this._subjectPools[archetype.id].length === 0) {
-            // Prefer subjects never seen across sessions; if all seen, reset cross-session memory
-            let candidateIndices = unusedAcross.length > 0 ? unusedAcross : (() => {
-                try { localStorage.removeItem(storageKey); } catch(e) {}
-                return allIndices;
-            })();
-
-            // Fisher-Yates shuffle on candidates
-            for (let i = candidateIndices.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [candidateIndices[i], candidateIndices[j]] = [candidateIndices[j], candidateIndices[i]];
-            }
-            this._subjectPools[archetype.id] = [...candidateIndices];
-        }
-
-        // Pop the next unique index from in-session pool
-        const idx = this._subjectPools[archetype.id].pop();
-
-        // Mark as used across sessions
-        try {
-            const updated = [...new Set([...usedAcrossSessions, idx])];
-            localStorage.setItem(storageKey, JSON.stringify(updated));
-        } catch(e) {}
-
-        return archetype.subjects[idx];
-    },
 };
 
 window.PromptStudio = PromptStudio;

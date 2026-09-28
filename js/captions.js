@@ -129,14 +129,58 @@ const ElarisCaption = {
         ],
     },
 
+    // ── Metals ───────────────────────────────────────────────────
+    // The copy above is written for 925 sterling silver; any other metal swaps the
+    // metal wording, purity, extra hooks and hashtags (ids match PromptStudio.materials);
+    // `adj` replaces "pure" where it would overstate the metal.
+    METAL_WORDS: {
+        '800-silver':      { phrase: '800 Moroccan silver', adj: 'traditional', purity: '800', word: 'silver', tagWord: 'silver',
+                             tags: ['#moroccansilver', '#800silver', '#berbersilver'] },
+        'silver-vermeil':  { phrase: 'gold vermeil over 925 sterling silver', adj: 'rich', purity: '925', word: 'gold', tagWord: 'gold',
+                             tags: ['#goldvermeil', '#vermeiljewelry', '#925silver'] },
+        '18k-yellow-gold': { phrase: '18K yellow gold', adj: 'solid', purity: '750', word: 'gold', tagWord: 'gold',
+                             tags: ['#18kgold', '#goldjewelry', '#18kgoldjewelry'],
+                             hooks: ['18K gold that only grows more beautiful with time.'] },
+        '18k-rose-gold':   { phrase: '18K rose gold', adj: 'solid', purity: '750', word: 'rose gold', tagWord: 'rosegold',
+                             tags: ['#rosegold', '#rosegoldjewelry', '#18kgold'],
+                             hooks: ['The soft blush of 18K rose gold.'] },
+        '18k-white-gold':  { phrase: '18K white gold', adj: 'solid', purity: '750', word: 'white gold', tagWord: 'whitegold',
+                             tags: ['#whitegold', '#whitegoldjewelry', '#18kgold'],
+                             hooks: ['The quiet brilliance of 18K white gold.'] },
+        'red-gold-beldi':  { phrase: '18K beldi red gold', adj: 'solid', purity: '750', word: 'gold', tagWord: 'gold',
+                             tags: ['#dhabbeldi', '#moroccangold', '#18kgold'],
+                             hooks: ['Beldi gold, the way our grandmothers wore it.', 'The deep glow of traditional Moroccan beldi gold.'] },
+    },
+
+    // Swaps silver wording for the chosen metal in one pass (so a replacement is never
+    // replaced again), keeping a capital at the start of a sentence.
+    _metalize(text, mw) {
+        if (!mw) return text;
+        return String(text).replace(/pure 925 silver|925 sterling silver|sterling silver|925 silver|925 purity|925 sterling|liquid silver|moroccan silver|\bsilver\b/gi, (m, at, str) => {
+            const k = m.toLowerCase();
+            // ("pure" only fits silver: 18K gold is 75% gold, vermeil is plated)
+            const out = k === 'pure 925 silver' ? (mw.adj || 'pure') + ' ' + mw.phrase
+                : k === '925 purity' ? mw.purity + ' purity'
+                : k === 'liquid silver' ? 'liquid ' + mw.word
+                : k === 'moroccan silver' ? 'Moroccan ' + mw.word
+                : k === 'silver' ? mw.word
+                : mw.phrase;
+            const startsSentence = at === 0 || /[.!?]\s*$/.test(str.slice(0, at));
+            return startsSentence || /[A-Z]/.test(m[0]) ? out.charAt(0).toUpperCase() + out.slice(1) : out;
+        });
+    },
+
     // ── Generate Caption ─────────────────────────────────────────
     generate(opts = {}) {
         const voice = opts.voice || 'luxury';
         const category = opts.category || 'general';
         const productName = opts.productName || '';
+        const mw = this.METAL_WORDS[opts.metal] || null;
 
-        const hook = this._random(this.hooks[voice] || this.hooks.luxury);
-        const desc = this._random(this.descriptions[category] || this.descriptions.general);
+        let hooks = this.hooks[voice] || this.hooks.luxury;
+        if (mw) hooks = [...hooks.filter(h => !/call it sterling/i.test(h)), ...(voice !== 'conversational' && mw.hooks ? mw.hooks : [])];
+        const hook = this._metalize(this._random(hooks), mw);
+        const desc = this._metalize(this._random(this.descriptions[category] || this.descriptions.general), mw);
         const cta = this._random(this.ctas);
 
         let caption = hook + '\n\n';
@@ -158,13 +202,15 @@ const ElarisCaption = {
     generateHashtags(opts = {}) {
         const category = opts.category || 'general';
         const maxCount = Math.min(opts.maxCount || this.MAX_HASHTAGS, this.MAX_HASHTAGS);
-        const catTags = this.hashtags.category[category] || this.hashtags.category.general;
+        const mw = this.METAL_WORDS[opts.metal] || null;
+        const swap = t => (mw ? t.replace(/silver/g, mw.tagWord) : t);        // #silverring → #goldring
+        const catTags = (this.hashtags.category[category] || this.hashtags.category.general).map(swap);
 
         const tags = [
-            this.hashtags.core[0],                                            // #elaris925
-            ...this._sample(this.hashtags.core.slice(2), 1),                  // material
+            this.hashtags.core[0],                                            // #elaris925 (the brand)
+            ...this._sample(mw ? mw.tags : this.hashtags.core.slice(2), 1),   // material
             ...this._sample(catTags, 2),                                      // product
-            ...this._sample(this.hashtags.brand, 1),                          // Moroccan origin / craft
+            ...this._sample(this.hashtags.brand.map(swap), 1),                // Moroccan origin / craft
         ];
 
         // Deduplicate
@@ -183,8 +229,9 @@ const ElarisCaption = {
             'NEW DROP', 'JUST ARRIVED', 'FRESH', 'AVAILABLE NOW',
             'HANDCRAFTED', 'LIMITED', 'EXCLUSIVE', 'COLLECTION',
         ];
+        const mw = this.METAL_WORDS[opts.metal] || null;
         const subtexts = [
-            '925 Sterling Silver', 'Handcrafted in Morocco', 'Made in Agadir',
+            mw ? mw.phrase.replace(/\b\w/g, c => c.toUpperCase()) : '925 Sterling Silver', 'Handcrafted in Morocco', 'Made in Agadir',
             'Shop the Collection', 'Link in Bio', 'DM to Order',
         ];
         return {
