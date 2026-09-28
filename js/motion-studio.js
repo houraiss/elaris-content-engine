@@ -16,14 +16,18 @@ const MotionStudio = {
     // ── Jewelry Categories (same as PromptStudio) ──────────────────────
     categories: ['ring','necklace','earrings','bracelet','bangles','anklet','brooch','pendant','body-jewelry'],
 
-    materials: [
-        { id: 'sterling-silver', label: '925 Sterling Silver' },
-        { id: '800-silver', label: '800 Moroccan Silver' },
-        { id: 'oxidized-silver', label: 'Oxidized / Antiqued Silver' },
-        { id: 'brushed-matte', label: 'Brushed Matte Silver' },
-        { id: 'high-polish', label: 'High-Polish / Rhodium-Plated' },
-        { id: 'silver-vermeil', label: 'Silver Vermeil' },
-    ],
+    // Same metals as Prompt Studio (silver and gold), so a piece handed over keeps its metal.
+    get materials() {
+        if (window.PromptStudio && Array.isArray(window.PromptStudio.materials)) return window.PromptStudio.materials;
+        return [
+            { id: 'sterling-silver', label: '925 Sterling Silver' },
+            { id: '800-silver', label: '800 Moroccan Silver' },
+            { id: 'oxidized-silver', label: 'Oxidized / Antiqued Silver' },
+            { id: 'brushed-matte', label: 'Brushed Matte Silver' },
+            { id: 'high-polish', label: 'High-Polish / Rhodium-Plated' },
+            { id: 'silver-vermeil', label: 'Silver Vermeil' },
+        ];
+    },
 
     stones: [
         { id: 'none', label: 'No Stones' },
@@ -598,7 +602,7 @@ const MotionStudio = {
 
     // ── State ──────────────────────
     state: {
-        product: 'silver',     // 'silver' | 'watch'
+        product: 'silver',     // 'silver' (any jewelry, silver or gold) | 'watch'
         pieceDesc: '',
         category: 'ring',
         material: 'sterling-silver',
@@ -757,7 +761,7 @@ const MotionStudio = {
                         <div class="form-group">
                             <label class="form-label">Product</label>
                             <select class="form-select" id="ms-product">
-                                <option value="silver" ${this.state.product === 'silver' ? 'selected' : ''}>Silver</option>
+                                <option value="silver" ${this.state.product === 'silver' ? 'selected' : ''}>${window.I18n ? I18n.t('ps_product_silver', 'Jewelry') : 'Jewelry'}</option>
                                 <option value="watch" ${this.state.product === 'watch' ? 'selected' : ''}>Watch</option>
                             </select>
                         </div>
@@ -770,7 +774,9 @@ const MotionStudio = {
                         <div class="form-group" id="ms-material-group" style="${this.state.product === 'watch' ? 'display:none' : ''}">
                             <label class="form-label">Material</label>
                             <select class="form-select" id="ms-material">
-                                ${this.materials.map(m => `<option value="${m.id}" ${m.id === this.state.material ? 'selected' : ''}>${m.label}</option>`).join('')}
+                                ${window.PromptStudio && PromptStudio.materialOptionsHTML
+                                    ? PromptStudio.materialOptionsHTML(this.state.material)
+                                    : this.materials.map(m => `<option value="${m.id}" ${m.id === this.state.material ? 'selected' : ''}>${m.label}</option>`).join('')}
                             </select>
                         </div>
                         <div class="form-group">
@@ -1240,7 +1246,11 @@ const MotionStudio = {
             ? (rawDesc ? `luxury watch ${rawDesc}` : 'luxury watch')
             : (rawDesc ? `${material} ${catWord} ${rawDesc}` : `${material} ${catWord}`);
 
-        const subject = this._getUniqueSubject(archetype).replace(/\{piece\}/g, piece);
+        // Wording written for silver follows a gold piece's metal.
+        const PS = window.PromptStudio;
+        const metal = !isWatchProduct && PS && PS.metalFor ? PS.metalFor(this.state.material) : null;
+        const adapt = t => (metal && PS._adaptMetal ? PS._adaptMetal(t, metal) : t);
+        const subject = adapt(this._getUniqueSubject(archetype)).replace(/\{piece\}/g, piece);
 
         // Camera movement
         const camId = this.state.cameraMovement === 'auto' ? (archetype.motionType || 'tracking') : this.state.cameraMovement;
@@ -1349,7 +1359,7 @@ const MotionStudio = {
             'blush-rose': 'soft blush pink and dusty rose palette.',
             'noir': 'film noir palette — deep blacks, smoky greys.',
         };
-        const paletteDesc = paletteMap[this.state.palette] || '';
+        const paletteDesc = adapt(paletteMap[this.state.palette] || '');
 
         // Format
         const fmt = this.formats.find(f => f.id === this.state.format);
@@ -1359,19 +1369,19 @@ const MotionStudio = {
         const stone = this.stones.find(s => s.id === this.state.stone);
         const stoneDesc = stone && stone.id !== 'none' ? `, set with ${stone.label.toLowerCase()}` : '';
 
-        // Silver descriptor
+        // Metal descriptor (finish-accurate, shared with Prompt Studio)
         const silverDesc = isWatchProduct
             ? 'precision timepiece, polished case and crystal, refined dial detail'
-            : (this.state.material === '800-silver'
+            : (metal ? metal.v1 : (this.state.material === '800-silver'
                 ? 'warm oxidized patina, traditional Moroccan silverwork'
-                : 'mirror-polished surface, brilliant metallic luster');
+                : 'mirror-polished surface, brilliant metallic luster'));
 
         // Assemble
         const parts = [
             `Cinematic ${duration} video clip in ${ratio} format.`,
             `Camera: ${cameraDesc}.`,
             subject + '.',
-            archetype.scene || '',
+            adapt(archetype.scene || ''),
             isWatchProduct ? `${lightDesc}, ${silverDesc}.` : `${lightDesc}, ${silverDesc}${stoneDesc}.`,
             speed !== 'real-time speed' ? `Speed: ${speed}.` : '',
             transText,

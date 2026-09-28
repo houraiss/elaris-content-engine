@@ -2558,8 +2558,7 @@ code {
 }
 .ps-label-hint { font-size: 10px; font-weight: 400; color: var(--text-muted); margin-left: 6px; opacity: 0.75; }
 
-/* ── Prompt Engine v2: format picker + notes under a prompt ─────── */
-.pe-target-card { margin-top: 16px; padding: 14px 16px; }
+/* ── Prompt engine: notes under a prompt ─────── */
 /* four actions per prompt: let them wrap under the title in the narrow centre column */
 .ps-prompt-header { flex-wrap: wrap; }
 .ps-prompt-actions { flex-wrap: wrap; }

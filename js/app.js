@@ -116,6 +116,10 @@ window.render_captions = function(container) {
                         </select>
                     </div>
                     <div class="form-group">
+                        <label class="form-label" data-i18n="cap_metal" data-i18n-en="Metal">Metal</label>
+                        <select class="form-select" id="cs-metal">${window.PromptStudio && PromptStudio.materialOptionsHTML ? PromptStudio.materialOptionsHTML('sterling-silver') : '<option value="sterling-silver">925 Sterling Silver</option>'}</select>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label" data-i18n="cap_prod_name">Product Name (optional)</label>
                         <input type="text" class="form-input" id="cs-name" data-i18n="cap_prod_ph" placeholder="e.g. Luna Crescent Ring">
                     </div>
@@ -166,9 +170,10 @@ window.render_captions = function(container) {
         const voice = document.querySelector('#cs-voice .voice-btn.active')?.dataset.voice || 'luxury';
         const category = document.getElementById('cs-product').value;
         const productName = document.getElementById('cs-name').value;
+        const metal = document.getElementById('cs-metal').value;
 
-        const caption = ElarisCaption.generate({ voice, category, productName });
-        currentHashtags = ElarisCaption.generateHashtags({ category });
+        const caption = ElarisCaption.generate({ voice, category, productName, metal });
+        currentHashtags = ElarisCaption.generateHashtags({ category, metal });
 
         document.getElementById('cs-caption').value = caption;
         document.getElementById('cs-count').textContent = caption.length;

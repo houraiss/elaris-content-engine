@@ -218,7 +218,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="pc-material">${esc(T('pc_material', 'Metal & finish'))}</label>
-                            <select class="form-select" id="pc-material">${materials().map(m => `<option value="${esc(m.id)}">${esc(m.label)}</option>`).join('')}</select>
+                            <select class="form-select" id="pc-material">${PS().materialOptionsHTML ? PS().materialOptionsHTML(p.material || 'sterling-silver') : materials().map(m => `<option value="${esc(m.id)}">${esc(m.label)}</option>`).join('')}</select>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="pc-stone">${esc(T('pc_stone', 'Stones'))}</label>

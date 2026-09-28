@@ -1854,6 +1854,5 @@
 }
 .psb-trend-armed b { color: var(--psb-gold); }
 
-/* ── Prompt Engine v2: "Write the prompt for" row + notes ─────── */
-.psb-target-row { margin: 4px 0 12px; }
+/* ── Prompt engine: notes under the compiled prompt ─────── */
 #psb-output-notes .pe-notes { padding: 10px 0 0; }
