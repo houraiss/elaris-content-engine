@@ -2,7 +2,7 @@
  * pieces.js — Piece Library: the store's real pieces, with photos.
  *
  * A piece is saved once (name, category, material, stones, size, a short description
- * and up to 4 photos). Picked in Prompt Studio or Studio Beta, it makes the prompt
+ * and as many photos as you like). Picked in Prompt Studio or Studio Beta, it makes the prompt
  * describe that exact piece; on the Generate page its photos are sent with the prompt
  * so the image model reproduces it.
  *
@@ -15,7 +15,6 @@
     const DB_NAME = 'elaris';
     const DB_VERSION = 1;
     const STORE = 'pieces';
-    const MAX_PHOTOS = 4;
     const PHOTO_MAX_SIDE = 1600;
 
     const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -92,7 +91,6 @@
     const labelOf = (list, id) => (list.find(x => x.id === id) || { label: id || '' }).label;
 
     const Pieces = {
-        MAX_PHOTOS,
         list: () => run('readonly', s => s.getAll()).then(all => all.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))),
         get: id => (id ? run('readonly', s => s.get(id)) : Promise.resolve(undefined)),
         async save(piece) {
@@ -235,7 +233,7 @@
                         <p class="text-sm text-muted" style="margin-top:4px">${esc(T('pc_notes_hint', 'Written into every prompt for this piece, so keep it short and visual.'))}</p>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">${esc(T('pc_photos', 'Photos'))} <span class="text-sm text-muted">(${esc(T('pc_photos_max', 'up to {n}').replace('{n}', MAX_PHOTOS))})</span></label>
+                        <label class="form-label">${esc(T('pc_photos', 'Photos'))} <span class="text-sm text-muted" id="pc-photo-count"></span></label>
                         <div class="pc-photo-row" id="pc-photo-row"></div>
                         <input type="file" id="pc-photo-input" accept="image/*" multiple style="display:none">
                         <p class="text-sm text-muted" style="margin-top:6px">${esc(T('pc_photos_hint', 'Clear, well-lit photos on a plain background work best: front, side and a close-up.'))}</p>
@@ -261,7 +259,8 @@
                 row.innerHTML = photos.map((b, i) => {
                     const u = URL.createObjectURL(b); photoUrls.push(u);
                     return `<div class="pc-photo-thumb"><img src="${u}" alt=""><button type="button" class="pc-photo-remove" data-i="${i}" aria-label="${esc(T('pc_remove_photo', 'Remove photo'))}">✕</button></div>`;
-                }).join('') + (photos.length < MAX_PHOTOS ? `<button type="button" class="pc-photo-add" id="pc-photo-add">＋<span>${esc(T('pc_add_photo', 'Add photo'))}</span></button>` : '');
+                }).join('') + `<button type="button" class="pc-photo-add" id="pc-photo-add">＋<span>${esc(T('pc_add_photo', 'Add photo'))}</span></button>`;
+                $('pc-photo-count').textContent = photos.length ? `(${T('pc_photos_n', '{n} added').replace('{n}', photos.length)})` : '';
                 const add = $('pc-photo-add');
                 if (add) add.addEventListener('click', () => $('pc-photo-input').click());
                 row.querySelectorAll('.pc-photo-remove').forEach(btn => btn.addEventListener('click', () => {
@@ -272,7 +271,7 @@
             drawPhotos();
 
             $('pc-photo-input').addEventListener('change', async e => {
-                const files = [...e.target.files].slice(0, MAX_PHOTOS - photos.length);
+                const files = [...e.target.files];
                 e.target.value = '';
                 for (const f of files) {
                     try { photos.push(await resizePhoto(f)); } catch (err) { Elaris.toast(err.message, 'error'); }
