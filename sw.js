@@ -10,7 +10,7 @@
  * match exactly, which left an offline launch stuck on "Loading…".)
  */
 
-const CACHE_NAME = 'elaris-v55';
+const CACHE_NAME = 'elaris-v56';
 
 // App shell — everything needed for the app to work offline
 const APP_SHELL = [
